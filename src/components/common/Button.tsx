@@ -18,14 +18,7 @@ const Button = styled.button`
   font-weight: 600;
   font-size: 2rem;
   cursor: pointer;
-  /* ${(props) =>
-    props.large
-      ? css`
-          width: 10rem;
-        `
-      : css`
-          width: 8rem;
-        `} */
+
   border: none;
   text-align: center;
   /* &:disabled {

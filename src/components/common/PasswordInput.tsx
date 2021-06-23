@@ -4,6 +4,10 @@ import Image from "next/image";
 import styled from "styled-components";
 import { AiOutlineEye } from "react-icons/ai";
 import { AiOutlineEyeInvisible } from "react-icons/ai";
+
+interface PasswordInputProps {
+  value: string;
+}
 const PasswordWrapper = styled.div`
   display: flex;
   ~ div {
@@ -35,7 +39,7 @@ const ShowButton = styled.div`
   cursor: pointer;
 `;
 
-const PasswordInput: React.FC = (props) => {
+const PasswordInput: React.FC<PasswordInputProps> = (props) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <>
