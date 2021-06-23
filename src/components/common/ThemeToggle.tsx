@@ -8,6 +8,7 @@ import styled, { css } from "styled-components";
 // interface Props extends <HTMLButtonElement> {
 //     secondary: boolean;
 // }
+
 const Button = styled.button`
   color: white;
   height: 2.25rem;

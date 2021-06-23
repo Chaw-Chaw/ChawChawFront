@@ -15,9 +15,16 @@ const Layout: React.FC = ({ children }) => {
         />
       </Head>
       <Header />
-      {children}
+      <Container>{children}</Container>
     </>
   );
 };
+
+const Container = styled.main`
+  max-width: 800px;
+  margin: 80px auto 0 auto;
+  display: flex;
+  margin-top: 140px;
+`;
 
 export { Layout };

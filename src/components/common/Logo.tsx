@@ -11,8 +11,8 @@ const Logo: React.FC = () => {
         <Image
           src={ChawLogo}
           alt="ChawChaw 로고"
-          width="600rem"
-          height="140rem"
+          width="600px"
+          height="140px"
         />
       </HeaderLogo>
     </Link>
