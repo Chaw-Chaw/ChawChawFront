@@ -12,7 +12,7 @@ const Button = styled.button`
   color: white;
   height: 2.25rem;
   border-radius: 20rem;
-  background-color: orange;
+  background-color: ${(props) => props.theme.primaryColor};
   width: 8rem;
   height: 2.5rem;
   font-weight: 600;
@@ -25,6 +25,9 @@ const Button = styled.button`
     background-color: orange;
     color: white;
   } */
+  :hover {
+    background-color: #ffaf40;
+  }
 `;
 
 export { Button };

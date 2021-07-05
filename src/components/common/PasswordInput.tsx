@@ -6,7 +6,7 @@ import { AiOutlineEye } from "react-icons/ai";
 import { AiOutlineEyeInvisible } from "react-icons/ai";
 
 interface PasswordInputProps {
-  value: string;
+  value?: string;
 }
 const PasswordWrapper = styled.div`
   display: flex;
@@ -24,7 +24,11 @@ const PasswordInputStyled = styled(Input).attrs(() => ({
 
 const ShowButton = styled.div`
   display: flex;
-  border: 1px solid rgb(0, 0, 0, 0.2);
+  background: ${(props) => props.theme.bodyBackgroundColor};
+  border: ${(props) =>
+    props.theme.id === "light"
+      ? "1px solid rgb(0, 0, 0, 0.2)"
+      : "1px solid rgb(255, 255, 255, 0.2)"};
   border-left: 0;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
@@ -34,7 +38,8 @@ const ShowButton = styled.div`
   user-select: none;
   box-sizing: border-box;
   height: 40px;
-  color: rgb(0, 0, 0, 0.5);
+  color: ${(props) =>
+    props.theme.id === "light" ? "rgb(0, 0, 0, 0.2)" : "white"};
   padding: 10px;
   cursor: pointer;
 `;

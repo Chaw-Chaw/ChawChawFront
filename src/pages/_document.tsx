@@ -7,17 +7,9 @@ import Document, {
   DocumentInitialProps,
 } from "next/document";
 import React, { ReactElement } from "react";
-import { ServerStyleSheet, createGlobalStyle } from "styled-components";
+import { ServerStyleSheet } from "styled-components";
+
 // _document.js는 index.html을 꾸며주는거다라고 생각하면 된다.
-const GlobalStyles = createGlobalStyle`
-  body{
-    background: white;
-    font-family: 'Source Sans Pro', sans-serif;
-    min-height: 100vh;
-    margin: 0;
-    color: black;
-  }
-`;
 
 export default class MyDocument extends Document {
   static async getInitialProps(
@@ -32,7 +24,6 @@ export default class MyDocument extends Document {
           enhanceApp: (App) => (props) =>
             sheet.collectStyles(
               <>
-                <GlobalStyles />
                 <App {...props} />
               </>
             ),

@@ -25,6 +25,7 @@ const Container = styled.main`
   margin: 80px auto 0 auto;
   display: flex;
   margin-top: 140px;
+  flex-direction: column;
 `;
 
 export { Layout };
