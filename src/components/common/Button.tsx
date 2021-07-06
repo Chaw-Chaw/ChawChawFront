@@ -25,8 +25,16 @@ const Button = styled.button`
     background-color: orange;
     color: white;
   } */
+  @keyframes color-change-2x {
+    0% {
+      background: ${(props) => props.theme.primaryColor};
+    }
+    100% {
+      background: #ffaf40;
+    }
+  }
   :hover {
-    background-color: #ffaf40;
+    animation: color-change-2x 500ms linear alternate both;
   }
 `;
 
