@@ -4,7 +4,7 @@ import styled, { ThemeContext } from "styled-components";
 
 interface ThemeToggleProps {
   isActive?: boolean;
-  onToggle?: Function;
+  onToggle?: () => void;
 }
 
 const ToggleWrapper = styled.div`
@@ -21,7 +21,7 @@ const ToggleWrapper = styled.div`
   align-items: center;
 `;
 
-const Notch = styled.div<{ isActive: boolean }>`
+const Notch = styled.div<{ isActive?: boolean }>`
   height: 21px;
   width: 21px;
   margin-top: 1px;
@@ -38,7 +38,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = (props) => {
   const { id } = useContext(ThemeContext);
   return (
     <ToggleWrapper onClick={props.onToggle}>
-      <Notch isActive={props.isActive}></Notch>
+      <Notch isActive={props.isActive} />
     </ToggleWrapper>
   );
 };
