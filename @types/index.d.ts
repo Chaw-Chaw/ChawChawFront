@@ -13,8 +13,8 @@ declare module "styled-components" {
     id?: string;
     primaryColor: string;
     secondaryColor: string;
+    visitedColor: string;
     setTheme: () => void;
-
     colors?: {
       main: string;
       secondary: string;
