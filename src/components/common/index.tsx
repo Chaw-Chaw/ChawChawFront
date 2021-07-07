@@ -6,3 +6,4 @@ export * from "./Input";
 export * from "./PasswordInput";
 export * from "./LoadingSpinner";
 export * from "./ThemeToggle";
+export * from "./DropDown";

@@ -1,13 +1,14 @@
 import React, { useContext } from "react";
 import Link from "next/link";
 import styled, { ThemeContext } from "styled-components";
-import { Button, Logo, ThemeToggle } from ".";
+import { Button, Logo, ThemeToggle, ChangeLanguageDropDown } from ".";
 
 const Header: React.FC = () => {
   const { id, setTheme } = useContext(ThemeContext);
   return (
     <HeaderWrapper>
       <Logo />
+      <ChangeLanguageDropDown />
       <ThemeToggleBox>
         <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
       </ThemeToggleBox>
@@ -40,12 +41,6 @@ const ButtonLogin = styled(Button)`
   width: 5rem;
   height: 2rem;
   font-size: 1.2rem;
-`;
-
-const ButtonJustStart = styled(Button)`
-  width: 20rem;
-  height: 5rem;
-  font-size: 3.5rem;
 `;
 
 export { Header };
