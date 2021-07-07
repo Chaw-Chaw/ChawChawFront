@@ -21,20 +21,23 @@ const Button = styled.button`
 
   border: none;
   text-align: center;
-  /* &:disabled {
+  &:disabled {
     background-color: orange;
     color: white;
-  } */
+  }
   @keyframes color-change-2x {
     0% {
       background: ${(props) => props.theme.primaryColor};
     }
     100% {
-      background: #ffaf40;
+      background: ${(props) => props.theme.visitedColor};
     }
   }
-  :hover {
+  /* :hover {
     animation: color-change-2x 500ms linear alternate both;
+  } */
+  :active {
+    animation: color-change-2x 200ms linear alternate both;
   }
 `;
 
