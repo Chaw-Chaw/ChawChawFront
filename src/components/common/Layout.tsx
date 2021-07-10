@@ -23,10 +23,8 @@ const Layout: React.FC = ({ children }) => {
 };
 
 const Container = styled.main`
-  max-width: 800px;
   margin: 140px auto 0 auto;
   display: flex;
-  margin-top: 140px;
   flex-direction: column;
 `;
 
