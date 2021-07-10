@@ -15,7 +15,7 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [theme, setTheme] = useState(DarkTheme);
+  const [theme, setTheme] = useState(LightTheme);
   return (
     <>
       <ThemeProvider
