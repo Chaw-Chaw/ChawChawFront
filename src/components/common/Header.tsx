@@ -12,7 +12,7 @@ const Header: React.FC = () => {
       <ThemeToggleBox>
         <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
       </ThemeToggleBox>
-      <ButtonLogin>Login</ButtonLogin>
+      <Button>Login</Button>
     </HeaderWrapper>
   );
 };
@@ -30,17 +30,13 @@ const HeaderWrapper = styled.div`
   box-sizing: border-box;
   padding: 10px 16px;
   position: fixed;
+  z-index: 100;
   top: 0%;
 
   @media (max-width: 768px) {
     bottom: 0%;
     top: initial;
   }
-`;
-const ButtonLogin = styled(Button)`
-  width: 5rem;
-  height: 2rem;
-  font-size: 1.2rem;
 `;
 
 export { Header };
