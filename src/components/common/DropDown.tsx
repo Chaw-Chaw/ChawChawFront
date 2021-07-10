@@ -9,10 +9,7 @@ interface DropDownProps {
   fontSize?: string;
   width?: string;
   height?: string;
-  id?: string;
-  disable?: boolean;
   options?: string[];
-  Children?: any;
 }
 
 interface InitialBoxProps {
@@ -20,9 +17,6 @@ interface InitialBoxProps {
   fontSize?: string;
   width?: string;
   height?: string;
-  color?: string;
-  backgroundColor?: string;
-  id?: string;
 }
 
 interface SelectMenuProps {
@@ -70,13 +64,15 @@ const InitialBox = styled.div<InitialBoxProps>`
 `;
 
 const SelectMenu = styled.div<SelectMenuProps>`
+  padding: 4px 0px;
   position: absolute;
   width: ${(props) => props.width};
-  border-radius: 1rem;
-  border: ${(props) =>
+  border-radius: 10px;
+  /* border: ${(props) =>
     props.theme.id === "light"
       ? "1px solid rgb(0, 0, 0, 0.2)"
-      : "1px solid rgb(255, 255, 255, 0.2)"};
+      : "1px solid rgb(255, 255, 255, 0.2)"}; */
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
   display: ${(props) => (props.isActive ? "flex" : "none")};
   flex-direction: column;
   top: 40px;
@@ -84,41 +80,63 @@ const SelectMenu = styled.div<SelectMenuProps>`
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
   /* box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.5); */
+
+  animation: growDown 300ms ease-in-out forwards;
+  transform-origin: top center;
+
+  @keyframes growDown {
+    0% {
+      transform: scaleY(0);
+    }
+    80% {
+      transform: scaleY(1.1);
+    }
+    100% {
+      transform: scaleY(1);
+    }
+  }
 `;
 
 const Option = styled.div`
+  border-radius: 10px;
   padding: 4px 8px;
   display: flex;
   background: ${(props) => props.theme.bodyBackgroundColor};
   :hover {
+    background-color: ${(props) => props.theme.primaryColor};
+    color: white;
   }
 `;
 // const;
 
 const DropDown: React.FC<DropDownProps> = (props) => {
   const [value, setValue] = useState("KR");
-  const [isActive, setIsActive] = useState(true);
+  const [isActive, setIsActive] = useState(false);
   return (
     <InitialBox
       fontWeight={props.fontWeight}
       fontSize={props.fontSize}
       width={props.width}
       height={props.height}
-      id={props.id}
+      onClick={() => setIsActive((isActive) => !isActive)}
     >
       <SelectMenu width={props.width} height={props.height} isActive={isActive}>
         {props.options?.map((item, index) => {
-          return <Option key={index}>{item}</Option>;
+          return (
+            <Option key={index} onClick={() => setValue(item)}>
+              {item}
+            </Option>
+          );
         })}
       </SelectMenu>
-      {props.Children}
+      {props.children}
       <span>{value}</span>
       <BsChevronDown />
     </InitialBox>
   );
 };
 
-const ChangeLanguageDropDown: React.FC = () => {
+const ChangeLanguageDropDown: React.FC = (props) => {
   const options = ["KR", "US", "UK"];
   return (
     <DropDown
@@ -127,8 +145,9 @@ const ChangeLanguageDropDown: React.FC = () => {
       width="5rem"
       height="2rem"
       options={options}
-      Children={<ImEarth />}
-    ></DropDown>
+    >
+      <ImEarth />
+    </DropDown>
   );
 };
 
