@@ -26,9 +26,9 @@ const HeaderWrapper = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-  height: 100px;
+  height: 140px;
   box-sizing: border-box;
-  padding: 0 16px;
+  padding: 10px 16px;
   position: fixed;
   top: 0%;
 

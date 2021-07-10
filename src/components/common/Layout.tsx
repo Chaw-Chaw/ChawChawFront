@@ -11,7 +11,9 @@ const Layout: React.FC = ({ children }) => {
         <title>ChawChaw</title>
         <link
           rel="icon"
-          href="https://staybrella.com/img/imgfile1618410549390.png"
+          type="image/png"
+          sizes="32x32"
+          href="/Layout/chaw.png"
         />
       </Head>
       <Header />
@@ -22,7 +24,7 @@ const Layout: React.FC = ({ children }) => {
 
 const Container = styled.main`
   max-width: 800px;
-  margin: 80px auto 0 auto;
+  margin: 140px auto 0 auto;
   display: flex;
   margin-top: 140px;
   flex-direction: column;
