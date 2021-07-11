@@ -31,10 +31,10 @@ const InitialButton = styled.button<ButtonProps>`
     if (props.secondary) return "white";
     return props.theme.primaryColor;
   }};
-  width: ${(props) => (props.width ? props.width : "8rem")};
-  height: ${(props) => (props.height ? props.height : "2.5rem")};
+  width: ${(props) => (props.width ? props.width : "6rem")};
+  height: ${(props) => (props.height ? props.height : "2rem")};
   font-weight: ${(props) => (props.fontWeight ? props.fontWeight : "600")};
-  font-size: ${(props) => (props.fontSize ? props.fontSize : "2rem")};
+  font-size: ${(props) => (props.fontSize ? props.fontSize : "1.5rem")};
   cursor: pointer;
   border: none;
   text-align: center;
