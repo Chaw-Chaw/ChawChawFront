@@ -3,20 +3,6 @@ import Link from "next/link";
 import styled, { ThemeContext } from "styled-components";
 import { Button, Logo, ThemeToggle, ChangeLanguageDropDown } from ".";
 
-const Header: React.FC = () => {
-  const { id, setTheme } = useContext(ThemeContext);
-  return (
-    <HeaderWrapper>
-      <Logo />
-      <ChangeLanguageDropDown />
-      <ThemeToggleBox>
-        <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
-      </ThemeToggleBox>
-      <Button>Login</Button>
-    </HeaderWrapper>
-  );
-};
-
 const ThemeToggleBox = styled.div`
   margin: 1rem;
 `;
@@ -38,5 +24,18 @@ const HeaderWrapper = styled.div`
     top: initial;
   }
 `;
+const Header: React.FC = () => {
+  const { id, setTheme } = useContext(ThemeContext);
+  return (
+    <HeaderWrapper>
+      <Logo />
+      <ChangeLanguageDropDown />
+      <ThemeToggleBox>
+        <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
+      </ThemeToggleBox>
+      <Button>Login</Button>
+    </HeaderWrapper>
+  );
+};
 
 export { Header };
