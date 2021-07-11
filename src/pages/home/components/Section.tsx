@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject, RefObject } from "react";
 import Image from "next/image";
 import styled, { css } from "styled-components";
 import Link from "next/link";
@@ -9,6 +9,7 @@ interface SectionProps {
   subtitle?: string;
   color?: string;
   content?: string;
+  ref?: RefObject<HTMLDivElement>;
 }
 const Wrapper = styled.div`
   width: 100%;
@@ -54,7 +55,7 @@ const Divider = styled.div`
 `;
 const Section: React.FC<SectionProps> = (props) => {
   return (
-    <Wrapper>
+    <Wrapper ref={props.ref}>
       <IconBox>{props.icon}</IconBox>
       <Title>{props.title}</Title>
       {props.subtitle?.split("`").map((line, index) => {
