@@ -3,12 +3,11 @@ import {
   Layout,
   Header,
   Input,
-  PasswordInput,
   Label,
   Button,
 } from "../../../components/common/";
-import { AccountContainer } from "../components/AccountContainer";
-import { LoginOrder } from "../components/LoginOrder";
+import AccountContainer from "../components/AccountContainer";
+import LoginOrder from "../components/LoginOrder";
 import styled from "styled-components";
 import Link from "next/link";
 
