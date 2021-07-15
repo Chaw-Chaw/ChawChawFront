@@ -1,5 +1,4 @@
-import React, { Children } from "react";
-import Link from "next/link";
+import React from "react";
 import styled from "styled-components";
 import { Header } from ".";
 import Head from "next/head";
@@ -26,6 +25,7 @@ const Container = styled.main`
   margin: 140px auto 0 auto;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 export { Layout };
