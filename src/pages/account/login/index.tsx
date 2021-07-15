@@ -7,7 +7,7 @@ import {
   Label,
   Button,
 } from "../../../components/common/";
-import { AccountContainer } from "../components/AccountContainer";
+import AccountContainer from "../components/AccountContainer";
 import styled from "styled-components";
 
 const InputSection = styled.div`
