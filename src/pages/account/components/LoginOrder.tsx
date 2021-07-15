@@ -45,4 +45,4 @@ const LoginOrder: React.FC<ActiveProps> = (props) => {
   );
 };
 
-export { LoginOrder };
+export default LoginOrder;
