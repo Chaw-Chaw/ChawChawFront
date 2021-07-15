@@ -8,3 +8,4 @@ export * from "./LoadingSpinner";
 export * from "./ThemeToggle";
 export * from "./DropDown";
 export * from "./Label";
+export * from "./ModalLayout";
