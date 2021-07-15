@@ -60,4 +60,4 @@ const AccountContainer: React.FC<AccountContainerProps> = (props) => {
   );
 };
 
-export { AccountContainer };
+export default AccountContainer;
