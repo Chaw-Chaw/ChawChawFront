@@ -7,12 +7,14 @@ import { AiOutlineEyeInvisible } from "react-icons/ai";
 
 interface PasswordInputProps {
   value?: string;
+  name?: string;
 }
 const PasswordWrapper = styled.div`
   display: flex;
   ~ div {
     margin-bottom: 8px;
   }
+  width: 100%;
 `;
 
 const PasswordInputStyled = styled(Input).attrs(() => ({
@@ -49,7 +51,7 @@ const PasswordInput: React.FC<PasswordInputProps> = (props) => {
   return (
     <>
       <PasswordWrapper>
-        <PasswordInputStyled />
+        <PasswordInputStyled name={props.name} />
         <ShowButton onClick={() => setShowPassword((state) => !state)}>
           {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
         </ShowButton>
