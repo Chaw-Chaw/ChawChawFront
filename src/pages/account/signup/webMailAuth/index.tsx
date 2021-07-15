@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import {
   Layout,
   Header,
   Input,
-  PasswordInput,
   Label,
   Button,
+  ModalLayout,
 } from "../../../../components/common/";
-import { AccountContainer } from "../../components/AccountContainer";
-import { LoginOrder } from "../../components/LoginOrder";
+import AccountContainer from "../../components/AccountContainer";
+import LoginTypeModal from "../../components/LoginTypeModal";
+import LoginOrder from "../../components/LoginOrder";
 import styled from "styled-components";
 import Link from "next/link";
 
@@ -29,6 +30,11 @@ const MovePageButtonSection = styled.div`
 `;
 
 export default function WebMailAuth() {
+  const [open, setOpen] = useState(false);
+  const handleModal = () => {
+    setOpen((open) => !open);
+    console.log(open);
+  };
   return (
     <Layout>
       <Header type="signup" />
@@ -65,16 +71,18 @@ export default function WebMailAuth() {
             </Link>
           </ButtonSection>
           <ButtonSection marginLeft="20px">
-            <Link href="/account/signup">
-              <a>
-                <Button width="100%" height="4rem" fontSize="1rem">
-                  회원 가입
-                </Button>
-              </a>
-            </Link>
+            <Button
+              width="100%"
+              height="4rem"
+              fontSize="1rem"
+              onClick={handleModal}
+            >
+              회원 가입
+            </Button>
           </ButtonSection>
         </MovePageButtonSection>
       </AccountContainer>
+      <LoginTypeModal visible={open} onClick={handleModal}></LoginTypeModal>
     </Layout>
   );
 }
