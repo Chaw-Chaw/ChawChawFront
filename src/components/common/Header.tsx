@@ -2,7 +2,11 @@ import React, { useContext } from "react";
 import Link from "next/link";
 import styled, { ThemeContext } from "styled-components";
 import { Button, Logo, ThemeToggle, ChangeLanguageDropDown } from ".";
+import { Head } from "next/document";
 
+interface HeaderProps {
+  type?: string;
+}
 const ThemeToggleBox = styled.div`
   margin: 1rem;
 `;
@@ -18,13 +22,45 @@ const HeaderWrapper = styled.div`
   position: fixed;
   z-index: 100;
   top: 0%;
-
-  @media (max-width: 768px) {
-    bottom: 0%;
-    top: initial;
-  }
 `;
-const Header: React.FC = () => {
+const HeaderCondition: React.FC<HeaderProps> = (props) => {
+  const headerType = props.type;
+  if (headerType === "login") {
+    return (
+      <Link href="/account/signup/webMailAuth">
+        <a>
+          <Button>Signup</Button>
+        </a>
+      </Link>
+    );
+  }
+  if (headerType === "signup") {
+    return (
+      <Link href="/account/login">
+        <a>
+          <Button>Login</Button>
+        </a>
+      </Link>
+    );
+  }
+  if (headerType === "loggedIn") {
+    return (
+      <Link href="/account/login">
+        <a>
+          <Button>Login</Button>
+        </a>
+      </Link>
+    );
+  }
+  return (
+    <Link href="/account/login">
+      <a>
+        <Button>Login</Button>
+      </a>
+    </Link>
+  );
+};
+const Header: React.FC<HeaderProps> = (props) => {
   const { id, setTheme } = useContext(ThemeContext);
   return (
     <HeaderWrapper>
@@ -33,7 +69,7 @@ const Header: React.FC = () => {
       <ThemeToggleBox>
         <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
       </ThemeToggleBox>
-      <Button>Login</Button>
+      <HeaderCondition type={props.type} />
     </HeaderWrapper>
   );
 };
