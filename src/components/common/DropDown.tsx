@@ -83,6 +83,8 @@ const SelectMenu = styled.div<SelectMenuProps>`
 
   animation: growDown 300ms ease-in-out forwards;
   transform-origin: top center;
+  overflow: auto;
+  height: 100px;
 
   @keyframes growDown {
     0% {
