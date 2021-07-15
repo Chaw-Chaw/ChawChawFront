@@ -9,6 +9,7 @@ interface ButtonProps {
   secondary?: boolean;
   fontWeight?: string;
   fontSize?: string;
+  onClick?: () => void;
 }
 
 const InitialButton = styled.button<ButtonProps>`
@@ -63,6 +64,7 @@ const Button: React.FC<ButtonProps> = (props) => {
       secondary={props.secondary}
       fontWeight={props.fontWeight}
       fontSize={props.fontSize}
+      onClick={props.onClick}
     >
       {props.children}
     </InitialButton>
