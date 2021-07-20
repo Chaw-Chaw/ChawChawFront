@@ -5,6 +5,7 @@ import {
   Input,
   Label,
   Button,
+  PasswordInput,
 } from "../../../components/common/";
 import AccountContainer from "../components/AccountContainer";
 import LoginOrder from "../components/LoginOrder";
@@ -29,8 +30,7 @@ const MovePageButtonSection = styled.div`
 
 export default function SignUp() {
   return (
-    <Layout>
-      <Header type="signup" />
+    <Layout type="signup">
       <AccountContainer
         title="회원가입"
         subtitle="ChawChaw에서 사용할 정보를 입력해주세요.` 이메일 / 비밀번호"
@@ -38,7 +38,7 @@ export default function SignUp() {
         <LoginOrder activeType="2" />
         <InputSection>
           <Label htmlFor="email">이메일</Label>
-          <Input name="email" />
+          <Input type="email" name="email" />
         </InputSection>
         <InputSection>
           <Label htmlFor="username">이름</Label>
@@ -46,13 +46,13 @@ export default function SignUp() {
         </InputSection>
         <InputSection>
           <Label htmlFor="password">비밀번호</Label>
-          <Input name="password" />
+          <PasswordInput name="password" />
         </InputSection>
         <InputSection>
           <Label htmlFor="passwordCheck" tag="확인">
             비밀번호
           </Label>
-          <Input name="passwordCheck" />
+          <PasswordInput name="passwordCheck" />
         </InputSection>
         <InputSection>
           <Label htmlFor="university" tag="필수">

@@ -8,7 +8,7 @@ import {
   ModalLayout,
 } from "../../../../components/common/";
 import AccountContainer from "../../components/AccountContainer";
-import LoginTypeModal from "../../components/LoginTypeModal";
+import { SignupTypeModal } from "../../components/LoginTypeModal";
 import LoginOrder from "../../components/LoginOrder";
 import styled from "styled-components";
 import Link from "next/link";
@@ -36,8 +36,7 @@ export default function WebMailAuth() {
     console.log(open);
   };
   return (
-    <Layout>
-      <Header type="signup" />
+    <Layout type="signup">
       <AccountContainer
         title="ChawChaw에`오신 것을 환영 해요."
         subtitle="현재 재학중인 대학교의 웹메일을 입력해주세요.`웹 메일로 인증번호가 발송됩니다."
@@ -47,7 +46,7 @@ export default function WebMailAuth() {
           <Label htmlFor="webmail" tag="필수">
             웹 메일
           </Label>
-          <Input name="webmail" />
+          <Input type="email" name="webmail" />
         </InputSection>
         <ButtonSection>
           <Button width="100%" height="2rem" fontSize="1rem">
@@ -82,7 +81,7 @@ export default function WebMailAuth() {
           </ButtonSection>
         </MovePageButtonSection>
       </AccountContainer>
-      <LoginTypeModal visible={open} onClick={handleModal}></LoginTypeModal>
+      <SignupTypeModal visible={open} onClick={handleModal} />
     </Layout>
   );
 }

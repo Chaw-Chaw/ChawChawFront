@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { ModalLayout, Button } from "../../../components/common";
 import KaKaoLogin from "react-kakao-login";
 import FacebookLogin from "@greatsumini/react-facebook-login";
+import { styleSocialLogin } from "../../../components/common";
+import CSS from "csstype";
 
 interface LoginTypeModalProps {
   visible: boolean;
@@ -19,44 +21,30 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  padding: 50px;
+  box-sizing: border-box;
+  padding: 100px 50px;
 `;
 
 const Title = styled.h2`
-  font-size: 2rem;
+  font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 50px;
 `;
 
 const ButtonSection = styled.div`
   width: 100%;
+  margin: 10px;
 `;
-const socialLogin = {
-  cursor: "pointer",
-  textTransform: "none",
-  width: "100%",
-  height: "60px",
-  border: "none",
-  color: "white",
-  touchAction: "manipulation",
-  boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.5)",
-  textAlign: "center",
-  fontWeight: "600",
-  fontSize: "1.5rem",
-  borderRadius: "20rem",
-  margin: "10px 0",
-};
-const styleKakaoLogin = {
-  ...socialLogin,
+const styleKakaoLogin: CSS.Properties = {
+  ...styleSocialLogin,
   background: "#FEE100",
 };
 
-const styleFacebookLogin = {
-  ...socialLogin,
+const styleFacebookLogin: CSS.Properties = {
+  ...styleSocialLogin,
   background: "#3577E5",
 };
-
-const LoginTypeModal: React.FC<LoginTypeModalProps> = (props) => {
+const SignupTypeModal: React.FC<LoginTypeModalProps> = (props) => {
   return (
     <ModalLayout visible={props.visible} onClick={props.onClick}>
       <Container>
@@ -64,13 +52,24 @@ const LoginTypeModal: React.FC<LoginTypeModalProps> = (props) => {
         <ButtonSection>
           <Link href="/account/signup">
             <a>
-              <Button width="100%" height="60px" fontSize="1.5rem">
-                개인 계정 로그인
+              <Button width="100%" height="60px" fontSize="1rem">
+                개인 계정
               </Button>
             </a>
           </Link>
         </ButtonSection>
-        <KaKaoLogin style={styleKakaoLogin}>KaKao 로그인</KaKaoLogin>
+        <KaKaoLogin
+          style={styleKakaoLogin}
+          token="0c867f53d75cc0e2a7932427b908806b"
+          onSuccess={() => {
+            console.log("kakakoLogin");
+          }}
+          onFail={() => {
+            console.error("Login failed.");
+          }}
+        >
+          KaKao
+        </KaKaoLogin>
         <FacebookLogin
           style={styleFacebookLogin}
           appId="1088597931155576"
@@ -84,14 +83,13 @@ const LoginTypeModal: React.FC<LoginTypeModalProps> = (props) => {
           }}
           onProfileSuccess={(response) => {
             console.log("Get Profile Success!");
-            //console.log("name: ", response.name);
           }}
         >
-          Facebook 로그인
+          Facebook
         </FacebookLogin>
       </Container>
     </ModalLayout>
   );
 };
 
-export default LoginTypeModal;
+export { SignupTypeModal };

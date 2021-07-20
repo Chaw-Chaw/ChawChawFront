@@ -1,13 +1,15 @@
 import React from "react";
 import styled from "styled-components";
+import { Divider } from "../../../components/common";
 
 interface AccountContainerProps {
   title?: string;
   subtitle?: string;
+  width?: string;
 }
 
-const Container = styled.div`
-  width: 500px;
+const Container = styled.div<{ width?: string }>`
+  width: ${(props) => (props.width ? props.width : "500px")};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -38,14 +40,9 @@ const Section = styled.div`
   margin-bottom: 50px;
 `;
 
-const Divider = styled.div`
-  margin: 20px 0;
-  width: 1;
-  height: 1;
-`;
 const AccountContainer: React.FC<AccountContainerProps> = (props) => {
   return (
-    <Container>
+    <Container width={props.width}>
       <Section>
         {props.title?.split("`").map((line, index) => {
           return <h3 key={index}>{line}</h3>;
