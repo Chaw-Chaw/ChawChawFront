@@ -17,9 +17,7 @@ const PasswordWrapper = styled.div`
   width: 100%;
 `;
 
-const PasswordInputStyled = styled(Input).attrs(() => ({
-  type: "password",
-}))`
+const PasswordInputStyled = styled(Input)`
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 `;
@@ -51,7 +49,10 @@ const PasswordInput: React.FC<PasswordInputProps> = (props) => {
   return (
     <>
       <PasswordWrapper>
-        <PasswordInputStyled name={props.name} />
+        <PasswordInputStyled
+          name={props.name}
+          type={showPassword ? "text" : "password"}
+        />
         <ShowButton onClick={() => setShowPassword((state) => !state)}>
           {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
         </ShowButton>

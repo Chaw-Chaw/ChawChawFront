@@ -24,7 +24,7 @@ const ToggleWrapper = styled.div`
 const Notch = styled.div<{ isActive?: boolean }>`
   height: 21px;
   width: 21px;
-  margin-top: 1px;
+
   background: white;
   border-radius: 50%;
   transition: transform 0.1s linear;

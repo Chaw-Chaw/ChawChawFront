@@ -1,8 +1,7 @@
-import React, { Children, ReactNode, useState } from "react";
-import Link from "next/link";
-import styled, { css } from "styled-components";
-import { BsChevronDown } from "react-icons/bs";
+import React, { useState } from "react";
+import styled from "styled-components";
 import { ImEarth } from "react-icons/im";
+import { LocaleList, CountryEmojiNames, LanguageNames } from "../common";
 
 interface DropDownProps {
   fontWeight?: string;
@@ -10,28 +9,22 @@ interface DropDownProps {
   width?: string;
   height?: string;
   options?: string[];
+  color?: string;
+  backgroundColor?: string;
+  initialValue?: string;
 }
 
-interface InitialBoxProps {
-  fontWeight?: string;
-  fontSize?: string;
-  width?: string;
-  height?: string;
-}
-
-interface SelectMenuProps {
-  width?: string;
-  height?: string;
+interface SelectMenuProps extends DropDownProps {
   isActive?: boolean;
 }
 
 // interface;
 
-const InitialBox = styled.div<InitialBoxProps>`
+const InitialBox = styled.div<DropDownProps>`
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   font-weight: ${(props) => props.fontWeight};
   padding: 4px 8px;
   border-radius: 10rem;
@@ -42,19 +35,28 @@ const InitialBox = styled.div<InitialBoxProps>`
   width: ${(props) => props.width};
   box-sizing: border-box;
   height: ${(props) => props.height};
-  color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
-  :visited {
-    background-color: ${(props) => props.theme.primaryColor};
-    color: "white";
+  color: ${(props) => {
+    if (props.color) return props.color;
+    if (props.theme.id === "light") return "black";
+    else {
+      return "white";
+    }
+  }};
+  background-color: ${(props) => {
+    if (props.backgroundColor) return props.backgroundColor;
+    else {
+      props.theme.bodyBackgroundColor;
+    }
+  }};
+  svg {
+    position: absolute;
+    left: 5px;
   }
-  background: ${(props) => props.theme.bodyBackgroundColor};
+
   :hover {
-    color: ${(props) => props.theme.primaryColor};
     cursor: pointer;
   }
-  :active {
-    color: ${(props) => props.theme.visitedColor};
-  }
+
   // 드래그 방지
   -webkit-touch-callout: none;
   user-select: none;
@@ -84,7 +86,8 @@ const SelectMenu = styled.div<SelectMenuProps>`
   animation: growDown 300ms ease-in-out forwards;
   transform-origin: top center;
   overflow: auto;
-  height: 100px;
+  height: 200px;
+  z-index: 100;
 
   @keyframes growDown {
     0% {
@@ -99,7 +102,7 @@ const SelectMenu = styled.div<SelectMenuProps>`
   }
 `;
 
-const Option = styled.div`
+const Option = styled.div<SelectMenuProps>`
   border-radius: 10px;
   padding: 4px 8px;
   display: flex;
@@ -112,8 +115,9 @@ const Option = styled.div`
 // const;
 
 const DropDown: React.FC<DropDownProps> = (props) => {
-  const [value, setValue] = useState("KR");
+  const [value, setValue] = useState(props.initialValue);
   const [isActive, setIsActive] = useState(false);
+
   return (
     <InitialBox
       fontWeight={props.fontWeight}
@@ -121,6 +125,8 @@ const DropDown: React.FC<DropDownProps> = (props) => {
       width={props.width}
       height={props.height}
       onClick={() => setIsActive((isActive) => !isActive)}
+      color={props.color}
+      backgroundColor={props.backgroundColor}
     >
       <SelectMenu width={props.width} height={props.height} isActive={isActive}>
         {props.options?.map((item, index) => {
@@ -133,24 +139,47 @@ const DropDown: React.FC<DropDownProps> = (props) => {
       </SelectMenu>
       {props.children}
       <span>{value}</span>
-      <BsChevronDown />
     </InitialBox>
   );
 };
 
 const ChangeLanguageDropDown: React.FC = (props) => {
-  const options = ["KR", "US", "UK"];
+  const localeList = Object.keys(LocaleList);
+
   return (
     <DropDown
       fontWeight="600"
       fontSize="1em"
-      width="5rem"
-      height="2rem"
-      options={options}
+      width="80px"
+      height="30px"
+      options={localeList}
+      initialValue="KR"
     >
       <ImEarth />
     </DropDown>
   );
 };
 
-export { DropDown, ChangeLanguageDropDown };
+const SelectInfoDropDown: React.FC<{
+  type?: string;
+  color?: string;
+}> = (props) => {
+  const countryList = CountryEmojiNames;
+  const languageList = LanguageNames;
+  return (
+    <DropDown
+      fontWeight="900"
+      fontSize="0.7rem"
+      width="80px"
+      height="30px"
+      options={props.type === "country" ? countryList : languageList}
+      backgroundColor={props.color ? props.color : "#06C074"}
+      color="white"
+      initialValue={
+        props.type === "country" ? "Select Country" : "Select Language"
+      }
+    />
+  );
+};
+
+export { DropDown, ChangeLanguageDropDown, SelectInfoDropDown };

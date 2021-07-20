@@ -1,6 +1,7 @@
 import React, { Children } from "react";
 import Link from "next/link";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
+import CSS from "csstype";
 
 interface ButtonProps {
   width?: string;
@@ -12,7 +13,7 @@ interface ButtonProps {
   onClick?: () => void;
 }
 
-const InitialButton = styled.button<ButtonProps>`
+const Button = styled.button<ButtonProps>`
   color: ${(props) => {
     if (props.primary) return "white";
     if (props.secondary) return props.theme.primaryColor;
@@ -47,28 +48,34 @@ const InitialButton = styled.button<ButtonProps>`
       background: ${(props) => props.theme.visitedColor};
     }
   }
-  /* :hover {
-    animation: color-change-2x 500ms linear alternate both;
-  } */
   :active {
     animation: color-change-2x 200ms linear alternate both;
   }
 `;
 
-const Button: React.FC<ButtonProps> = (props) => {
-  return (
-    <InitialButton
-      width={props.width}
-      height={props.height}
-      primary={props.primary}
-      secondary={props.secondary}
-      fontWeight={props.fontWeight}
-      fontSize={props.fontSize}
-      onClick={props.onClick}
-    >
-      {props.children}
-    </InitialButton>
-  );
+const UpdateButton = styled.button`
+  font-size: 1rem;
+  color: ${(props) => props.theme.primaryColor};
+  border: none;
+  background-color: ${(props) => props.theme.bodyBackgroundColor};
+  cursor: pointer;
+  margin-right: auto;
+`;
+
+const styleSocialLogin: CSS.Properties = {
+  cursor: "pointer",
+  textTransform: "none",
+  width: "100%",
+  height: "60px",
+  border: "none",
+  color: "white",
+  touchAction: "manipulation",
+  boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.5)",
+  textAlign: "center",
+  fontWeight: "normal",
+  fontSize: "1rem",
+  borderRadius: "20rem",
+  margin: "10px 0px",
 };
 
-export { Button };
+export { Button, UpdateButton, styleSocialLogin };
