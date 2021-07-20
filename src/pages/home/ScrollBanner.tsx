@@ -10,28 +10,22 @@ import { useState, useRef, useEffect } from "react";
 const Container = styled.div`
   width: 100%;
   height: 100%;
+  .reserveWrapper {
+    @media (max-width: 768px) {
+      display: flex;
+      flex-direction: column-reverse;
+    }
+  }
 `;
 
 const Wrapper = styled.div`
   display: flex;
   width: 100%;
   position: relative;
-  @keyframes slide-in-bottom {
-    0% {
-      -webkit-transform: translateY(1000px);
-      transform: translateY(1000px);
-      opacity: 0;
-    }
-    100% {
-      -webkit-transform: translateY(0);
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-  .slide-in-bottom {
-    -webkit-animation: slide-in-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)
-      both;
-    animation: slide-in-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  justify-content: center;
+  align-items: center;
+  @media (max-width: 768px) {
+    flex-direction: column;
   }
 `;
 
@@ -75,7 +69,7 @@ const ScrollBanner: React.FC = () => {
         />
       </Wrapper>
 
-      <Wrapper>
+      <Wrapper className="reserveWrapper">
         <Section
           icon="📮"
           title="Posting"

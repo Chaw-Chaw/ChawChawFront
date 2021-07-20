@@ -14,9 +14,12 @@ interface SectionProps {
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  padding: 10% 7%;
+  margin: 50px 50px;
   display: flex;
   flex-direction: column;
+  @media (max-width: 768px) {
+    width: 70%;
+  }
 `;
 
 const IconBox = styled.div`

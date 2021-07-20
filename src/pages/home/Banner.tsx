@@ -6,11 +6,11 @@ import BannerImage from "../../../public/Main/외국대화.jpeg";
 import Link from "next/link";
 
 const Container = styled.div`
-  border: none;
   display: flex;
   position: relative;
-  width: 100%;
-  height: calc(100vh - 140px);
+  .bannerImage {
+    object-fit: contain;
+  }
 `;
 
 const BannerText = styled.span`
@@ -21,12 +21,25 @@ const BannerText = styled.span`
   font-weight: 800;
   width: 30%;
   color: black;
+  @media (max-width: 1050px) {
+    position: absolute;
+    top: 30%;
+    left: 10%;
+    font-size: 4rem;
+  }
+  @media (max-width: 768px) {
+    text-align: center;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-60%, -50%);
+    font-size: 3rem;
+  }
 `;
 
 const ScrollingText = styled.span`
   position: absolute;
   top: 70%;
-
   text-align: center;
   font-size: 4rem;
   font-weight: 800;
@@ -44,19 +57,35 @@ const ScrollingText = styled.span`
     }
   }
   animation: slide-top 2s infinite;
+  @media (max-width: 1050px) {
+    font-size: 3rem;
+    top: 60%;
+    left: 35%;
+  }
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const BannerButton = styled.div`
   position: absolute;
   top: 70%;
   left: 10%;
+  @media (max-width: 768px) {
+    left: 50%;
+    transform: translateX(-50%);
+  }
 `;
 
 const Banner: React.FC = () => {
   return (
     <Container>
-      <Image src={BannerImage} alt="배너 이미지" layout="intrinsic"></Image>
-      <Link href="/main">
+      <Image
+        src={BannerImage}
+        alt="배너 이미지"
+        className="bannerImage"
+      ></Image>
+      <Link href="/post">
         <a>
           <BannerButton>
             <Button width="16rem" height="5rem" fontSize="2.8rem">
