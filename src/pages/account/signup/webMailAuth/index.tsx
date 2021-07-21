@@ -7,9 +7,9 @@ import {
   Button,
   ModalLayout,
 } from "../../../../components/common/";
-import AccountContainer from "../../components/AccountContainer";
-import { SignupTypeModal } from "../../components/LoginTypeModal";
-import LoginOrder from "../../components/LoginOrder";
+import AccountContainer from "../../../../components/account/AccountContainer";
+import { SignupTypeModal } from "../../../../components/account/LoginTypeModal";
+import LoginOrder from "../../../../components/account/LoginOrder";
 import styled from "styled-components";
 import Link from "next/link";
 

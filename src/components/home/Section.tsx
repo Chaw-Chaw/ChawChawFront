@@ -1,4 +1,4 @@
-import React, { MutableRefObject, RefObject } from "react";
+import React, { RefObject } from "react";
 import Image from "next/image";
 import styled, { css } from "styled-components";
 import Link from "next/link";

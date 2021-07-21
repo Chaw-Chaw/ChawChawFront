@@ -1,10 +1,10 @@
 import Link from "next/link";
 import React from "react";
 import styled from "styled-components";
-import { Button } from "../../../components/common";
+import { Button } from "../common";
 import KaKaoLogin from "react-kakao-login";
 import FacebookLogin from "@greatsumini/react-facebook-login";
-import { styleSocialLogin } from "../../../components/common";
+import { styleSocialLogin } from "../common";
 import CSS from "csstype";
 
 interface LoginTypeModalProps {

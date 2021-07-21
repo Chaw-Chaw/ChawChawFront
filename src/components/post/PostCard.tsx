@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import React, { useState } from "react";
-import DefaultImage from "../../../../public/Layout/btsSugar.jpeg";
+import DefaultImage from "../../../public/Layout/btsSugar.jpeg";
 import Image from "next/image";
 import { AiFillEye, AiFillHeart } from "react-icons/ai";
 import PostModal from "./PostModal";
-import { ModalLayout } from "../../../components/common";
+import { ModalLayout } from "../common";
 
 interface PostCardProps {
   viewCount?: number;

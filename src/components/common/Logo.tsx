@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import Image from "next/image";
-import ChawLogo from "../../../public/Layout/ChawLogo.png";
+import ChawLogo from "../../../public/Layout/ChawChawLogo.png";
 
 const HeaderLogo = styled.div`
   display: flex;

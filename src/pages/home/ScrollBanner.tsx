@@ -1,6 +1,6 @@
-import { Section } from "./components/Section";
-import { ImageSection } from "./components/ImageSection";
-import { ArrowDivider } from "./components/ArrowDivider";
+import { Section } from "../../components/home/Section";
+import { ImageSection } from "../../components/home/ImageSection";
+import { ArrowDivider } from "../../components/home/ArrowDivider";
 import styled, { css } from "styled-components";
 import ProfileSectionImage from "../../../public/Main/profile.png";
 import PostingSectionImage from "../../../public/Main/posting.jpeg";
@@ -106,4 +106,4 @@ const ScrollBanner: React.FC = () => {
   );
 };
 
-export { ScrollBanner };
+export default ScrollBanner;

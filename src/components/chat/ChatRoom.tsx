@@ -7,3 +7,5 @@ const Container = styled.div`
 const ChatRoom: React.FC = () => {
   return <Container></Container>;
 };
+
+export default ChatRoom;

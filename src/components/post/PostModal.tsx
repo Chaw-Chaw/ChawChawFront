@@ -1,16 +1,11 @@
 import styled from "styled-components";
 import React, { useState } from "react";
-import DefaultImage from "../../../../public/Layout/btsSugar.jpeg";
+import DefaultImage from "../../../public/Layout/btsSugar.jpeg";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  AiFillEye,
-  AiFillHeart,
-  AiFillPropertySafety,
-  AiFillInstagram,
-} from "react-icons/ai";
+import { AiFillEye, AiFillHeart, AiFillInstagram } from "react-icons/ai";
 import { FaFacebook } from "react-icons/fa";
-import { DropDownBox, Button } from "../../../components/common";
+import { DropDownBox, Button } from "../common";
 
 interface PostModalProps {
   viewCount?: number;

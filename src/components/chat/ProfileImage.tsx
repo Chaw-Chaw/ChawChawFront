@@ -1,6 +1,5 @@
 import Image from "next/image";
 import styled from "styled-components";
-import DefaultImage from "../../../../public/Layout/btsSugar.jpeg";
 
 const ImageBox = styled.div`
   width: 50px;

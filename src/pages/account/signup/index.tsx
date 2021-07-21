@@ -7,8 +7,8 @@ import {
   Button,
   PasswordInput,
 } from "../../../components/common/";
-import AccountContainer from "../components/AccountContainer";
-import LoginOrder from "../components/LoginOrder";
+import AccountContainer from "../../../components/account/AccountContainer";
+import LoginOrder from "../../../components/account/LoginOrder";
 import styled from "styled-components";
 import Link from "next/link";
 

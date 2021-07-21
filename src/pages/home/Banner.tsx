@@ -100,4 +100,4 @@ const Banner: React.FC = () => {
   );
 };
 
-export { Banner };
+export default Banner;

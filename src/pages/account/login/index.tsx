@@ -8,7 +8,7 @@ import {
   Button,
   styleSocialLogin,
 } from "../../../components/common/";
-import AccountContainer from "../components/AccountContainer";
+import AccountContainer from "../../../components/account/AccountContainer";
 import styled from "styled-components";
 import KaKaoLogin from "react-kakao-login";
 import FacebookLogin from "@greatsumini/react-facebook-login";

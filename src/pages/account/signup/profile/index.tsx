@@ -1,7 +1,7 @@
 import React from "react";
 import { Layout, Button } from "../../../../components/common/";
-import AccountContainer from "../../components/AccountContainer";
-import LoginOrder from "../../components/LoginOrder";
+import AccountContainer from "../../../../components/account/AccountContainer";
+import LoginOrder from "../../../../components/account/LoginOrder";
 import styled from "styled-components";
 import Link from "next/link";
 import ProfileSection from "../../../../components/ProfileSection/ProfileSection";

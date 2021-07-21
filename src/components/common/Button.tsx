@@ -1,5 +1,3 @@
-import React, { Children } from "react";
-import Link from "next/link";
 import styled from "styled-components";
 import CSS from "csstype";
 

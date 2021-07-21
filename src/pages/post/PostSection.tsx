@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { PostCard } from "./components/PostCard";
+import { PostCard } from "../../components/post/PostCard";
 
 const PostSectionBox = styled.div`
   width: 100%;

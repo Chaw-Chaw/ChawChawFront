@@ -1,5 +1,9 @@
 import { Layout } from "../../components/common";
-import { YourMessageBox, MyMessageBox, Message } from "./components/MessageBox";
+import {
+  YourMessageBox,
+  MyMessageBox,
+  Message,
+} from "../../components/chat/MessageBox";
 import styled from "styled-components";
 import DefaultImage from "../../../public/Layout/btsSugar.jpeg";
 
