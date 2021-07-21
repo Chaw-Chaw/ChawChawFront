@@ -28,6 +28,17 @@ const MovePageButtonSection = styled.div`
   display: flex;
 `;
 
+const EmailInputBox = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const EmailDuplicationCheckButton = styled(Button)`
+  margin: 0px 0px 8px 5px;
+  height: 40px;
+  border-radius: 4px;
+`;
+
 export default function SignUp() {
   return (
     <Layout type="signup">
@@ -38,7 +49,10 @@ export default function SignUp() {
         <LoginOrder activeType="2" />
         <InputSection>
           <Label htmlFor="email">이메일</Label>
-          <Input type="email" name="email" />
+          <EmailInputBox>
+            <Input type="email" name="email" />
+            <EmailDuplicationCheckButton> 중복검사</EmailDuplicationCheckButton>
+          </EmailInputBox>
         </InputSection>
         <InputSection>
           <Label htmlFor="username">이름</Label>
