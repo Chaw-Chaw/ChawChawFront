@@ -32,6 +32,9 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
     if (textAreaRef === null || textAreaRef.current === null) return;
     textAreaRef.current.style.height = "10px";
     textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
+    console.log(
+      textAreaRef?.current.value.replace(/(?:\r\n|\r|\n)/g, "<br />")
+    );
   };
   const [isActive, setIsActive] = useState(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
