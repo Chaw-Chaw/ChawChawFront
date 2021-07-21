@@ -12,10 +12,15 @@ interface DropDownProps {
   color?: string;
   backgroundColor?: string;
   initialValue?: string;
+  isActive?: boolean;
+  value?: string;
+  onClick?: () => void;
+  postOrder?: boolean;
 }
 
-interface SelectMenuProps extends DropDownProps {
-  isActive?: boolean;
+interface SelectMenuProps extends DropDownProps {}
+interface SelectInfoDropDownProps extends DropDownProps {
+  type?: string;
 }
 
 // interface;
@@ -86,7 +91,7 @@ const SelectMenu = styled.div<SelectMenuProps>`
   animation: growDown 300ms ease-in-out forwards;
   transform-origin: top center;
   overflow: auto;
-  height: 200px;
+  max-height: 200px;
   z-index: 100;
 
   @keyframes growDown {
@@ -114,22 +119,49 @@ const Option = styled.div<SelectMenuProps>`
 `;
 // const;
 
-const DropDown: React.FC<DropDownProps> = (props) => {
-  const [value, setValue] = useState(props.initialValue);
-  const [isActive, setIsActive] = useState(false);
-
+const DropDownBox: React.FC<DropDownProps> = (props) => {
   return (
     <InitialBox
       fontWeight={props.fontWeight}
       fontSize={props.fontSize}
       width={props.width}
       height={props.height}
-      onClick={() => setIsActive((isActive) => !isActive)}
+      onClick={props.onClick}
       color={props.color}
       backgroundColor={props.backgroundColor}
     >
+      {props.children}
+      <span>{props.value}</span>
+    </InitialBox>
+  );
+};
+
+const DropDown: React.FC<DropDownProps> = (props) => {
+  const [value, setValue] = useState(props.initialValue);
+  const [isActive, setIsActive] = useState(false);
+  const option = [props.initialValue].concat(props.options);
+
+  return (
+    <DropDownBox
+      fontWeight={props.fontWeight}
+      fontSize={props.fontSize}
+      width={props.width}
+      height={props.height}
+      onClick={() => setIsActive((isActive) => !isActive)}
+      color={
+        props.postOrder && props.initialValue !== value
+          ? props.backgroundColor
+          : props.color
+      }
+      backgroundColor={
+        props.postOrder && props.initialValue !== value
+          ? props.color
+          : props.backgroundColor
+      }
+      value={value}
+    >
       <SelectMenu width={props.width} height={props.height} isActive={isActive}>
-        {props.options?.map((item, index) => {
+        {option?.map((item, index) => {
           return (
             <Option key={index} onClick={() => setValue(item)}>
               {item}
@@ -138,8 +170,7 @@ const DropDown: React.FC<DropDownProps> = (props) => {
         })}
       </SelectMenu>
       {props.children}
-      <span>{value}</span>
-    </InitialBox>
+    </DropDownBox>
   );
 };
 
@@ -160,26 +191,34 @@ const ChangeLanguageDropDown: React.FC = (props) => {
   );
 };
 
-const SelectInfoDropDown: React.FC<{
-  type?: string;
-  color?: string;
-}> = (props) => {
+const SelectInfoDropDown: React.FC<SelectInfoDropDownProps> = (props) => {
   const countryList = CountryEmojiNames;
   const languageList = LanguageNames;
   return (
     <DropDown
       fontWeight="900"
-      fontSize="0.7rem"
-      width="80px"
-      height="30px"
-      options={props.type === "country" ? countryList : languageList}
-      backgroundColor={props.color ? props.color : "#06C074"}
-      color="white"
-      initialValue={
-        props.type === "country" ? "Select Country" : "Select Language"
+      fontSize={props.fontSize ? props.fontSize : "0.7rem"}
+      width={props.width ? props.width : "80px"}
+      height={props.height ? props.height : "30px"}
+      options={(() => {
+        if (props.options) return props.options;
+        if (props.type === "country") return countryList;
+        if (props.type === "language") return languageList;
+        else return countryList;
+      })()}
+      backgroundColor={
+        props.backgroundColor ? props.backgroundColor : "#06C074"
       }
+      color={props.color ? props.color : "white"}
+      initialValue={(() => {
+        if (props.initialValue) return props.initialValue;
+        if (props.type === "country") return "Select Country";
+        if (props.type === "language") return "Select Language";
+        else return "Select";
+      })()}
+      postOrder={props.postOrder}
     />
   );
 };
 
-export { DropDown, ChangeLanguageDropDown, SelectInfoDropDown };
+export { DropDown, ChangeLanguageDropDown, SelectInfoDropDown, DropDownBox };

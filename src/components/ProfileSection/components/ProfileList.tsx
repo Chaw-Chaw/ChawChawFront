@@ -27,7 +27,7 @@ const Container = styled.div`
     align-items: flex-start;
   }
 `;
-const Title = styled.h2`
+const ProfileTitle = styled.h2`
   font-size: 1.2rem;
   font-weight: 600;
   width: 200px;
@@ -38,13 +38,14 @@ const Title = styled.h2`
 
 const ListHeader = styled.div`
   display: flex;
+
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
   }
 `;
 
-const Description = styled.span`
+const ProfileDescription = styled.span`
   font-size: 1rem;
   color: ${(props) =>
     props.theme.id === "light" ? "rgb(0, 0, 0, 0.5)" : "white"};
@@ -57,10 +58,10 @@ const ProfileList: React.FC<ProfileListProps> = (props) => {
   return (
     <Container>
       <ListHeader>
-        <Title>{props.title}</Title>
+        <ProfileTitle>{props.title}</ProfileTitle>
         {props.children}
       </ListHeader>
-      <Description>{props.description}</Description>
+      <ProfileDescription>{props.description}</ProfileDescription>
     </Container>
   );
 };
@@ -128,7 +129,10 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
         {buttonCount.map((_, index) => {
           return (
             <DropDownBox key={index}>
-              <SelectInfoDropDown type={props.type} color={colors[index % 3]} />
+              <SelectInfoDropDown
+                type={props.type}
+                backgroundColor={colors[index % 3]}
+              />
             </DropDownBox>
           );
         })}
@@ -193,6 +197,22 @@ const SocialUrl: React.FC<{ type?: string }> = (props) => {
   );
 };
 
+const SocialUrlView: React.FC<{ type?: string }> = (props) => {
+  return (
+    <SocialUrlBox>
+      {props.type === "facebook" ? <FaFacebook /> : <AiFillInstagram />}
+      <SocialUrlInput
+        disabled={true}
+        defaultValue={
+          props.type === "facebook"
+            ? "https://www.instagram.com/"
+            : "https://www.facebook.com/"
+        }
+      />
+    </SocialUrlBox>
+  );
+};
+
 const ProfileSocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
   return (
     <ProfileList
@@ -208,4 +228,4 @@ const ProfileSocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
     </ProfileList>
   );
 };
-export { ProfileList, ProfileSelectInfo, ProfileSocialUrl };
+export { ProfileList, ProfileSelectInfo, ProfileSocialUrl, SocialUrlView };
