@@ -108,6 +108,7 @@ const MyImage: React.FC = () => {
         width="70px"
         height="70px"
         onClick={() => setIsActive((isActive) => !isActive)}
+        objectFit="cover"
       />
       <SelectMenu width={"150px"} isActive={isActive}>
         <Option
@@ -119,7 +120,7 @@ const MyImage: React.FC = () => {
           <span>프로필</span>
         </Option>
         <Option
-          onClick={() => () => {
+          onClick={() => {
             router.push("/chat");
           }}
         >
@@ -127,7 +128,7 @@ const MyImage: React.FC = () => {
           <span>채팅창</span>
         </Option>
         <Option
-          onClick={() => () => {
+          onClick={() => {
             router.push("/account/setting");
           }}
         >

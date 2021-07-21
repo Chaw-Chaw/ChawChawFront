@@ -4,23 +4,6 @@ import styled from "styled-components";
 import Image from "next/image";
 import ChawLogo from "../../../public/Layout/ChawLogo.png";
 
-const Logo: React.FC = () => {
-  return (
-    <Link href="/" passHref>
-      <a>
-        <HeaderLogo>
-          <Image
-            src={ChawLogo}
-            alt="ChawChaw 로고"
-            width="600px"
-            height="140px"
-          />
-        </HeaderLogo>
-      </a>
-    </Link>
-  );
-};
-
 const HeaderLogo = styled.div`
   display: flex;
   // 드래그 방지
@@ -29,6 +12,22 @@ const HeaderLogo = styled.div`
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
-  box-sizing: border-box;
 `;
+const Logo: React.FC = () => {
+  return (
+    <Link href="/" passHref>
+      <a>
+        <HeaderLogo>
+          <Image
+            src={ChawLogo}
+            alt="ChawChaw 로고"
+            width="500px"
+            height="110px"
+          />
+        </HeaderLogo>
+      </a>
+    </Link>
+  );
+};
+
 export { Logo };
