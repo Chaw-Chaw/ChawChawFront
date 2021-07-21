@@ -81,7 +81,8 @@ export default function WebMailAuth() {
           </ButtonSection>
         </MovePageButtonSection>
       </AccountContainer>
-      <SignupTypeModal visible={open} onClick={handleModal} />
+      <ModalLayout visible={open} onClick={handleModal} />
+      <SignupTypeModal visible={open} />
     </Layout>
   );
 }
