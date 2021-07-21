@@ -16,12 +16,12 @@ const Layout: React.FC<{ type?: string }> = (props) => {
         />
       </Head>
       <Header type={props.type} />
-      <Container>{props.children}</Container>
+      <Inner>{props.children}</Inner>
     </>
   );
 };
 
-const Container = styled.main`
+const Inner = styled.main`
   margin: 140px auto 0 auto;
   display: flex;
   flex-direction: column;
