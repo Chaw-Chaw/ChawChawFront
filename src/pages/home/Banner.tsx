@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import styled, { css } from "styled-components";
 import { Button } from "../../components/common";
-import BannerImage from "../../../public/Main/외국대화.jpeg";
+import BannerImage from "../../../public/Main/conversation.jpeg";
 import Link from "next/link";
 
 const Container = styled.div`

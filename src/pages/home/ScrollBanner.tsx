@@ -2,9 +2,9 @@ import { Section } from "./components/Section";
 import { ImageSection } from "./components/ImageSection";
 import { ArrowDivider } from "./components/ArrowDivider";
 import styled, { css } from "styled-components";
-import ProfileSectionImage from "../../../public/Main/프로필.png";
-import PostingSectionImage from "../../../public/Main/포스팅.jpeg";
-import ChattingSectionImage from "../../../public/Main/채팅.png";
+import ProfileSectionImage from "../../../public/Main/profile.png";
+import PostingSectionImage from "../../../public/Main/posting.jpeg";
+import ChattingSectionImage from "../../../public/Main/chatting.png";
 import { useState, useRef, useEffect } from "react";
 
 const Container = styled.div`
