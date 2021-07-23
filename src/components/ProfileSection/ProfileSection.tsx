@@ -34,6 +34,7 @@ const ProfileInfoBox = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
+  padding: 0px 50px;
 `;
 const ProfileSection: React.FC = () => {
   return (
@@ -52,24 +53,23 @@ const ProfileSection: React.FC = () => {
         "
         />
       </ProfileHeader>
-      <ProfileInfoBox>
-        <ProfileSelectInfo
-          title="Mother Country"
-          description="자신의 국적을 추가해주세요. 최대 4개"
-          type="country"
-        />
-        <ProfileSelectInfo
-          title="Language you can"
-          description="자신이 할 수 있는 언어를 추가해주세요. 최대 4개"
-          type="language"
-        />
-        <ProfileSelectInfo
-          title="Learning lanugage"
-          description="배우고 싶은 언어를 모두 추가해주세요."
-          type="language"
-        />
-        <ProfileSocialUrl />
-      </ProfileInfoBox>
+
+      <ProfileSelectInfo
+        title="Mother Country"
+        description="자신의 국적을 추가해주세요. 최대 4개"
+        type="country"
+      />
+      <ProfileSelectInfo
+        title="Language you can"
+        description="자신이 할 수 있는 언어를 추가해주세요. 최대 4개"
+        type="language"
+      />
+      <ProfileSelectInfo
+        title="Learning lanugage"
+        description="배우고 싶은 언어를 모두 추가해주세요."
+        type="language"
+      />
+      <ProfileSocialUrl />
     </Container>
   );
 };

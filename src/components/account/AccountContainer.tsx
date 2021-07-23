@@ -15,9 +15,10 @@ const Container = styled.div<{ width?: string }>`
   align-items: center;
   flex-direction: column;
   @media (max-width: 768px) {
-    width: 90%;
+    width: 450px;
   }
   @media (max-width: 500px) {
+    width: 320px;
   }
   margin-bottom: 200px;
 `;

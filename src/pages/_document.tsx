@@ -1,5 +1,4 @@
 import Document, {
-  Html,
   Head,
   Main,
   NextScript,
@@ -45,10 +44,10 @@ export default class MyDocument extends Document {
   }
   render(): ReactElement {
     return (
-      <Html>
+      <html>
         <Head>
-          {/* <meta name="viewport" content="viewport-fit=cover" /> */}
-          {/* <meta name="viewport" content="width=device-width" /> */}
+          <meta name="viewport" content="viewport-fit=cover" />
+          <meta name="viewport" content="width=device-width" />
           <link
             href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;600;700;900&display=swap"
             rel="stylesheet"
@@ -60,7 +59,7 @@ export default class MyDocument extends Document {
             <NextScript />
           </div>
         </body>
-      </Html>
+      </html>
     );
   }
 }
