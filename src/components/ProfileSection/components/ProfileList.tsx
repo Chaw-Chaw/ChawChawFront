@@ -70,24 +70,23 @@ const ControlBtnButton = styled(Button)`
   width: 80px;
   font-size: 1.5rem;
   text-align: center;
-  margin: 0px 5px;
 `;
 
 const ControlBtnButtonContainer = styled.div`
   width: 80px;
   height: 30px;
   display: flex;
-  margin: 0px 5px;
+  margin: 0px 0px;
 `;
 const AddControlBtnButton = styled(ControlBtnButton)`
   width: 100%;
-  margin: 0px;
+
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
 `;
 const RemoveControlBtnButton = styled(ControlBtnButton)`
   width: 100%;
-  margin: 0px;
+
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
 `;
@@ -95,9 +94,11 @@ const RemoveControlBtnButton = styled(ControlBtnButton)`
 const ButtonsBox = styled.div`
   margin: 15px 5px 0px 5px;
   display: flex;
+  flex-wrap: wrap;
 `;
 const DropDownBox = styled.div`
-  margin: 0px 5px;
+  margin-bottom: 5px;
+  margin-right: 5px;
 `;
 
 const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
@@ -163,19 +164,25 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
 const SocialUrlBox = styled.div`
   display: flex;
   font-size: 1.5rem;
-  width: 450px;
   justify-content: start;
   align-items: center;
   margin: 10px 0px;
+  width: 450px;
+  @media (max-width: 500px) {
+    width: 270px;
+  }
 `;
 const SocialUrlInput = styled(Input)<{ isActive?: boolean }>`
   border: ${(props) => (props.isActive ? "2px solid orange" : "none")};
   height: 20px;
   font-size: 0.8rem;
-  max-width: 300px;
   margin: 0px 10px;
+  width: 100%;
 `;
-
+const UrlUpdateButton = styled(UpdateButton)`
+  width: 40px;
+  padding: 0px;
+`;
 const SocialUrl: React.FC<{ type?: string }> = (props) => {
   const [isActive, setIsActive] = useState(false);
   return (
@@ -190,25 +197,9 @@ const SocialUrl: React.FC<{ type?: string }> = (props) => {
             : "https://www.facebook.com/"
         }
       />
-      <UpdateButton onClick={() => setIsActive((isActive) => !isActive)}>
+      <UrlUpdateButton onClick={() => setIsActive((isActive) => !isActive)}>
         {isActive ? "업데이트" : "수정"}
-      </UpdateButton>
-    </SocialUrlBox>
-  );
-};
-
-const SocialUrlView: React.FC<{ type?: string }> = (props) => {
-  return (
-    <SocialUrlBox>
-      {props.type === "facebook" ? <FaFacebook /> : <AiFillInstagram />}
-      <SocialUrlInput
-        disabled={true}
-        defaultValue={
-          props.type === "facebook"
-            ? "https://www.instagram.com/"
-            : "https://www.facebook.com/"
-        }
-      />
+      </UrlUpdateButton>
     </SocialUrlBox>
   );
 };
@@ -228,4 +219,4 @@ const ProfileSocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
     </ProfileList>
   );
 };
-export { ProfileList, ProfileSelectInfo, ProfileSocialUrl, SocialUrlView };
+export { ProfileList, ProfileSelectInfo, ProfileSocialUrl };

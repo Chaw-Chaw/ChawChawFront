@@ -8,9 +8,6 @@ import Link from "next/link";
 const Container = styled.div`
   display: flex;
   position: relative;
-  .bannerImage {
-    object-fit: contain;
-  }
 `;
 
 const BannerText = styled.span`
@@ -21,7 +18,7 @@ const BannerText = styled.span`
   font-weight: 800;
   width: 30%;
   color: black;
-  @media (max-width: 1050px) {
+  @media (max-width: 1000px) {
     position: absolute;
     top: 30%;
     left: 10%;
@@ -29,11 +26,12 @@ const BannerText = styled.span`
   }
   @media (max-width: 768px) {
     text-align: center;
-    position: absolute;
-    top: 30%;
     left: 50%;
     transform: translate(-60%, -50%);
     font-size: 3rem;
+  }
+  @media (max-width: 500px) {
+    font-size: 2rem;
   }
 `;
 
@@ -41,7 +39,8 @@ const ScrollingText = styled.span`
   position: absolute;
   top: 70%;
   text-align: center;
-  font-size: 4rem;
+  font-size: 3rem;
+  text-shadow: 1px 1px 2px ${(props) => props.theme.primaryColor};
   font-weight: 800;
   width: 100%;
   color: white;
@@ -57,8 +56,8 @@ const ScrollingText = styled.span`
     }
   }
   animation: slide-top 2s infinite;
-  @media (max-width: 1050px) {
-    font-size: 3rem;
+  @media (max-width: 1000px) {
+    font-size: 2rem;
     top: 60%;
     left: 35%;
   }
@@ -74,17 +73,18 @@ const BannerButton = styled.div`
   @media (max-width: 768px) {
     left: 50%;
     transform: translateX(-50%);
+    button {
+      height: 2.5rem;
+      width: 8rem;
+      font-size: 1.4rem;
+    }
   }
 `;
 
 const Banner: React.FC = () => {
   return (
     <Container>
-      <Image
-        src={BannerImage}
-        alt="배너 이미지"
-        className="bannerImage"
-      ></Image>
+      <Image src={BannerImage} alt="배너 이미지" objectFit="cover" />
       <Link href="/post">
         <a>
           <BannerButton>

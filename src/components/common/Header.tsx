@@ -45,10 +45,10 @@ const MyImageBox = styled.div`
   justify-content: center;
 `;
 
-const SelectMenu = styled.div<{ width?: string; isActive: boolean }>`
+const SelectMenu = styled.div<{ isActive: boolean }>`
   padding: 4px 0px;
   position: absolute;
-  width: ${(props) => props.width};
+  width: 150px;
   border-radius: 10px;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
   display: ${(props) => (props.isActive ? "flex" : "none")};
@@ -61,6 +61,10 @@ const SelectMenu = styled.div<{ width?: string; isActive: boolean }>`
   transform-origin: top center;
   overflow: auto;
   z-index: 100;
+  @media (max-width: 500px) {
+    width: 125px;
+    left: -20px;
+  }
 
   @keyframes growDown {
     0% {
@@ -110,7 +114,7 @@ const MyImage: React.FC = () => {
         onClick={() => setIsActive((isActive) => !isActive)}
         objectFit="cover"
       />
-      <SelectMenu width={"150px"} isActive={isActive}>
+      <SelectMenu isActive={isActive}>
         <Option
           onClick={() => {
             router.push("/account/profile");

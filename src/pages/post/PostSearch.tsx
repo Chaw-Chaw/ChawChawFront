@@ -7,10 +7,13 @@ const PostSearchBox = styled.div`
   border: 1px solid ${(props) => props.theme.primaryColor};
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   border-radius: 20rem;
-  margin: 100px 0px 0px 0px;
-  width: 100%;
+  margin-top: 100px;
   height: 50px;
   display: flex;
+  width: 100%;
+  @media (max-width: 768px) {
+    margin-top: 0px;
+  }
 `;
 
 const SearchIconBox = styled.div`

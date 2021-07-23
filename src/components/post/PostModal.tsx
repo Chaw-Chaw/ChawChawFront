@@ -31,6 +31,11 @@ const PostModalBox = styled.div<{ visible?: boolean }>`
   border-radius: 20px;
   box-sizing: border-box;
   overflow: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  ::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
   .post-image {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
@@ -44,6 +49,11 @@ const PostModalContent = styled.div`
   min-height: 150px;
   max-height: 150px;
   overflow: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  ::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
   font-weight: 400;
   font-size: 0.9rem;
   border-bottom: 1px solid

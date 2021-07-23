@@ -15,6 +15,9 @@ const ButtonSection = styled.div<{ marginRight?: string; marginLeft?: string }>`
 const MovePageButtonSection = styled.div`
   margin-top: 20px;
   width: 450px;
+  @media (max-width: 500px) {
+    width: 100%;
+  }
   display: flex;
 `;
 

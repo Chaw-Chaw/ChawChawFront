@@ -27,6 +27,9 @@ const Container = styled.div<{ visible?: boolean }>`
   left: 50%;
   transform: translate(-50%, -50%);
   position: fixed;
+  @media (max-width: 500px) {
+    width: 100%;
+  }
 `;
 
 const Title = styled.h2`

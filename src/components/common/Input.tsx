@@ -13,23 +13,23 @@ const Input = styled.input<{ type?: string }>`
   width: 100%;
   box-sizing: border-box;
   height: 40px;
-  color: ${(props: any) =>
+  color: ${(props) =>
     props.theme.id === "light" ? "rgb(0, 0, 0, 0.5)" : "white"};
   :focus {
     border: 2px solid orange;
     outline: none;
   }
-  background: ${(props: any) => props.theme.bodyBackgroundColor};
+  background: ${(props) => props.theme.bodyBackgroundColor};
   :disabled {
     background: rgb(0, 0, 0, 0.15);
   }
 `;
 
-const TextArea = styled.textarea<{ type?: string }>`
+const TextArea = styled.textarea`
   padding: 4px 8px;
-  border: ${(props: any) =>
+  border: ${(props) =>
     props.theme.id === "light"
-      ? "1px solid rgb(0, 0, 0, 0.5)"
+      ? "1px solid rgb(0, 0, 0, 0.2)"
       : "1px solid rgb(255, 255, 255, 0.2)"};
   border-radius: 4px;
   font-size: 1em;
@@ -38,13 +38,13 @@ const TextArea = styled.textarea<{ type?: string }>`
   width: 100%;
   box-sizing: border-box;
   height: 40px;
-  color: ${(props: any) =>
+  color: ${(props) =>
     props.theme.id === "light" ? "rgb(0, 0, 0, 0.5)" : "white"};
   :focus {
     border: 2px solid orange;
     outline: none;
   }
-  background: ${(props: any) => props.theme.bodyBackgroundColor};
+  background: ${(props) => props.theme.bodyBackgroundColor};
 `;
 
 export { Input, TextArea };

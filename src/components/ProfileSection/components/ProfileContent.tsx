@@ -21,6 +21,9 @@ const Content = styled(TextArea)<{ isActive?: boolean }>`
   font-size: 1rem;
   border: ${(props) => (props.isActive ? "2px solid orange" : "none")};
   width: 400px;
+  @media (max-width: 500px) {
+    width: calc(100% - 50px);
+  }
   resize: none;
   min-height: 10px;
   max-height: 230px;
@@ -45,7 +48,7 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
     <Container>
       <Title htmlFor="content">{props.title}</Title>
       <Content
-        type="text"
+        // type="text"
         id="content"
         isActive={isActive}
         disabled={!isActive}

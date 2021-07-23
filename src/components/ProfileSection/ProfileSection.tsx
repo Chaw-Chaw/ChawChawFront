@@ -27,6 +27,14 @@ const ProfileHeader = styled.div`
     flex-direction: column;
   }
 `;
+
+const ProfileInfoBox = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+`;
 const ProfileSection: React.FC = () => {
   return (
     <Container>
@@ -44,7 +52,7 @@ const ProfileSection: React.FC = () => {
         "
         />
       </ProfileHeader>
-      <div style={{ marginTop: "20px" }}>
+      <ProfileInfoBox>
         <ProfileSelectInfo
           title="Mother Country"
           description="자신의 국적을 추가해주세요. 최대 4개"
@@ -61,7 +69,7 @@ const ProfileSection: React.FC = () => {
           type="language"
         />
         <ProfileSocialUrl />
-      </div>
+      </ProfileInfoBox>
     </Container>
   );
 };

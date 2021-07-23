@@ -93,7 +93,11 @@ const SelectMenu = styled.div<SelectMenuProps>`
   overflow: auto;
   max-height: 200px;
   z-index: 100;
-
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  ::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
   @keyframes growDown {
     0% {
       transform: scaleY(0);

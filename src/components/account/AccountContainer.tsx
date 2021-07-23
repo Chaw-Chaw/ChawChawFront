@@ -17,6 +17,8 @@ const Container = styled.div<{ width?: string }>`
   @media (max-width: 768px) {
     width: 90%;
   }
+  @media (max-width: 500px) {
+  }
   margin-bottom: 200px;
 `;
 const Section = styled.div`

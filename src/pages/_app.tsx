@@ -10,7 +10,7 @@ const GlobalStyles = createGlobalStyle`
     font-family: 'Source Sans Pro', sans-serif;
     min-height: 100vh;
     margin: 0;
-    color: ${(props) => props.theme.bodyFontColor}
+    color: ${(props) => props.theme.bodyFontColor};
   }
 `;
 

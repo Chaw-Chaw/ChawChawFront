@@ -36,21 +36,28 @@ const IconBox = styled.div`
 const Title = styled.h2`
   font-size: 5rem;
   font-weight: 800;
+  @media (max-width: 500px) {
+    font-size: 2.5rem;
+  }
 `;
 
 const Subtitle = styled.span`
   font-size: 1.5rem;
   font-weight: 400;
   color: ${(props) => props.color};
-
   white-space: pre-wrap;
+  @media (max-width: 500px) {
+    font-size: 1rem;
+  }
 `;
 
 const Content = styled.span`
   font-size: 1.5rem;
   font-weight: 400;
-
   white-space: pre-wrap;
+  @media (max-width: 500px) {
+    font-size: 1rem;
+  }
 `;
 
 const Divider = styled.div`
