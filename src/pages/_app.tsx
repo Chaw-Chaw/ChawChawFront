@@ -17,19 +17,17 @@ const GlobalStyles = createGlobalStyle`
 function MyApp({ Component, pageProps }: AppProps) {
   const [theme, setTheme] = useState(LightTheme);
   return (
-    <>
-      <ThemeProvider
-        theme={{
-          ...theme,
-          setTheme: () => {
-            setTheme((s) => (s.id === "light" ? DarkTheme : LightTheme));
-          },
-        }}
-      >
-        <GlobalStyles />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </>
+    <ThemeProvider
+      theme={{
+        ...theme,
+        setTheme: () => {
+          setTheme((s) => (s.id === "light" ? DarkTheme : LightTheme));
+        },
+      }}
+    >
+      <GlobalStyles />
+      <Component {...pageProps} />
+    </ThemeProvider>
   );
 }
 export default MyApp;
