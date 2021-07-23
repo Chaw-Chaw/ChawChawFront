@@ -1,6 +1,4 @@
 import Document, {
-  Html,
-  Head,
   Main,
   NextScript,
   DocumentContext,
@@ -45,7 +43,7 @@ export default class MyDocument extends Document {
   }
   render(): ReactElement {
     return (
-      <Html>
+      <html>
         <Head>
           <meta name="viewport" content="viewport-fit=cover" />
           <meta name="viewport" content="width=device-width" />
@@ -60,7 +58,7 @@ export default class MyDocument extends Document {
             <NextScript />
           </div>
         </body>
-      </Html>
+      </html>
     );
   }
 }
