@@ -37,6 +37,7 @@ const EmailDuplicationCheckButton = styled(Button)`
   margin: 0px 0px 8px 5px;
   height: 40px;
   border-radius: 4px;
+  font-size: 0.9rem;
 `;
 
 export default function SignUp() {
@@ -51,7 +52,7 @@ export default function SignUp() {
           <Label htmlFor="email">이메일</Label>
           <EmailInputBox>
             <Input type="email" name="email" />
-            <EmailDuplicationCheckButton> 중복검사</EmailDuplicationCheckButton>
+            <EmailDuplicationCheckButton>중복검사</EmailDuplicationCheckButton>
           </EmailInputBox>
         </InputSection>
         <InputSection>

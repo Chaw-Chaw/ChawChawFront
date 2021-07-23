@@ -75,7 +75,7 @@ const BannerButton = styled.div`
     transform: translateX(-50%);
     button {
       height: 2.5rem;
-      width: 8rem;
+      width: 9rem;
       font-size: 1.4rem;
     }
   }

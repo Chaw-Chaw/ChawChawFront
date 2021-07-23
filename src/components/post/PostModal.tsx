@@ -40,6 +40,9 @@ const PostModalBox = styled.div<{ visible?: boolean }>`
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
   }
+  @media (max-width: 500px) {
+    width: 320px;
+  }
 `;
 
 const PostModalContent = styled.div`
