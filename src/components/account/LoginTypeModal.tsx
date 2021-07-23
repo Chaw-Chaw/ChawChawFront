@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import styled from "styled-components";
-import { Button } from "../common";
+import { Button, Divider } from "../common";
 import KaKaoLogin from "react-kakao-login";
 import FacebookLogin from "@greatsumini/react-facebook-login";
 import { styleSocialLogin } from "../common";
@@ -45,22 +45,30 @@ const ButtonSection = styled.div`
 const styleKakaoLogin: CSS.Properties = {
   ...styleSocialLogin,
   background: "#FEE100",
+  marginBottom: "10px",
 };
 
 const styleFacebookLogin: CSS.Properties = {
   ...styleSocialLogin,
   background: "#3577E5",
 };
+
+const NormalSignupButton = styled(Button)`
+  width: 100%;
+  height: 60px;
+  font-size: 1rem;
+  border-radius: 1rem;
+`;
+
 const SignupTypeModal: React.FC<LoginTypeModalProps> = (props) => {
   return (
     <Container visible={props.visible}>
       <Title>회원가입 방법을 선택해주세요.</Title>
+      <Divider width="100%" color="rgba(0,0,0,0.2)" />
       <ButtonSection>
         <Link href="/account/signup">
           <a>
-            <Button width="100%" height="60px" fontSize="1rem">
-              개인 계정
-            </Button>
+            <NormalSignupButton>개인 계정</NormalSignupButton>
           </a>
         </Link>
       </ButtonSection>
