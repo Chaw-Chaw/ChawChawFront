@@ -1,4 +1,5 @@
 import Document, {
+  Head,
   Main,
   NextScript,
   DocumentContext,
