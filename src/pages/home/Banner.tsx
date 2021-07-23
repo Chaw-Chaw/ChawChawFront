@@ -76,7 +76,7 @@ const BannerButton = styled.div`
     button {
       height: 2.5rem;
       width: 9rem;
-      font-size: 1.4rem;
+      font-size: 1.2rem;
     }
   }
 `;

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import {
   Layout,
   Header,
@@ -14,6 +15,7 @@ import KaKaoLogin from "react-kakao-login";
 import FacebookLogin from "@greatsumini/react-facebook-login";
 import CSS from "csstype";
 import Link from "next/link";
+import KakaoLogin from "react-kakao-login";
 
 const InputSection = styled.div`
   width: 100%;
@@ -21,28 +23,29 @@ const InputSection = styled.div`
 `;
 const ButtonSection = styled.div`
   width: 100%;
+  display: flex;
 `;
 
 const styleKakaoLogin: CSS.Properties = {
   ...styleSocialLogin,
   background: "#FEE100",
-  margin: "0px",
-  marginTop: "10px",
+  margin: "0px 5px",
 };
 
 const styleFacebookLogin: CSS.Properties = {
   ...styleSocialLogin,
   background: "#3577E5",
-  margin: "0px",
-  marginTop: "10px",
 };
 
+const LoginButton = styled(Button)`
+  width: 100%;
+  height: 60px;
+  font-size: 1rem;
+  border-radius: 1rem;
+`;
+
 export default function Login() {
-  const [open, setOpen] = useState(false);
-  const handleModal = () => {
-    setOpen((open) => !open);
-    console.log(open);
-  };
+  const router = useRouter();
   return (
     <Layout type="login">
       <AccountContainer
@@ -62,18 +65,13 @@ export default function Login() {
           <PasswordInput name="password" />
         </InputSection>
         <ButtonSection>
-          <Link href="/post">
-            <a>
-              <Button
-                width="100%"
-                height="4rem"
-                fontSize="1rem"
-                onClick={handleModal}
-              >
-                Login
-              </Button>
-            </a>
-          </Link>
+          <LoginButton
+            onClick={() => {
+              router.push("/post");
+            }}
+          >
+            Login
+          </LoginButton>
           <KaKaoLogin
             style={styleKakaoLogin}
             token="0c867f53d75cc0e2a7932427b908806b"

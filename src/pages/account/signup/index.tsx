@@ -37,7 +37,7 @@ const EmailDuplicationCheckButton = styled(Button)`
   margin: 0px 0px 8px 5px;
   height: 40px;
   border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 `;
 
 export default function SignUp() {
