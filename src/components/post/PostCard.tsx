@@ -22,10 +22,6 @@ const PostCardBox = styled.div`
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
   border-radius: 20px;
   box-sizing: border-box;
-  .post-image {
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-  }
 `;
 
 const PostCardContent = styled.div`
@@ -86,6 +82,35 @@ const LikeBox = styled.div`
   }
 `;
 
+const PostImageBox = styled.div`
+  width: 100%;
+  position: relative;
+  .post-image {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+  }
+`;
+const PostImageInfoBox = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 10px 10px;
+  box-sizing: border-box;
+  top: 2px;
+  width: 100%;
+  height: 200px;
+`;
+
+const PostImageName = styled.span`
+  color: white;
+  font-weight: 900;
+  text-shadow: 1px 1px 2px ${(props) => props.theme.primaryColor};
+  font-size: 1.2rem;
+`;
+const PostImageUserInfo = styled(PostImageName)`
+  font-size: 1rem;
+`;
 const PostCardInfo: React.FC<PostCardProps> = (props) => {
   return (
     <PostCardInfoBox>
@@ -113,14 +138,20 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   return (
     <>
       <PostCardBox onClick={handleModal}>
-        <Image
-          src={DefaultImage}
-          alt="포스팅 프로필 이미지"
-          width="250px"
-          height="200px"
-          className="post-image"
-          objectFit="cover"
-        />
+        <PostImageBox>
+          <Image
+            src={DefaultImage}
+            alt="포스팅 프로필 이미지"
+            width="300px"
+            height="200px"
+            className="post-image"
+            objectFit="cover"
+          />
+          <PostImageInfoBox>
+            <PostImageName>BTS sugar</PostImageName>
+            <PostImageUserInfo>🇫🇷 French Korean</PostImageUserInfo>
+          </PostImageInfoBox>
+        </PostImageBox>
         <PostCardContent>{props.children}</PostCardContent>
         <PostCardInfo
           pastDate={props.pastDate}

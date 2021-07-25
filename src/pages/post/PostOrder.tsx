@@ -36,7 +36,7 @@ const PostOrder: React.FC = (props) => {
             backgroundColor="white"
             width="150px"
             color="#FF8A00"
-            initialValue="Mother Language"
+            initialValue="Main Language"
             fontSize="0.9rem"
           />
         </SelectInfoBox>
@@ -47,7 +47,7 @@ const PostOrder: React.FC = (props) => {
             backgroundColor="white"
             color="#FF8A00"
             width="150px"
-            initialValue="Learning Language"
+            initialValue="Hope Language"
             fontSize="0.9rem"
           />
         </SelectInfoBox>
