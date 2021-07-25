@@ -16,6 +16,7 @@ import FacebookLogin from "@greatsumini/react-facebook-login";
 import CSS from "csstype";
 import Link from "next/link";
 import KakaoLogin from "react-kakao-login";
+import axios from "axios";
 
 const InputSection = styled.div`
   width: 100%;
@@ -67,6 +68,26 @@ export default function Login() {
         <ButtonSection>
           <LoginButton
             onClick={() => {
+              axios
+                .post(
+                  "url",
+                  {
+                    contact: "Sewon",
+                    email: "sewon@gmail.com",
+                  },
+                  {
+                    headers: {
+                      "Content-type": "application/json",
+                      Accept: "application/json",
+                    },
+                  }
+                )
+                .then((response) => {
+                  console.log(response.data);
+                })
+                .catch((response) => {
+                  console.log(response.data);
+                });
               router.push("/post");
             }}
           >

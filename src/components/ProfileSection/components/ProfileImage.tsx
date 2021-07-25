@@ -29,6 +29,7 @@ const ProfileImage: React.FC = () => {
         width="200px"
         height="200px"
         alt="프로필 이미지"
+        objectFit="cover"
       />
       <Button secondary width="100%">
         이미지 업로드

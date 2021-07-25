@@ -169,6 +169,9 @@ const PostUserName = styled.h2`
 const PostChatButton = styled(Button)`
   margin: 3px auto;
   min-height: 30px;
+  @media (max-width: 500px) {
+    width: 150px;
+  }
 `;
 
 const PostSocialUrlBox = styled.div`
@@ -270,19 +273,41 @@ const PostModalInfo: React.FC<PostModalProps> = (props) => {
   );
 };
 
+const PostButtonBox = styled.div`
+  width: 100%;
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+`;
+
+const PostLikeBox = styled.div`
+  position: absolute;
+  right: 35px;
+  cursor: pointer;
+  svg {
+    color: ${(props) => props.theme.primaryColor};
+    font-size: 45px;
+  }
+`;
+
 const PostModal: React.FC<PostModalProps> = (props) => {
   return (
     <PostModalBox visible={props.visible}>
       <PostImage src={DefaultImage}></PostImage>
-
       <PostUserName>BTS sugar</PostUserName>
-      <Link href="/chat">
-        <a>
-          <PostChatButton secondary width="250px" height="45px">
-            Try Chat
-          </PostChatButton>
-        </a>
-      </Link>
+      <PostButtonBox>
+        <Link href="/chat">
+          <a>
+            <PostChatButton secondary width="250px" height="45px">
+              Try Chat
+            </PostChatButton>
+          </a>
+        </Link>
+        <PostLikeBox>
+          <AiFillHeart />
+        </PostLikeBox>
+      </PostButtonBox>
       <PostInfoList title="I am from" />
       <PostInfoList title="I can speak" />
       <PostInfoList title="I want to speak" />

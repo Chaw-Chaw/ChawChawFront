@@ -46,6 +46,8 @@ const Subtitle = styled.span`
   font-weight: 400;
   color: ${(props) => props.color};
   white-space: pre-wrap;
+  -webkit-text-stroke-width: 0.2px;
+  -webkit-text-stroke-color: white;
   @media (max-width: 500px) {
     font-size: 1rem;
   }
