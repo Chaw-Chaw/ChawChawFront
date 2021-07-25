@@ -1,5 +1,4 @@
 import Document, {
-  Html,
   Head,
   Main,
   NextScript,
