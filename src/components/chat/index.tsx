@@ -1,4 +1,4 @@
 export * from "./Message";
 export * from "./ProfileImage";
 export * from "./MessageInput";
-export * from "./chatRoom";
+export * from "./ChatRoom";
