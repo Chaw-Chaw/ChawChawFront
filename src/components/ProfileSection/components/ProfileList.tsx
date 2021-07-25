@@ -11,6 +11,7 @@ interface ProfileListProps {
 
 interface ProfileSelectInfoProps extends ProfileListProps {
   type: string;
+  count: number;
 }
 interface ProfileSocialUrlProps extends ProfileListProps {}
 const Container = styled.div`
@@ -37,8 +38,6 @@ const ProfileTitle = styled.h2`
 `;
 
 const ListHeader = styled.div`
-  display: flex;
-
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
@@ -49,9 +48,6 @@ const ProfileDescription = styled.span`
   font-size: 1rem;
   color: ${(props) =>
     props.theme.id === "light" ? "rgb(0, 0, 0, 0.5)" : "white"};
-  @media (max-width: 768px) {
-    margin-top: 20px;
-  }
 `;
 
 const ProfileList: React.FC<ProfileListProps> = (props) => {
@@ -92,20 +88,38 @@ const RemoveControlBtnButton = styled(ControlBtnButton)`
 `;
 
 const ButtonsBox = styled.div`
-  margin: 15px 5px 0px 5px;
+  margin: 15px 5px 15px 5px;
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
 `;
 const DropDownBox = styled.div`
-  margin-bottom: 5px;
   margin-right: 5px;
+`;
+
+const DropDownMainBox = styled(DropDownBox)`
+  padding: 5px;
+  border-radius: 20rem;
+  position: relative;
+
+  border: 2px solid ${(props) => props.theme.primaryColor};
+`;
+
+const DropDownMainText = styled.div`
+  padding: 0px 10px;
+  color: ${(props) => props.theme.primaryColor};
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  background-color: ${(props) => props.theme.bodyBackgroundColor};
+  transform: translateX(-50%);
 `;
 
 const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
   const [buttonCount, setButtonCount] = useState<number[]>([]);
 
   const AddButton = () => {
-    if (buttonCount.length >= 4) {
+    if (buttonCount.length >= props.count) {
       return;
     }
     setButtonCount((buttonCount) => {
@@ -128,6 +142,17 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
     <ProfileList title={props.title} description={props.description}>
       <ButtonsBox>
         {buttonCount.map((_, index) => {
+          if (index === 0) {
+            return (
+              <DropDownMainBox key={index}>
+                <DropDownMainText>main</DropDownMainText>
+                <SelectInfoDropDown
+                  type={props.type}
+                  backgroundColor={colors[index % 3]}
+                />
+              </DropDownMainBox>
+            );
+          }
           return (
             <DropDownBox key={index}>
               <SelectInfoDropDown
@@ -141,7 +166,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
         {(() => {
           if (buttonCount.length === 0)
             return <ControlBtnButton onClick={AddButton}>+</ControlBtnButton>;
-          if (buttonCount.length > 0 && buttonCount.length < 4)
+          if (buttonCount.length > 0 && buttonCount.length < props.count)
             return (
               <ControlBtnButtonContainer>
                 <AddControlBtnButton onClick={AddButton}>+</AddControlBtnButton>

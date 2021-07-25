@@ -58,18 +58,21 @@ const ProfileSection: React.FC = () => {
       <ProfileInfoBox>
         <ProfileSelectInfo
           title="Mother Country"
-          description="자신의 국적을 추가해주세요. 최대 4개"
+          description="자신의 국적을 추가해주세요. (최대 2개) 가장 첫 칸은 주 국적으로 표시됩니다. "
           type="country"
+          count={2}
         />
         <ProfileSelectInfo
           title="Language you can"
-          description="자신이 할 수 있는 언어를 추가해주세요. 최대 4개"
+          description="자신이 할 수 있는 언어를 추가해주세요. (최대 4개) 가장 첫 칸은 주 언어로 표시됩니다. "
           type="language"
+          count={4}
         />
         <ProfileSelectInfo
           title="Learning lanugage"
-          description="배우고 싶은 언어를 모두 추가해주세요."
+          description="배우고 싶은 언어를 모두 추가해주세요. (최대 4개) 가장 첫 칸은 주 언어로 표시됩니다."
           type="language"
+          count={4}
         />
         <ProfileSocialUrl />
       </ProfileInfoBox>
