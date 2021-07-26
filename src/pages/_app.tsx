@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import LightTheme from "../theme/light";
 import DarkTheme from "../theme/dark";
+import { AuthContextProvider } from "../store/AuthContext";
 
 const GlobalStyles = createGlobalStyle`
   body{
@@ -26,7 +27,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       }}
     >
       <GlobalStyles />
-      <Component {...pageProps} />
+      <AuthContextProvider>
+        <Component {...pageProps} />
+      </AuthContextProvider>
     </ThemeProvider>
   );
 }
