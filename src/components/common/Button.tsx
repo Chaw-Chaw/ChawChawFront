@@ -33,7 +33,6 @@ const Button = styled.button<ButtonProps>`
     if (props.secondary) return props.theme.primaryColor;
     return "white";
   }};
-  height: 2.25rem;
   border-radius: 20rem;
   background-color: ${(props) => {
     if (props.primary) return props.theme.primaryColor;
