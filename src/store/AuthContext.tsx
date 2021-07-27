@@ -22,6 +22,7 @@ interface AuthReqProps {
   email?: string;
   password?: string;
   profile?: Object;
+  code?: string;
 }
 interface AuthResProps<AxiosResponse> {
   responseMessage?: string;
@@ -51,7 +52,9 @@ const AuthContextProvider: React.FC = (props) => {
   const [user, setUser] = useState({});
   const router = useRouter();
   useEffect(() => {
-    setUser(localStorage.getItem("user") || {});
+    if (localStorage) {
+      setUser(localStorage.getItem("user") || {});
+    }
     if (user) setIsLoggedIn(true);
   }, []);
 
@@ -65,8 +68,8 @@ const AuthContextProvider: React.FC = (props) => {
     return res;
   };
 
-  const login = ({ email, password }: AuthReqProps) => {
-    axios
+  const login = async ({ email, password }: AuthReqProps) => {
+    await axios
       .post(
         "/login",
         { email: email, password: password },
@@ -84,11 +87,12 @@ const AuthContextProvider: React.FC = (props) => {
       );
   };
 
-  const kakaoLogin = ({ email }: AuthReqProps) => {
-    axios
+  const kakaoLogin = async ({ code }: AuthReqProps) => {
+    console.log("카카오 로그인 함수 실행");
+    await axios
       .post(
         "/user/login/kakao",
-        { email: email },
+        { token: code },
         {
           headers: {
             "Content-type": "application/json",

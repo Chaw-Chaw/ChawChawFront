@@ -30,11 +30,6 @@ const MovePageButtonSection = styled.div`
 `;
 
 export default function WebMailAuth() {
-  const [open, setOpen] = useState(false);
-  const handleModal = () => {
-    setOpen((open) => !open);
-    console.log(open);
-  };
   return (
     <Layout type="signup">
       <AccountContainer
@@ -70,19 +65,16 @@ export default function WebMailAuth() {
             </Link>
           </ButtonSection>
           <ButtonSection marginLeft="20px">
-            <Button
-              width="100%"
-              height="4rem"
-              fontSize="1rem"
-              onClick={handleModal}
-            >
-              회원 가입
-            </Button>
+            <Link href="/account/signup">
+              <a>
+                <Button width="100%" height="4rem" fontSize="1rem">
+                  회원 정보 입력
+                </Button>
+              </a>
+            </Link>
           </ButtonSection>
         </MovePageButtonSection>
       </AccountContainer>
-      <ModalLayout visible={open} onClick={handleModal} />
-      <SignupTypeModal visible={open} />
     </Layout>
   );
 }
