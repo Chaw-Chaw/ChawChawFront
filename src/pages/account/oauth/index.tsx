@@ -10,18 +10,18 @@ interface OauthProps {
 export default function Oauth(props: OauthProps) {
   const router = useRouter();
   // 카카오에서 준 인증코드
-  const [code, setCode] = useState<string>();
   const { kakaoLogin } = useContext(AuthContext);
 
   useEffect(() => {
-    if (router.query.code) {
-      setCode(router.query.code.toString());
+    const code = router.query.code?.toString();
+    console.log(router.query);
+    if (code !== undefined) {
       console.log(code, "KaKao Auth code 받음");
-      main();
+      main(code);
     }
   }, [router.query]);
 
-  const main = async () => {
+  const main = async (code: string) => {
     kakaoLogin({ code });
     // await loadUserInfo(accessToken)
   };

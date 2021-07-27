@@ -59,7 +59,7 @@ const SocialSection: React.FC = (props) => {
       pathname: "https://kauth.kakao.com/oauth/authorize",
       query: {
         response_type: "code",
-        client_id: "0c867f53d75cc0e2a7932427b908806b",
+        client_id: "de32392365a519fc6df93e6196a5ad6b",
         redirect_uri: redirectUrl,
       },
     });

@@ -59,16 +59,14 @@ const AuthContextProvider: React.FC = (props) => {
   }, []);
 
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
-    console.log(res, "Save userInfo");
-    if (!res.isSuccess) {
-      throw new Error(res.responseMessage);
-    }
     const newUser = { ...user, ...res };
     setUser(newUser);
+    console.log(newUser, "Save userInfo");
     return res;
   };
 
   const login = async ({ email, password }: AuthReqProps) => {
+    console.log("로그인 함수 실행");
     await axios
       .post(
         "/login",
@@ -80,19 +78,24 @@ const AuthContextProvider: React.FC = (props) => {
           },
         }
       )
+      .then((res) => {
+        if (!res.data.isSuccess) {
+          throw new Error(res.data.responseMessage);
+        }
+        console.log(res.data);
+        return res.data;
+      })
       .then((res: AxiosResponse) => saveUser)
       .then(() => router.push("/"))
-      .catch((err: AuthResProps<AxiosResponse>) =>
-        console.log(err.responseMessage)
-      );
+      .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
   };
 
   const kakaoLogin = async ({ code }: AuthReqProps) => {
     console.log("카카오 로그인 함수 실행");
     await axios
       .post(
-        "/user/login/kakao",
-        { token: code },
+        "/users/login/kakao",
+        { code: code },
         {
           headers: {
             "Content-type": "application/json",
@@ -100,11 +103,20 @@ const AuthContextProvider: React.FC = (props) => {
           },
         }
       )
+      .then((res) => {
+        console.log(res);
+        if (!res.data.isSuccess) {
+          console.log(res.data, "로그인 실패");
+          // user 정보에 카카오 인증메일
+          throw new Error(res.data.responseMessage);
+        }
+        console.log(res.data);
+        router.push("/account/signup/webMailAuth");
+        return res.data;
+      })
       .then((res: AxiosResponse) => saveUser)
       .then(() => router.push("/"))
-      .catch((err: AuthResProps<AxiosResponse>) =>
-        console.log(err.responseMessage)
-      );
+      .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
   };
 
   const contextValue: AuthContextObj = {

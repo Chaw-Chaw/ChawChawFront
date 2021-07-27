@@ -13,6 +13,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { AuthContext } from "../../../store/AuthContext";
 import SocialSection from "./SocialSection";
 import Link from "next/link";
+import axios from "axios";
 type Inputs = {
   email: string;
   password: string;
@@ -77,9 +78,9 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
+  const router = useRouter();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
     login(data);
   };
   return (
