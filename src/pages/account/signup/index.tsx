@@ -44,7 +44,7 @@ export default function SignUp() {
   return (
     <Layout type="signup">
       <AccountContainer
-        title="회원가입"
+        title="회원 정보 입력"
         subtitle="ChawChaw에서 사용할 정보를 입력해주세요.` 이메일 / 비밀번호"
       >
         <LoginOrder activeType="2" />

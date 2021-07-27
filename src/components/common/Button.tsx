@@ -11,22 +11,6 @@ interface ButtonProps {
   onClick?: () => void;
 }
 
-const styleSocialLogin: CSS.Properties = {
-  cursor: "pointer",
-  textTransform: "none",
-  width: "100%",
-  height: "60px",
-  border: "none",
-  color: "white",
-  touchAction: "manipulation",
-  boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.5)",
-  textAlign: "center",
-  fontWeight: "normal",
-  fontSize: "1rem",
-  borderRadius: "1rem",
-  margin: "0px",
-};
-
 const Button = styled.button<ButtonProps>`
   color: ${(props) => {
     if (props.primary) return "white";
@@ -75,4 +59,4 @@ const UpdateButton = styled.button`
   margin-right: auto;
 `;
 
-export { Button, UpdateButton, styleSocialLogin };
+export { Button, UpdateButton };

@@ -2,23 +2,17 @@ import React, { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import {
   Layout,
-  Header,
   Input,
   PasswordInput,
   Label,
   Button,
-  styleSocialLogin,
 } from "../../../components/common/";
 import AccountContainer from "../../../components/account/AccountContainer";
 import styled from "styled-components";
-import KaKaoLogin from "react-kakao-login";
-import FacebookLogin from "@greatsumini/react-facebook-login";
-import CSS from "csstype";
-import Link from "next/link";
-import KakaoLogin from "react-kakao-login";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { AuthContext } from "../../../store/AuthContext";
-
+import SocialSection from "./SocialSection";
+import Link from "next/link";
 type Inputs = {
   email: string;
   password: string;
@@ -26,23 +20,13 @@ type Inputs = {
 
 const InputSection = styled.div`
   width: 100%;
-  margin: 10px 0;
+  margin: 10px 0px;
 `;
 const ButtonSection = styled.div`
   width: 100%;
   display: flex;
+  justify-content: space-around;
 `;
-
-const styleKakaoLogin: CSS.Properties = {
-  ...styleSocialLogin,
-  background: "#FEE100",
-  margin: "0px 5px",
-};
-
-const styleFacebookLogin: CSS.Properties = {
-  ...styleSocialLogin,
-  background: "#3577E5",
-};
 
 const LoginButton = styled(Button)`
   width: 100%;
@@ -52,7 +36,10 @@ const LoginButton = styled(Button)`
 `;
 
 const Form = styled.form`
-  width: 100%;
+  width: 70%;
+  @media (max-width: 500px) {
+    width: 320px;
+  }
 `;
 
 const RequiredText = styled.span`
@@ -60,6 +47,29 @@ const RequiredText = styled.span`
   font-size: 0.8rem;
 `;
 
+const SignupBox = styled.div`
+  margin-top: 10px;
+  margin-bottom: 30px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  a {
+    color: ${(props) => props.theme.primaryColor};
+    text-decoration: none;
+    font-weight: 900;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+`;
+
+const SignupTitle = styled.h2`
+  margin: 0px;
+  margin-right: 5px;
+  color: ${(props) =>
+    props.theme.id === "light" ? "rgba(0, 0, 0, 0.3)" : "white"};
+  font-size: 1rem;
+`;
 export default function Login() {
   const { login, kakaoLogin } = useContext(AuthContext);
   const {
@@ -115,40 +125,14 @@ export default function Login() {
           </InputSection>
           <ButtonSection>
             <LoginButton type="submit">Login</LoginButton>
-            <KaKaoLogin
-              style={styleKakaoLogin}
-              token="0c867f53d75cc0e2a7932427b908806b"
-              onSuccess={(data) => {
-                if (data.profile) {
-                  kakaoLogin(data.profile.kakao_account);
-                } else {
-                  console.log(data, "profile 데이터가 없습니다.");
-                }
-              }}
-              onFail={() => {
-                console.error("KaKao Login failed.");
-              }}
-            >
-              KaKao
-            </KaKaoLogin>
-            <FacebookLogin
-              style={styleFacebookLogin}
-              appId="1235018336951383"
-              onSuccess={(response) => {
-                console.log(response, "Login Success!");
-                //console.log("id: ", response.id);
-              }}
-              onFail={(error) => {
-                console.log("Login Failed!");
-                console.log("status: ", error.status);
-              }}
-              onProfileSuccess={(response) => {
-                console.log(response, "Get Profile Success!");
-              }}
-            >
-              Facebook
-            </FacebookLogin>
           </ButtonSection>
+          <SignupBox>
+            <SignupTitle>아직 회원이 아니신가요? </SignupTitle>
+            <Link href="/account/signup/webMailAuth">
+              <a>이메일 회원가입</a>
+            </Link>
+          </SignupBox>
+          <SocialSection />
         </Form>
       </AccountContainer>
     </Layout>

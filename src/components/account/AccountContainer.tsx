@@ -20,7 +20,7 @@ const Container = styled.div<{ width?: string }>`
   @media (max-width: 500px) {
     width: 320px;
   }
-  margin-bottom: 200px;
+  /* margin-bottom: 200px; */
 `;
 const Section = styled.div`
   display: flex;
