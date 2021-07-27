@@ -1,14 +1,6 @@
 import React, { useRef, useState } from "react";
-import {
-  Layout,
-  Header,
-  Input,
-  Label,
-  Button,
-  ModalLayout,
-} from "../../../../components/common/";
+import { Layout, Input, Label, Button } from "../../../../components/common/";
 import AccountContainer from "../../../../components/account/AccountContainer";
-import { SignupTypeModal } from "../../../../components/account/LoginTypeModal";
 import LoginOrder from "../../../../components/account/LoginOrder";
 import styled from "styled-components";
 import Link from "next/link";
