@@ -50,13 +50,17 @@ const FacebookLogin = styled(KakaoLogin)`
 
 const SocialSection: React.FC = (props) => {
   const router = useRouter();
+  const redirectUrl =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000/account/oauth"
+      : "https://chaw-chaw.vercel.app/account/oauth";
   const callKakaoLogin = () => {
     router.push({
       pathname: "https://kauth.kakao.com/oauth/authorize",
       query: {
         response_type: "code",
         client_id: "0c867f53d75cc0e2a7932427b908806b",
-        redirect_uri: "http://localhost:3000/account/oauth",
+        redirect_uri: redirectUrl,
       },
     });
   };
