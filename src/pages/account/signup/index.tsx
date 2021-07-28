@@ -41,6 +41,7 @@ const EmailDuplicationCheckButton = styled(Button)`
 `;
 
 export default function SignUp() {
+  const handle = () => {};
   return (
     <Layout type="signup">
       <AccountContainer
@@ -52,7 +53,9 @@ export default function SignUp() {
           <Label htmlFor="email">이메일</Label>
           <EmailInputBox>
             <Input type="email" name="email" />
-            <EmailDuplicationCheckButton>중복검사</EmailDuplicationCheckButton>
+            <EmailDuplicationCheckButton onClick={handle}>
+              중복검사
+            </EmailDuplicationCheckButton>
           </EmailInputBox>
         </InputSection>
         <InputSection>

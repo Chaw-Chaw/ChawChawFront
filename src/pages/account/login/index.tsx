@@ -78,7 +78,6 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-  const router = useRouter();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     login(data);
