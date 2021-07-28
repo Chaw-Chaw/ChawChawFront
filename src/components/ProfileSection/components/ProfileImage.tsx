@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import DefaultImage from "../../../../public/Layout/chaw.png";
+import DefaultImage from "../../../../public/Layout/default_profile.png";
 import { Button } from "../../common";
 
 const Container = styled.div`
@@ -14,12 +14,18 @@ const Container = styled.div`
   button {
     margin: 5px 0px;
   }
+  .profile-image {
+    border-radius: 20px;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
+    border-radius: 20px;
+  }
   @media (max-width: 768px) {
     margin: 10px auto;
     padding-bottom: 20px;
     border-right: 0px;
   }
 `;
+const ImageBox = styled.div``;
 
 const InputFileButton = styled.label`
   display: flex;
@@ -29,6 +35,7 @@ const InputFileButton = styled.label`
   width: 100%;
   height: 2rem;
   border-radius: 20rem;
+  margin-top: 10px;
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   border: 1px solid ${(props) => props.theme.primaryColor};
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
@@ -56,10 +63,11 @@ const ProfileImage: React.FC<{ onChange: (e: Event) => void }> = (props) => {
     <Container>
       <Image
         src={DefaultImage}
-        width="200px"
-        height="200px"
+        width="180px"
+        height="180px"
         alt="프로필 이미지"
         objectFit="cover"
+        className="profile-image"
       />
       <InputFileButton htmlFor="image-file">이미지 업로드</InputFileButton>
       <input
