@@ -22,6 +22,23 @@ const PostCardBox = styled.div`
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
   border-radius: 20px;
   box-sizing: border-box;
+  @keyframes kenburns-top {
+    0% {
+      -webkit-transform: scale(1) translateY(0);
+      transform: scale(1) translateY(0);
+      -webkit-transform-origin: 50% 5%;
+      transform-origin: 50% 5%;
+    }
+    100% {
+      -webkit-transform: scale(1.05) translateY(-5px);
+      transform: scale(1.05) translateY(-5px);
+      -webkit-transform-origin: top;
+      transform-origin: top;
+    }
+  }
+  :hover {
+    animation: kenburns-top 0.2s ease-out both;
+  }
 `;
 
 const PostCardContent = styled.div`
@@ -85,6 +102,9 @@ const LikeBox = styled.div`
 const PostImageBox = styled.div`
   width: 100%;
   position: relative;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+
   .post-image {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
@@ -97,9 +117,8 @@ const PostImageInfoBox = styled.div`
   justify-content: space-between;
   padding: 10px 10px;
   box-sizing: border-box;
-  top: 2px;
+  bottom: 2px;
   width: 100%;
-  height: 200px;
 `;
 
 const PostImageName = styled.span`
