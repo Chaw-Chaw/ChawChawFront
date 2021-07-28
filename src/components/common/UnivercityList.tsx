@@ -210,4 +210,4 @@ const univercityList = {
 
 // };
 
-// export { univercityList };
+export { univercityList };
