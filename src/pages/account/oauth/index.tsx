@@ -29,8 +29,6 @@ export default function Oauth(props: OauthProps) {
   return (
     <div>
       <Script src="https://developers.kakao.com/sdk/js/kakao.js"></Script>
-      카카오 로그인중
-      <LoadingSpinner></LoadingSpinner>
     </div>
   );
 }
