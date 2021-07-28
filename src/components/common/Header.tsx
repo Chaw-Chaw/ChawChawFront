@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import styled, { ThemeContext } from "styled-components";
 import { Button, Logo, ThemeToggle, ChangeLanguageDropDown } from ".";
-import DefaultImage from "../../../public/Layout/chaw.png";
+import DefaultImage from "../../../public/Layout/default_profile.png";
 import Image from "next/image";
 import { CgProfile } from "react-icons/cg";
 import { AiOutlineLogout, AiOutlineSetting } from "react-icons/ai";
@@ -43,6 +43,10 @@ const MyImageBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  img {
+    border-radius: 100%;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
+  }
 `;
 
 const SelectMenu = styled.div<{ isActive: boolean }>`
@@ -100,6 +104,7 @@ const Option = styled.div`
     color: white;
   }
 `;
+const ImageBox = styled.div``;
 
 const MyImage: React.FC = () => {
   const [isActive, setIsActive] = useState(false);
@@ -109,8 +114,8 @@ const MyImage: React.FC = () => {
       <Image
         src={DefaultImage}
         alt="프로필 이미지"
-        width="70px"
-        height="70px"
+        width="50px"
+        height="50px"
         onClick={() => setIsActive((isActive) => !isActive)}
         objectFit="cover"
       />
