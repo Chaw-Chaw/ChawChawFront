@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/router";
-import { Builder, By, Key, until } from "selenium-webdriver";
+// import { Builder, By, Key, until } from "selenium-webdriver";
 interface AuthContextObj {
   isloggedIn: boolean;
   user: Object | undefined;
@@ -10,7 +10,7 @@ interface AuthContextObj {
   saveUser: (res: AuthResProps<AxiosResponse>) => void;
   sendWebmail: (res: AuthReqProps) => void;
   verifyNumber: (res: AuthReqProps) => void;
-  verifyUniversity: () => void;
+  // verifyUniversity: () => void;
   //   kakaoLogin: () => void;
   //   facebookLogin: () => void;
   //   logout: () => void;
@@ -43,7 +43,7 @@ const AuthContext = React.createContext<AuthContextObj>({
   saveUser: () => {},
   sendWebmail: () => {},
   verifyNumber: () => {},
-  verifyUniversity: () => {},
+  // verifyUniversity: () => {},
 
   //   kakaoLogin: () => {},
   //   facebookLogin: () => {},
@@ -187,24 +187,24 @@ const AuthContextProvider: React.FC = (props) => {
       .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
   };
 
-  const verifyUniversity = async (webmail: string) => {
-    let driver = await new Builder().forBrowser("chrome").build();
-    try {
-      await driver.get("https://www.naver.com/");
-      let searchInput = await driver.findElement(By.id("query"));
-      let keyword = webmail;
-      searchInput.sendKeys(keyword, Key.ENTER);
-      await driver.wait(until.elementLocated(By.css("#header_wrap")), 4000);
-      let resultElements = await driver.findElements(By.className("link_tit"));
-      if (resultElements.length > 0) {
-        const universityName = await resultElements[0].getText();
-        console.log(universityName, "get 대학이름");
-        return universityName;
-      }
-    } finally {
-      driver.quit();
-    }
-  };
+  // const verifyUniversity = async (webmail: string) => {
+  //   let driver = await new Builder().forBrowser("chrome").build();
+  //   try {
+  //     await driver.get("https://www.naver.com/");
+  //     let searchInput = await driver.findElement(By.id("query"));
+  //     let keyword = webmail;
+  //     searchInput.sendKeys(keyword, Key.ENTER);
+  //     await driver.wait(until.elementLocated(By.css("#header_wrap")), 4000);
+  //     let resultElements = await driver.findElements(By.className("link_tit"));
+  //     if (resultElements.length > 0) {
+  //       const universityName = await resultElements[0].getText();
+  //       console.log(universityName, "get 대학이름");
+  //       return universityName;
+  //     }
+  //   } finally {
+  //     driver.quit();
+  //   }
+  // };
 
   const contextValue: AuthContextObj = {
     isloggedIn,
@@ -214,7 +214,7 @@ const AuthContextProvider: React.FC = (props) => {
     kakaoLogin,
     sendWebmail,
     verifyNumber,
-    verifyUniversity,
+    // verifyUniversity,
   };
 
   return (
