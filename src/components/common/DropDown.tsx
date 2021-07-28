@@ -15,6 +15,7 @@ interface DropDownProps {
   isActive?: boolean;
   value?: string;
   onClick?: () => void;
+  onMouseLeave?: () => void;
   postOrder?: boolean;
 }
 
@@ -152,6 +153,7 @@ const DropDown: React.FC<DropDownProps> = (props) => {
       width={props.width}
       height={props.height}
       onClick={() => setIsActive((isActive) => !isActive)}
+      onMouseLeave={() => setIsActive(false)}
       color={
         props.postOrder && props.initialValue !== value
           ? props.backgroundColor
@@ -164,7 +166,12 @@ const DropDown: React.FC<DropDownProps> = (props) => {
       }
       value={value}
     >
-      <SelectMenu width={props.width} height={props.height} isActive={isActive}>
+      <SelectMenu
+        width={props.width}
+        height={props.height}
+        isActive={isActive}
+        onMouseLeave={() => setIsActive(false)}
+      >
         {option?.map((item, index) => {
           return (
             <Option key={index} onClick={() => setValue(item)}>
