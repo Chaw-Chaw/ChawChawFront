@@ -92,7 +92,7 @@ const AuthContextProvider: React.FC = (props) => {
           throw new Error(res.data.responseMessage);
         }
         console.log(res.data);
-        return res.data;
+        return res.data.data;
       })
       .then(saveUser)
       .then((res) => {
@@ -122,6 +122,7 @@ const AuthContextProvider: React.FC = (props) => {
             router.push("/account/signup/webMailAuth");
             const newUser = { ...user, ...res };
             setUser(newUser);
+            return res.data.data;
           }
           // user 정보에 카카오 인증메일
           throw new Error(res.data.responseMessage);
