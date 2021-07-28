@@ -116,14 +116,14 @@ const AuthContextProvider: React.FC = (props) => {
         }
       )
       .then((res) => {
+        if (res.data.responseMessage === "회원가입 필요") {
+          router.push("/account/signup/webMailAuth");
+          const newUser = { ...user, ...res };
+          setUser(newUser);
+          return res.data.data;
+        }
         if (!res.data.isSuccess) {
           console.log(res.data, "로그인 실패");
-          if (res.data.responseMessage === "회원가입 필요") {
-            router.push("/account/signup/webMailAuth");
-            const newUser = { ...user, ...res };
-            setUser(newUser);
-            return res.data.data;
-          }
           // user 정보에 카카오 인증메일
           throw new Error(res.data.responseMessage);
         }
