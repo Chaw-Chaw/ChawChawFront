@@ -118,6 +118,11 @@ const AuthContextProvider: React.FC = (props) => {
       .then((res) => {
         if (!res.data.isSuccess) {
           console.log(res.data, "로그인 실패");
+          if (res.data.responseMessage === "회원가입 필요") {
+            router.push("/account/signup/webMailAuth");
+            const newUser = { ...user, ...res };
+            setUser(newUser);
+          }
           // user 정보에 카카오 인증메일
           throw new Error(res.data.responseMessage);
         }
@@ -126,7 +131,10 @@ const AuthContextProvider: React.FC = (props) => {
       })
       .then(saveUser)
       .then((res) => {
-        router.push("/account/signup/webMailAuth");
+        router.push("/post");
+        return res;
+      })
+      .then((res) => {
         return res;
       })
       .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
