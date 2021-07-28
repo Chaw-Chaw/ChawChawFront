@@ -121,11 +121,12 @@ const AuthContextProvider: React.FC = (props) => {
           const newUser = { ...user, ...res };
           setUser(newUser);
           return res.data.data;
-        }
-        if (!res.data.isSuccess) {
-          console.log(res.data, "로그인 실패");
-          // user 정보에 카카오 인증메일
-          throw new Error(res.data.responseMessage);
+        } else {
+          if (!res.data.isSuccess) {
+            console.log(res.data, "로그인 실패");
+            // user 정보에 카카오 인증메일
+            throw new Error(res.data.responseMessage);
+          }
         }
         console.log(res.data);
         return res.data;
