@@ -5,12 +5,16 @@ import {
   ProfileSelectInfo,
   ProfileSocialUrl,
 } from "./components/";
-
+import { Button } from "../common";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useState } from "react";
 interface ProfileSection {
   title?: string;
   content?: string;
 }
-const Container = styled.div`
+type Inputs = {};
+
+const Container = styled.form`
   width: 100%;
   display: flex;
   justify-content: center;
@@ -38,11 +42,43 @@ const ProfileInfoBox = styled.div`
   }
 `;
 
+const ProfileUploadButton = styled(Button)`
+  width: 200px;
+  margin: 20px auto;
+`;
+
 const ProfileSection: React.FC = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>();
+
+  const [userImage, setUserImage] = useState<File>();
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    const formData = new FormData();
+    if (userImage) formData.append("image", userImage);
+    else {
+      console.log(userImage);
+    }
+  };
+
+  const imageUpload = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    const file: File = (target.files as FileList)[0];
+    console.log(file);
+    if (file !== undefined) {
+      setUserImage(file);
+    } else {
+      console.log("no file");
+    }
+  };
   return (
-    <Container>
+    <Container onSubmit={handleSubmit(onSubmit)}>
       <ProfileHeader>
-        <ProfileImage />
+        <ProfileImage onChange={imageUpload} />
         <ProfileContent
           title="포스팅에 올라갈 당신의 매력을 어필해보세요!"
           content="
@@ -76,6 +112,7 @@ const ProfileSection: React.FC = () => {
         />
         <ProfileSocialUrl />
       </ProfileInfoBox>
+      <ProfileUploadButton type="submit">프로필 업로드</ProfileUploadButton>
     </Container>
   );
 };

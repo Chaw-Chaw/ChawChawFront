@@ -21,7 +21,37 @@ const Container = styled.div`
   }
 `;
 
-const ProfileImage: React.FC = () => {
+const InputFileButton = styled.label`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${(props) => props.theme.primaryColor};
+  width: 100%;
+  height: 2rem;
+  border-radius: 20rem;
+  background-color: ${(props) => props.theme.bodyBackgroundColor};
+  border: 1px solid ${(props) => props.theme.primaryColor};
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
+  font-weight: 600;
+  cursor: pointer;
+  &:disabled {
+    background-color: ${(props) => props.theme.bodyBackgroundColor};
+    color: ${(props) => props.theme.secondaryColor};
+  }
+  @keyframes color-change-2x {
+    0% {
+      background: ${(props) => props.theme.primaryColor};
+    }
+    100% {
+      background: ${(props) => props.theme.visitedColor};
+    }
+  }
+  :active {
+    animation: color-change-2x 200ms linear alternate both;
+  }
+`;
+
+const ProfileImage: React.FC<{ onChange: (e: Event) => void }> = (props) => {
   return (
     <Container>
       <Image
@@ -31,9 +61,14 @@ const ProfileImage: React.FC = () => {
         alt="프로필 이미지"
         objectFit="cover"
       />
-      <Button secondary width="100%">
-        이미지 업로드
-      </Button>
+      <InputFileButton htmlFor="image-file">이미지 업로드</InputFileButton>
+      <input
+        id="image-file"
+        type="file"
+        style={{ display: "none" }}
+        accept="image/png, image/jpeg"
+        // onChange={props.onChange}
+      />
       <Button width="100%">이미지 제거</Button>
     </Container>
   );
