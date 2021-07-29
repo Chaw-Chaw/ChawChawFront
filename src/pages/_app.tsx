@@ -4,6 +4,17 @@ import { ThemeProvider, createGlobalStyle } from "styled-components";
 import LightTheme from "../theme/light";
 import DarkTheme from "../theme/dark";
 import { AuthContextProvider } from "../store/AuthContext";
+import {
+  transitions,
+  positions,
+  Provider as AlertProvider,
+  AlertComponentPropsWithStyle,
+} from "react-alert";
+import {
+  Message,
+  MessageConfirmButton,
+  MessageBox,
+} from "../components/common";
 
 const GlobalStyles = createGlobalStyle`
   body{
@@ -17,6 +28,26 @@ const GlobalStyles = createGlobalStyle`
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [theme, setTheme] = useState(LightTheme);
+  const AlertTemplate: React.FC<AlertComponentPropsWithStyle> = ({
+    message,
+    close,
+    style,
+    options,
+  }) => (
+    <>
+      <Message
+        style={style}
+        message={message}
+        onClick={close}
+        type={options.type}
+      >
+        {/* {options.type === "info" && "!"}
+      {options.type === "success" && ":)"}
+      {options.type === "error" && ":("} */}
+      </Message>
+    </>
+  );
+
   return (
     <ThemeProvider
       theme={{
@@ -26,10 +57,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         },
       }}
     >
-      <GlobalStyles />
-      <AuthContextProvider>
-        <Component {...pageProps} />
-      </AuthContextProvider>
+      <AlertProvider template={AlertTemplate}>
+        <GlobalStyles />
+        <AuthContextProvider>
+          <Component {...pageProps} />
+        </AuthContextProvider>
+      </AlertProvider>
     </ThemeProvider>
   );
 }

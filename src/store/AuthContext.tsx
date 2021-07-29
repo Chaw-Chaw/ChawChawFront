@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/router";
+
 // import { Builder, By, Key, until } from "selenium-webdriver";
+import { useAlert } from "react-alert";
+
 interface AuthContextObj {
   isloggedIn: boolean;
   user: Object | undefined;
@@ -57,6 +60,7 @@ const AuthContext = React.createContext<AuthContextObj>({
 });
 
 const AuthContextProvider: React.FC = (props) => {
+  const message = useAlert();
   const [isloggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({});
   const router = useRouter();
@@ -76,6 +80,7 @@ const AuthContextProvider: React.FC = (props) => {
 
   const login = async ({ email, password }: AuthReqProps) => {
     console.log("로그인 함수 실행");
+    // ActionPopup.open();
     await axios
       .post(
         "/login",
@@ -99,7 +104,10 @@ const AuthContextProvider: React.FC = (props) => {
         router.push("/");
         return res;
       })
-      .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
+      .catch((err: AuthResProps<AxiosResponse>) => {
+        message.error("로그인에 실패하셨습니다.");
+        console.log(err);
+      });
   };
 
   const kakaoLogin = async ({ code }: AuthReqProps) => {
@@ -116,22 +124,28 @@ const AuthContextProvider: React.FC = (props) => {
         }
       )
       .then((res) => {
-        if (res.data.responseMessage === "회원가입 필요") {
-          router.push("/account/signup/webMailAuth");
-          const newUser = { ...user, ...res };
-          setUser(newUser);
-          return res.data.data;
-        } else {
-          if (!res.data.isSuccess) {
-            console.log(res.data, "로그인 실패");
-            // user 정보에 카카오 인증메일
-            throw new Error(res.data.responseMessage);
-          }
+        if (!res.data.isSuccess) {
+          console.log(res.data, "로그인 실패");
+          throw res.data;
         }
         console.log(res.data);
         return res.data;
       })
-      .then(saveUser)
+      .then(saveUser, (res) => {
+        console.log(res, "실패라인");
+        if (res.responseMessage === "회원가입 필요") {
+          const newUser = { ...user, ...res };
+          setUser(newUser);
+          message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
+            onClose: () => {
+              router.push("/account/signup/webMailAuth");
+            },
+          });
+          return res;
+        } else {
+          throw new Error(res.responseMessage);
+        }
+      })
       .then((res) => {
         router.push("/post");
         return res;
@@ -139,7 +153,14 @@ const AuthContextProvider: React.FC = (props) => {
       .then((res) => {
         return res;
       })
-      .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
+      .catch((err: AuthResProps<AxiosResponse>) => {
+        message.error("인가코드가 잘못되었습니다.", {
+          onClose: () => {
+            history.back();
+          },
+        });
+        console.error(err);
+      });
   };
   const sendWebmail = async ({ webmail }: AuthReqProps) => {
     console.log("웹메일 전송 함수 실행");

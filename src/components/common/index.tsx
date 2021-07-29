@@ -11,3 +11,4 @@ export * from "./Label";
 export * from "./ModalLayout";
 export * from "./LocaleList";
 export * from "./Divider";
+export * from "./MessagePopup";
