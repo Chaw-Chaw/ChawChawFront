@@ -1,12 +1,20 @@
-import React, { useState } from "react";
+import React, {
+  useState,
+  useRef,
+  useContext,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import styled from "styled-components";
 import { Button, SelectInfoDropDown, Input, UpdateButton } from "../../common";
 import { FaFacebook } from "react-icons/fa";
 import { AiFillInstagram } from "react-icons/ai";
+import { AuthContext } from "../../../store/AuthContext";
 
 interface ProfileListProps {
   title?: string;
   description?: string;
+  update?: Dispatch<SetStateAction<string[] | undefined>>;
 }
 
 interface ProfileSelectInfoProps extends ProfileListProps {
@@ -210,19 +218,33 @@ const UrlUpdateButton = styled(UpdateButton)`
 `;
 const SocialUrl: React.FC<{ type?: string }> = (props) => {
   const [isActive, setIsActive] = useState(false);
+  const urlRef = useRef<HTMLInputElement>(null);
+  const { updateUser } = useContext(AuthContext);
+
   return (
     <SocialUrlBox>
       {props.type === "facebook" ? <FaFacebook /> : <AiFillInstagram />}
       <SocialUrlInput
         isActive={isActive}
         disabled={!isActive}
+        ref={urlRef}
         defaultValue={
           props.type === "facebook"
             ? "https://www.instagram.com/"
             : "https://www.facebook.com/"
         }
       />
-      <UrlUpdateButton onClick={() => setIsActive((isActive) => !isActive)}>
+      <UrlUpdateButton
+        onClick={() => {
+          setIsActive((isActive) => !isActive);
+          if (urlRef === null || urlRef.current === null) return;
+          if (isActive) {
+            props.type === "facebook"
+              ? updateUser({ facebookUrl: urlRef.current.value })
+              : updateUser({ instagramUrl: urlRef.current.value });
+          }
+        }}
+      >
         {isActive ? "업데이트" : "수정"}
       </UrlUpdateButton>
     </SocialUrlBox>

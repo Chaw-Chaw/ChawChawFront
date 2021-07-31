@@ -3,8 +3,9 @@ import styled from "styled-components";
 import { TextArea, Label, UpdateButton } from "../../common";
 
 interface ProfileContentProps {
-  content?: string;
+  placeholder?: string;
   title?: string;
+  update: ({}) => void;
 }
 const Container = styled.div`
   display: flex;
@@ -35,9 +36,9 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
     if (textAreaRef === null || textAreaRef.current === null) return;
     textAreaRef.current.style.height = "10px";
     textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
-    console.log(
-      textAreaRef?.current.value.replace(/(?:\r\n|\r|\n)/g, "<br />")
-    );
+    // console.log(
+    //   textAreaRef?.current.value.replace(/(?:\r\n|\r|\n)/g, "<br />")
+    // );
   };
   const [isActive, setIsActive] = useState(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -52,11 +53,20 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
         id="content"
         isActive={isActive}
         disabled={!isActive}
-        defaultValue={props.content}
+        placeholder={props.placeholder}
         ref={textAreaRef}
         onInput={textAreaResize}
       />
-      <UpdateButton onClick={() => setIsActive((isActive) => !isActive)}>
+      <UpdateButton
+        onClick={() => {
+          setIsActive((isActive) => !isActive);
+          if (textAreaRef === null || textAreaRef.current === null) return;
+          if (isActive) {
+            props.update({ content: textAreaRef.current.value });
+          }
+          // props.update
+        }}
+      >
         {isActive ? "업데이트" : "수정"}
       </UpdateButton>
     </Container>

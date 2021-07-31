@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import DefaultImage from "../../../../public/Layout/default_profile.png";
@@ -58,11 +58,13 @@ const InputFileButton = styled.label`
   }
 `;
 
-const ProfileImage: React.FC<{ onChange: (e: Event) => void }> = (props) => {
+const ProfileImage: React.FC<{ onChange: (e: ChangeEvent) => void }> = (
+  props
+) => {
   return (
     <Container>
       <Image
-        src={DefaultImage}
+        src="https://images.unsplash.com/photo-1544526226-d4568090ffb8?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aGQlMjBpbWFnZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80"
         width="180px"
         height="180px"
         alt="프로필 이미지"
@@ -75,7 +77,7 @@ const ProfileImage: React.FC<{ onChange: (e: Event) => void }> = (props) => {
         type="file"
         style={{ display: "none" }}
         accept="image/png, image/jpeg"
-        // onChange={props.onChange}
+        onChange={props.onChange}
       />
       <Button width="100%">이미지 제거</Button>
     </Container>
