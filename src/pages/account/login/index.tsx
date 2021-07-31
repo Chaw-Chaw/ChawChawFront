@@ -13,7 +13,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { AuthContext } from "../../../store/AuthContext";
 import SocialSection from "./SocialSection";
 import Link from "next/link";
-import axios from "axios";
+import { useAlert } from "react-alert";
 type Inputs = {
   email: string;
   password: string;
@@ -72,6 +72,7 @@ const SignupTitle = styled.h2`
   font-size: 1rem;
 `;
 export default function Login() {
+  const message = useAlert();
   const { login, kakaoLogin } = useContext(AuthContext);
   const {
     register,
@@ -80,6 +81,10 @@ export default function Login() {
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
+    if (data.email === "" || data.password === "") {
+      message.error("입력칸을 모두 입력해주세요.");
+      return;
+    }
     login(data);
   };
   return (

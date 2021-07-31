@@ -5,6 +5,7 @@ import CSS from "csstype";
 import Link from "next/link";
 import { AuthContext } from "../../../store/AuthContext";
 import { RiKakaoTalkFill } from "react-icons/ri";
+import FacebookLogin from "@greatsumini/react-facebook-login";
 import { FaFacebookF } from "react-icons/fa";
 
 const ButtonSection = styled.div`
@@ -43,10 +44,25 @@ const KakaoLogin = styled.button`
   color: #3c1d1e;
   font-size: 2.5rem;
 `;
-const FacebookLogin = styled(KakaoLogin)`
-  color: white;
-  background: #3d5a97;
-`;
+// const FacebookLogin = styled(KakaoLogin)`
+//   color: white;
+//   background: #3d5a97;
+// `;
+const styleFacebookLogin: CSS.Properties = {
+  cursor: "pointer",
+  width: "60px",
+  height: "60px",
+  border: "none",
+  boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.5)",
+  borderRadius: "100%",
+  margin: "0px",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  background: "#3d5a97",
+  color: "white",
+  fontSize: "2.5rem",
+};
 
 const SocialSection: React.FC = (props) => {
   const router = useRouter();
@@ -72,19 +88,19 @@ const SocialSection: React.FC = (props) => {
           <RiKakaoTalkFill />
         </KakaoLogin>
         <FacebookLogin
-        //   style={styleFacebookLogin}
-        //   appId="1235018336951383"
-        //   onSuccess={(response) => {
-        //     console.log(response, "Login Success!");
-        //     //console.log("id: ", response.id);
-        //   }}
-        //   onFail={(error) => {
-        //     console.log("Login Failed!");
-        //     console.log("status: ", error.status);
-        //   }}
-        //   onProfileSuccess={(response) => {
-        //     console.log(response, "Get Profile Success!");
-        //   }}
+          style={styleFacebookLogin}
+          appId="1235018336951383"
+          onSuccess={(response) => {
+            console.log(response, "Login Success!");
+            //console.log("id: ", response.id);
+          }}
+          onFail={(error) => {
+            console.log("Login Failed!");
+            console.log("status: ", error.status);
+          }}
+          onProfileSuccess={(response) => {
+            console.log(response, "Get Profile Success!");
+          }}
         >
           <FaFacebookF />
         </FacebookLogin>
