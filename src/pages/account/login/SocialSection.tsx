@@ -7,6 +7,7 @@ import { AuthContext } from "../../../store/AuthContext";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import FacebookLogin from "@greatsumini/react-facebook-login";
 import { FaFacebookF } from "react-icons/fa";
+import axios from "axios";
 
 const ButtonSection = styled.div`
   width: 100%;
@@ -69,10 +70,11 @@ const styleFacebookLogin: CSS.Properties = {
 
 const SocialSection: React.FC = (props) => {
   const router = useRouter();
+  const { facebookLogin } = useContext(AuthContext);
   const redirectUrl =
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000/account/oauth"
-      : "https://chaw-chaw.vercel.app/account/oauth";
+      : "https://chawchaw.vercel.app/account/oauth";
   const callKakaoLogin = () => {
     router.push({
       pathname: "https://kauth.kakao.com/oauth/authorize",
@@ -95,6 +97,11 @@ const SocialSection: React.FC = (props) => {
           appId="1235018336951383"
           onSuccess={(response) => {
             console.log(response, "Login Success!");
+            const code = response?.accessToken;
+            const email = response?.userID;
+            if (code && email) {
+              facebookLogin({ code, email });
+            }
             //console.log("id: ", response.id);
           }}
           onFail={(error) => {

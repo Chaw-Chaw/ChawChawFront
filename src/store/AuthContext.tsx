@@ -27,12 +27,11 @@ interface AuthContextObj {
   user: UserPropertys | undefined;
   login: (res: AuthReqProps) => void;
   kakaoLogin: (res: AuthReqProps) => void;
+  facebookLogin: (res: AuthReqProps) => void;
   saveUser: (res: AuthResProps<AxiosResponse>) => void;
   sendWebmail: (res: AuthReqProps) => void;
   verifyNumber: (res: AuthReqProps) => void;
   // verifyUniversity: () => void;
-
-  //   facebookLogin: () => void;
   //   logout: () => void;
   signup: (res: AuthReqProps) => void;
   //   kakaoSignup: () => void;
@@ -83,11 +82,7 @@ const AuthContext = React.createContext<AuthContextObj>({
   saveUser: () => {},
   sendWebmail: () => {},
   verifyNumber: () => {},
-
-  // verifyUniversity: () => {},
-
-  //   kakaoLogin: () => {},
-  //   facebookLogin: () => {},
+  facebookLogin: () => {},
   //   logout: () => {},
   signup: () => {},
   //   kakaoSignup: () => {},
@@ -156,6 +151,60 @@ const AuthContextProvider: React.FC = (props) => {
       .post(
         "/users/login/kakao",
         { code: code },
+        {
+          headers: {
+            "Content-type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        if (!res.data.isSuccess) {
+          console.log(res.data, "로그인 실패");
+          throw res.data;
+        } else {
+          console.log(res.data);
+          return res.data;
+        }
+      })
+      .then(saveUser, (res) => {
+        console.log(res, "실패라인");
+        if (res.responseMessage === "회원가입 필요") {
+          const newUser = { ...user, ...res };
+          setUser(newUser);
+          message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
+            onClose: () => {
+              router.push("/account/signup/webMailAuth");
+            },
+          });
+          return res;
+        } else {
+          throw new Error(res.responseMessage);
+        }
+      })
+      .then((res) => {
+        router.push("/post");
+        return res;
+      })
+      .then((res) => {
+        return res;
+      })
+      .catch((err: AuthResProps<AxiosResponse>) => {
+        message.error("인가코드가 잘못되었습니다.", {
+          onClose: () => {
+            history.back();
+          },
+        });
+        console.error(err);
+      });
+  };
+
+  const facebookLogin = async ({ code, email }: AuthReqProps) => {
+    console.log("카카오 로그인 함수 실행");
+    await axios
+      .post(
+        "/users/login/facebook",
+        { accessToken: code, email: email },
         {
           headers: {
             "Content-type": "application/json",
@@ -361,6 +410,7 @@ const AuthContextProvider: React.FC = (props) => {
     login,
     saveUser,
     kakaoLogin,
+    facebookLogin,
     sendWebmail,
     verifyNumber,
     signup,
