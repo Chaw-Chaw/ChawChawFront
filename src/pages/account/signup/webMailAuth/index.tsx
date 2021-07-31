@@ -1,12 +1,18 @@
 import React, { useContext, useState } from "react";
-import { Layout, Input, Label, Button } from "../../../../components/common/";
+import {
+  Layout,
+  Input,
+  Label,
+  Button,
+  universityList,
+} from "../../../../components/common/";
 import AccountContainer from "../../../../components/account/AccountContainer";
 import LoginOrder from "../../../../components/account/LoginOrder";
 import styled from "styled-components";
 import Link from "next/link";
 import { AuthContext } from "../../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
-
+import { useAlert } from "react-alert";
 type Inputs = {
   webmail: string;
   verificationNum: number;
@@ -36,6 +42,7 @@ const RequiredText = styled.span`
 `;
 
 export default function WebMailAuth() {
+  const message = useAlert();
   const { sendWebmail, verifyNumber } = useContext(AuthContext);
   const {
     register,
@@ -53,7 +60,7 @@ export default function WebMailAuth() {
       sendWebmail(data);
       return;
     }
-    alert("웹메일을 입력해주세요.");
+    message.error("웹메일을 입력해주세요.");
   };
 
   const verificationNumSubmit: SubmitHandler<Inputs> = (data) => {
@@ -62,7 +69,7 @@ export default function WebMailAuth() {
       verifyNumber(data);
       return;
     }
-    alert("인증번호를 입력해주세요.");
+    message.error("인증번호를 입력해주세요.");
   };
 
   const checkKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {

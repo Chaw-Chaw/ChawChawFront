@@ -1,28 +1,47 @@
 import React, { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/router";
-
+import { universityList } from "../components/common";
 // import { Builder, By, Key, until } from "selenium-webdriver";
 import { useAlert } from "react-alert";
+interface UserPropertys {
+  email?: string;
+  passoword?: string;
+  name?: string;
+  web_email?: string;
+  school?: string;
+  imageUrl?: string;
+  content?: string;
+  facebookUrl?: string;
+  instagramUrl?: string;
+  country?: string[];
+  language?: string[];
+  hopeLanguage?: string[];
+  repCountry?: string;
+  repLanguage?: string;
+  repHopeLanguage?: string;
+}
 
 interface AuthContextObj {
   isloggedIn: boolean;
-  user: Object | undefined;
+  user: UserPropertys | undefined;
   login: (res: AuthReqProps) => void;
   kakaoLogin: (res: AuthReqProps) => void;
   saveUser: (res: AuthResProps<AxiosResponse>) => void;
   sendWebmail: (res: AuthReqProps) => void;
   verifyNumber: (res: AuthReqProps) => void;
   // verifyUniversity: () => void;
-  //   kakaoLogin: () => void;
+
   //   facebookLogin: () => void;
   //   logout: () => void;
-  //   signup: () => void;
+  signup: (res: AuthReqProps) => void;
   //   kakaoSignup: () => void;
   //   facebookSignup: () => void;
   //   webMailAuth: () => void;
   //   webMailNumCheck: () => void;
-  //   emailDuplicationCheck: () => void;
+  emailDuplicationCheck: (res: AuthReqProps) => void;
+  updateUser: (Object: UserPropertys) => void;
+  sendImage: (res: AuthReqProps) => void;
 }
 
 interface AuthReqProps {
@@ -32,6 +51,8 @@ interface AuthReqProps {
   code?: string;
   webmail?: string;
   verificationNum?: number;
+  name?: string;
+  image?: FormData;
 }
 interface AuthResProps<AxiosResponse> {
   responseMessage?: string;
@@ -40,23 +61,42 @@ interface AuthResProps<AxiosResponse> {
 
 const AuthContext = React.createContext<AuthContextObj>({
   isloggedIn: false,
-  user: {},
+  user: {
+    email: "",
+    passoword: "",
+    name: "",
+    web_email: "",
+    school: "",
+    imageUrl: "",
+    content: "",
+    facebookUrl: "",
+    instagramUrl: "",
+    country: [],
+    language: [],
+    hopeLanguage: [],
+    repCountry: "",
+    repLanguage: "",
+    repHopeLanguage: "",
+  },
   login: () => {},
   kakaoLogin: () => {},
   saveUser: () => {},
   sendWebmail: () => {},
   verifyNumber: () => {},
+
   // verifyUniversity: () => {},
 
   //   kakaoLogin: () => {},
   //   facebookLogin: () => {},
   //   logout: () => {},
-  //   signup: () => {},
+  signup: () => {},
   //   kakaoSignup: () => {},
   //   facebookSignup: () => {},
   //   webMailAuth: () => {},
   //   webMailNumCheck: () => {},
-  //   emailDuplicationCheck: () => {},
+  emailDuplicationCheck: () => {},
+  updateUser: () => {},
+  sendImage: () => {},
 });
 
 const AuthContextProvider: React.FC = (props) => {
@@ -162,11 +202,24 @@ const AuthContextProvider: React.FC = (props) => {
         console.error(err);
       });
   };
+
+  const webmailVerify = (webmail: string | undefined) => {
+    const domain = webmail?.split("@")[1];
+    if (domain) {
+      if (Object.values(universityList).includes(domain)) {
+        const universityName = Object.keys(universityList).find(
+          (item: string) => universityList[item] === domain
+        );
+        updateUser({ school: universityName });
+      }
+    }
+  };
   const sendWebmail = async ({ webmail }: AuthReqProps) => {
     console.log("웹메일 전송 함수 실행");
+    webmailVerify(webmail);
     await axios
       .post(
-        "/users/send-email",
+        "/mail/send",
         { email: webmail },
         {
           headers: {
@@ -181,7 +234,9 @@ const AuthContextProvider: React.FC = (props) => {
           throw new Error(res.data.responseMessage);
         }
         console.log(res.data);
-        alert("이메일 발송을 완료하였습니다.");
+        message.show(
+          "이메일 발송을 완료하였습니다. 인증번호의 만료시간은 3분입니다."
+        );
         return res.data;
       })
       .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
@@ -191,7 +246,7 @@ const AuthContextProvider: React.FC = (props) => {
     console.log("인증 번호 확인 함수 실행");
     axios
       .post(
-        "/users/verification-email",
+        "/mail/verification",
         {
           verification_number: verificationNum?.toString(),
         },
@@ -218,6 +273,21 @@ const AuthContextProvider: React.FC = (props) => {
       .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
   };
 
+  const signup = () => {};
+  const emailDuplicationCheck = async ({ email }: AuthReqProps) => {
+    await axios
+      .get(`/users/email/duplicate/${email}`)
+      .then((res) => {
+        if (res.data.isSuccess) {
+          message.error("중복된 이메일이 있습니다.");
+        }
+        message.show("사용가능한 아이디 입니다.");
+        return res.data;
+      })
+      .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
+    return;
+  };
+
   // const verifyUniversity = async (webmail: string) => {
   //   let driver = await new Builder().forBrowser("chrome").build();
   //   try {
@@ -236,17 +306,72 @@ const AuthContextProvider: React.FC = (props) => {
   //     driver.quit();
   //   }
   // };
+  const updateUser = (newUserInfo: UserPropertys) => {
+    const newUser = { ...user, ...newUserInfo };
+    setUser(newUser);
+  };
+
+  const sendImage = async ({ image }: AuthReqProps) => {
+    await axios
+      .post(
+        "/users/image/upload",
+        {
+          image: image,
+        },
+        {
+          headers: {
+            "Content-type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        if (res.data.isSuccess) {
+          console.log(
+            res.data.imageUrl,
+            "이미지가 성공적으로 업로드 되었습니다. "
+          );
+          return res.data;
+        }
+        throw new Error(res.data);
+      })
+      .then(saveUser)
+      .catch((err) => console.error(err.responseMessage));
+  };
 
   const contextValue: AuthContextObj = {
     isloggedIn,
-    user,
+    user: {
+      email: "",
+      passoword: "",
+      name: "",
+      web_email: "",
+      school: "",
+      imageUrl: "",
+      content: "",
+      facebookUrl: "",
+      instagramUrl: "",
+      country: [],
+      language: [],
+      hopeLanguage: [],
+      repCountry: "",
+      repLanguage: "",
+      repHopeLanguage: "",
+    },
     login,
     saveUser,
     kakaoLogin,
     sendWebmail,
     verifyNumber,
+    signup,
+    emailDuplicationCheck,
+    updateUser,
+    sendImage,
     // verifyUniversity,
   };
+  useEffect(() => {
+    console.log(user, "Change userInfo");
+  }, [user]);
 
   return (
     <AuthContext.Provider value={contextValue}>

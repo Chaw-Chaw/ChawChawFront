@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEvent, useContext } from "react";
 import {
   Layout,
   Header,
@@ -6,12 +6,22 @@ import {
   Label,
   Button,
   PasswordInput,
+  Message,
 } from "../../../components/common/";
 import AccountContainer from "../../../components/account/AccountContainer";
 import LoginOrder from "../../../components/account/LoginOrder";
 import styled from "styled-components";
 import Link from "next/link";
-
+import { AuthContext } from "../../../store/AuthContext";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useAlert } from "react-alert";
+import { useRouter } from "next/router";
+type Inputs = {
+  email: string;
+  name: string;
+  password: string;
+  passwordConfirm: string;
+};
 const InputSection = styled.div`
   width: 100%;
   margin: 10px 0;
@@ -40,8 +50,62 @@ const EmailDuplicationCheckButton = styled(Button)`
   font-size: 0.8rem;
 `;
 
+const Form = styled.form`
+  width: 100%;
+`;
+const RequiredText = styled.span`
+  color: ${(props) => props.theme.primaryColor};
+  font-size: 0.8rem;
+`;
+
 export default function SignUp() {
-  const handle = () => {};
+  const message = useAlert();
+  const router = useRouter();
+  const { signup, emailDuplicationCheck, user, updateUser } =
+    useContext(AuthContext);
+  const userUniversity = (() => {
+    if (user) {
+      if (user.school) {
+        return user.school;
+      }
+    }
+    return "";
+  })();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<Inputs>();
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    console.log(data);
+    if (
+      data.email === "" ||
+      data.name === "" ||
+      data.password === "" ||
+      data.passwordConfirm === ""
+    ) {
+      message.error("입력칸을 모두 입력해주세요.");
+      return;
+    }
+    const newUserInfo = {
+      email: data.email,
+      password: data.password,
+      name: data.password,
+    };
+
+    updateUser(newUserInfo);
+    router.push("/account/signup/profile");
+  };
+
+  const emailDupCheckHandle = (e: MouseEvent) => {
+    e.preventDefault();
+    const email = watch("email");
+    if (email !== "") emailDuplicationCheck({ email });
+    message.error("이메일을 입력해주세요.");
+  };
   return (
     <Layout type="signup">
       <AccountContainer
@@ -49,55 +113,89 @@ export default function SignUp() {
         subtitle="ChawChaw에서 사용할 정보를 입력해주세요.` 이메일 / 비밀번호"
       >
         <LoginOrder activeType="2" />
-        <InputSection>
-          <Label htmlFor="email">이메일</Label>
-          <EmailInputBox>
-            <Input type="email" name="email" />
-            <EmailDuplicationCheckButton onClick={handle}>
-              중복검사
-            </EmailDuplicationCheckButton>
-          </EmailInputBox>
-        </InputSection>
-        <InputSection>
-          <Label htmlFor="username">이름</Label>
-          <Input name="username" />
-        </InputSection>
-        <InputSection>
-          <Label htmlFor="password">비밀번호</Label>
-          <PasswordInput name="password" />
-        </InputSection>
-        <InputSection>
-          <Label htmlFor="passwordCheck" tag="확인">
-            비밀번호
-          </Label>
-          <PasswordInput name="passwordCheck" />
-        </InputSection>
-        <InputSection>
-          <Label htmlFor="university" tag="필수">
-            소속학교
-          </Label>
-          <Input name="university" disabled />
-        </InputSection>
-        <MovePageButtonSection>
-          <ButtonSection marginRight="20px">
-            <Link href="/account/signup/webMailAuth">
-              <a>
-                <Button secondary width="100%" height="4rem" fontSize="1rem">
-                  웹메일 인증
-                </Button>
-              </a>
-            </Link>
-          </ButtonSection>
-          <ButtonSection marginLeft="20px">
-            <Link href="/account/signup/profile">
-              <a>
-                <Button width="100%" height="4rem" fontSize="1rem">
-                  프로필 생성
-                </Button>
-              </a>
-            </Link>
-          </ButtonSection>
-        </MovePageButtonSection>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <InputSection>
+            <Label htmlFor="email">이메일</Label>
+            <EmailInputBox>
+              <Input
+                placeholder="example@address.com"
+                {...register("email", {
+                  pattern:
+                    /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i,
+                })}
+              />
+              {errors.email && (
+                <RequiredText>이메일 형식을 맞춰주세요.</RequiredText>
+              )}
+              <EmailDuplicationCheckButton
+                onClick={(e: MouseEvent) => emailDupCheckHandle(e)}
+              >
+                중복검사
+              </EmailDuplicationCheckButton>
+            </EmailInputBox>
+          </InputSection>
+          <InputSection>
+            <Label htmlFor="username">이름</Label>
+            <Input name="username" />
+          </InputSection>
+          <InputSection>
+            <Label htmlFor="password">비밀번호</Label>
+            <PasswordInput
+              name="password"
+              register={{
+                ...register("password", {
+                  pattern:
+                    /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/,
+                }),
+              }}
+            />
+            {errors.password && (
+              <RequiredText>
+                비밀번호 형식은 특수문자/문자/숫자 조합 8 ~ 15 글자 입니다.
+              </RequiredText>
+            )}
+          </InputSection>
+          <InputSection>
+            <Label htmlFor="passwordConfirm" tag="확인">
+              비밀번호
+            </Label>
+            <PasswordInput
+              name="passwordConfirm"
+              register={{
+                ...register("passwordConfirm", {
+                  pattern:
+                    /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/,
+                }),
+              }}
+            />
+            {watch("password") !== watch("passwordConfirm") && (
+              <RequiredText>입력하신 비밀번호와 같지 않습니다.</RequiredText>
+            )}
+          </InputSection>
+
+          <InputSection>
+            <Label htmlFor="university" tag="필수">
+              소속학교
+            </Label>
+            <Input name="university" disabled defaultValue={userUniversity} />
+          </InputSection>
+          <MovePageButtonSection>
+            <ButtonSection marginRight="20px">
+              <Link href="/account/signup/webMailAuth">
+                <a>
+                  <Button secondary width="100%" height="4rem" fontSize="1rem">
+                    웹메일 인증
+                  </Button>
+                </a>
+              </Link>
+            </ButtonSection>
+            <ButtonSection marginLeft="20px">
+              <Button type="submit" width="100%" height="4rem" fontSize="1rem">
+                프로필 생성
+              </Button>
+            </ButtonSection>
+          </MovePageButtonSection>
+        </Form>
       </AccountContainer>
     </Layout>
   );
