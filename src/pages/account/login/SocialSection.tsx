@@ -17,7 +17,10 @@ const ButtonSection = styled.div`
 const SocialContainer = styled.div`
   border-top: 1px solid ${(props) => props.theme.secondaryColor};
   margin-top: 10px;
-  width: 100%;
+  width: 70%;
+  @media (max-width: 500px) {
+    width: 320px;
+  }
   display: flex;
   flex-direction: column;
 `;
