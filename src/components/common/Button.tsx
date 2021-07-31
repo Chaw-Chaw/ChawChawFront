@@ -8,7 +8,6 @@ interface ButtonProps {
   secondary?: boolean;
   fontWeight?: string;
   fontSize?: string;
-  onClick?: () => void;
 }
 
 const Button = styled.button<ButtonProps>`

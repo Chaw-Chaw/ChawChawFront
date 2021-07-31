@@ -12,3 +12,4 @@ export * from "./ModalLayout";
 export * from "./LocaleList";
 export * from "./Divider";
 export * from "./MessagePopup";
+export * from "./UniversityList";

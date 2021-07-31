@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { ImEarth } from "react-icons/im";
 import { LocaleList, CountryEmojiNames, LanguageNames } from "../common";
@@ -143,6 +143,7 @@ const DropDownBox: React.FC<DropDownProps> = (props) => {
 
 const DropDown: React.FC<DropDownProps> = (props) => {
   const [value, setValue] = useState(props.initialValue);
+
   const [isActive, setIsActive] = useState(false);
   const option = [props.initialValue].concat(props.options);
 
@@ -205,6 +206,7 @@ const ChangeLanguageDropDown: React.FC = (props) => {
 const SelectInfoDropDown: React.FC<SelectInfoDropDownProps> = (props) => {
   const countryList = CountryEmojiNames;
   const languageList = LanguageNames;
+
   return (
     <DropDown
       fontWeight="900"
