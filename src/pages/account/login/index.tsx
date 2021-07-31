@@ -131,14 +131,14 @@ export default function Login() {
           <ButtonSection>
             <LoginButton type="submit">Login</LoginButton>
           </ButtonSection>
-          <SignupBox>
-            <SignupTitle>아직 회원이 아니신가요? </SignupTitle>
-            <Link href="/account/signup/webMailAuth">
-              <a>이메일 회원가입</a>
-            </Link>
-          </SignupBox>
-          <SocialSection />
         </Form>
+        <SignupBox>
+          <SignupTitle>아직 회원이 아니신가요? </SignupTitle>
+          <Link href="/account/signup/webMailAuth">
+            <a>이메일 회원가입</a>
+          </Link>
+        </SignupBox>
+        <SocialSection />
       </AccountContainer>
     </Layout>
   );
