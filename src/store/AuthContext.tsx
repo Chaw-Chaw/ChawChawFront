@@ -248,9 +248,10 @@ const AuthContextProvider: React.FC = (props) => {
             },
           });
           return res.data;
+        } else {
+          router.push("/post");
+          return res.data;
         }
-        router.push("/post");
-        return res.data;
       })
       .catch((err: AuthResProps<AxiosResponse>) => {
         message.error("인가코드가 잘못되었습니다.", {
