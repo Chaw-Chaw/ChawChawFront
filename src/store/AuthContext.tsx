@@ -43,6 +43,7 @@ interface AuthContextObj {
   updateUser: (Object: UserPropertys) => void;
   sendImage: (res: AuthReqProps) => void;
   getImage: (res: AuthReqProps) => void;
+  getPost: () => void;
 }
 
 interface AuthReqProps {
@@ -104,6 +105,7 @@ const AuthContext = React.createContext<AuthContextObj>({
   updateUser: () => {},
   sendImage: () => {},
   getImage: () => {},
+  getPost: () => {},
 });
 
 const AuthContextProvider: React.FC = (props) => {
@@ -456,6 +458,11 @@ const AuthContextProvider: React.FC = (props) => {
       .catch((err) => console.error(err.responseMessage));
   };
 
+  const getPost = async (postId: string) => {
+    // cookie
+    await axios.get(`post/${postId}`);
+  };
+
   const getImage = async () => {};
   const contextValue: AuthContextObj = {
     isloggedIn,
@@ -472,6 +479,7 @@ const AuthContextProvider: React.FC = (props) => {
     updateUser,
     sendImage,
     getImage,
+    getPost,
     // verifyUniversity,
   };
   useEffect(() => {
