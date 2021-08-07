@@ -16,9 +16,11 @@ const Container = styled.div`
       flex-direction: column-reverse;
     }
   }
+  scroll-snap-type: y mandatory;
 `;
 
 const Wrapper = styled.div`
+  scroll-snap-align: center;
   display: flex;
   width: 100%;
   position: relative;
