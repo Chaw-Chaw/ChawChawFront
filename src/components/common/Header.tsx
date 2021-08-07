@@ -8,6 +8,7 @@ import Image from "next/image";
 import { CgProfile } from "react-icons/cg";
 import { AiOutlineLogout, AiOutlineSetting } from "react-icons/ai";
 import { BsChat } from "react-icons/bs";
+import { AuthContext } from "../../store/AuthContext";
 
 interface HeaderProps {
   type?: string;
@@ -15,7 +16,7 @@ interface HeaderProps {
 const ThemeToggleBox = styled.div`
   margin: 1rem;
 `;
-const HeaderWrapper = styled.div`
+const HeaderWrapper = styled.header`
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   align-items: center;
   display: flex;
@@ -24,7 +25,7 @@ const HeaderWrapper = styled.div`
   height: 140px;
   box-sizing: border-box;
   padding: 10px 16px;
-  position: fixed;
+  position: sticky;
   z-index: 100;
   top: 0%;
   @media (max-width: 768px) {
@@ -108,6 +109,7 @@ const ImageBox = styled.div``;
 
 const MyImage: React.FC = () => {
   const [isActive, setIsActive] = useState(false);
+  const { logout } = useContext(AuthContext);
   const router = useRouter();
   return (
     <MyImageBox>
@@ -144,11 +146,7 @@ const MyImage: React.FC = () => {
           <AiOutlineSetting />
           <span>설정</span>
         </Option>
-        <Option
-          onClick={() => {
-            router.push("/");
-          }}
-        >
+        <Option onClick={logout}>
           <AiOutlineLogout />
           <span>로그아웃</span>
         </Option>
@@ -158,6 +156,10 @@ const MyImage: React.FC = () => {
 };
 const HeaderCondition: React.FC<HeaderProps> = (props) => {
   const headerType = props.type;
+  const { user } = useContext(AuthContext);
+  if (user?.imageUrl) {
+    return <MyImage />;
+  }
   if (headerType === "login") {
     return (
       <Link href="/account/signup/webMailAuth">
