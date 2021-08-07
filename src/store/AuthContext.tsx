@@ -43,7 +43,7 @@ interface AuthContextObj {
   updateUser: (Object: UserPropertys) => void;
   sendImage: (res: AuthReqProps) => void;
   getImage: (res: AuthReqProps) => void;
-  getPost: () => void;
+  getPost: (postid: string) => void;
 }
 
 interface AuthReqProps {
