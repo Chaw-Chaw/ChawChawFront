@@ -7,28 +7,27 @@ const InputBox = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  min-width: 500px;
+  /* min-width: 500px; */
   box-sizing: border-box;
-  position: absolute;
+  position: sticky;
   bottom: 0px;
-  left: 50%;
-  transform: translateX(-50%);
-  @media (max-width: 768px) {
+  /* left: 50%; */
+  /* @media (max-width: 768px) {
     min-width: 320px;
-  }
+  } */
   background-color: ${(props) => props.theme.bodyBackgroundColor};
 `;
 
 const InputBoxInner = styled.div`
   width: 100%;
-  max-width: 450px;
+  /* max-width: 450px; */
   position: relative;
   display: flex;
   justify-content: center;
-  margin: 0px 20px;
-  @media (max-width: 768px) {
+  /* margin: 0px 20px; */
+  /* @media (max-width: 768px) {
     min-width: 290px;
-  }
+  } */
 `;
 
 const TextInput = styled(TextArea)`

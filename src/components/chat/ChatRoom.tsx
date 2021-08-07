@@ -6,7 +6,7 @@ const Outline = styled.div`
   border: none;
   box-sizing: border-box;
   overflow: auto;
-  height: calc(100vh - 200px);
+  height: calc(100vh - 150px);
   /* margin-bottom: 50px; */
   width: 100%;
   max-width: 460px;
@@ -17,24 +17,29 @@ const Outline = styled.div`
 `;
 
 const Inner = styled.div`
-  position: relative;
+  /* position: relative; */
   overflow: auto;
   box-sizing: border-box;
+  /* padding: 20px; */
   height: 100%;
 `;
 
 const Header = styled.div`
+  position: sticky;
+  top: 0px;
   width: 100%;
   display: flex;
+  border-bottom: 1px solid ${(props) => props.theme.secondaryColor};
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   height: 50px;
+  z-index: 50;
 `;
 
 const ChatRoom: React.FC = () => {
   return (
     <Outline>
-      <Header></Header>
       <Inner>
+        <Header></Header>
         <Message src={DefaultImage} userName="doodream">
           hello!
         </Message>
@@ -70,8 +75,8 @@ const ChatRoom: React.FC = () => {
           hello every one!
           <br /> nice!
         </Message>
+        <MessageInput />
       </Inner>
-      <MessageInput />
     </Outline>
   );
 };
