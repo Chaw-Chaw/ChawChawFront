@@ -241,6 +241,7 @@ const AuthContextProvider: React.FC = (props) => {
         }
       )
       .then((res) => {
+        console.log(res.data, "api 전송 성공");
         if (res.data.responseMessage === "회원가입 필요") {
           message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
             onClose: () => {
