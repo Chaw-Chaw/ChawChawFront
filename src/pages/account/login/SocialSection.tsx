@@ -86,6 +86,7 @@ const SocialSection: React.FC = (props) => {
       },
     });
   };
+
   return (
     <SocialContainer>
       <SocialButtonTitle>소셜계정으로 로그인 | 회원가입</SocialButtonTitle>
@@ -108,9 +109,6 @@ const SocialSection: React.FC = (props) => {
           onFail={(error) => {
             console.log("Login Failed!");
             console.log("status: ", error.status);
-          }}
-          onProfileSuccess={(response) => {
-            console.log(response, "Get Profile Success!");
           }}
         >
           <FaFacebookF />

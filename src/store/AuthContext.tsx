@@ -222,7 +222,7 @@ const AuthContextProvider: React.FC = (props) => {
   };
 
   const facebookLogin = async ({ accessToken, email }: AuthReqProps) => {
-    console.log("페이스북 로그인 함수 실행");
+    console.log(accessToken, email, "페이스북 로그인 함수 실행");
     await axios
       .post(
         "/login",
@@ -241,34 +241,16 @@ const AuthContextProvider: React.FC = (props) => {
         }
       )
       .then((res) => {
-        if (!res.data.isSuccess) {
-          console.log(res.data, "로그인 실패");
-          throw res.data;
-        }
-        console.log(res.data);
-        return res.data;
-      })
-      .then(saveUser, (res) => {
-        console.log(res, "실패라인");
-        if (res.responseMessage === "회원가입 필요") {
-          const newUser = { ...user, ...res };
-          setUser(newUser);
+        if (res.data.responseMessage === "회원가입 필요") {
           message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
             onClose: () => {
               router.push("/account/signup/webMailAuth");
             },
           });
-          return res;
-        } else {
-          throw new Error(res.responseMessage);
+          return res.data;
         }
-      })
-      .then((res) => {
         router.push("/post");
-        return res;
-      })
-      .then((res) => {
-        return res;
+        return res.data;
       })
       .catch((err: AuthResProps<AxiosResponse>) => {
         message.error("인가코드가 잘못되었습니다.", {
