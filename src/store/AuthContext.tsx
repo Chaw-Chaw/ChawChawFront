@@ -46,7 +46,7 @@ interface AuthContextObj {
 }
 
 interface AuthReqProps {
-  accessToken?: string;
+  accessToken?: string | undefined;
   email?: string;
   password?: string;
   profile?: Object;
