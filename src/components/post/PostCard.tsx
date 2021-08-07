@@ -13,7 +13,7 @@ interface PostCardProps {
 }
 
 const PostCardBox = styled.div`
-  margin: 0px 15px 20px 15px;
+  /* margin: 0px 15px 20px 15px; */
   width: 300px;
   display: flex;
   flex-direction: column;
