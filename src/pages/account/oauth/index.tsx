@@ -15,13 +15,13 @@ export default function Oauth(props: OauthProps) {
   useEffect(() => {
     const code = router.query.code?.toString();
     console.log(router.query);
-    if (code !== undefined) {
-      console.log(code, "KaKao Auth code 받음");
-      main(code);
-    }
+    // if (code !== undefined) {
+    //   console.log(code, "KaKao Auth code 받음");
+    //   main(code);
+    // }
   }, [router.query]);
 
-  const main = async (code: string) => {
+  const main = (code: string) => {
     kakaoLogin({ code });
     // await loadUserInfo(accessToken)
   };

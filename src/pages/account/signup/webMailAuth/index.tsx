@@ -47,24 +47,27 @@ export default function WebMailAuth() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<Inputs>();
 
   const [activeVerificationNumber, setActiveVerificationNumber] =
     useState<boolean>(true);
 
-  const webmailSubmit: SubmitHandler<Inputs> = (data) => {
-    if (data.webmail) {
+  const webmailSubmit: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    const webmail = watch("webmail");
+    if (webmail) {
       setActiveVerificationNumber(false);
-      console.log(data.webmail);
-      sendWebmail(data);
-      return;
+      console.log(webmail);
+      sendWebmail({ web_email: webmail });
+    } else {
+      message.error("웹메일을 입력해주세요.");
     }
-    message.error("웹메일을 입력해주세요.");
   };
 
   const verificationNumSubmit: SubmitHandler<Inputs> = (data) => {
-    if (data.verificationNum) {
+    if (data.verificationNum && data.webmail && !activeVerificationNumber) {
       console.log(data.verificationNum);
       verifyNumber(data);
       return;
@@ -83,7 +86,7 @@ export default function WebMailAuth() {
       >
         <LoginOrder activeType="1" />
         <Form
-          onSubmit={handleSubmit(webmailSubmit)}
+          onSubmit={handleSubmit(verificationNumSubmit)}
           onKeyDown={(e) => checkKeyDown(e)}
         >
           <InputSection>
@@ -102,15 +105,15 @@ export default function WebMailAuth() {
             )}
           </InputSection>
           <ButtonSection>
-            <Button type="submit" width="100%" height="2rem" fontSize="1rem">
+            <Button
+              onClick={(e) => webmailSubmit(e)}
+              width="100%"
+              height="2rem"
+              fontSize="1rem"
+            >
               발송하기
             </Button>
           </ButtonSection>
-        </Form>
-        <Form
-          onSubmit={handleSubmit(verificationNumSubmit)}
-          onKeyDown={(e) => checkKeyDown(e)}
-        >
           <InputSection>
             <Label htmlFor="verificationNum" tag="필수">
               인증번호

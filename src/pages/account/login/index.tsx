@@ -49,9 +49,9 @@ const RequiredText = styled.span`
 `;
 
 const SignupBox = styled.div`
-  margin-top: 10px;
-  margin-bottom: 30px;
-  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  width: 70%;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -73,7 +73,7 @@ const SignupTitle = styled.h2`
 `;
 export default function Login() {
   const message = useAlert();
-  const { login, kakaoLogin } = useContext(AuthContext);
+  const { login, kakaoLogin, user } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -85,6 +85,7 @@ export default function Login() {
       message.error("입력칸을 모두 입력해주세요.");
       return;
     }
+
     login(data);
   };
   return (

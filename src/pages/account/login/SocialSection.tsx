@@ -75,6 +75,7 @@ const SocialSection: React.FC = (props) => {
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000/account/oauth"
       : "https://chawchaw.vercel.app/account/oauth";
+
   const callKakaoLogin = () => {
     router.push({
       pathname: "https://kauth.kakao.com/oauth/authorize",
@@ -97,10 +98,10 @@ const SocialSection: React.FC = (props) => {
           appId="1235018336951383"
           onSuccess={(response) => {
             console.log(response, "Login Success!");
-            const code = response?.accessToken;
+            const accessToken = response?.accessToken;
             const email = response?.userID;
-            if (code && email) {
-              facebookLogin({ code, email });
+            if (accessToken && email) {
+              facebookLogin({ accessToken, email });
             }
             //console.log("id: ", response.id);
           }}

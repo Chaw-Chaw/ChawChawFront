@@ -1,4 +1,4 @@
-import React, { MouseEvent, useContext } from "react";
+import React, { MouseEvent, useContext, useState } from "react";
 import {
   Layout,
   Header,
@@ -59,6 +59,7 @@ const RequiredText = styled.span`
 `;
 
 export default function SignUp() {
+  const [isEmailDupCheck, setIsEmailDupCheck] = useState(false);
   const message = useAlert();
   const router = useRouter();
   const { signup, emailDuplicationCheck, user, updateUser } =
@@ -81,6 +82,7 @@ export default function SignUp() {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data);
+    console.log(isEmailDupCheck, "이메일 중복체크");
     if (
       data.email === "" ||
       data.name === "" ||
@@ -90,21 +92,42 @@ export default function SignUp() {
       message.error("입력칸을 모두 입력해주세요.");
       return;
     }
+    if (!isEmailDupCheck) {
+      message.error("이메일 중복체크를 해주세요.");
+      return;
+    }
     const newUserInfo = {
       email: data.email,
       password: data.password,
-      name: data.password,
+      name: data.name,
     };
 
     updateUser(newUserInfo);
-    router.push("/account/signup/profile");
+    if (user) {
+      signup({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        web_email: user?.web_email,
+        school: user.school ? user.school : "",
+        imageUrl: user.imageUrl ? user.imageUrl : "",
+        provider: user.provider ? user.provider : "",
+      });
+    } else {
+      message.error("user data가 없습니다."),
+        console.log(user, "user data가 부족합니다.");
+    }
   };
 
-  const emailDupCheckHandle = (e: MouseEvent) => {
+  const emailDupCheckHandle = async (e: MouseEvent) => {
     e.preventDefault();
     const email = watch("email");
-    if (email !== "") emailDuplicationCheck({ email });
-    message.error("이메일을 입력해주세요.");
+    if (email !== "") {
+      const result = await emailDuplicationCheck({ email });
+      setIsEmailDupCheck(!result);
+      console.log(result, "이메일 중복 체크 결과");
+      // 중복된 이메일이 있으면 사용자가 회원가입이 불가능
+    } else message.error("이메일을 입력해주세요.");
   };
   return (
     <Layout type="signup">
@@ -191,7 +214,7 @@ export default function SignUp() {
             </ButtonSection>
             <ButtonSection marginLeft="20px">
               <Button type="submit" width="100%" height="4rem" fontSize="1rem">
-                프로필 생성
+                회원가입
               </Button>
             </ButtonSection>
           </MovePageButtonSection>
