@@ -5,10 +5,11 @@ import {
   ProfileSelectInfo,
   ProfileSocialUrl,
 } from "./components/";
-import { Button } from "../common";
+import { Button, Message } from "../common";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { ChangeEvent, useContext, useState } from "react";
 import { AuthContext } from "../../store/AuthContext";
+import { useAlert } from "react-alert";
 interface ProfileSection {
   title?: string;
   content?: string;
@@ -49,6 +50,7 @@ const ProfileUploadButton = styled(Button)`
 `;
 
 const ProfileSection: React.FC = () => {
+  const message = useAlert();
   const {
     register,
     handleSubmit,
@@ -64,7 +66,7 @@ const ProfileSection: React.FC = () => {
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     const image = new FormData();
     if (userImage) {
-      image.append("image", userImage);
+      image.append("file", userImage);
       sendImage({ image });
     } else {
       console.log(userImage);
@@ -74,8 +76,11 @@ const ProfileSection: React.FC = () => {
   const imageUpload = (e: ChangeEvent) => {
     const target = e.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];
-
     if (file !== undefined) {
+      if (file.size > 1024 * 1024 * 5) {
+        message.error("5MB 이상 파일을 업로드 할 수 없습니다.");
+        return;
+      }
       setUserImage(file);
       console.log(file);
     } else {
