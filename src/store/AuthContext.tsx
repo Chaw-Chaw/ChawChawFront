@@ -111,12 +111,12 @@ const AuthContext = React.createContext<AuthContextObj>({
 const AuthContextProvider: React.FC = (props) => {
   const message = useAlert();
   const [isloggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(
-    typeof window !== "undefined"
-      ? JSON.parse(window.localStorage.getItem("user") || "")
-      : {}
-  );
-  // const [user, setUser] = useState({});
+  // const [user, setUser] = useState(
+  //   typeof window !== "undefined"
+  //     ? JSON.parse(window.localStorage.getItem("user") || "")
+  //     : {}
+  // );
+  const [user, setUser] = useState({});
   const router = useRouter();
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
     const newUser = { ...user, ...res };
