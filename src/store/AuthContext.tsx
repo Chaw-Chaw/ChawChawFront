@@ -5,6 +5,7 @@ import { universityList } from "../components/common";
 // import { Builder, By, Key, until } from "selenium-webdriver";
 import { useAlert } from "react-alert";
 interface UserPropertys {
+  provider?: string;
   email?: string;
   passoword?: string;
   name?: string;
@@ -32,26 +33,31 @@ interface AuthContextObj {
   sendWebmail: (res: AuthReqProps) => void;
   verifyNumber: (res: AuthReqProps) => void;
   // verifyUniversity: () => void;
-  //   logout: () => void;
+  logout: () => void;
   signup: (res: AuthReqProps) => void;
   //   kakaoSignup: () => void;
   //   facebookSignup: () => void;
   //   webMailAuth: () => void;
   //   webMailNumCheck: () => void;
-  emailDuplicationCheck: (res: AuthReqProps) => void;
+  emailDuplicationCheck: (res: AuthReqProps) => Promise<boolean>;
   updateUser: (Object: UserPropertys) => void;
   sendImage: (res: AuthReqProps) => void;
+  getImage: (res: AuthReqProps) => void;
 }
 
 interface AuthReqProps {
+  accessToken?: string;
   email?: string;
   password?: string;
   profile?: Object;
   code?: string;
-  webmail?: string;
+  web_email?: string;
   verificationNum?: number;
   name?: string;
   image?: FormData;
+  imageUrl?: string;
+  school?: string;
+  provider?: string;
 }
 interface AuthResProps<AxiosResponse> {
   responseMessage?: string;
@@ -61,6 +67,7 @@ interface AuthResProps<AxiosResponse> {
 const AuthContext = React.createContext<AuthContextObj>({
   isloggedIn: false,
   user: {
+    provider: "",
     email: "",
     passoword: "",
     name: "",
@@ -78,6 +85,7 @@ const AuthContext = React.createContext<AuthContextObj>({
     repHopeLanguage: "",
   },
   login: () => {},
+  logout: () => {},
   kakaoLogin: () => {},
   saveUser: () => {},
   sendWebmail: () => {},
@@ -89,23 +97,25 @@ const AuthContext = React.createContext<AuthContextObj>({
   //   facebookSignup: () => {},
   //   webMailAuth: () => {},
   //   webMailNumCheck: () => {},
-  emailDuplicationCheck: () => {},
+  emailDuplicationCheck: () =>
+    new Promise(() => {
+      return false;
+    }),
   updateUser: () => {},
   sendImage: () => {},
+  getImage: () => {},
 });
 
 const AuthContextProvider: React.FC = (props) => {
   const message = useAlert();
   const [isloggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(
+    typeof window !== "undefined"
+      ? JSON.parse(window.localStorage.getItem("user") || "")
+      : {}
+  );
+  // const [user, setUser] = useState({});
   const router = useRouter();
-  useEffect(() => {
-    if (localStorage) {
-      setUser(localStorage.getItem("user") || {});
-    }
-    if (user) setIsLoggedIn(true);
-  }, []);
-
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
     const newUser = { ...user, ...res };
     setUser(newUser);
@@ -113,13 +123,24 @@ const AuthContextProvider: React.FC = (props) => {
     return res;
   };
 
+  const logout = () => {
+    setUser({});
+    router.push("/account/login");
+  };
   const login = async ({ email, password }: AuthReqProps) => {
     console.log("로그인 함수 실행");
     // ActionPopup.open();
+    console.log({ email, password });
     await axios
       .post(
         "/login",
-        { email: email, password: password },
+        {
+          provider: "",
+          email: email,
+          password: password,
+          code: "",
+          accessToken: "",
+        },
         {
           headers: {
             "Content-type": "application/json",
@@ -149,8 +170,14 @@ const AuthContextProvider: React.FC = (props) => {
     console.log("카카오 로그인 함수 실행");
     await axios
       .post(
-        "/users/login/kakao",
-        { code: code },
+        "/login",
+        {
+          provider: "kakao",
+          email: "",
+          password: "",
+          code: code,
+          accessToken: "",
+        },
         {
           headers: {
             "Content-type": "application/json",
@@ -161,11 +188,9 @@ const AuthContextProvider: React.FC = (props) => {
       .then((res) => {
         if (!res.data.isSuccess) {
           console.log(res.data, "로그인 실패");
-          throw res.data;
-        } else {
-          console.log(res.data);
-          return res.data;
+          return false;
         }
+        return res.data;
       })
       .then(saveUser, (res) => {
         console.log(res, "실패라인");
@@ -199,12 +224,18 @@ const AuthContextProvider: React.FC = (props) => {
       });
   };
 
-  const facebookLogin = async ({ code, email }: AuthReqProps) => {
-    console.log("카카오 로그인 함수 실행");
+  const facebookLogin = async ({ accessToken, email }: AuthReqProps) => {
+    console.log("페이스북 로그인 함수 실행");
     await axios
       .post(
-        "/users/login/facebook",
-        { accessToken: code, email: email },
+        "/login",
+        {
+          provider: "facebook",
+          email: email,
+          password: "",
+          code: "",
+          accessToken: accessToken,
+        },
         {
           headers: {
             "Content-type": "application/json",
@@ -263,13 +294,13 @@ const AuthContextProvider: React.FC = (props) => {
       }
     }
   };
-  const sendWebmail = async ({ webmail }: AuthReqProps) => {
-    console.log("웹메일 전송 함수 실행");
-    webmailVerify(webmail);
+  const sendWebmail = async ({ web_email }: AuthReqProps) => {
+    console.log({ web_email }, "웹메일 전송 함수 실행");
+    webmailVerify(web_email);
     await axios
       .post(
         "/mail/send",
-        { email: webmail },
+        { email: web_email },
         {
           headers: {
             "Content-type": "application/json",
@@ -291,12 +322,13 @@ const AuthContextProvider: React.FC = (props) => {
       .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
   };
 
-  const verifyNumber = async ({ verificationNum }: AuthReqProps) => {
+  const verifyNumber = async ({ email, verificationNum }: AuthReqProps) => {
     console.log("인증 번호 확인 함수 실행");
     axios
       .post(
         "/mail/verification",
         {
+          email: email,
           verification_number: verificationNum?.toString(),
         },
         {
@@ -322,19 +354,55 @@ const AuthContextProvider: React.FC = (props) => {
       .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
   };
 
-  const signup = () => {};
+  const signup = async (props: AuthReqProps) => {
+    console.log(props, "회원가입 정보");
+    await axios
+      .post(
+        "/users/signup",
+        {
+          email: props.email,
+          passoword: props.password,
+          name: props.name,
+          web_email: props.web_email,
+          school: props.school,
+          imageUrl: props.imageUrl ? props.imageUrl : "",
+          provider: props.provider ? props.provider : "",
+        },
+        {
+          headers: {
+            "Content-type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        if (res.data.isSuccess) {
+          setUser({});
+          message.success("회원가입에 성공하셨습니다.");
+          router.push("/account/login");
+        } else {
+          message.error("회원가입에 실패하였습니다.");
+          throw new Error("회원가입에 실패하였습니다.");
+        }
+      })
+      .catch((err) => console.error(err));
+  };
   const emailDuplicationCheck = async ({ email }: AuthReqProps) => {
+    let result = false;
     await axios
       .get(`/users/email/duplicate/${email}`)
       .then((res) => {
         if (res.data.isSuccess) {
           message.error("중복된 이메일이 있습니다.");
+          result = true;
+        } else if (!res.data.isSuccess) {
+          result = false;
+          message.show("사용가능한 아이디 입니다.");
         }
-        message.show("사용가능한 아이디 입니다.");
-        return res.data;
+        console.log(res.data, "emailDuplication Response");
       })
-      .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
-    return;
+      .catch((err: AuthResProps<AxiosResponse>) => console.error(err));
+    return result;
   };
 
   // const verifyUniversity = async (webmail: string) => {
@@ -363,7 +431,7 @@ const AuthContextProvider: React.FC = (props) => {
   const sendImage = async ({ image }: AuthReqProps) => {
     await axios
       .post(
-        "/users/image/upload",
+        "/users/image",
         {
           image: image,
         },
@@ -388,26 +456,12 @@ const AuthContextProvider: React.FC = (props) => {
       .catch((err) => console.error(err.responseMessage));
   };
 
+  const getImage = async () => {};
   const contextValue: AuthContextObj = {
     isloggedIn,
-    user: {
-      email: "",
-      passoword: "",
-      name: "",
-      web_email: "",
-      school: "",
-      imageUrl: "",
-      content: "",
-      facebookUrl: "",
-      instagramUrl: "",
-      country: [],
-      language: [],
-      hopeLanguage: [],
-      repCountry: "",
-      repLanguage: "",
-      repHopeLanguage: "",
-    },
+    user,
     login,
+    logout,
     saveUser,
     kakaoLogin,
     facebookLogin,
@@ -417,10 +471,12 @@ const AuthContextProvider: React.FC = (props) => {
     emailDuplicationCheck,
     updateUser,
     sendImage,
+    getImage,
     // verifyUniversity,
   };
   useEffect(() => {
     console.log(user, "Change userInfo");
+    window.localStorage.setItem("user", JSON.stringify(user));
   }, [user]);
 
   return (
