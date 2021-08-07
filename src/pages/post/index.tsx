@@ -3,6 +3,8 @@ import styled from "styled-components";
 import PostSearch from "./PostSearch";
 import PostOrder from "./PostOrder";
 import PostSection from "./PostSection";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "../../store/AuthContext";
 
 const Container = styled.div<{ width?: string }>`
   width: ${(props) => (props.width ? props.width : "500px")};
@@ -14,6 +16,8 @@ const Container = styled.div<{ width?: string }>`
   margin-bottom: 200px;
 `;
 export default function Post() {
+  const { user } = useContext(AuthContext);
+  useEffect(() => {}, []);
   return (
     <Layout type="loggedIn">
       <Container width="90%">
