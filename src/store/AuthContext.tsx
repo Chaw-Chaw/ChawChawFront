@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { universityList } from "../components/common";
 // import { Builder, By, Key, until } from "selenium-webdriver";
 import { useAlert } from "react-alert";
+import { redirect } from "next/dist/next-server/server/api-utils";
 interface UserPropertys {
   provider?: string;
   email?: string;
@@ -188,7 +189,7 @@ const AuthContextProvider: React.FC = (props) => {
               },
             });
           }
-          throw new Error(res.data);
+          return res.data.data;
         } else {
           const token = res.headers.authorization;
           const newData = { ...res.data.data, token };
@@ -230,6 +231,7 @@ const AuthContextProvider: React.FC = (props) => {
         }
       )
       .then((res) => {
+        console.log(res, "facebookLogin");
         if (!res.data.isSuccess) {
           if (res.data.responseMessage === "회원가입 필요") {
             saveUser(res.data.data);
@@ -238,6 +240,7 @@ const AuthContextProvider: React.FC = (props) => {
                 router.push("/account/signup/webMailAuth");
               },
             });
+            return res.data.data;
           }
           throw new Error(res.data);
         } else {
