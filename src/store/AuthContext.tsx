@@ -21,6 +21,7 @@ interface UserPropertys {
   repCountry?: string;
   repLanguage?: string;
   repHopeLanguage?: string;
+  token?: string;
 }
 
 interface AuthContextObj {
@@ -41,9 +42,6 @@ interface AuthContextObj {
   //   webMailNumCheck: () => void;
   emailDuplicationCheck: (res: AuthReqProps) => Promise<boolean>;
   updateUser: (Object: UserPropertys) => void;
-  sendImage: (res: AuthReqProps) => void;
-  getImage: (res: AuthReqProps) => void;
-  getPost: (postid: string) => void;
 }
 
 interface AuthReqProps {
@@ -55,7 +53,6 @@ interface AuthReqProps {
   web_email?: string;
   verificationNum?: number;
   name?: string;
-  image?: FormData;
   imageUrl?: string;
   school?: string;
   provider?: string;
@@ -84,6 +81,7 @@ const AuthContext = React.createContext<AuthContextObj>({
     repCountry: "",
     repLanguage: "",
     repHopeLanguage: "",
+    token: "",
   },
   login: () => {},
   logout: () => {},
@@ -103,9 +101,6 @@ const AuthContext = React.createContext<AuthContextObj>({
       return false;
     }),
   updateUser: () => {},
-  sendImage: () => {},
-  getImage: () => {},
-  getPost: () => {},
 });
 
 const AuthContextProvider: React.FC = (props) => {
@@ -114,7 +109,7 @@ const AuthContextProvider: React.FC = (props) => {
   const [user, setUser] = useState({});
   const router = useRouter();
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
-    const newUser = { ...user, ...res };
+    const newUser = user === "{}" ? { ...res } : { ...user, ...res };
     setUser(newUser);
     console.log(newUser, "Save userInfo");
     return res;
@@ -126,8 +121,6 @@ const AuthContextProvider: React.FC = (props) => {
   };
   const login = async ({ email, password }: AuthReqProps) => {
     console.log("로그인 함수 실행");
-    // ActionPopup.open();
-    console.log({ email, password });
     await axios
       .post(
         "/login",
@@ -140,7 +133,7 @@ const AuthContextProvider: React.FC = (props) => {
         },
         {
           headers: {
-            "Content-type": "application/json",
+            "Content-Type": "application/json",
             Accept: "application/json",
           },
         }
@@ -148,13 +141,16 @@ const AuthContextProvider: React.FC = (props) => {
       .then((res) => {
         if (!res.data.isSuccess) {
           throw new Error(res.data.responseMessage);
+        } else {
+          console.log(res.data.data);
+          const token = res.headers.authorization;
+          const newData = { ...res.data.data, token };
+          return newData;
         }
-        console.log(res.data);
-        return res.data.data;
       })
       .then(saveUser)
       .then((res) => {
-        router.push("/");
+        router.push("/post");
         return res;
       })
       .catch((err: AuthResProps<AxiosResponse>) => {
@@ -177,7 +173,7 @@ const AuthContextProvider: React.FC = (props) => {
         },
         {
           headers: {
-            "Content-type": "application/json",
+            "Content-Type": "application/json",
             Accept: "application/json",
           },
         }
@@ -185,30 +181,23 @@ const AuthContextProvider: React.FC = (props) => {
       .then((res) => {
         if (!res.data.isSuccess) {
           console.log(res.data, "로그인 실패");
-          return false;
-        }
-        return res.data;
-      })
-      .then(saveUser, (res) => {
-        console.log(res, "실패라인");
-        if (res.responseMessage === "회원가입 필요") {
-          const newUser = { ...user, ...res };
-          setUser(newUser);
-          message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
-            onClose: () => {
-              router.push("/account/signup/webMailAuth");
-            },
-          });
-          return res;
+          if (res.data.responseMessage === "회원가입 필요") {
+            message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
+              onClose: () => {
+                router.push("/account/signup/webMailAuth");
+              },
+            });
+          }
+          throw new Error(res.data);
         } else {
-          throw new Error(res.responseMessage);
+          const token = res.headers.authorization;
+          const newData = { ...res.data.data, token };
+          return newData;
         }
       })
+      .then(saveUser)
       .then((res) => {
         router.push("/post");
-        return res;
-      })
-      .then((res) => {
         return res;
       })
       .catch((err: AuthResProps<AxiosResponse>) => {
@@ -235,24 +224,30 @@ const AuthContextProvider: React.FC = (props) => {
         },
         {
           headers: {
-            "Content-type": "application/json",
+            "Content-Type": "application/json",
             Accept: "application/json",
           },
         }
       )
       .then((res) => {
-        if (res.data.responseMessage === "회원가입 필요") {
-          message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
-            onClose: () => {
-              router.push("/account/signup/webMailAuth");
-            },
-          });
-          return res.data;
+        if (!res.data.isSuccess) {
+          if (res.data.responseMessage === "회원가입 필요") {
+            message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
+              onClose: () => {
+                saveUser(res.data.data);
+                router.push("/account/signup/webMailAuth");
+              },
+            });
+          }
+          throw new Error(res.data);
         } else {
+          const token = res.headers.authorization;
+          const newData = { ...res.data.data, token };
           router.push("/post");
-          return res.data;
+          return newData;
         }
       })
+      .then(saveUser)
       .catch((err: AuthResProps<AxiosResponse>) => {
         message.error("인가코드가 잘못되었습니다.", {
           onClose: () => {
@@ -283,7 +278,7 @@ const AuthContextProvider: React.FC = (props) => {
         { email: web_email },
         {
           headers: {
-            "Content-type": "application/json",
+            "Content-Type": "application/json",
             Accept: "application/json",
           },
         }
@@ -313,7 +308,7 @@ const AuthContextProvider: React.FC = (props) => {
         },
         {
           headers: {
-            "Content-type": "application/json",
+            "Content-Type": "application/json",
             Accept: "application/json",
           },
         }
@@ -350,7 +345,7 @@ const AuthContextProvider: React.FC = (props) => {
         },
         {
           headers: {
-            "Content-type": "application/json",
+            "Content-Type": "application/json",
             Accept: "application/json",
           },
         }
@@ -408,40 +403,6 @@ const AuthContextProvider: React.FC = (props) => {
     setUser(newUser);
   };
 
-  const sendImage = async ({ image }: AuthReqProps) => {
-    await axios
-      .post(
-        "/users/image",
-        {
-          image: image,
-        },
-        {
-          headers: {
-            "Content-type": "application/json",
-            Accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        if (res.data.isSuccess) {
-          console.log(
-            res.data.imageUrl,
-            "이미지가 성공적으로 업로드 되었습니다. "
-          );
-          return res.data;
-        }
-        throw new Error(res.data);
-      })
-      .then(saveUser)
-      .catch((err) => console.error(err.responseMessage));
-  };
-
-  const getPost = async (postId: string) => {
-    // cookie
-    await axios.get(`post/${postId}`);
-  };
-
-  const getImage = async () => {};
   const contextValue: AuthContextObj = {
     isloggedIn,
     user,
@@ -455,9 +416,7 @@ const AuthContextProvider: React.FC = (props) => {
     signup,
     emailDuplicationCheck,
     updateUser,
-    sendImage,
-    getImage,
-    getPost,
+
     // verifyUniversity,
   };
   useEffect(() => {
