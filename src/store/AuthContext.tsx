@@ -232,9 +232,9 @@ const AuthContextProvider: React.FC = (props) => {
       .then((res) => {
         if (!res.data.isSuccess) {
           if (res.data.responseMessage === "회원가입 필요") {
+            saveUser(res.data.data);
             message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
               onClose: () => {
-                saveUser(res.data.data);
                 router.push("/account/signup/webMailAuth");
               },
             });
