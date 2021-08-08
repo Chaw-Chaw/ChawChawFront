@@ -10,6 +10,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { ChangeEvent, useContext, useState } from "react";
 import { AuthContext } from "../../store/AuthContext";
 import { useAlert } from "react-alert";
+import axios from "axios";
+import { AiOutlineConsoleSql } from "react-icons/ai";
 interface ProfileSection {
   title?: string;
   content?: string;
@@ -57,40 +59,95 @@ const ProfileSection: React.FC = () => {
     watch,
     formState: { errors },
   } = useForm<Inputs>();
-  const { sendImage, signup, updateUser } = useContext(AuthContext);
-  const [userImage, setUserImage] = useState<File>();
+  const { signup, updateUser, user } = useContext(AuthContext);
   const [userCountries, setUserCountries] = useState<string[]>();
   const [userLanguages, setUserLanguages] = useState<string[]>();
   const [userHopeLanguages, setUserHopeLanguages] = useState<string[]>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    const image = new FormData();
-    if (userImage) {
-      image.append("file", userImage);
-      sendImage({ image });
-    } else {
-      console.log(userImage);
-    }
+  const onSubmit: SubmitHandler<Inputs> = (data) => {};
+  const sendImage = async (image: FormData) => {
+    await axios
+      .post("/users/image", image, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `${user?.token}`,
+          // Accept: "application/json",
+        },
+      })
+      .then((res) => {
+        let imageUrl;
+        if (res.data.isSuccess) {
+          console.log(res, "이미지가 성공적으로 업로드 되었습니다. ");
+
+          const result = getImage(res.data.data);
+          return result;
+        } else {
+          throw new Error(res.data);
+        }
+      })
+      .catch((err) => console.error(err.responseMessage));
+  };
+
+  const getImage = async (imageUrlData: string) => {
+    console.log(imageUrlData, "확인바람");
+    const imageUrl = await axios
+      .get(`/users/image?imageUrl=${imageUrlData}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${user?.token}`,
+          Accept: "*/*",
+        },
+        // params: {
+        //   imageUrl: imageUrlData,
+        // },
+      })
+      .then((res) => {
+        console.log(res);
+        return res.data.data;
+      });
+
+    return imageUrl;
   };
 
   const imageUpload = (e: ChangeEvent) => {
     const target = e.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];
+    // const file = target.files[0];
     if (file !== undefined) {
       if (file.size > 1024 * 1024 * 5) {
         message.error("5MB 이상 파일을 업로드 할 수 없습니다.");
         return;
       }
-      setUserImage(file);
-      console.log(file);
-    } else {
-      console.log("no file");
+      // setUserImage(file);
+      const image = new FormData();
+
+      image.append("file", file);
+      const imageUrl = sendImage(image);
+      console.log(imageUrl);
+      // updateUser({ imageUrl });
+
+      // console.log(file);
     }
+  };
+
+  const deleteImage = async () => {
+    const response = await axios
+      .delete("/users/image", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${user?.token}`,
+          Accept: "*/*",
+        },
+      })
+      .then((res) => {
+        return res;
+      });
+    console.log(response);
   };
   return (
     <Container onSubmit={handleSubmit(onSubmit)}>
       <ProfileHeader>
-        <ProfileImage onChange={imageUpload} />
+        <ProfileImage onChange={imageUpload} onClick={() => deleteImage()} />
         <ProfileContent
           title="포스팅에 올라갈 당신의 매력을 어필해보세요!"
           placeholder="당신을 소개할 내용을 입력해주세요."

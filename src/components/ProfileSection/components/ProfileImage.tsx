@@ -1,8 +1,14 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useContext } from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import DefaultImage from "../../../../public/Layout/default_profile.png";
 import { Button } from "../../common";
+import { AuthContext } from "../../../store/AuthContext";
+
+interface ProfileImageProps {
+  onChange: (e: ChangeEvent) => void;
+  onClick: () => void;
+}
 
 const Container = styled.div`
   display: flex;
@@ -58,13 +64,19 @@ const InputFileButton = styled.label`
   }
 `;
 
-const ProfileImage: React.FC<{ onChange: (e: ChangeEvent) => void }> = (
-  props
-) => {
+const ProfileImage: React.FC<ProfileImageProps> = (props) => {
+  const { user } = useContext(AuthContext);
+  const profileImage = (() => {
+    if (user?.imageUrl === undefined || user?.imageUrl === "default.png")
+      return DefaultImage;
+    // else return user.imageUrl;
+    else return DefaultImage;
+  })();
+
   return (
     <Container>
       <Image
-        src="https://images.unsplash.com/photo-1544526226-d4568090ffb8?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aGQlMjBpbWFnZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80"
+        src={profileImage}
         width="180px"
         height="180px"
         alt="프로필 이미지"
@@ -79,7 +91,9 @@ const ProfileImage: React.FC<{ onChange: (e: ChangeEvent) => void }> = (
         accept="image/png, image/jpeg"
         onChange={props.onChange}
       />
-      <Button width="100%">이미지 제거</Button>
+      <Button onClick={props.onClick} width="100%">
+        이미지 제거
+      </Button>
     </Container>
   );
 };
