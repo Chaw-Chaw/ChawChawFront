@@ -85,7 +85,7 @@ const Banner: React.FC = () => {
   return (
     <Container>
       <Image src={BannerImage} alt="배너 이미지" objectFit="cover" />
-      <Link href="/post">
+      <Link href="/account/login">
         <a>
           <BannerButton>
             <Button width="16rem" height="5rem" fontSize="2.8rem">
