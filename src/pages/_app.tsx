@@ -4,6 +4,7 @@ import { ThemeProvider, createGlobalStyle } from "styled-components";
 import LightTheme from "../theme/light";
 import DarkTheme from "../theme/dark";
 import { AuthContextProvider } from "../store/AuthContext";
+import { CookiesProvider } from "react-cookie";
 import {
   transitions,
   positions,
@@ -49,21 +50,23 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 
   return (
-    <ThemeProvider
-      theme={{
-        ...theme,
-        setTheme: () => {
-          setTheme((s) => (s.id === "light" ? DarkTheme : LightTheme));
-        },
-      }}
-    >
-      <AlertProvider template={AlertTemplate}>
-        <GlobalStyles />
-        <AuthContextProvider>
-          <Component {...pageProps} />
-        </AuthContextProvider>
-      </AlertProvider>
-    </ThemeProvider>
+    <CookiesProvider>
+      <ThemeProvider
+        theme={{
+          ...theme,
+          setTheme: () => {
+            setTheme((s) => (s.id === "light" ? DarkTheme : LightTheme));
+          },
+        }}
+      >
+        <AlertProvider template={AlertTemplate}>
+          <GlobalStyles />
+          <AuthContextProvider>
+            <Component {...pageProps} />
+          </AuthContextProvider>
+        </AlertProvider>
+      </ThemeProvider>
+    </CookiesProvider>
   );
 }
 export default MyApp;
