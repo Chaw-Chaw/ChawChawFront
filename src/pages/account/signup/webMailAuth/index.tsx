@@ -43,14 +43,15 @@ const RequiredText = styled.span`
 
 export default function WebMailAuth() {
   const message = useAlert();
-  const { sendWebmail, verifyNumber } = useContext(AuthContext);
+  const { sendWebmail, verifyNumber, user, signup } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<Inputs>();
-
+  const isSocialSignup =
+    user?.provider === "facebook" || user?.provider === "kakao" ? true : false;
   const [activeVerificationNumber, setActiveVerificationNumber] =
     useState<boolean>(true);
 
@@ -70,6 +71,17 @@ export default function WebMailAuth() {
     if (data.verificationNum && data.webmail && !activeVerificationNumber) {
       console.log(data.verificationNum);
       verifyNumber(data);
+      if (isSocialSignup) {
+        signup({
+          email: user?.email,
+          password: "",
+          name: user?.name,
+          web_email: user?.web_email,
+          school: user?.school,
+          imageUrl: user?.imageUrl,
+          provider: user?.provider,
+        });
+      }
       return;
     }
     message.error("인증번호를 입력해주세요.");
@@ -140,7 +152,7 @@ export default function WebMailAuth() {
             </ButtonSection>
             <ButtonSection marginLeft="20px">
               <Button type="submit" width="100%" height="4rem" fontSize="1rem">
-                회원 정보 입력
+                {isSocialSignup ? "회원가입" : "회원 정보 입력"}
               </Button>
             </ButtonSection>
           </MovePageButtonSection>

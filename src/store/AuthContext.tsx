@@ -188,8 +188,9 @@ const AuthContextProvider: React.FC = (props) => {
                 router.push("/account/signup/webMailAuth");
               },
             });
+            return res.data.data;
           }
-          return res.data.data;
+          throw new Error(res.data);
         } else {
           const token = res.headers.authorization;
           const newData = { ...res.data.data, token };
@@ -234,7 +235,6 @@ const AuthContextProvider: React.FC = (props) => {
         console.log(res, "facebookLogin");
         if (!res.data.isSuccess) {
           if (res.data.responseMessage === "회원가입 필요") {
-            saveUser(res.data.data);
             message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
               onClose: () => {
                 router.push("/account/signup/webMailAuth");
@@ -268,7 +268,7 @@ const AuthContextProvider: React.FC = (props) => {
         const universityName = Object.keys(universityList).find(
           (item: string) => universityList[item] === domain
         );
-        updateUser({ school: universityName });
+        updateUser({ school: universityName, web_email: webmail });
       }
     }
   };
