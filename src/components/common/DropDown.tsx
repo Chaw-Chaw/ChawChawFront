@@ -1,32 +1,40 @@
-import React, { useContext, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { ImEarth } from "react-icons/im";
 import { LocaleList, CountryEmojiNames, LanguageNames } from "../common";
+import { AuthContext } from "../../store/AuthContext";
 
-interface DropDownProps {
+interface initialBoxProps {
   fontWeight?: string;
   fontSize?: string;
   width?: string;
   height?: string;
+  backgroundColor?: string;
+}
+interface DropDownProps extends initialBoxProps {
   options?: string[];
   color?: string;
-  backgroundColor?: string;
   initialValue?: string;
   isActive?: boolean;
-  value?: string;
   onClick?: () => void;
   onMouseLeave?: () => void;
   postOrder?: boolean;
-}
-
-interface SelectMenuProps extends DropDownProps {}
-interface SelectInfoDropDownProps extends DropDownProps {
+  value?: string;
+  index?: number;
   type?: string;
 }
 
+interface SelectMenuProps extends DropDownProps {}
+interface SelectInfoDropDownProps extends DropDownProps {}
 // interface;
 
-const InitialBox = styled.div<DropDownProps>`
+const InitialBox = styled.div<initialBoxProps>`
   position: relative;
   display: flex;
   align-items: center;
@@ -125,13 +133,19 @@ const Option = styled.div<SelectMenuProps>`
 // const;
 
 const DropDownBox: React.FC<DropDownProps> = (props) => {
+  const clickHander: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    if (props.onClick) {
+      props.onClick();
+    }
+  };
   return (
     <InitialBox
       fontWeight={props.fontWeight}
       fontSize={props.fontSize}
       width={props.width}
       height={props.height}
-      onClick={props.onClick}
+      onClick={clickHander}
       color={props.color}
       backgroundColor={props.backgroundColor}
     >
@@ -143,9 +157,30 @@ const DropDownBox: React.FC<DropDownProps> = (props) => {
 
 const DropDown: React.FC<DropDownProps> = (props) => {
   const [value, setValue] = useState(props.initialValue);
-
+  const { user, updateUser } = useContext(AuthContext);
   const [isActive, setIsActive] = useState(false);
   const option = [props.initialValue].concat(props.options);
+  const setInfo = (item: string) => {
+    if (user && props.index) {
+      if (props.type === "country" && user.country) {
+        const newData = [...user.country];
+        newData[props.index] = item;
+        updateUser({ country: [...newData] });
+      }
+      if (props.type === "language" && user.language) {
+        const newData = [...user.language];
+        newData[props.index] = item;
+        updateUser({ country: [...newData] });
+      }
+      if (props.type === "hopeLanguage" && user.hopeLanguage) {
+        const newData = [...user.hopeLanguage];
+        newData[props.index] = item;
+        updateUser({ country: [...newData] });
+      } else {
+        alert("다른 형태의 dropbox 입니다.");
+      }
+    }
+  };
 
   return (
     <DropDownBox
@@ -156,12 +191,12 @@ const DropDown: React.FC<DropDownProps> = (props) => {
       onClick={() => setIsActive((isActive) => !isActive)}
       onMouseLeave={() => setIsActive(false)}
       color={
-        props.postOrder && props.initialValue !== value
+        props.postOrder && props.initialValue !== props.value
           ? props.backgroundColor
           : props.color
       }
       backgroundColor={
-        props.postOrder && props.initialValue !== value
+        props.postOrder && props.initialValue !== props.value
           ? props.color
           : props.backgroundColor
       }
@@ -175,7 +210,15 @@ const DropDown: React.FC<DropDownProps> = (props) => {
       >
         {option?.map((item, index) => {
           return (
-            <Option key={index} onClick={() => setValue(item)}>
+            <Option
+              key={index}
+              onClick={() => {
+                if (item) {
+                  setValue(item);
+                  setInfo(item);
+                }
+              }}
+            >
               {item}
             </Option>
           );
@@ -216,7 +259,8 @@ const SelectInfoDropDown: React.FC<SelectInfoDropDownProps> = (props) => {
       options={(() => {
         if (props.options) return props.options;
         if (props.type === "country") return countryList;
-        if (props.type === "language") return languageList;
+        if (props.type === "language" || props.type === "hopeLanguage")
+          return languageList;
         else return countryList;
       })()}
       backgroundColor={
@@ -226,10 +270,13 @@ const SelectInfoDropDown: React.FC<SelectInfoDropDownProps> = (props) => {
       initialValue={(() => {
         if (props.initialValue) return props.initialValue;
         if (props.type === "country") return "Select Country";
-        if (props.type === "language") return "Select Language";
+        if (props.type === "language" || props.type === "hopeLanguage")
+          return "Select Language";
         else return "Select";
       })()}
       postOrder={props.postOrder}
+      index={props.index}
+      type={props.type}
     />
   );
 };
