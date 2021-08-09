@@ -109,12 +109,18 @@ const ImageBox = styled.div``;
 
 const MyImage: React.FC = () => {
   const [isActive, setIsActive] = useState(false);
-  const { logout } = useContext(AuthContext);
+  const { logout, user } = useContext(AuthContext);
   const router = useRouter();
+  const profileImage = (() => {
+    if (user?.imageUrl === undefined || user?.imageUrl === "default.png")
+      return `https://mylifeforcoding.com/users/image?imageUrl=default.png`;
+    else
+      return `https://mylifeforcoding.com/users/image?imageUrl=${user?.imageUrl}`;
+  })();
   return (
     <MyImageBox>
       <Image
-        src={DefaultImage}
+        src={profileImage}
         alt="프로필 이미지"
         width="50px"
         height="50px"
@@ -157,7 +163,7 @@ const MyImage: React.FC = () => {
 const HeaderCondition: React.FC<HeaderProps> = (props) => {
   const headerType = props.type;
   const { user } = useContext(AuthContext);
-  if (user?.imageUrl) {
+  if (user?.token) {
     return <MyImage />;
   }
   if (headerType === "login") {
@@ -177,9 +183,6 @@ const HeaderCondition: React.FC<HeaderProps> = (props) => {
         </a>
       </Link>
     );
-  }
-  if (headerType === "loggedIn") {
-    return <MyImage />;
   }
   return (
     <Link href="/account/login">
