@@ -18,7 +18,7 @@ import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
 type Inputs = {
   email: string;
-  name: string;
+  username: string;
   password: string;
   passwordConfirm: string;
 };
@@ -85,7 +85,7 @@ export default function SignUp() {
     console.log(isEmailDupCheck, "이메일 중복체크");
     if (
       data.email === "" ||
-      data.name === "" ||
+      data.username === "" ||
       data.password === "" ||
       data.passwordConfirm === ""
     ) {
@@ -96,18 +96,19 @@ export default function SignUp() {
       message.error("이메일 중복체크를 해주세요.");
       return;
     }
-    const newUserInfo = {
+    if (userUniversity === "") {
+      message.error("웹메일 인증을 해주세요.");
+      router.push("/account/login");
+    }
+    updateUser({
       email: data.email,
-      password: data.password,
-      name: data.name,
-    };
-
-    updateUser(newUserInfo);
+      name: data.username,
+    });
     if (user) {
       signup({
         email: data.email,
         password: data.password,
-        name: data.name,
+        name: data.username,
         web_email: user?.web_email,
         school: user.school ? user.school : "",
         imageUrl: user.imageUrl ? user.imageUrl : "",
@@ -159,7 +160,7 @@ export default function SignUp() {
           </InputSection>
           <InputSection>
             <Label htmlFor="username">이름</Label>
-            <Input name="username" />
+            <Input {...register("username")} />
           </InputSection>
           <InputSection>
             <Label htmlFor="password">비밀번호</Label>

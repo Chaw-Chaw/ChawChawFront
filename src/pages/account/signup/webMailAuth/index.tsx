@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { ChangeEvent, useContext, useRef, useState } from "react";
 import {
   Layout,
   Input,
@@ -43,7 +43,10 @@ const RequiredText = styled.span`
 
 export default function WebMailAuth() {
   const message = useAlert();
-  const { sendWebmail, verifyNumber, user, signup } = useContext(AuthContext);
+  const webmailRef = useRef<HTMLInputElement>(null);
+  const [webmailValidate, setWebmailValidate] = useState(false);
+  const { sendWebmail, verifyNumber, user, signup, webmailVerify } =
+    useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -56,21 +59,31 @@ export default function WebMailAuth() {
     useState<boolean>(true);
 
   const webmailSubmit: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.preventDefault();
-    const webmail = watch("webmail");
-    if (webmail) {
+    if (!webmailRef.current) {
+      return;
+    }
+    const webmail = webmailRef.current.value;
+    if (webmail === "") message.error("웹메일을 입력해주세요.");
+    const validationWebmail = webmailVerify(webmail);
+    if (validationWebmail) {
+      setWebmailValidate(false);
       setActiveVerificationNumber(false);
       console.log(webmail);
       sendWebmail({ web_email: webmail });
     } else {
-      message.error("웹메일을 입력해주세요.");
+      setWebmailValidate(true);
+      message.error("등록되지 않은 웹메일 입니다.");
     }
   };
 
   const verificationNumSubmit: SubmitHandler<Inputs> = (data) => {
-    if (data.verificationNum && data.webmail && !activeVerificationNumber) {
-      console.log(data.verificationNum);
-      verifyNumber(data);
+    if (data.verificationNum && !activeVerificationNumber) {
+      verifyNumber({
+        email: user?.web_email,
+        verificationNum: data.verificationNum,
+        provider: user?.provider,
+      });
+
       if (isSocialSignup) {
         signup({
           email: user?.email,
@@ -97,35 +110,33 @@ export default function WebMailAuth() {
         subtitle="현재 재학중인 대학교의 웹메일을 입력해주세요.`웹 메일로 인증번호가 발송됩니다."
       >
         <LoginOrder activeType="1" />
+        <InputSection>
+          <Label htmlFor="webmail" tag="필수">
+            웹 메일
+          </Label>
+          <Input
+            name="webmail"
+            placeholder="대학교 웹메일주소"
+            ref={webmailRef}
+          />
+          {webmailValidate && (
+            <RequiredText>웹메일 형식을 맞춰주세요.</RequiredText>
+          )}
+        </InputSection>
+        <ButtonSection>
+          <Button
+            onClick={(e) => webmailSubmit(e)}
+            width="100%"
+            height="2rem"
+            fontSize="1rem"
+          >
+            발송하기
+          </Button>
+        </ButtonSection>
         <Form
           onSubmit={handleSubmit(verificationNumSubmit)}
           onKeyDown={(e) => checkKeyDown(e)}
         >
-          <InputSection>
-            <Label htmlFor="webmail" tag="필수">
-              웹 메일
-            </Label>
-            <Input
-              placeholder="example@address.ac.kr"
-              {...register("webmail", {
-                pattern:
-                  /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@([-_\.]?[0-9a-zA-Z])*.ac*.kr$/i,
-              })}
-            />
-            {errors.webmail && (
-              <RequiredText>웹메일 형식을 맞춰주세요.</RequiredText>
-            )}
-          </InputSection>
-          <ButtonSection>
-            <Button
-              onClick={(e) => webmailSubmit(e)}
-              width="100%"
-              height="2rem"
-              fontSize="1rem"
-            >
-              발송하기
-            </Button>
-          </ButtonSection>
           <InputSection>
             <Label htmlFor="verificationNum" tag="필수">
               인증번호

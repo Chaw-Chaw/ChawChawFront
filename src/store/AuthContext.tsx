@@ -43,6 +43,7 @@ interface AuthContextObj {
   //   webMailNumCheck: () => void;
   emailDuplicationCheck: (res: AuthReqProps) => Promise<boolean>;
   updateUser: (Object: UserPropertys) => void;
+  webmailVerify: (webmail: string | undefined) => boolean;
 }
 
 interface AuthReqProps {
@@ -102,6 +103,7 @@ const AuthContext = React.createContext<AuthContextObj>({
       return false;
     }),
   updateUser: () => {},
+  webmailVerify: () => false,
 });
 
 const AuthContextProvider: React.FC = (props) => {
@@ -269,12 +271,15 @@ const AuthContextProvider: React.FC = (props) => {
           (item: string) => universityList[item] === domain
         );
         updateUser({ school: universityName, web_email: webmail });
+        return true;
       }
+      return false;
     }
+    return false;
   };
   const sendWebmail = async ({ web_email }: AuthReqProps) => {
     console.log({ web_email }, "웹메일 전송 함수 실행");
-    webmailVerify(web_email);
+    // webmailVerify(web_email);
     await axios
       .post(
         "/mail/send",
@@ -300,14 +305,19 @@ const AuthContextProvider: React.FC = (props) => {
       .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
   };
 
-  const verifyNumber = async ({ email, verificationNum }: AuthReqProps) => {
+  const verifyNumber = async ({
+    email,
+    verificationNum,
+    provider,
+  }: AuthReqProps) => {
     console.log("인증 번호 확인 함수 실행");
+    console.log(email, verificationNum, provider);
     axios
       .post(
         "/mail/verification",
         {
           email: email,
-          verification_number: verificationNum?.toString(),
+          verificationNumber: verificationNum?.toString(),
         },
         {
           headers: {
@@ -319,40 +329,44 @@ const AuthContextProvider: React.FC = (props) => {
       .then((res) => {
         if (!res.data.isSuccess) {
           console.log(res.data, "인증번호 확인 실패");
+          message.error("인증번호가 잘못 되었습니다.");
+
           throw new Error(res.data.responseMessage);
         }
         console.log(res.data);
-        alert("인증번호 확인을 완료하였습니다.");
+        message.success("인증번호 확인을 완료하였습니다.");
         return res.data;
       })
       .then((res) => {
-        router.push("/account/signup");
-        return res.data;
+        if (!provider) {
+          router.push("/account/signup");
+          return res;
+        } else {
+          return res;
+        }
       })
       .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
   };
 
   const signup = async (props: AuthReqProps) => {
-    console.log(props, "회원가입 정보");
+    const info = {
+      email: props.email,
+      passoword: props.password,
+      name: props.name,
+      web_email: props.web_email,
+      school: props.school,
+      imageUrl: props.imageUrl,
+      provider: props.provider,
+    };
+    console.log(info, "회원가입 정보");
+
     await axios
-      .post(
-        "/users/signup",
-        {
-          email: props.email,
-          passoword: props.password,
-          name: props.name,
-          web_email: props.web_email,
-          school: props.school,
-          imageUrl: props.imageUrl ? props.imageUrl : "",
-          provider: props.provider ? props.provider : "",
+      .post("/users/signup", info, {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        }
-      )
+      })
       .then((res) => {
         if (res.data.isSuccess) {
           setUser({});
@@ -419,6 +433,7 @@ const AuthContextProvider: React.FC = (props) => {
     signup,
     emailDuplicationCheck,
     updateUser,
+    webmailVerify,
 
     // verifyUniversity,
   };
