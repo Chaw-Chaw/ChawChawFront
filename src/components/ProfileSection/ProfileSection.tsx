@@ -16,6 +16,7 @@ interface ProfileSection {
   title?: string;
   content?: string;
 }
+
 type Inputs = {};
 
 const Container = styled.form`
@@ -75,38 +76,17 @@ const ProfileSection: React.FC = () => {
         },
       })
       .then((res) => {
-        let imageUrl;
         if (res.data.isSuccess) {
-          console.log(res, "이미지가 성공적으로 업로드 되었습니다. ");
-
-          const result = getImage(res.data.data);
-          return result;
+          return res.data.data;
         } else {
           throw new Error(res.data);
         }
       })
-      .catch((err) => console.error(err.responseMessage));
-  };
-
-  const getImage = async (imageUrlData: string) => {
-    console.log(imageUrlData, "확인바람");
-    const imageUrl = await axios
-      .get(`/users/image?imageUrl=${imageUrlData}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${user?.token}`,
-          Accept: "*/*",
-        },
-        // params: {
-        //   imageUrl: imageUrlData,
-        // },
-      })
       .then((res) => {
-        console.log(res);
-        return res.data.data;
-      });
-
-    return imageUrl;
+        updateUser({ imageUrl: res });
+        return res;
+      })
+      .catch((err) => console.error(err.responseMessage));
   };
 
   const imageUpload = (e: ChangeEvent) => {
@@ -122,11 +102,7 @@ const ProfileSection: React.FC = () => {
       const image = new FormData();
 
       image.append("file", file);
-      const imageUrl = sendImage(image);
-      console.log(imageUrl);
-      // updateUser({ imageUrl });
-
-      // console.log(file);
+      sendImage(image);
     }
   };
 
@@ -140,6 +116,7 @@ const ProfileSection: React.FC = () => {
         },
       })
       .then((res) => {
+        updateUser({ imageUrl: res.data.data });
         return res;
       });
     console.log(response);
@@ -160,21 +137,21 @@ const ProfileSection: React.FC = () => {
           description="자신의 국적을 추가해주세요. (최대 2개) 가장 첫 칸은 주 국적으로 표시됩니다. "
           type="country"
           count={2}
-          update={setUserCountries}
+          setValues={setUserCountries}
         />
         <ProfileSelectInfo
           title="Language you can"
           description="자신이 할 수 있는 언어를 추가해주세요. (최대 4개) 가장 첫 칸은 주 언어로 표시됩니다. "
           type="language"
           count={4}
-          update={setUserLanguages}
+          setValues={setUserLanguages}
         />
         <ProfileSelectInfo
           title="Learning lanugage"
           description="배우고 싶은 언어를 모두 추가해주세요. (최대 4개) 가장 첫 칸은 주 언어로 표시됩니다."
-          type="language"
+          type="hopeLanguage"
           count={4}
-          update={setUserHopeLanguages}
+          setValues={setUserHopeLanguages}
         />
         <ProfileSocialUrl />
       </ProfileInfoBox>

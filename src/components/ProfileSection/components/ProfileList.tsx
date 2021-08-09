@@ -14,7 +14,7 @@ import { AuthContext } from "../../../store/AuthContext";
 interface ProfileListProps {
   title?: string;
   description?: string;
-  update?: Dispatch<SetStateAction<string[] | undefined>>;
+  setValues?: Dispatch<SetStateAction<string[] | undefined>>;
 }
 
 interface ProfileSelectInfoProps extends ProfileListProps {
@@ -125,7 +125,7 @@ const DropDownMainText = styled.div`
 
 const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
   const [buttonCount, setButtonCount] = useState<number[]>([]);
-
+  const [values, setValues] = useState<string[]>(["", "", "", ""]);
   const AddButton = () => {
     if (buttonCount.length >= props.count) {
       return;
@@ -155,6 +155,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
               <DropDownMainBox key={index}>
                 <DropDownMainText>main</DropDownMainText>
                 <SelectInfoDropDown
+                  index={index}
                   type={props.type}
                   backgroundColor={colors[index % 3]}
                 />
@@ -164,6 +165,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
           return (
             <DropDownBox key={index}>
               <SelectInfoDropDown
+                index={index}
                 type={props.type}
                 backgroundColor={colors[index % 3]}
               />

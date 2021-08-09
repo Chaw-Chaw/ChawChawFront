@@ -68,9 +68,9 @@ const ProfileImage: React.FC<ProfileImageProps> = (props) => {
   const { user } = useContext(AuthContext);
   const profileImage = (() => {
     if (user?.imageUrl === undefined || user?.imageUrl === "default.png")
-      return DefaultImage;
-    // else return user.imageUrl;
-    else return DefaultImage;
+      return `https://mylifeforcoding.com/users/image?imageUrl=default.png`;
+    else
+      return `https://mylifeforcoding.com/users/image?imageUrl=${user?.imageUrl}`;
   })();
 
   return (
@@ -83,6 +83,7 @@ const ProfileImage: React.FC<ProfileImageProps> = (props) => {
         objectFit="cover"
         className="profile-image"
       />
+
       <InputFileButton htmlFor="image-file">이미지 업로드</InputFileButton>
       <input
         id="image-file"
