@@ -15,10 +15,10 @@ export default function Oauth(props: OauthProps) {
   useEffect(() => {
     const code = router.query.code?.toString();
     console.log(router.query);
-    // if (code !== undefined) {
-    //   console.log(code, "KaKao Auth code 받음");
-    //   main(code);
-    // }
+    if (code !== undefined) {
+      console.log(code, "KaKao Auth code 받음");
+      main(code);
+    }
   }, [router.query]);
 
   const main = (code: string) => {
@@ -26,9 +26,5 @@ export default function Oauth(props: OauthProps) {
     // await loadUserInfo(accessToken)
   };
 
-  return (
-    <div>
-      <Script src="https://developers.kakao.com/sdk/js/kakao.js"></Script>
-    </div>
-  );
+  return <div></div>;
 }
