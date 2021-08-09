@@ -109,6 +109,7 @@ const AuthContext = React.createContext<AuthContextObj>({
 const AuthContextProvider: React.FC = (props) => {
   const message = useAlert();
   const [isloggedIn, setIsLoggedIn] = useState(false);
+  // const localUser = window ? window.localStorage.getItem("user") : null;
   const [user, setUser] = useState({});
   const router = useRouter();
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
@@ -120,6 +121,7 @@ const AuthContextProvider: React.FC = (props) => {
 
   const logout = () => {
     setUser({});
+    window.localStorage.clear();
     router.push("/account/login");
   };
   const login = async ({ email, password }: AuthReqProps) => {
@@ -308,7 +310,7 @@ const AuthContextProvider: React.FC = (props) => {
   const signup = async (props: AuthReqProps) => {
     const info = {
       email: props.email,
-      passoword: props.password,
+      password: props.password,
       name: props.name,
       web_email: props.web_email,
       school: props.school,
@@ -386,22 +388,27 @@ const AuthContextProvider: React.FC = (props) => {
     kakaoLogin,
     facebookLogin,
     sendWebmail,
-
     signup,
     emailDuplicationCheck,
     updateUser,
     webmailVerify,
-
     // verifyUniversity,
   };
   useEffect(() => {
-    console.log(user, "Change userInfo");
-    window.localStorage.setItem("user", JSON.stringify(user));
-  }, [user]);
-  useEffect(() => {
     const initUser = window.localStorage.getItem("user");
-    setUser(initUser === null ? {} : initUser);
+    setUser(initUser === null ? {} : JSON.parse(initUser));
   }, []);
+
+  useEffect(() => {
+    if (JSON.stringify(user) === JSON.stringify({})) {
+      console.log("페이지 초기화");
+      window.localStorage.clear();
+      return;
+    } else {
+      console.log(user, "Change userInfo");
+      window.localStorage.setItem("user", JSON.stringify(user));
+    }
+  }, [user]);
 
   return (
     <AuthContext.Provider value={contextValue}>
