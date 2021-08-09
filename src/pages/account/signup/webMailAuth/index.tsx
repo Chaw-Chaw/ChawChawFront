@@ -13,6 +13,8 @@ import Link from "next/link";
 import { AuthContext } from "../../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAlert } from "react-alert";
+import axios from "axios";
+import { useRouter } from "next/router";
 type Inputs = {
   webmail: string;
   verificationNum: number;
@@ -42,11 +44,11 @@ const RequiredText = styled.span`
 `;
 
 export default function WebMailAuth() {
+  const router = useRouter();
   const message = useAlert();
   const webmailRef = useRef<HTMLInputElement>(null);
   const [webmailValidate, setWebmailValidate] = useState(false);
-  const { sendWebmail, verifyNumber, user, signup, webmailVerify } =
-    useContext(AuthContext);
+  const { sendWebmail, user, signup, webmailVerify } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -78,23 +80,54 @@ export default function WebMailAuth() {
 
   const verificationNumSubmit: SubmitHandler<Inputs> = (data) => {
     if (data.verificationNum && !activeVerificationNumber) {
-      verifyNumber({
-        email: user?.web_email,
-        verificationNum: data.verificationNum,
-        provider: user?.provider,
-      });
+      // verifyNumber({
+      //   email: user?.web_email,
+      //   verificationNum: data.verificationNum,
+      //   provider: user?.provider,
+      // });
+      axios
+        .post(
+          "/mail/verification",
+          {
+            email: user?.web_email,
+            verificationNumber: data.verificationNum?.toString(),
+            provider: user?.provider,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          if (!res.data.isSuccess) {
+            console.log(res.data, "인증번호 확인 실패");
+            message.error("인증번호가 잘못 되었습니다.");
 
-      if (isSocialSignup) {
-        signup({
-          email: user?.email,
-          password: "",
-          name: user?.name,
-          web_email: user?.web_email,
-          school: user?.school,
-          imageUrl: user?.imageUrl,
-          provider: user?.provider,
-        });
-      }
+            throw new Error(res.data.responseMessage);
+          }
+          console.log(res.data);
+          message.success("인증번호 확인을 완료하였습니다.");
+          return res.data;
+        })
+        .then((res) => {
+          if (!user?.provider) {
+            router.push("/account/signup");
+            return res;
+          } else {
+            signup({
+              email: user?.email,
+              password: "",
+              name: user?.name,
+              web_email: user?.web_email,
+              school: user?.school,
+              imageUrl: user?.imageUrl,
+              provider: user?.provider,
+            });
+          }
+        })
+        .catch((err) => console.log(err));
       return;
     }
     message.error("인증번호를 입력해주세요.");

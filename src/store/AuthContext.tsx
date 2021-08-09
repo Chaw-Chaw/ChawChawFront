@@ -33,7 +33,7 @@ interface AuthContextObj {
   facebookLogin: (res: AuthReqProps) => void;
   saveUser: (res: AuthResProps<AxiosResponse>) => void;
   sendWebmail: (res: AuthReqProps) => void;
-  verifyNumber: (res: AuthReqProps) => void;
+
   // verifyUniversity: () => void;
   logout: () => void;
   signup: (res: AuthReqProps) => void;
@@ -90,7 +90,7 @@ const AuthContext = React.createContext<AuthContextObj>({
   kakaoLogin: () => {},
   saveUser: () => {},
   sendWebmail: () => {},
-  verifyNumber: () => {},
+
   facebookLogin: () => {},
   //   logout: () => {},
   signup: () => {},
@@ -305,49 +305,6 @@ const AuthContextProvider: React.FC = (props) => {
       .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
   };
 
-  const verifyNumber = async ({
-    email,
-    verificationNum,
-    provider,
-  }: AuthReqProps) => {
-    console.log("인증 번호 확인 함수 실행");
-    console.log(email, verificationNum, provider);
-    axios
-      .post(
-        "/mail/verification",
-        {
-          email: email,
-          verificationNumber: verificationNum?.toString(),
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        if (!res.data.isSuccess) {
-          console.log(res.data, "인증번호 확인 실패");
-          message.error("인증번호가 잘못 되었습니다.");
-
-          throw new Error(res.data.responseMessage);
-        }
-        console.log(res.data);
-        message.success("인증번호 확인을 완료하였습니다.");
-        return res.data;
-      })
-      .then((res) => {
-        if (!provider) {
-          router.push("/account/signup");
-          return res;
-        } else {
-          return res;
-        }
-      })
-      .catch((err: AuthResProps<AxiosResponse>) => console.log(err));
-  };
-
   const signup = async (props: AuthReqProps) => {
     const info = {
       email: props.email,
@@ -429,7 +386,7 @@ const AuthContextProvider: React.FC = (props) => {
     kakaoLogin,
     facebookLogin,
     sendWebmail,
-    verifyNumber,
+
     signup,
     emailDuplicationCheck,
     updateUser,
