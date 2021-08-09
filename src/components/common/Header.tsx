@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import styled, { ThemeContext } from "styled-components";
@@ -9,6 +9,7 @@ import { CgProfile } from "react-icons/cg";
 import { AiOutlineLogout, AiOutlineSetting } from "react-icons/ai";
 import { BsChat } from "react-icons/bs";
 import { AuthContext } from "../../store/AuthContext";
+import { useAlert } from "react-alert";
 
 interface HeaderProps {
   type?: string;
@@ -70,7 +71,6 @@ const SelectMenu = styled.div<{ isActive: boolean }>`
     width: 125px;
     left: -20px;
   }
-
   @keyframes growDown {
     0% {
       transform: scaleY(0);
@@ -111,6 +111,19 @@ const MyImage: React.FC = () => {
   const [isActive, setIsActive] = useState(false);
   const { logout, user } = useContext(AuthContext);
   const router = useRouter();
+  const message = useAlert();
+
+  useEffect(() => {
+    console.log(user, "header");
+    if (!user?.token) {
+      message.error("로그인을 해주세요.", {
+        onClose: () => {
+          router.push("/account/login");
+        },
+      });
+      return;
+    }
+  }, []);
   const profileImage = (() => {
     if (user?.imageUrl === undefined || user?.imageUrl === "default.png")
       return `https://mylifeforcoding.com/users/image?imageUrl=default.png`;
@@ -163,6 +176,7 @@ const MyImage: React.FC = () => {
 const HeaderCondition: React.FC<HeaderProps> = (props) => {
   const headerType = props.type;
   const { user } = useContext(AuthContext);
+
   if (user?.token) {
     return <MyImage />;
   }

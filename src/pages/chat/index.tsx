@@ -15,7 +15,7 @@ const Container = styled.div`
 
 export default function Chat() {
   return (
-    <Layout type="loggedIn">
+    <Layout>
       <Container>
         <ChatRoom />
       </Container>
