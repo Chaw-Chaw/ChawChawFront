@@ -138,6 +138,7 @@ const ProfileSection: React.FC = () => {
           type="country"
           count={2}
           setValues={setUserCountries}
+          values={user?.country}
         />
         <ProfileSelectInfo
           title="Language you can"
@@ -145,6 +146,7 @@ const ProfileSection: React.FC = () => {
           type="language"
           count={4}
           setValues={setUserLanguages}
+          values={user?.language}
         />
         <ProfileSelectInfo
           title="Learning lanugage"
@@ -152,6 +154,7 @@ const ProfileSection: React.FC = () => {
           type="hopeLanguage"
           count={4}
           setValues={setUserHopeLanguages}
+          values={user?.hopeLanguage}
         />
         <ProfileSocialUrl />
       </ProfileInfoBox>

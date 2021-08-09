@@ -44,6 +44,26 @@ const PostModalBox = styled.div<{ visible?: boolean }>`
     width: 320px;
   }
 `;
+const DropDownOutline = styled.div`
+  margin-right: 0px;
+`;
+
+const DropDownMainBox = styled(DropDownOutline)`
+  padding: 5px;
+  border-radius: 20rem;
+  position: relative;
+  border: 2px solid ${(props) => props.theme.primaryColor};
+`;
+
+const DropDownMainText = styled.div`
+  padding: 0px 10px;
+  color: ${(props) => props.theme.primaryColor};
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  background-color: ${(props) => props.theme.bodyBackgroundColor};
+  transform: translateX(-50%);
+`;
 
 const PostModalContent = styled.div`
   width: 100%;
@@ -91,7 +111,6 @@ const ViewCountBox = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-
   svg {
     margin-left: 3px;
   }
@@ -125,9 +144,10 @@ const PostInfoTitle = styled.h2`
 `;
 
 const PostInfoIconBox = styled.div`
-  width: 100%;
+  gap: 2px 2px;
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
 `;
 
 const PostImageSection = styled.div`
@@ -167,7 +187,7 @@ const PostUserName = styled.h2`
 `;
 
 const PostChatButton = styled(Button)`
-  margin: 3px auto;
+  margin: 5px auto;
   min-height: 30px;
   @media (max-width: 500px) {
     width: 150px;
@@ -236,19 +256,36 @@ const PostInfoList: React.FC<{ title?: string; values?: string[] }> = (
       <PostInfoTitle>{props.title}</PostInfoTitle>
       <PostInfoIconBox>
         {valueLists.map((item, index) => {
-          return (
-            <div key={index} style={{ margin: "3px 3px" }}>
-              <DropDownBox
-                fontWeight="900"
-                fontSize="0.7rem"
-                width="80px"
-                height="30px"
-                color="white"
-                value={item}
-                backgroundColor={colors[index % 4]}
-              />
-            </div>
-          );
+          if (index === 0) {
+            return (
+              <DropDownMainBox>
+                <DropDownMainText>main</DropDownMainText>
+                <DropDownBox
+                  fontWeight="900"
+                  fontSize="0.7rem"
+                  width="80px"
+                  height="30px"
+                  color="white"
+                  value={item}
+                  backgroundColor={colors[index % 4]}
+                />
+              </DropDownMainBox>
+            );
+          } else {
+            return (
+              <DropDownOutline key={index}>
+                <DropDownBox
+                  fontWeight="900"
+                  fontSize="0.7rem"
+                  width="80px"
+                  height="30px"
+                  color="white"
+                  value={item}
+                  backgroundColor={colors[index % 4]}
+                />
+              </DropDownOutline>
+            );
+          }
         })}
       </PostInfoIconBox>
     </PostInfoListBox>

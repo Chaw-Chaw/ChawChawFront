@@ -5,6 +5,7 @@ import Image from "next/image";
 import { AiFillEye, AiFillHeart } from "react-icons/ai";
 import PostModal from "./PostModal";
 import { ModalLayout } from "../common";
+import axios from "axios";
 
 interface PostCardProps {
   viewCount?: number;
@@ -82,7 +83,6 @@ const ViewCountBox = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-
   svg {
     margin-left: 3px;
   }
@@ -104,7 +104,6 @@ const PostImageBox = styled.div`
   position: relative;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-
   .post-image {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
@@ -150,7 +149,8 @@ const PostCardInfo: React.FC<PostCardProps> = (props) => {
 
 const PostCard: React.FC<PostCardProps> = (props) => {
   const [open, setOpen] = useState(false);
-  const handleModal = () => {
+  const handleModal = async () => {
+    // await axios.get("/users/");
     setOpen((open) => !open);
     console.log(open);
   };

@@ -66,11 +66,9 @@ const InitialBox = styled.div<initialBoxProps>`
     position: absolute;
     left: 5px;
   }
-
   :hover {
     cursor: pointer;
   }
-
   // 드래그 방지
   -webkit-touch-callout: none;
   user-select: none;
@@ -96,7 +94,6 @@ const SelectMenu = styled.div<SelectMenuProps>`
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
   /* box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.5); */
-
   animation: growDown 300ms ease-in-out forwards;
   transform-origin: top center;
   overflow: auto;
@@ -161,7 +158,8 @@ const DropDown: React.FC<DropDownProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const option = [props.initialValue].concat(props.options);
   const setInfo = (item: string) => {
-    if (user && props.index) {
+    console.log(user?.country, props.index, props.type);
+    if (user && props.index !== undefined) {
       if (props.type === "country" && user.country) {
         const newData = [...user.country];
         newData[props.index] = item;
@@ -170,15 +168,15 @@ const DropDown: React.FC<DropDownProps> = (props) => {
       if (props.type === "language" && user.language) {
         const newData = [...user.language];
         newData[props.index] = item;
-        updateUser({ country: [...newData] });
+        updateUser({ language: [...newData] });
       }
       if (props.type === "hopeLanguage" && user.hopeLanguage) {
         const newData = [...user.hopeLanguage];
         newData[props.index] = item;
-        updateUser({ country: [...newData] });
-      } else {
-        alert("다른 형태의 dropbox 입니다.");
+        updateUser({ hopeLanguage: [...newData] });
       }
+    } else {
+      alert("다른 형태의 dropbox 입니다.");
     }
   };
 

@@ -20,6 +20,7 @@ interface ProfileListProps {
 interface ProfileSelectInfoProps extends ProfileListProps {
   type: string;
   count: number;
+  values?: string[];
 }
 interface ProfileSocialUrlProps extends ProfileListProps {}
 const Container = styled.div`
@@ -84,13 +85,11 @@ const ControlBtnButtonContainer = styled.div`
 `;
 const AddControlBtnButton = styled(ControlBtnButton)`
   width: 100%;
-
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
 `;
 const RemoveControlBtnButton = styled(ControlBtnButton)`
   width: 100%;
-
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
 `;
@@ -109,7 +108,6 @@ const DropDownMainBox = styled(DropDownBox)`
   padding: 5px;
   border-radius: 20rem;
   position: relative;
-
   border: 2px solid ${(props) => props.theme.primaryColor};
 `;
 
@@ -124,56 +122,73 @@ const DropDownMainText = styled.div`
 `;
 
 const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
-  const [buttonCount, setButtonCount] = useState<number[]>([]);
-  const [values, setValues] = useState<string[]>(["", "", "", ""]);
-  const AddButton = () => {
-    if (buttonCount.length >= props.count) {
-      return;
-    }
-    setButtonCount((buttonCount) => {
-      return [...buttonCount, 1];
-    });
-  };
-  const RemoveButton = () => {
-    if (buttonCount.length === 0) {
-      return;
-    }
-    const newButtonCount = [...buttonCount];
-    newButtonCount.pop();
-    setButtonCount((buttonCount) => {
-      return newButtonCount;
-    });
-  };
+  // const values = (() => {
+  //   if (props.values) {
+  //     const arr = Array.from({ length: props.count }, () => "");
+  //     props.values.forEach((item, index) => {
+  //       if (props.values) {
+  //         arr[index] = props.values[index];
+  //       }
+  //     });
+  //     console.log(arr, props.type, "profileValues");
+  //     return arr;
+  //   }
+  // })();
+  const [buttonCount, setButtonCount] = useState(props.values);
+  // const AddButton = () => {
+  //   if (buttonCount && props.values) {
+  //     if (buttonCount.length >= props.count) {
+  //       return;
+  //     }
+  //     if (buttonCount.length === props.values.length)
+  //       setButtonCount([...buttonCount, ""]);
+  //   }
+  // };
+  // const RemoveButton = () => {
+  //   if (buttonCount) {
+  //     if (buttonCount.length === 0) {
+  //       return;
+  //     }
+  //     const newButtonCount = [...buttonCount];
+  //     newButtonCount.pop();
+  //     setButtonCount((buttonCount) => {
+  //       return newButtonCount;
+  //     });
+  //   }
+  // };
   const colors = ["#06C074", "#5A65E8", "#4BC6DA"];
 
   return (
     <ProfileList title={props.title} description={props.description}>
       <ButtonsBox>
-        {buttonCount.map((_, index) => {
-          if (index === 0) {
+        {buttonCount &&
+          buttonCount.map((item, index) => {
+            if (index === 0) {
+              return (
+                <DropDownMainBox key={index}>
+                  <DropDownMainText>main</DropDownMainText>
+                  <SelectInfoDropDown
+                    index={index}
+                    type={props.type}
+                    backgroundColor={colors[index % 3]}
+                    initialValue={item}
+                  />
+                </DropDownMainBox>
+              );
+            }
             return (
-              <DropDownMainBox key={index}>
-                <DropDownMainText>main</DropDownMainText>
+              <DropDownBox key={index}>
                 <SelectInfoDropDown
                   index={index}
                   type={props.type}
                   backgroundColor={colors[index % 3]}
+                  initialValue={item}
                 />
-              </DropDownMainBox>
+              </DropDownBox>
             );
-          }
-          return (
-            <DropDownBox key={index}>
-              <SelectInfoDropDown
-                index={index}
-                type={props.type}
-                backgroundColor={colors[index % 3]}
-              />
-            </DropDownBox>
-          );
-        })}
+          })}
 
-        {(() => {
+        {/* {(() => {
           if (buttonCount.length === 0)
             return <ControlBtnButton onClick={AddButton}>+</ControlBtnButton>;
           if (buttonCount.length > 0 && buttonCount.length < props.count)
@@ -190,7 +205,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
               <ControlBtnButton onClick={RemoveButton}>-</ControlBtnButton>
             );
           }
-        })()}
+        })()} */}
       </ButtonsBox>
     </ProfileList>
   );

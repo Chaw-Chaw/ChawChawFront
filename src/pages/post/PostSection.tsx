@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { PostCard } from "../../components/post/PostCard";
+import { useCookies } from "react-cookie";
+import axios from "axios";
+import { AuthContext } from "../../store/AuthContext";
+import { RiTumblrLine } from "react-icons/ri";
+import { useAlert } from "react-alert";
 
 const PostSectionBox = styled.div`
   width: calc(100% - 50px);
@@ -22,6 +27,48 @@ const PostSectionContainer = styled.div`
 `;
 
 const PostSection: React.FC = (props) => {
+  const { user } = useContext(AuthContext);
+  const message = useAlert();
+  const [cookie, setCookie] = useCookies(["exclude"]);
+  const [postInfo, setPostInfo] = useState({});
+  const getFirstPost = async () => {
+    console.log(user, "postsection");
+    setCookie("exclude", "123123", {
+      path: "/",
+      secure: true,
+      sameSite: "none",
+    });
+    const response = await axios
+      .get(`/users`, {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `${user?.token}`,
+          Accept: "application/json",
+        },
+        params: {
+          pageNo: 1,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.data.responseMessage === "조회 결과가 존재하지 않음") {
+          message.error("POST가 존재하지 않습니다.");
+          return undefined;
+        }
+        return res.data.data;
+      });
+    return response;
+  };
+
+  useEffect(() => {
+    if (JSON.stringify(user) === JSON.stringify({})) return;
+    const result = getFirstPost();
+    if (result) {
+      setPostInfo({ ...result });
+    }
+    console.log(result, "POST 데이터 조회");
+  }, [user]);
+
   return (
     <PostSectionContainer>
       <PostSectionBox>
