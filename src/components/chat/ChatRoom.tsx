@@ -77,7 +77,7 @@ const ChatRoom: React.FC = () => {
   };
 
   const subscribe = () => {
-    client.current.subscribe(`/queue/chat/room/4`, ({ body }: any) => {
+    client.current.subscribe(`/queue/chat/room/9`, ({ body }: any) => {
       setChatMessages((chatMessage: any) => [...chatMessage, JSON.parse(body)]);
     });
   };
@@ -89,7 +89,7 @@ const ChatRoom: React.FC = () => {
 
     client.current.publish({
       destination: "/message",
-      body: JSON.stringify({ roomSeq: ROOM_SEQ, message }),
+      body: JSON.stringify({ roomId: 4, sender: "노두현", message }),
     });
 
     setMessage("");
