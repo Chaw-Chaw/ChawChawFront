@@ -77,7 +77,7 @@ const ChatRoom: React.FC = () => {
   };
 
   const subscribe = () => {
-    client.current.subscribe(`/queue/chat/room/9`, ({ body }: any) => {
+    client.current.subscribe(`/queue/chat/room/4`, ({ body }: any) => {
       setChatMessages((chatMessage: any) => [...chatMessage, JSON.parse(body)]);
     });
   };
@@ -125,6 +125,15 @@ const ChatRoom: React.FC = () => {
         <Message src={DefaultImage} userName="doodream">
           hello!
         </Message>
+        {chatMessages && chatMessages.length > 0 && (
+          <div>
+            {chatMessages.map((_chatMessage: any, index: any) => (
+              <Message userName="doodream" src={DefaultImage} key={index}>
+                {_chatMessage.message}
+              </Message>
+            ))}
+          </div>
+        )}
         {/* <Message>
           hello every one!
           <br /> nice!
