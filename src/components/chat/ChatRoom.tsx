@@ -77,7 +77,7 @@ const ChatRoom: React.FC = () => {
   };
 
   const subscribe = () => {
-    client.current.subscribe(`/sub/chat/${ROOM_SEQ}`, ({ body }: any) => {
+    client.current.subscribe(`/queue/chat/room/4`, ({ body }: any) => {
       setChatMessages((chatMessage: any) => [...chatMessage, JSON.parse(body)]);
     });
   };
@@ -88,7 +88,7 @@ const ChatRoom: React.FC = () => {
     }
 
     client.current.publish({
-      destination: "/pub/chat",
+      destination: "/message",
       body: JSON.stringify({ roomSeq: ROOM_SEQ, message }),
     });
 
