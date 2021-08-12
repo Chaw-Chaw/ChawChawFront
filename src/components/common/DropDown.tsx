@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { ImEarth } from "react-icons/im";
-import { LocaleList, CountryEmojiNames, LanguageNames } from "../common";
+import { CountryLocale, CountryEmojiNames, LanguageNames } from "../common";
 import { AuthContext } from "../../store/AuthContext";
 
 interface initialBoxProps {
@@ -18,7 +18,7 @@ interface initialBoxProps {
   backgroundColor?: string;
 }
 interface DropDownProps extends initialBoxProps {
-  options?: string[];
+  options?: any;
   color?: string;
   initialValue?: string;
   isActive?: boolean;
@@ -28,6 +28,7 @@ interface DropDownProps extends initialBoxProps {
   value?: string;
   index?: number;
   type?: string;
+  setValues?: Dispatch<SetStateAction<string[]>>;
 }
 
 interface SelectMenuProps extends DropDownProps {}
@@ -154,29 +155,15 @@ const DropDownBox: React.FC<DropDownProps> = (props) => {
 
 const DropDown: React.FC<DropDownProps> = (props) => {
   const [value, setValue] = useState(props.initialValue);
-  const { user, updateUser } = useContext(AuthContext);
   const [isActive, setIsActive] = useState(false);
-  const option = [props.initialValue].concat(props.options);
+  const index = props?.index;
+  const option = props.options;
   const setInfo = (item: string) => {
-    console.log(user?.country, props.index, props.type);
-    if (user && props.index !== undefined) {
-      if (props.type === "country" && user.country) {
-        const newData = [...user.country];
-        newData[props.index] = item;
-        updateUser({ country: [...newData] });
-      }
-      if (props.type === "language" && user.language) {
-        const newData = [...user.language];
-        newData[props.index] = item;
-        updateUser({ language: [...newData] });
-      }
-      if (props.type === "hopeLanguage" && user.hopeLanguage) {
-        const newData = [...user.hopeLanguage];
-        newData[props.index] = item;
-        updateUser({ hopeLanguage: [...newData] });
-      }
-    } else {
-      alert("다른 형태의 dropbox 입니다.");
+    if (props.setValues && index !== undefined) {
+      props.setValues((preState) => {
+        preState[index] = item;
+        return [...preState];
+      });
     }
   };
 
@@ -206,7 +193,7 @@ const DropDown: React.FC<DropDownProps> = (props) => {
         isActive={isActive}
         onMouseLeave={() => setIsActive(false)}
       >
-        {option?.map((item, index) => {
+        {option?.map((item: string, index: number) => {
           return (
             <Option
               key={index}
@@ -228,7 +215,7 @@ const DropDown: React.FC<DropDownProps> = (props) => {
 };
 
 const ChangeLanguageDropDown: React.FC = (props) => {
-  const localeList = Object.keys(LocaleList);
+  const localeList = Object.values(CountryLocale);
 
   return (
     <DropDown
@@ -275,6 +262,7 @@ const SelectInfoDropDown: React.FC<SelectInfoDropDownProps> = (props) => {
       postOrder={props.postOrder}
       index={props.index}
       type={props.type}
+      setValues={props.setValues}
     />
   );
 };

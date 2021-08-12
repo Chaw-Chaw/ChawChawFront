@@ -31,6 +31,7 @@ const PostSection: React.FC = (props) => {
   const message = useAlert();
   const [cookie, setCookie] = useCookies(["exclude"]);
   const [postInfo, setPostInfo] = useState({});
+
   const getFirstPost = async () => {
     console.log(user, "postsection");
     setCookie("exclude", "123123", {
@@ -61,13 +62,14 @@ const PostSection: React.FC = (props) => {
   };
 
   useEffect(() => {
-    if (JSON.stringify(user) === JSON.stringify({})) return;
     const result = getFirstPost();
     if (result) {
-      setPostInfo({ ...result });
+      setPostInfo((item) => {
+        return { ...result };
+      });
     }
-    console.log(result, "POST 데이터 조회");
-  }, [user]);
+    console.log(postInfo, "POST 데이터 조회");
+  }, []);
 
   return (
     <PostSectionContainer>

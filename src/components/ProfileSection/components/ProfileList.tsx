@@ -14,15 +14,20 @@ import { AuthContext } from "../../../store/AuthContext";
 interface ProfileListProps {
   title?: string;
   description?: string;
-  setValues?: Dispatch<SetStateAction<string[] | undefined>>;
+  setValues?: Dispatch<SetStateAction<string[]>>;
+  values?: string[];
 }
 
 interface ProfileSelectInfoProps extends ProfileListProps {
   type: string;
   count: number;
-  values?: string[];
 }
-interface ProfileSocialUrlProps extends ProfileListProps {}
+interface ProfileSocialUrlProps extends ProfileListProps {
+  type?: string;
+  setFaceBookUrl?: Dispatch<SetStateAction<string>>;
+  setInstagramUrl?: Dispatch<SetStateAction<string>>;
+  setUrl?: Dispatch<SetStateAction<string>>;
+}
 const Container = styled.div`
   display: flex;
   padding-bottom: 20px;
@@ -122,47 +127,35 @@ const DropDownMainText = styled.div`
 `;
 
 const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
-  // const values = (() => {
-  //   if (props.values) {
-  //     const arr = Array.from({ length: props.count }, () => "");
-  //     props.values.forEach((item, index) => {
-  //       if (props.values) {
-  //         arr[index] = props.values[index];
-  //       }
-  //     });
-  //     console.log(arr, props.type, "profileValues");
-  //     return arr;
-  //   }
-  // })();
-  const [buttonCount, setButtonCount] = useState(props.values);
-  // const AddButton = () => {
-  //   if (buttonCount && props.values) {
-  //     if (buttonCount.length >= props.count) {
-  //       return;
-  //     }
-  //     if (buttonCount.length === props.values.length)
-  //       setButtonCount([...buttonCount, ""]);
-  //   }
-  // };
-  // const RemoveButton = () => {
-  //   if (buttonCount) {
-  //     if (buttonCount.length === 0) {
-  //       return;
-  //     }
-  //     const newButtonCount = [...buttonCount];
-  //     newButtonCount.pop();
-  //     setButtonCount((buttonCount) => {
-  //       return newButtonCount;
-  //     });
-  //   }
-  // };
+  const AddButton = () => {
+    console.log(props.values, "before");
+    if (props.setValues && props.values) {
+      if (props.values[props.values.length - 1] !== "") {
+        props.setValues((preState) => {
+          return [...preState, ""];
+        });
+        console.log(props.values, "after");
+      }
+    }
+  };
+  const RemoveButton = () => {
+    // 왜 두개 이상의 배열에서 갑자기 한개로 줄어들까?
+    if (props.setValues && props.values) {
+      props.setValues((preState) => {
+        preState.pop();
+        const newState = [...preState];
+        console.log(newState, "removeButton");
+        return newState;
+      });
+    }
+  };
   const colors = ["#06C074", "#5A65E8", "#4BC6DA"];
 
   return (
     <ProfileList title={props.title} description={props.description}>
       <ButtonsBox>
-        {buttonCount &&
-          buttonCount.map((item, index) => {
+        {props.values &&
+          Object.values(props.values).map((item, index) => {
             if (index === 0) {
               return (
                 <DropDownMainBox key={index}>
@@ -172,6 +165,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
                     type={props.type}
                     backgroundColor={colors[index % 3]}
                     initialValue={item}
+                    setValues={props.setValues}
                   />
                 </DropDownMainBox>
               );
@@ -183,29 +177,51 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
                   type={props.type}
                   backgroundColor={colors[index % 3]}
                   initialValue={item}
+                  setValues={props.setValues}
                 />
               </DropDownBox>
             );
           })}
 
-        {/* {(() => {
-          if (buttonCount.length === 0)
-            return <ControlBtnButton onClick={AddButton}>+</ControlBtnButton>;
-          if (buttonCount.length > 0 && buttonCount.length < props.count)
-            return (
-              <ControlBtnButtonContainer>
-                <AddControlBtnButton onClick={AddButton}>+</AddControlBtnButton>
-                <RemoveControlBtnButton onClick={RemoveButton}>
-                  -
-                </RemoveControlBtnButton>
-              </ControlBtnButtonContainer>
-            );
-          else {
-            return (
-              <ControlBtnButton onClick={RemoveButton}>-</ControlBtnButton>
-            );
+        {(() => {
+          if (props.values) {
+            const valuesLength = Object.values(props.values).length;
+            if (valuesLength === 0)
+              return <ControlBtnButton onClick={AddButton}>+</ControlBtnButton>;
+            else if (valuesLength > 0 && valuesLength < props.count)
+              return (
+                <ControlBtnButtonContainer>
+                  <AddControlBtnButton onClick={AddButton}>
+                    +
+                  </AddControlBtnButton>
+                  <RemoveControlBtnButton onClick={RemoveButton}>
+                    -
+                  </RemoveControlBtnButton>
+                </ControlBtnButtonContainer>
+              );
+            else
+              return (
+                <ControlBtnButton onClick={RemoveButton}>-</ControlBtnButton>
+              );
           }
-        })()} */}
+
+          // if (buttonCount.length === 0)
+          //   return <ControlBtnButton onClick={AddButton}>+</ControlBtnButton>;
+          // if (buttonCount.length > 0 && buttonCount.length < props.count)
+          //   return (
+          //     <ControlBtnButtonContainer>
+          //       <AddControlBtnButton onClick={AddButton}>+</AddControlBtnButton>
+          //       <RemoveControlBtnButton onClick={RemoveButton}>
+          //         -
+          //       </RemoveControlBtnButton>
+          //     </ControlBtnButtonContainer>
+          //   );
+          // else {
+          //   return (
+          //     <ControlBtnButton onClick={RemoveButton}>-</ControlBtnButton>
+          //   );
+          // }
+        })()}
       </ButtonsBox>
     </ProfileList>
   );
@@ -233,7 +249,7 @@ const UrlUpdateButton = styled(UpdateButton)`
   width: 40px;
   padding: 0px;
 `;
-const SocialUrl: React.FC<{ type?: string }> = (props) => {
+const SocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const urlRef = useRef<HTMLInputElement>(null);
   const { updateUser } = useContext(AuthContext);
@@ -247,18 +263,19 @@ const SocialUrl: React.FC<{ type?: string }> = (props) => {
         ref={urlRef}
         defaultValue={
           props.type === "facebook"
-            ? "https://www.instagram.com/"
-            : "https://www.facebook.com/"
+            ? "https://www.facebook.com/"
+            : "https://www.instagram.com/"
         }
       />
       <UrlUpdateButton
         onClick={() => {
           setIsActive((isActive) => !isActive);
-          if (urlRef === null || urlRef.current === null) return;
-          if (isActive) {
-            props.type === "facebook"
-              ? updateUser({ facebookUrl: urlRef.current.value })
-              : updateUser({ instagramUrl: urlRef.current.value });
+          const url = urlRef.current;
+          if (urlRef === null || url === null) return;
+          if (isActive && props.setUrl && url) {
+            props.setUrl(() => {
+              return url.value;
+            });
           }
         }}
       >
@@ -277,8 +294,8 @@ const ProfileSocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
       <div
         style={{ display: "flex", flexDirection: "column", marginTop: "20px" }}
       >
-        <SocialUrl type="facebook" />
-        <SocialUrl type="instagram" />
+        <SocialUrl type="facebook" setUrl={props.setFaceBookUrl} />
+        <SocialUrl type="instagram" setUrl={props.setInstagramUrl} />
       </div>
     </ProfileList>
   );

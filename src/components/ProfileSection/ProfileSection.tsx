@@ -5,13 +5,14 @@ import {
   ProfileSelectInfo,
   ProfileSocialUrl,
 } from "./components/";
-import { Button, Message } from "../common";
+import { Button, Message, LanguageLocale, CountryLocale } from "../common";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { ChangeEvent, useContext, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../store/AuthContext";
 import { useAlert } from "react-alert";
 import axios from "axios";
 import { AiOutlineConsoleSql } from "react-icons/ai";
+
 interface ProfileSection {
   title?: string;
   content?: string;
@@ -61,11 +62,60 @@ const ProfileSection: React.FC = () => {
     formState: { errors },
   } = useForm<Inputs>();
   const { signup, updateUser, user } = useContext(AuthContext);
-  const [userCountries, setUserCountries] = useState<string[]>();
-  const [userLanguages, setUserLanguages] = useState<string[]>();
-  const [userHopeLanguages, setUserHopeLanguages] = useState<string[]>();
+  const [userCountries, setUserCountries] = useState<string[]>([]);
+  const [userLanguages, setUserLanguages] = useState<string[]>([]);
+  const [userHopeLanguages, setUserHopeLanguages] = useState<string[]>([]);
+  const [userContent, setUserContent] = useState<string>("");
+  const [userFaceBookUrl, setUserFaceBookUrl] = useState<string>("");
+  const [userInstagramUrl, setUserInstagramUrl] = useState<string>("");
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {};
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    const country = userCountries.map((item, index) => {
+      if (item === "") return item;
+      const regex =
+        /(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|\ud83c[\ude32-\ude3a]|\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])/g;
+      const countryName = item.replace(regex, "").substring(1);
+      return CountryLocale[countryName];
+    });
+
+    const language = userLanguages.map((item) => {
+      if (item === "") return item;
+      return LanguageLocale[item];
+    });
+    const hopeLanguage = userHopeLanguages.map((item) => {
+      if (item === "") return item;
+      return LanguageLocale[item];
+    });
+
+    const userProfile = {
+      country,
+      language,
+      hopeLanguage,
+      content: userContent,
+      facebookUrl: userFaceBookUrl,
+      instagramUrl: userInstagramUrl,
+      imageUrl: user?.imageUrl,
+      repCountry: country[0],
+      repLanguage: language[0],
+      repHopeLanguage: hopeLanguage[0],
+    };
+    console.log(userProfile, "profileInfo");
+    await axios
+      .post("/users/profile", userProfile, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${user?.token}`,
+          Accept: "application/json",
+        },
+      })
+      .then((res) => {
+        message.success("프로필이 업로드 되었습니다.");
+        console.log(res, "profile Update");
+        // if (!res.data.isSuccess) {
+
+        // }
+      });
+  };
   const sendImage = async (image: FormData) => {
     await axios
       .post("/users/image", image, {
@@ -77,6 +127,8 @@ const ProfileSection: React.FC = () => {
       })
       .then((res) => {
         if (res.data.isSuccess) {
+          message.success("이미지 업로드 성공!");
+          console.log(res.data, "image Upload");
           return res.data.data;
         } else {
           throw new Error(res.data);
@@ -128,7 +180,8 @@ const ProfileSection: React.FC = () => {
         <ProfileContent
           title="포스팅에 올라갈 당신의 매력을 어필해보세요!"
           placeholder="당신을 소개할 내용을 입력해주세요."
-          update={updateUser}
+          setValues={setUserContent}
+          values={userContent}
         />
       </ProfileHeader>
       <ProfileInfoBox>
@@ -138,7 +191,7 @@ const ProfileSection: React.FC = () => {
           type="country"
           count={2}
           setValues={setUserCountries}
-          values={user?.country}
+          values={userCountries}
         />
         <ProfileSelectInfo
           title="Language you can"
@@ -146,7 +199,7 @@ const ProfileSection: React.FC = () => {
           type="language"
           count={4}
           setValues={setUserLanguages}
-          values={user?.language}
+          values={userLanguages}
         />
         <ProfileSelectInfo
           title="Learning lanugage"
@@ -154,9 +207,12 @@ const ProfileSection: React.FC = () => {
           type="hopeLanguage"
           count={4}
           setValues={setUserHopeLanguages}
-          values={user?.hopeLanguage}
+          values={userHopeLanguages}
         />
-        <ProfileSocialUrl />
+        <ProfileSocialUrl
+          setFaceBookUrl={setUserFaceBookUrl}
+          setInstagramUrl={setUserInstagramUrl}
+        />
       </ProfileInfoBox>
       <ProfileUploadButton type="submit">프로필 업로드</ProfileUploadButton>
     </Container>

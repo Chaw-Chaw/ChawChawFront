@@ -33,7 +33,6 @@ interface AuthContextObj {
   facebookLogin: (res: AuthReqProps) => void;
   saveUser: (res: AuthResProps<AxiosResponse>) => void;
   sendWebmail: (res: AuthReqProps) => void;
-
   // verifyUniversity: () => void;
   logout: () => void;
   signup: (res: AuthReqProps) => void;
@@ -113,9 +112,10 @@ const AuthContextProvider: React.FC = (props) => {
   const [user, setUser] = useState({});
   const router = useRouter();
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
-    const newUser = user === "{}" ? { ...res } : { ...user, ...res };
-    setUser(newUser);
-    console.log(newUser, "Save userInfo");
+    setUser((preUser) => {
+      return { ...preUser, ...res };
+    });
+    console.log(user, "Save userInfo");
     return res;
   };
 
@@ -375,8 +375,9 @@ const AuthContextProvider: React.FC = (props) => {
   //   }
   // };
   const updateUser = (newUserInfo: UserPropertys) => {
-    const newUser = { ...user, ...newUserInfo };
-    setUser(newUser);
+    setUser((preUser) => {
+      return { ...preUser, ...user };
+    });
   };
 
   const contextValue: AuthContextObj = {
@@ -396,7 +397,9 @@ const AuthContextProvider: React.FC = (props) => {
   };
   useEffect(() => {
     const initUser = window.localStorage.getItem("user");
-    setUser(initUser === null ? {} : JSON.parse(initUser));
+    setUser((preUser) => {
+      return initUser === null ? preUser : JSON.parse(initUser);
+    });
   }, []);
 
   useEffect(() => {

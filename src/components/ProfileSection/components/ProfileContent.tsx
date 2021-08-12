@@ -1,11 +1,19 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import styled from "styled-components";
 import { TextArea, Label, UpdateButton } from "../../common";
 
 interface ProfileContentProps {
   placeholder?: string;
   title?: string;
-  update: ({}) => void;
+  setValues: Dispatch<SetStateAction<string>>;
+  values: string;
 }
 const Container = styled.div`
   display: flex;
@@ -60,9 +68,12 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
       <UpdateButton
         onClick={() => {
           setIsActive((isActive) => !isActive);
-          if (textAreaRef === null || textAreaRef.current === null) return;
+          const content = textAreaRef.current;
+          if (textAreaRef === null || content === null) return;
           if (isActive) {
-            props.update({ content: textAreaRef.current.value });
+            props.setValues(() => {
+              return content.value;
+            });
           }
           // props.update
         }}
