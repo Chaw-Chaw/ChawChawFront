@@ -52,9 +52,9 @@ const ChatRoom: React.FC = () => {
     client.current = new StompJs.Client({
       // brokerURL: "ws://localhost:8080/ws-stomp/websocket", // 웹소켓 서버로 직접 접속
       webSocketFactory: () => new SockJS("https://mylifeforcoding.com/ws"), // proxy를 통한 접속
-      connectHeaders: {
-        "auth-token": "spring-chat-auth-token",
-      },
+      // connectHeaders: {
+      //   "auth-token": "spring-chat-auth-token",
+      // },
       debug: function (str) {
         console.log(str);
       },
