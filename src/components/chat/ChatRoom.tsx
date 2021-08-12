@@ -77,8 +77,8 @@ const ChatRoom: React.FC = () => {
   };
 
   const subscribe = () => {
-    client.current.subscribe(`/queue/chat/room/4`, ({ body }: any) => {
-      setChatMessages((chatMessage: any) => [...chatMessage, JSON.parse(body)]);
+    client.current.subscribe(`/queue/chat/room/4`, (response: any) => {
+      setChatMessages((chatMessage: any) => [...chatMessage, response]);
     });
   };
 
