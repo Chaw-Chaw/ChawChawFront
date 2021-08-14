@@ -42,7 +42,9 @@ const Content = styled(TextArea)<{ isActive?: boolean }>`
 const ProfileContent: React.FC<ProfileContentProps> = (props) => {
   const textAreaResizHandle = () => {
     if (textAreaRef === null || textAreaRef.current === null) return;
-    textAreaRef.current.style.height = "10px";
+    // textAreaRef.current.value = props.values;
+    setContent(textAreaRef.current.value);
+    textAreaRef.current.style.height = "110px";
     textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
     // console.log(
     //   textAreaRef?.current.value.replace(/(?:\r\n|\r|\n)/g, "<br />")
@@ -51,8 +53,14 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const textAreaResize = useCallback(textAreaResizHandle, []);
-
-  useEffect(textAreaResizHandle, []);
+  const [content, setContent] = useState<string>(
+    props.values ? props.values : ""
+  );
+  useEffect(() => {
+    textAreaResizHandle();
+    console.log(props.values, "content");
+    setContent(props.values);
+  }, [props.values]);
   return (
     <Container>
       <Title htmlFor="content">{props.title}</Title>
@@ -62,6 +70,7 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
         isActive={isActive}
         disabled={!isActive}
         placeholder={props.placeholder}
+        value={content}
         ref={textAreaRef}
         onInput={textAreaResize}
       />

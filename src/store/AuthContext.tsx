@@ -27,7 +27,7 @@ interface UserPropertys {
 
 interface AuthContextObj {
   isloggedIn: boolean;
-  user: UserPropertys | undefined;
+  user: UserPropertys;
   login: (res: AuthReqProps) => void;
   kakaoLogin: (res: AuthReqProps) => void;
   facebookLogin: (res: AuthReqProps) => void;

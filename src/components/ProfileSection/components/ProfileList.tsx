@@ -27,6 +27,9 @@ interface ProfileSocialUrlProps extends ProfileListProps {
   setFaceBookUrl?: Dispatch<SetStateAction<string>>;
   setInstagramUrl?: Dispatch<SetStateAction<string>>;
   setUrl?: Dispatch<SetStateAction<string>>;
+  faceBookUrl?: string;
+  instagramUrl?: string;
+  url?: string;
 }
 const Container = styled.div`
   display: flex;
@@ -134,18 +137,18 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
         props.setValues((preState) => {
           return [...preState, ""];
         });
-        console.log(props.values, "after");
+        // console.log(props.values, "after");
       }
     }
   };
   const RemoveButton = () => {
     // 왜 두개 이상의 배열에서 갑자기 한개로 줄어들까?
-    if (props.setValues && props.values) {
+    if (props.setValues) {
       props.setValues((preState) => {
         preState.pop();
-        const newState = [...preState];
-        console.log(newState, "removeButton");
-        return newState;
+
+        console.log(preState, "removeButton");
+        return [...preState];
       });
     }
   };
@@ -204,23 +207,6 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
                 <ControlBtnButton onClick={RemoveButton}>-</ControlBtnButton>
               );
           }
-
-          // if (buttonCount.length === 0)
-          //   return <ControlBtnButton onClick={AddButton}>+</ControlBtnButton>;
-          // if (buttonCount.length > 0 && buttonCount.length < props.count)
-          //   return (
-          //     <ControlBtnButtonContainer>
-          //       <AddControlBtnButton onClick={AddButton}>+</AddControlBtnButton>
-          //       <RemoveControlBtnButton onClick={RemoveButton}>
-          //         -
-          //       </RemoveControlBtnButton>
-          //     </ControlBtnButtonContainer>
-          //   );
-          // else {
-          //   return (
-          //     <ControlBtnButton onClick={RemoveButton}>-</ControlBtnButton>
-          //   );
-          // }
         })()}
       </ButtonsBox>
     </ProfileList>
@@ -261,6 +247,13 @@ const SocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
         isActive={isActive}
         disabled={!isActive}
         ref={urlRef}
+        value={
+          props.url
+            ? props.url
+            : props.type === "facebook"
+            ? "https://www.facebook.com/"
+            : "https://www.instagram.com/"
+        }
         defaultValue={
           props.type === "facebook"
             ? "https://www.facebook.com/"
@@ -294,8 +287,16 @@ const ProfileSocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
       <div
         style={{ display: "flex", flexDirection: "column", marginTop: "20px" }}
       >
-        <SocialUrl type="facebook" setUrl={props.setFaceBookUrl} />
-        <SocialUrl type="instagram" setUrl={props.setInstagramUrl} />
+        <SocialUrl
+          type="facebook"
+          setUrl={props.setFaceBookUrl}
+          url={props.faceBookUrl}
+        />
+        <SocialUrl
+          type="instagram"
+          setUrl={props.setInstagramUrl}
+          url={props.instagramUrl}
+        />
       </div>
     </ProfileList>
   );
