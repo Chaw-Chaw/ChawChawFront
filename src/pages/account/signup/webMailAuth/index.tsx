@@ -1,4 +1,10 @@
-import React, { ChangeEvent, useContext, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   Layout,
   Input,
@@ -48,7 +54,8 @@ export default function WebMailAuth() {
   const message = useAlert();
   const webmailRef = useRef<HTMLInputElement>(null);
   const [webmailValidate, setWebmailValidate] = useState(false);
-  const { sendWebmail, user, signup, webmailVerify } = useContext(AuthContext);
+  const { sendWebmail, user, signup, webmailVerify, updateUser } =
+    useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -79,17 +86,21 @@ export default function WebMailAuth() {
   };
 
   const verificationNumSubmit: SubmitHandler<Inputs> = (data) => {
+    if (!webmailRef.current) {
+      return;
+    }
     if (data.verificationNum && !activeVerificationNumber) {
-      // verifyNumber({
-      //   email: user?.web_email,
-      //   verificationNum: data.verificationNum,
+      // const verificationNumSubmitBody = {
+      //   email: webmailRef.current.value,
+      //   verificationNumber: data.verificationNum?.toString(),
       //   provider: user?.provider,
-      // });
+      // };
+      // console.log(verificationNumSubmitBody, "verificationNumSubmitBody");
       axios
         .post(
           "/mail/verification",
           {
-            email: user?.web_email,
+            email: webmailRef.current.value,
             verificationNumber: data.verificationNum?.toString(),
             provider: user?.provider,
           },
@@ -136,6 +147,10 @@ export default function WebMailAuth() {
   const checkKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.code === "Enter") e.preventDefault();
   };
+
+  useEffect(() => {
+    console.log(user, "userIn WebSignup");
+  }, [user]);
   return (
     <Layout type="signup">
       <AccountContainer

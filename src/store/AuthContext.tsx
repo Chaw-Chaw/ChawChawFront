@@ -279,6 +279,7 @@ const AuthContextProvider: React.FC = (props) => {
     }
     return false;
   };
+
   const sendWebmail = async ({ web_email }: AuthReqProps) => {
     console.log({ web_email }, "웹메일 전송 함수 실행");
     // webmailVerify(web_email);
@@ -376,7 +377,7 @@ const AuthContextProvider: React.FC = (props) => {
   // };
   const updateUser = (newUserInfo: UserPropertys) => {
     setUser((preUser) => {
-      return { ...preUser, ...user };
+      return { ...preUser, ...newUserInfo };
     });
   };
 
