@@ -11,7 +11,7 @@ const ImageBox = styled.div`
     border-radius: 100%;
   }
 `;
-const ProfileImage: React.FC<{ src: StaticImageData }> = (props) => {
+const ProfileImage: React.FC<{ src: string }> = (props) => {
   return (
     <ImageBox>
       <Image

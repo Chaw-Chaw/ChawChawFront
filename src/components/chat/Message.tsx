@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { ProfileImage } from "./ProfileImage";
 
 interface MessageProps {
-  src?: StaticImageData;
+  src?: string;
   userName?: string;
 }
 const YourMessageBox = styled.div`
@@ -18,10 +18,17 @@ const YourMessageBox = styled.div`
   border-top-left-radius: 0px;
 `;
 
-const MyMessageBox = styled(YourMessageBox)`
+const MyMessageBox = styled.div`
+  padding: 12px;
+  box-sizing: border-box;
+  display: flex;
+  max-width: 300px;
+  min-width: 70px;
+  min-height: 50px;
+  /* border: 1px solid ${(props) => props.theme.primaryColor}; */
   background-color: ${(props) => props.theme.primaryColor};
   border-radius: 20px;
-  border-top-right-radius: 0px;
+  border-top-left-radius: 0px;
   color: white;
   margin-left: auto;
 `;
@@ -31,6 +38,7 @@ const MessageContainer = styled.div`
   justify-content: flex-start;
   width: 100%;
   box-sizing: border-box;
+  margin-top: 10px;
 `;
 
 const MessageUserName = styled.h2`

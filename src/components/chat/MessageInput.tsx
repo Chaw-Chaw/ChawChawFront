@@ -16,8 +16,8 @@ const InputBox = styled.div`
   width: 100%;
   /* min-width: 500px; */
   box-sizing: border-box;
-  position: sticky;
-  bottom: 0px;
+  /* position: sticky;
+  bottom: 0px; */
   /* left: 50%; */
   /* @media (max-width: 768px) {
     min-width: 320px;

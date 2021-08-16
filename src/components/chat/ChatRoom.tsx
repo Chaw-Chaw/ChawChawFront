@@ -3,7 +3,9 @@ import styled from "styled-components";
 import DefaultImage from "../../../public/Layout/btsSugar.jpeg";
 import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
+import { useController } from "react-hook-form";
+import { AuthContext } from "../../store/AuthContext";
 
 const Outline = styled.div`
   border: none;
@@ -36,8 +38,14 @@ const Header = styled.div`
   height: 50px;
   z-index: 50;
 `;
+const MessageContainer = styled.div`
+  height: calc(100% - 50px);
+  width: 100%;
+  overflow: auto;
+`;
 
 const ChatRoom: React.FC = () => {
+  const { user } = useContext(AuthContext);
   const ROOM_SEQ = 1;
   const client = useRef<any>({});
   const [chatMessages, setChatMessages] = useState<any>([]);
@@ -78,8 +86,9 @@ const ChatRoom: React.FC = () => {
 
   const subscribe = () => {
     client.current.subscribe(`/queue/chat/room/4`, (response: any) => {
+      const message = JSON.parse(response.body);
       console.log(response, "subscribe");
-      setChatMessages((chatMessage: any) => [...chatMessage, response]);
+      setChatMessages((chatMessage: any) => [...chatMessage, message]);
     });
   };
 
@@ -90,86 +99,51 @@ const ChatRoom: React.FC = () => {
 
     client.current.publish({
       destination: "/message",
-      body: JSON.stringify({ roomId: 4, sender: "노두현", message }),
+      body: JSON.stringify({ roomId: 4, sender: user.name, message }),
     });
-
     setMessage("");
   };
+
   return (
     <Outline>
       <Inner>
-        <Header>
-          {/* <div>
-            <div>
-              <input
-                type={"text"}
-                placeholder={"message"}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyPress={(e) => e.which === 13 && publish(message)}
-              />
-              <button onClick={() => publish(message)}>send</button>
-            </div>
-          </div> */}
-        </Header>
-        {/* <div>
+        {/* <Header>
+        </Header> */}
+        <MessageContainer>
+          {/* <Message src={DefaultImage} userName="doodream">
+            hello!
+          </Message> */}
           {chatMessages && chatMessages.length > 0 && (
             <div>
-              {chatMessages.map((_chatMessage: any, index: any) => (
-                <Message userName="doodream" src={DefaultImage} key={index}>
-                  {_chatMessage.message}
-                </Message>
-              ))}
+              {chatMessages.map((chatMessage: any, index: any) => {
+                if (user.name === chatMessage.sender) {
+                  return <Message key={index}>{chatMessage.message}</Message>;
+                } else {
+                  return (
+                    <Message
+                      src={`https://mylifeforcoding.com/users/image?imageUrl=${chatMessage.imageUrl}`}
+                      key={index}
+                    >
+                      {chatMessage.message}
+                    </Message>
+                  );
+                }
+              })}
             </div>
           )}
-        </div> */}
-        <Message src={DefaultImage} userName="doodream">
-          hello!
-        </Message>
-        {chatMessages && chatMessages.length > 0 && (
-          <div>
-            {chatMessages.map((_chatMessage: any, index: any) => (
-              <Message userName="doodream" src={DefaultImage} key={index}>
-                {_chatMessage.message}
-              </Message>
-            ))}
-          </div>
-        )}
-        {/* <Message>
-          hello every one!
-          <br /> nice!
-        </Message>
-        <Message src={DefaultImage} userName="doodream">
-          hello!
-        </Message>
-        <Message>
-          hello every one!
-          <br /> nice!
-        </Message>
-        <Message src={DefaultImage} userName="doodream">
-          hello!
-        </Message>
-        <Message>
-          hello every one!
-          <br /> nice!
-        </Message>
-        <Message src={DefaultImage} userName="doodream">
-          hello!
-        </Message>
-        <Message>
-          hello every one!
-          <br /> nice!
-        </Message>
-        <Message src={DefaultImage} userName="doodream">
-          hello!
-        </Message>
-        <Message>
-          hello every one!
-          <br /> nice!
-        </Message> */}
+        </MessageContainer>
         <MessageInput
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={(e) => e.which === 13 && publish(message)}
+          onChange={(e) => {
+            // if (e.key === "Enter") return;
+            e.preventDefault();
+            setMessage(e.target.value);
+          }}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") {
+              setMessage("");
+              publish(message);
+            }
+          }}
           value={message}
         />
       </Inner>
