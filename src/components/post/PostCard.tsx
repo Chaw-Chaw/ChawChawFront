@@ -1,16 +1,27 @@
 import styled from "styled-components";
-import React, { useState } from "react";
+import React, { ForwardedRef, RefObject, useContext, useState } from "react";
 import DefaultImage from "../../../public/Layout/btsSugar.jpeg";
 import Image from "next/image";
 import { AiFillEye, AiFillHeart } from "react-icons/ai";
 import PostModal from "./PostModal";
-import { ModalLayout } from "../common";
+import { Message, ModalLayout } from "../common";
 import axios from "axios";
+import { CgNpm } from "react-icons/cg";
+import { AuthContext } from "../../store/AuthContext";
+import { useAlert } from "react-alert";
 
-interface PostCardProps {
-  viewCount?: number;
-  pastDate?: number;
-  likeCount?: number;
+interface PostCardInfoProps {
+  pastDate: number;
+  viewCount: number;
+  likeCount: number;
+}
+interface PostCardProps extends PostCardInfoProps {
+  imageUrl: string;
+  repCountry: string;
+  repLanguage: string;
+  repHopeLanguage: string;
+  name: string;
+  id: number;
 }
 
 const PostCardBox = styled.div`
@@ -129,7 +140,8 @@ const PostImageName = styled.span`
 const PostImageUserInfo = styled(PostImageName)`
   font-size: 1rem;
 `;
-const PostCardInfo: React.FC<PostCardProps> = (props) => {
+
+const PostCardInfo: React.FC<PostCardInfoProps> = (props) => {
   return (
     <PostCardInfoBox>
       <DateViewBox>
@@ -148,18 +160,35 @@ const PostCardInfo: React.FC<PostCardProps> = (props) => {
 };
 
 const PostCard: React.FC<PostCardProps> = (props) => {
+  const { user } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
+  const message = useAlert();
   const handleModal = async () => {
-    // await axios.get("/users/");
     setOpen((open) => !open);
-    console.log(open);
+    const response = await axios
+      .get(`/users/${props.id}`, {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `${user?.token}`,
+          Accept: "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res, "PostModal data");
+        if (!res.data.isSuccess) {
+          alert(`${props.id} 데이터 조회 실패`);
+          throw new Error(res.data);
+        }
+        return res.data.data;
+      });
   };
+
   return (
-    <>
+    <div>
       <PostCardBox onClick={handleModal}>
         <PostImageBox>
           <Image
-            src={DefaultImage}
+            src={`https://mylifeforcoding.com/users/image?imageUrl=${props.imageUrl}`}
             alt="포스팅 프로필 이미지"
             width="300px"
             height="200px"
@@ -167,8 +196,8 @@ const PostCard: React.FC<PostCardProps> = (props) => {
             objectFit="cover"
           />
           <PostImageInfoBox>
-            <PostImageName>BTS sugar</PostImageName>
-            <PostImageUserInfo>🇫🇷 French Korean</PostImageUserInfo>
+            <PostImageName>{props.name}</PostImageName>
+            <PostImageUserInfo>{`${props.repCountry} ${props.repLanguage} ${props.repHopeLanguage}`}</PostImageUserInfo>
           </PostImageInfoBox>
         </PostImageBox>
         <PostCardContent>{props.children}</PostCardContent>
@@ -179,15 +208,19 @@ const PostCard: React.FC<PostCardProps> = (props) => {
         />
       </PostCardBox>
       <ModalLayout visible={open} onClick={handleModal} />
-      <PostModal
-        visible={open}
-        pastDate={props.pastDate}
-        viewCount={props.viewCount}
-        likeCount={props.likeCount}
-      >
-        {props.children}
-      </PostModal>
-    </>
+      {open ? (
+        <PostModal
+          visible={open}
+          pastDate={props.pastDate}
+          viewCount={props.viewCount}
+          likeCount={props.likeCount}
+          imageUrl={`https://mylifeforcoding.com/users/image?imageUrl=${props.imageUrl}`}
+          name={props.name}
+        >
+          {props.children}
+        </PostModal>
+      ) : null}
+    </div>
   );
 };
 

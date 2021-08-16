@@ -7,12 +7,15 @@ import { AiFillEye, AiFillHeart, AiFillInstagram } from "react-icons/ai";
 import { FaFacebook } from "react-icons/fa";
 import { DropDownBox, Button } from "../common";
 
-interface PostModalProps {
-  viewCount?: number;
-  pastDate?: number;
-  likeCount?: number;
-  visible?: boolean;
-  userName?: string;
+interface PostModalInfoProps {
+  viewCount: number;
+  pastDate: number;
+  likeCount: number;
+}
+interface PostModalProps extends PostModalInfoProps {
+  visible: boolean;
+  imageUrl: string;
+  name: string;
 }
 
 const PostModalBox = styled.div<{ visible?: boolean }>`
@@ -228,7 +231,7 @@ const PostSocialList: React.FC<{ title?: string; values?: string }> = (
   );
 };
 
-const PostImage: React.FC<{ src: StaticImageData }> = (props) => {
+const PostImage: React.FC<{ src: string }> = (props) => {
   return (
     <PostImageSection>
       <PostImageHeadSection />
@@ -292,7 +295,7 @@ const PostInfoList: React.FC<{ title?: string; values?: string[] }> = (
   );
 };
 
-const PostModalInfo: React.FC<PostModalProps> = (props) => {
+const PostModalInfo: React.FC<PostModalInfoProps> = (props) => {
   return (
     <PostModalInfoBox>
       <DateViewBox>
@@ -331,8 +334,8 @@ const PostLikeBox = styled.div`
 const PostModal: React.FC<PostModalProps> = (props) => {
   return (
     <PostModalBox visible={props.visible}>
-      <PostImage src={DefaultImage}></PostImage>
-      <PostUserName>BTS sugar</PostUserName>
+      <PostImage src={props.imageUrl}></PostImage>
+      <PostUserName>{props.name}</PostUserName>
       <PostButtonBox>
         <Link href="/chat">
           <a>
