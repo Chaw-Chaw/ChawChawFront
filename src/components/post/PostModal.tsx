@@ -1,11 +1,14 @@
 import styled from "styled-components";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import DefaultImage from "../../../public/Layout/btsSugar.jpeg";
 import Link from "next/link";
 import Image from "next/image";
 import { AiFillEye, AiFillHeart, AiFillInstagram } from "react-icons/ai";
 import { FaFacebook } from "react-icons/fa";
 import { DropDownBox, Button } from "../common";
+import { useRouter } from "next/router";
+import axios from "axios";
+import { AuthContext } from "../../store/AuthContext";
 
 interface PostModalInfoProps {
   viewCount: number;
@@ -16,6 +19,7 @@ interface PostModalProps extends PostModalInfoProps {
   visible: boolean;
   imageUrl: string;
   name: string;
+  id: number;
 }
 
 const PostModalBox = styled.div<{ visible?: boolean }>`
@@ -332,18 +336,38 @@ const PostLikeBox = styled.div`
 `;
 
 const PostModal: React.FC<PostModalProps> = (props) => {
+  const router = useRouter();
+  const { user } = useContext(AuthContext);
+  const tryChat = async () => {
+    const response = await axios
+      .post(
+        "/chat/room",
+        { userId: props.id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${user?.token}`,
+            Accept: "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        if (!res.data.isSuccess) {
+          throw new Error(res.data);
+        }
+        router.push({ pathname: "/chat", query: res.data.data });
+        return res.data;
+      })
+      .catch((err) => console.error(err));
+  };
   return (
     <PostModalBox visible={props.visible}>
       <PostImage src={props.imageUrl}></PostImage>
       <PostUserName>{props.name}</PostUserName>
       <PostButtonBox>
-        <Link href="/chat">
-          <a>
-            <PostChatButton secondary width="250px" height="45px">
-              Try Chat
-            </PostChatButton>
-          </a>
-        </Link>
+        <PostChatButton onClick={tryChat} secondary width="250px" height="45px">
+          Try Chat
+        </PostChatButton>
         <PostLikeBox>
           <AiFillHeart />
         </PostLikeBox>

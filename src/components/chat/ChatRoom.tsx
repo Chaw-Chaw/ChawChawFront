@@ -6,6 +6,8 @@ import SockJS from "sockjs-client";
 import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import { useController } from "react-hook-form";
 import { AuthContext } from "../../store/AuthContext";
+import { useRouter } from "next/router";
+import axios from "axios";
 
 const Outline = styled.div`
   border: none;
@@ -46,17 +48,39 @@ const MessageContainer = styled.div`
 
 const ChatRoom: React.FC = () => {
   const { user } = useContext(AuthContext);
-  const ROOM_SEQ = 1;
   const client = useRef<any>({});
   const [chatMessages, setChatMessages] = useState<any>([]);
   const [message, setMessage] = useState<string>("");
+  const router = useRouter();
 
+  const getMessageLog = async (roomId: string) => {
+    // const messageLog = await axios
+    //   .get(`/chat/${roomId}`, {
+    //     headers: {
+    //       "Content-type": "application/json",
+    //       Authorization: `${user?.token}`,
+    //       Accept: "application/json",
+    //     },
+    //   })
+    //   .then((res) => {
+    //     if (!res.data.isSuccess) throw new Error(res.data);
+    //     console.log(res.data);
+    //     return res.data.data;
+    //   })
+    //   .catch((err) => console.error(err));
+  };
   useEffect(() => {
-    connect();
-    return () => disconnect();
-  }, []);
+    const roomId = router.query.roomId
+      ? router.query.roomId?.toString()
+      : String(4);
+    if (roomId !== undefined) {
+      const messageLog = getMessageLog(roomId);
+      connect(roomId);
+      return () => disconnect();
+    }
+  }, [router.query]);
 
-  const connect = () => {
+  const connect = (roomId: string) => {
     client.current = new StompJs.Client({
       // brokerURL: "ws://localhost:8080/ws-stomp/websocket", // 웹소켓 서버로 직접 접속
       webSocketFactory: () => new SockJS("https://mylifeforcoding.com/ws"), // proxy를 통한 접속
@@ -70,7 +94,7 @@ const ChatRoom: React.FC = () => {
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
       onConnect: () => {
-        subscribe();
+        subscribe(roomId);
       },
       onStompError: (frame) => {
         console.error(frame);
@@ -84,8 +108,8 @@ const ChatRoom: React.FC = () => {
     client.current.deactivate();
   };
 
-  const subscribe = () => {
-    client.current.subscribe(`/queue/chat/room/4`, (response: any) => {
+  const subscribe = (roomId: string) => {
+    client.current.subscribe(`/queue/chat/room/${roomId}`, (response: any) => {
       const message = JSON.parse(response.body);
       console.log(response, "subscribe");
       setChatMessages((chatMessage: any) => [...chatMessage, message]);

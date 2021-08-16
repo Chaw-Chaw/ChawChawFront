@@ -60,6 +60,7 @@ const ProfileUploadButton = styled(Button)`
 `;
 
 const ProfileSection: React.FC = () => {
+  console.log(new Date());
   const message = useAlert();
   const { updateUser, user } = useContext(AuthContext);
   const [userCountries, setUserCountries] = useState<string[]>(

@@ -216,6 +216,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           likeCount={props.likeCount}
           imageUrl={`https://mylifeforcoding.com/users/image?imageUrl=${props.imageUrl}`}
           name={props.name}
+          id={props.id}
         >
           {props.children}
         </PostModal>
