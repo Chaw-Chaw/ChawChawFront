@@ -1,8 +1,36 @@
 import styled from "styled-components";
 import { Input, Button } from "../../components/common";
 import { IoIosSearch } from "react-icons/io";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useRef, useState } from "react";
+interface PostSearchProps {
+  searchName: string;
+  setSearchName: Dispatch<SetStateAction<string>>;
+  searchHandler: (input: string) => void;
+}
 
+const PostSearch: React.FC<PostSearchProps> = (props) => {
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  return (
+    <PostSearchBox>
+      <SearchIconBox>
+        <IoIosSearch />
+      </SearchIconBox>
+      <SearchInput ref={searchInputRef} />
+      <SearchButton
+        secondary
+        onClick={(e) => {
+          e.preventDefault();
+          if (searchInputRef.current) {
+            console.log(searchInputRef.current.value, "search");
+            props.searchHandler(searchInputRef.current.value);
+          }
+        }}
+      >
+        <span>search</span>
+      </SearchButton>
+    </PostSearchBox>
+  );
+};
 const PostSearchBox = styled.div`
   border: 1px solid ${(props) => props.theme.primaryColor};
   background-color: ${(props) => props.theme.bodyBackgroundColor};
@@ -53,18 +81,5 @@ const SearchButton = styled(Button)`
   border-bottom-left-radius: 0px;
   color: ${(props) => props.theme.bodyFontColor};
 `;
-const PostSearch: React.FC = () => {
-  return (
-    <PostSearchBox>
-      <SearchIconBox>
-        <IoIosSearch />
-      </SearchIconBox>
-      <SearchInput />
-      <SearchButton secondary>
-        <span>search</span>
-      </SearchButton>
-    </PostSearchBox>
-  );
-};
 
 export default PostSearch;

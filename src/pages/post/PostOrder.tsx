@@ -1,6 +1,10 @@
+import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import { SelectInfoDropDown, DropDown } from "../../components/common";
-
+interface PostOrderProps {
+  sortInfo: string[];
+  setSortInfo: Dispatch<SetStateAction<string[]>>;
+}
 const PostOrderBox = styled.div`
   margin: 20px 0px 20px 0px;
   width: 100%;
@@ -24,7 +28,7 @@ const SelectInfoBox = styled.div`
   margin: 2px 2px 2px 2px;
 `;
 
-const PostOrder: React.FC = (props) => {
+const PostOrder: React.FC<PostOrderProps> = (props) => {
   const orderOptions = ["최신", "조회수", "좋아요"];
   return (
     <PostOrderBox>
@@ -38,6 +42,8 @@ const PostOrder: React.FC = (props) => {
             color="#FF8A00"
             initialValue="Main Language"
             fontSize="0.9rem"
+            setValues={props.setSortInfo}
+            index={0}
           />
         </SelectInfoBox>
         <SelectInfoBox>
@@ -49,6 +55,8 @@ const PostOrder: React.FC = (props) => {
             width="150px"
             initialValue="Hope Language"
             fontSize="0.9rem"
+            setValues={props.setSortInfo}
+            index={1}
           />
         </SelectInfoBox>
         <SelectInfoBox>
@@ -61,6 +69,8 @@ const PostOrder: React.FC = (props) => {
             options={orderOptions}
             initialValue="order"
             fontSize="0.9rem"
+            setValues={props.setSortInfo}
+            index={2}
           />
         </SelectInfoBox>
       </DropDownBox>
