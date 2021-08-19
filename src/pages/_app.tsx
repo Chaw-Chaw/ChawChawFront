@@ -18,9 +18,17 @@ import {
 } from "../components/common";
 
 const GlobalStyles = createGlobalStyle`
+@font-face {
+    font-family: 'BMJUA';
+    src: url('/fonts/BMJUA_ttf.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
   body{
     background: ${(props) => props.theme.bodyBackgroundColor};
-    font-family: 'Source Sans Pro', sans-serif;
+    
+    font-family: "BMJUA";
+    
     min-height: 100vh;
     margin: 0;
     color: ${(props) => props.theme.bodyFontColor};

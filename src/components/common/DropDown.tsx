@@ -9,6 +9,7 @@ import styled from "styled-components";
 import { ImEarth } from "react-icons/im";
 import { CountryLocale, CountryEmojiNames, LanguageNames } from "../common";
 import { AuthContext } from "../../store/AuthContext";
+import { CountryEmoji, LocaleLanguage, LanguageLocale } from "./LocaleList";
 
 interface initialBoxProps {
   fontWeight?: string;
@@ -67,6 +68,9 @@ const InitialBox = styled.div<initialBoxProps>`
     position: absolute;
     left: 5px;
   }
+
+  font-family: "BMJUA";
+
   :hover {
     cursor: pointer;
   }
@@ -215,7 +219,9 @@ const DropDown: React.FC<DropDownProps> = (props) => {
 };
 
 const ChangeLanguageDropDown: React.FC = (props) => {
-  const localeList = Object.values(CountryLocale);
+  const localeList = Object.values(LanguageLocale)
+    .map((item: any) => item.toUpperCase())
+    .sort();
 
   return (
     <DropDown
@@ -233,7 +239,7 @@ const ChangeLanguageDropDown: React.FC = (props) => {
 
 const SelectInfoDropDown: React.FC<SelectInfoDropDownProps> = (props) => {
   const countryList = CountryEmojiNames;
-  const languageList = LanguageNames;
+  const languageList = Object.values(LocaleLanguage);
 
   return (
     <DropDown

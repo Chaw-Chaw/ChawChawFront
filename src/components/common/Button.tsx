@@ -11,6 +11,7 @@ interface ButtonProps {
 }
 
 const Button = styled.button<ButtonProps>`
+  font-family: "BMJUA";
   color: ${(props) => {
     if (props.primary) return "white";
     if (props.secondary) return props.theme.primaryColor;
@@ -50,6 +51,7 @@ const Button = styled.button<ButtonProps>`
 `;
 
 const UpdateButton = styled.button`
+  font-family: "BMJUA";
   font-size: 1rem;
   color: ${(props) => props.theme.primaryColor};
   border: none;
