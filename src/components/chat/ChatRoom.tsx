@@ -173,6 +173,7 @@ const ChatRoom: React.FC = () => {
         sender: user.name,
         regDate: now.toISOString().substring(0, 19),
         message,
+        imageUrl: user.imageUrl,
       }),
     });
     setMessage("");
