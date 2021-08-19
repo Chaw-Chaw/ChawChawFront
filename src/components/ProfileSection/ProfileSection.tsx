@@ -55,6 +55,7 @@ const ProfileInfoBox = styled.div`
 `;
 
 const ProfileUploadButton = styled(Button)`
+  font-family: "BMJUA";
   width: 200px;
   margin: 20px auto;
 `;
@@ -143,12 +144,16 @@ const ProfileSection: React.FC = () => {
         },
       })
       .then((res) => {
+        if (!res.data.isSuccess) {
+          throw new Error(res.data);
+          return false;
+        }
         message.success("프로필이 업로드 되었습니다.");
         console.log(res, "profile Update");
-        // if (!res.data.isSuccess) {
-
-        // }
-      });
+        return res.data.data;
+      })
+      .then((res) => updateUser(userProfile))
+      .catch((err) => console.error(err));
   };
   const sendImage = async (image: FormData) => {
     await axios

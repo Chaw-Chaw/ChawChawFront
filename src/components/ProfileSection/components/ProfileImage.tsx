@@ -19,6 +19,7 @@ const Container = styled.div`
   border-right: 1px solid ${(props) => props.theme.secondaryColor};
   button {
     margin: 5px 0px;
+    font-family: "BMJUA";
   }
   .profile-image {
     border-radius: 20px;

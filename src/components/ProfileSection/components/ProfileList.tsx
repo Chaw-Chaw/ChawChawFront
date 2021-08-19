@@ -80,12 +80,14 @@ const ProfileList: React.FC<ProfileListProps> = (props) => {
 };
 
 const ControlBtnButton = styled(Button)`
+  font-family: "BMJUA";
   width: 80px;
   font-size: 1.5rem;
   text-align: center;
 `;
 
 const ControlBtnButtonContainer = styled.div`
+  font-family: "BMJUA";
   width: 80px;
   height: 30px;
   display: flex;
@@ -232,13 +234,13 @@ const SocialUrlInput = styled(Input)<{ isActive?: boolean }>`
   width: 100%;
 `;
 const UrlUpdateButton = styled(UpdateButton)`
+  font-family: "BMJUA";
   width: 40px;
   padding: 0px;
 `;
 const SocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const urlRef = useRef<HTMLInputElement>(null);
-  const { updateUser } = useContext(AuthContext);
 
   return (
     <SocialUrlBox>
@@ -247,15 +249,17 @@ const SocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
         isActive={isActive}
         disabled={!isActive}
         ref={urlRef}
-        value={
+        // value={
+        //   props.url
+        //     ? props.url
+        //     : props.type === "facebook"
+        //     ? "https://www.facebook.com/"
+        //     : "https://www.instagram.com/"
+        // }
+        defaultValue={
           props.url
             ? props.url
             : props.type === "facebook"
-            ? "https://www.facebook.com/"
-            : "https://www.instagram.com/"
-        }
-        defaultValue={
-          props.type === "facebook"
             ? "https://www.facebook.com/"
             : "https://www.instagram.com/"
         }
@@ -266,6 +270,7 @@ const SocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
           const url = urlRef.current;
           if (urlRef === null || url === null) return;
           if (isActive && props.setUrl && url) {
+            console.log(url.value);
             props.setUrl(() => {
               return url.value;
             });
