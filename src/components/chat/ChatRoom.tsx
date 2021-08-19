@@ -52,6 +52,7 @@ const ChatRoom: React.FC = () => {
   const [chatMessages, setChatMessages] = useState<any>([]);
   const [message, setMessage] = useState<string>("");
   const router = useRouter();
+  const [chatListInfo, setChatListInfo] = useState<any>([]);
 
   const getMessageLog = async (roomId: string) => {
     // const messageLog = await axios
@@ -69,14 +70,48 @@ const ChatRoom: React.FC = () => {
     //   })
     //   .catch((err) => console.error(err));
   };
+
+  const getUserMessageLog = async (userId: number) => {
+    const response = await axios
+      .post(
+        "/chat/room",
+        { userId: userId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${user?.token}`,
+            Accept: "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        if (!res.data.isSuccess) {
+          throw new Error(res.data);
+        }
+        console.log(res.data, "getUserMessageLog");
+        const messageLog = res.data.data;
+        const mainMessageLog = messageLog.find(
+          (item: any) => (item.senderId = userId)
+        );
+        console.log(mainMessageLog, "MainmessageLog");
+        setChatMessages((chatMessage: any) => [
+          ...chatMessage,
+          ...mainMessageLog.messages,
+        ]);
+        setChatListInfo([...messageLog]);
+        connect(mainMessageLog.roodId);
+        return () => disconnect();
+      })
+      .catch((err) => console.error(err));
+
+    return response;
+  };
   useEffect(() => {
-    const roomId = router.query.roomId
-      ? router.query.roomId?.toString()
-      : String(4);
-    if (roomId !== undefined) {
-      const messageLog = getMessageLog(roomId);
-      connect(roomId);
-      return () => disconnect();
+    const userId = router.query.userId
+      ? Number(router.query.userId)
+      : undefined;
+    if (userId !== undefined) {
+      getUserMessageLog(userId);
     }
   }, [router.query]);
 
@@ -117,13 +152,20 @@ const ChatRoom: React.FC = () => {
   };
 
   const publish = (message: any) => {
+    const timezoneOffset = new Date().getTimezoneOffset() * 60000;
+    const now = new Date(Date.now() - timezoneOffset);
     if (!client.current.connected) {
       return;
     }
-
     client.current.publish({
       destination: "/message",
-      body: JSON.stringify({ roomId: 4, sender: user.name, message }),
+      body: JSON.stringify({
+        roomId: 4,
+        senderId: user.id,
+        sender: user.name,
+        regDate: now.toISOString().substring(0, 19),
+        message,
+      }),
     });
     setMessage("");
   };
@@ -140,7 +182,8 @@ const ChatRoom: React.FC = () => {
           {chatMessages && chatMessages.length > 0 && (
             <div>
               {chatMessages.map((chatMessage: any, index: any) => {
-                if (user.name === chatMessage.sender) {
+                console.log(chatMessage, "message");
+                if (user.id === chatMessage.senderId) {
                   return <Message key={index}>{chatMessage.message}</Message>;
                 } else {
                   return (
