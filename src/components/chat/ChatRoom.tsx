@@ -9,6 +9,12 @@ import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import axios from "axios";
 
+interface ChatRoomProps {
+  chatMessage: any[];
+  yourProfileImage: string;
+  roomId: string;
+}
+
 const Outline = styled.div`
   border: none;
   box-sizing: border-box;
@@ -46,14 +52,12 @@ const MessageContainer = styled.div`
   overflow: auto;
 `;
 
-const ChatRoom: React.FC = () => {
+const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const { user } = useContext(AuthContext);
   const client = useRef<any>({});
-  const [chatMessages, setChatMessages] = useState<any>([]);
+  const [chatMessages, setChatMessages] = useState<any>(props.chatMessage);
   const [message, setMessage] = useState<string>("");
-  const router = useRouter();
-  const [mainRoomId, setMainRoomId] = useState(4);
-  const [chatListInfo, setChatListInfo] = useState<any>([]);
+  const chatMessageBox = useRef<HTMLDivElement>(null);
 
   const getMessageLog = async (roomId: string) => {
     // const messageLog = await axios
@@ -71,57 +75,6 @@ const ChatRoom: React.FC = () => {
     //   })
     //   .catch((err) => console.error(err));
   };
-
-  const getUserMessageLog = async (userId: number) => {
-    const response = await axios
-      .post(
-        "/chat/room",
-        { userId: userId },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${user?.token}`,
-            Accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        if (!res.data.isSuccess) {
-          throw new Error(res.data);
-        }
-        console.log(res.data, "getUserMessageLog");
-        const messageLog = res.data.data;
-        const mainMessageLog = messageLog.find(
-          (item: any) => item.senderId === userId
-        );
-        console.log(mainMessageLog, "MainmessageLog");
-        if (mainMessageLog) {
-          setChatMessages((chatMessage: any) => [
-            ...chatMessage,
-            ...mainMessageLog.messages.reverse(),
-          ]);
-        } else {
-          setChatMessages((chatMessage: any) => [...chatMessage]);
-        }
-
-        setChatListInfo([...messageLog]);
-        const roomId = mainMessageLog.roodId;
-        connect(roomId);
-        setMainRoomId(roomId);
-        return () => disconnect();
-      })
-      .catch((err) => console.error(err));
-
-    return response;
-  };
-  useEffect(() => {
-    const userId = router.query.userId
-      ? Number(router.query.userId)
-      : undefined;
-    if (userId !== undefined) {
-      getUserMessageLog(userId);
-    }
-  }, [router.query]);
 
   const connect = (roomId: string) => {
     client.current = new StompJs.Client({
@@ -168,37 +121,58 @@ const ChatRoom: React.FC = () => {
     client.current.publish({
       destination: "/message",
       body: JSON.stringify({
-        roomId: mainRoomId,
+        roomId: props.roomId,
         senderId: user.id,
         sender: user.name,
         regDate: now.toISOString().substring(0, 19),
         message,
-        imageUrl: user.imageUrl,
       }),
     });
     setMessage("");
   };
+  const scrollToBottom = () => {
+    if (!chatMessageBox.current) return;
+    chatMessageBox.current.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+      inline: "nearest",
+    });
+  };
+  useEffect(() => {
+    console.log(props, "props.roomId");
+    setChatMessages(props.chatMessage);
+    if (props.roomId === undefined) return;
+    connect(props.roomId);
+    return () => disconnect();
+  }, [props.roomId]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatMessages]);
 
   return (
     <Outline>
       <Inner>
         {/* <Header>
         </Header> */}
+        {/* use Memo 적용할것 */}
         <MessageContainer>
-          {/* <Message src={DefaultImage} userName="doodream">
-            hello!
-          </Message> */}
           {chatMessages && chatMessages.length > 0 && (
-            <div>
+            <div ref={chatMessageBox}>
               {chatMessages.map((chatMessage: any, index: any) => {
-                console.log(chatMessage, "message");
+                // console.log(chatMessage, "message");
                 if (user.id === chatMessage.senderId) {
-                  return <Message key={index}>{chatMessage.message}</Message>;
+                  return (
+                    <Message key={index} regDate={chatMessage.regDate}>
+                      {chatMessage.message}
+                    </Message>
+                  );
                 } else {
                   return (
                     <Message
-                      src={`https://mylifeforcoding.com/users/image?imageUrl=${chatMessage.imageUrl}`}
+                      src={`https://mylifeforcoding.com/users/image?imageUrl=${props.yourProfileImage}`}
                       key={index}
+                      regDate={chatMessage.regDate}
                     >
                       {chatMessage.message}
                     </Message>

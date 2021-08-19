@@ -393,22 +393,39 @@ const PostModal: React.FC<PostModalProps> = (props) => {
     router.push({ pathname: "/chat", query: { userId: props.id } });
   };
 
+  // const follow = async () => {
+  //   await axios
+  //     .post(`/follow/${props.id}`, {
+  //       headers: {
+  //         Authorization: `${user?.token}`,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       if (!res.data.isSuccess) {
+  //         throw new Error(res.data);
+  //       }
+  //       alert("follow 성공");
+  //       console.log("follow 성공!");
+  //       setIsFollow(true);
+  //       return res.data;
+  //     })
+  //     .catch((err) => console.error(err));
+  // };
   const follow = async () => {
     await axios
       .post(`/follow/${props.id}`, {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `${user?.token}`,
-          Accept: "application/json",
         },
       })
       .then((res) => {
         if (!res.data.isSuccess) {
           throw new Error(res.data);
         }
-        alert("follow 성공");
+        alert("follow");
         console.log("follow 성공!");
         setIsFollow(true);
+        return res.data;
       })
       .catch((err) => console.error(err));
   };
@@ -417,9 +434,7 @@ const PostModal: React.FC<PostModalProps> = (props) => {
     await axios
       .delete(`/follow/${props.id}`, {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `${user?.token}`,
-          Accept: "application/json",
         },
       })
       .then((res) => {
@@ -429,6 +444,7 @@ const PostModal: React.FC<PostModalProps> = (props) => {
         alert("unfollow");
         console.log("unfollow 성공!");
         setIsFollow(false);
+        return res.data;
       })
       .catch((err) => console.error(err));
   };

@@ -4,6 +4,7 @@ import { ProfileImage } from "./ProfileImage";
 interface MessageProps {
   src?: string;
   userName?: string;
+  regDate: string;
 }
 const YourMessageBox = styled.div`
   padding: 12px;
@@ -53,22 +54,44 @@ const YourMessageContainer = styled.div`
   align-items: flex-start;
   margin-left: 10px;
 `;
+const RegDateMessage = styled.div`
+  font-size: 0.5rem;
+  color: ${(props) => props.theme.secondaryColor};
+  margin-top: 4px;
+`;
+const RegDateMessageMe = styled(RegDateMessage)`
+  margin-left: auto;
+`;
+const MyMessageContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
 
 const Message: React.FC<MessageProps> = (props) => {
+  const regDate = props.regDate.split("T").join(" ");
   return (
     <>
       {props.src ? (
-        <MessageContainer>
-          <ProfileImage src={props.src} />
-          <YourMessageContainer>
-            <MessageUserName>{props.userName}</MessageUserName>
-            <YourMessageBox>{props.children}</YourMessageBox>
-          </YourMessageContainer>
-        </MessageContainer>
+        <>
+          <MessageContainer>
+            <ProfileImage src={props.src} />
+            <YourMessageContainer>
+              <MessageUserName>{props.userName}</MessageUserName>
+              <YourMessageBox>{props.children}</YourMessageBox>
+            </YourMessageContainer>
+          </MessageContainer>
+          <RegDateMessage>{regDate}</RegDateMessage>
+        </>
       ) : (
-        <MessageContainer>
-          <MyMessageBox>{props.children}</MyMessageBox>
-        </MessageContainer>
+        <>
+          <MessageContainer>
+            <MyMessageContainer>
+              <MyMessageBox>{props.children}</MyMessageBox>
+              <RegDateMessageMe>{regDate}</RegDateMessageMe>
+            </MyMessageContainer>
+          </MessageContainer>
+        </>
       )}
     </>
   );

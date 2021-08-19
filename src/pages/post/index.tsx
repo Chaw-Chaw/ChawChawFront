@@ -35,19 +35,19 @@ export default function Post() {
     console.log(postInfo, "postInfo");
   }, [postInfo]);
 
-  const getPosts = async (searchName: string, sortInfo: string[]) => {
+  const getPosts = async (searchNames: string, sortInfos: string[]) => {
     const orderConvert = (() => {
-      if (sortInfo[2] === "최신") return "date";
-      if (sortInfo[2] === "좋아요") return "like";
-      if (sortInfo[2] === "조회수") return "view";
+      if (sortInfos[2] === "최신") return "date";
+      if (sortInfos[2] === "좋아요") return "like";
+      if (sortInfos[2] === "조회수") return "view";
       return "";
     })();
 
-    const languageConvert = LanguageLocale[sortInfo[0]]
-      ? LanguageLocale[sortInfo[0]]
+    const languageConvert = LanguageLocale[sortInfos[0]]
+      ? LanguageLocale[sortInfos[0]]
       : "";
-    const hopeLanguageConvert = LanguageLocale[sortInfo[1]]
-      ? LanguageLocale[sortInfo[1]]
+    const hopeLanguageConvert = LanguageLocale[sortInfos[1]]
+      ? LanguageLocale[sortInfos[1]]
       : "";
 
     setCookie("exclude", "", {
@@ -59,11 +59,11 @@ export default function Post() {
     console.log(document.cookie, "exclude");
     console.log(
       {
-        name: searchName,
+        name: searchNames,
         language: languageConvert,
         hopeLanguage: hopeLanguageConvert,
         order: orderConvert,
-        pageNo: pageNo,
+        pageNo: pageNo.current,
       },
       "Params"
     );
@@ -100,6 +100,8 @@ export default function Post() {
           if (pageNo.current === 1) return [...res];
           return [...item, ...res];
         });
+        setSearchName(searchNames);
+        setSortInfo(sortInfos);
         pageNo.current += 1;
         return res;
       })
@@ -113,7 +115,6 @@ export default function Post() {
   const searchHandler = (inputs: string) => {
     pageNo.current = 1;
     postIds.current = "";
-
     getPosts(inputs, sortInfo);
   };
 
