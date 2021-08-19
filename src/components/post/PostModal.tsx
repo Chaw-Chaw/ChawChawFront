@@ -3,23 +3,39 @@ import React, { useContext, useState } from "react";
 import DefaultImage from "../../../public/Layout/btsSugar.jpeg";
 import Link from "next/link";
 import Image from "next/image";
-import { AiFillEye, AiFillHeart, AiFillInstagram } from "react-icons/ai";
+import {
+  AiFillEye,
+  AiOutlineHeart,
+  AiFillHeart,
+  AiFillInstagram,
+} from "react-icons/ai";
 import { FaFacebook } from "react-icons/fa";
-import { DropDownBox, Button } from "../common";
+import { DropDownBox, Button, CountryEmoji, LocaleLanguage } from "../common";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { AuthContext } from "../../store/AuthContext";
+interface PostModalHeadProps {
+  days: string;
+  follows: number;
+  views: number;
+}
 
-interface PostModalInfoProps {
-  viewCount: number;
-  pastDate: number;
-  likeCount: number;
+interface PostModalInfoProps extends PostModalHeadProps {
+  content: string;
+  country: string[];
+  facebookUrl: string;
+  hopeLanguage: string[];
+  id: number;
+  imageUrl: string;
+  instagramUrl: string;
+  language: string[];
+  name: string;
+  repCountry: string;
+  repHopeLanguage: string;
+  repLanguage: string;
 }
 interface PostModalProps extends PostModalInfoProps {
   visible: boolean;
-  imageUrl: string;
-  name: string;
-  id: number;
 }
 
 const PostModalBox = styled.div<{ visible?: boolean }>`
@@ -211,24 +227,26 @@ const SocialUrlText = styled.a`
   font-size: 1rem;
   margin-left: 10px;
 `;
-const PostSocialList: React.FC<{ title?: string; values?: string }> = (
-  props
-) => {
-  const valueLists = [
-    "https://www.facebook.com/",
-    "https://www.instagram.com/",
-  ];
+const PostSocialList: React.FC<{
+  title: string;
+  faceBookUrl: string;
+  instagramUrl: string;
+}> = (props) => {
   return (
     <PostInfoListBox>
       <PostInfoTitle>{props.title}</PostInfoTitle>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <PostSocialUrlBox>
           <FaFacebook />
-          <SocialUrlText href={valueLists[0]}>{valueLists[0]}</SocialUrlText>
+          <SocialUrlText href={props.faceBookUrl}>
+            {props.faceBookUrl}
+          </SocialUrlText>
         </PostSocialUrlBox>
         <PostSocialUrlBox>
           <AiFillInstagram />
-          <SocialUrlText href={valueLists[1]}>{valueLists[1]}</SocialUrlText>
+          <SocialUrlText href={props.instagramUrl}>
+            {props.instagramUrl}
+          </SocialUrlText>
         </PostSocialUrlBox>
       </div>
     </PostInfoListBox>
@@ -253,16 +271,20 @@ const PostImage: React.FC<{ src: string }> = (props) => {
   );
 };
 
-const PostInfoList: React.FC<{ title?: string; values?: string[] }> = (
-  props
-) => {
-  const valueLists = ["Arabic", "Bosnian", "French", "Korean"];
+const PostInfoList: React.FC<{
+  title: string;
+  values: string[];
+  mainValue: string;
+}> = (props) => {
+  // const valueLists = [props.mainValue, ...props.values];
+  const valueLists = new Set([props.mainValue, ...props.values]);
+
   const colors = ["#06C074", "#5A65E8", "#4BC6DA", "#A52929"];
   return (
     <PostInfoListBox>
       <PostInfoTitle>{props.title}</PostInfoTitle>
       <PostInfoIconBox>
-        {valueLists.map((item, index) => {
+        {Array.from(valueLists).map((item, index) => {
           if (index === 0) {
             return (
               <DropDownMainBox>
@@ -299,19 +321,19 @@ const PostInfoList: React.FC<{ title?: string; values?: string[] }> = (
   );
 };
 
-const PostModalInfo: React.FC<PostModalInfoProps> = (props) => {
+const PostModalInfo: React.FC<PostModalHeadProps> = (props) => {
   return (
     <PostModalInfoBox>
       <DateViewBox>
-        <PastDateBox>{props.pastDate} days ago</PastDateBox>
+        <PastDateBox>{props.days} days ago</PastDateBox>
         <ViewCountBox>
-          {props.viewCount}
+          {props.views}
           <AiFillEye />
         </ViewCountBox>
       </DateViewBox>
       <LikeBox>
         <AiFillHeart />
-        {props.likeCount}
+        {props.follows}
       </LikeBox>
     </PostModalInfoBox>
   );
@@ -336,10 +358,39 @@ const PostLikeBox = styled.div`
 `;
 
 const PostModal: React.FC<PostModalProps> = (props) => {
+  const [isFollow, setIsFollow] = useState(false);
   const router = useRouter();
   const { user } = useContext(AuthContext);
+  const now = new Date();
+  const dateArr = props.days.substring(0, 10).split("-");
+  const stDate = new Date(
+    Number(dateArr[0]),
+    Number(dateArr[1]),
+    Number(dateArr[2])
+  );
+  const endDate = new Date(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    now.getDate()
+  );
+  const pastDays =
+    (endDate.getTime() - stDate.getTime()) / (1000 * 60 * 60 * 24);
+  const repCountry = props.repCountry;
+  const repLanguage = LocaleLanguage[props.repLanguage]
+    ? LocaleLanguage[props.repLanguage]
+    : "";
+  const repHopeLanguage = LocaleLanguage[props.repHopeLanguage]
+    ? LocaleLanguage[props.repHopeLanguage]
+    : "";
+  const country = props.country;
+  const language = props.language.map((item) =>
+    LocaleLanguage[item] ? LocaleLanguage[item] : ""
+  );
+  const hopeLanguage = props.hopeLanguage.map((item) =>
+    LocaleLanguage[item] ? LocaleLanguage[item] : ""
+  );
   const tryChat = async () => {
-    const response = await axios
+    await axios
       .post(
         "/chat/room",
         { userId: props.id },
@@ -360,30 +411,90 @@ const PostModal: React.FC<PostModalProps> = (props) => {
       })
       .catch((err) => console.error(err));
   };
+
+  const follow = async () => {
+    await axios
+      .post(`/follow/${props.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${user?.token}`,
+          Accept: "application/json",
+        },
+      })
+      .then((res) => {
+        if (!res.data.isSuccess) {
+          throw new Error(res.data);
+        }
+        alert("follow 성공");
+        console.log("follow 성공!");
+        setIsFollow(true);
+      })
+      .catch((err) => console.error(err));
+  };
+
+  const unFollow = async () => {
+    await axios
+      .delete(`/follow/${props.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${user?.token}`,
+          Accept: "application/json",
+        },
+      })
+      .then((res) => {
+        if (!res.data.isSuccess) {
+          throw new Error(res.data);
+        }
+        alert("unfollow");
+        console.log("unfollow 성공!");
+        setIsFollow(false);
+      })
+      .catch((err) => console.error(err));
+  };
   return (
     <PostModalBox visible={props.visible}>
-      <PostImage src={props.imageUrl}></PostImage>
+      <PostImage
+        src={`https://mylifeforcoding.com/users/image?imageUrl=${props.imageUrl}`}
+      ></PostImage>
       <PostUserName>{props.name}</PostUserName>
       <PostButtonBox>
         <PostChatButton onClick={tryChat} secondary width="250px" height="45px">
           Try Chat
         </PostChatButton>
-        <PostLikeBox>
-          <AiFillHeart />
+        <PostLikeBox
+          onClick={() => {
+            if (!isFollow) follow();
+            else unFollow();
+          }}
+        >
+          {isFollow ? <AiFillHeart /> : <AiOutlineHeart />}
         </PostLikeBox>
       </PostButtonBox>
-      <PostInfoList title="I am from" />
-      <PostInfoList title="I can speak" />
-      <PostInfoList title="I want to speak" />
-      <PostSocialList title="Contact to me"></PostSocialList>
+      <PostInfoList title="I am from" values={country} mainValue={repCountry} />
+      <PostInfoList
+        title="I can speak"
+        values={language}
+        mainValue={repLanguage}
+      />
+      <PostInfoList
+        title="I want to speak"
+        values={hopeLanguage}
+        mainValue={repHopeLanguage}
+      />
+      <PostSocialList
+        title="Contact to me"
+        faceBookUrl={props.facebookUrl}
+        instagramUrl={props.instagramUrl}
+      />
       <PostModalContent>{props.children}</PostModalContent>
       <PostModalInfo
-        pastDate={props.pastDate}
-        viewCount={props.viewCount}
-        likeCount={props.likeCount}
+        days={String(pastDays)}
+        views={props.views}
+        follows={props.follows}
       />
     </PostModalBox>
   );
 };
 
 export default PostModal;
+export type { PostModalInfoProps };

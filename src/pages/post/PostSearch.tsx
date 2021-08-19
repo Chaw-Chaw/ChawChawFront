@@ -22,6 +22,7 @@ const PostSearch: React.FC<PostSearchProps> = (props) => {
           e.preventDefault();
           if (searchInputRef.current) {
             console.log(searchInputRef.current.value, "search");
+            props.setSearchName(searchInputRef.current.value);
             props.searchHandler(searchInputRef.current.value);
           }
         }}
@@ -80,6 +81,7 @@ const SearchButton = styled(Button)`
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
   color: ${(props) => props.theme.bodyFontColor};
+  font-family: "BMJUA";
 `;
 
 export default PostSearch;

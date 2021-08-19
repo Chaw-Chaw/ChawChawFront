@@ -111,8 +111,9 @@ export default function Post() {
   };
 
   const searchHandler = (inputs: string) => {
-    setSearchName(inputs);
     pageNo.current = 1;
+    postIds.current = "";
+
     getPosts(inputs, sortInfo);
   };
 

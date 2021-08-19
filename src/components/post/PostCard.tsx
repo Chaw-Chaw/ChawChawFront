@@ -9,6 +9,7 @@ import axios from "axios";
 import { CgNpm } from "react-icons/cg";
 import { AuthContext } from "../../store/AuthContext";
 import { useAlert } from "react-alert";
+import { PostModalInfoProps } from "./PostModal";
 
 interface PostCardInfoProps {
   pastDate: number;
@@ -26,10 +27,11 @@ interface PostCardProps extends PostCardInfoProps {
 
 const PostCardBox = styled.div`
   /* margin: 0px 15px 20px 15px; */
+
   width: 300px;
   display: flex;
   flex-direction: column;
-  height: 400px;
+  height: 360px;
   max-height: 400px;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
   border-radius: 20px;
@@ -55,13 +57,19 @@ const PostCardBox = styled.div`
 
 const PostCardContent = styled.div`
   width: 100%;
-  padding: 5px 5px;
+  padding: 5px 10px;
   box-sizing: border-box;
-  min-height: 150px;
-  max-height: 150px;
+  min-height: 175px;
+  max-height: 175px;
   overflow: hidden;
   font-weight: 400;
   font-size: 0.9rem;
+
+  border-top: 1px solid
+    ${(props) =>
+      props.theme.id === "light"
+        ? " rgb(0, 0, 0, 0.2)"
+        : "rgb(255, 255, 255, 0.2)"};
   border-bottom: 1px solid
     ${(props) =>
       props.theme.id === "light"
@@ -111,31 +119,38 @@ const LikeBox = styled.div`
 `;
 
 const PostImageBox = styled.div`
+  padding: 10px;
+  box-sizing: border-box;
   width: 100%;
+  display: flex;
   position: relative;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
+  align-items: center;
   .post-image {
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
+    border-radius: 50%;
   }
+  /* border-bottom: 1px solid
+    ${(props) =>
+    props.theme.id === "light"
+      ? " rgb(0, 0, 0, 0.2)"
+      : "rgb(255, 255, 255, 0.2)"}; */
 `;
 const PostImageInfoBox = styled.div`
-  position: absolute;
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   padding: 10px 10px;
   box-sizing: border-box;
   bottom: 2px;
-  width: 100%;
+  width: 180px;
+  height: 50px;
+  /* margin-left: 60px; */
 `;
 
 const PostImageName = styled.span`
-  color: white;
+  color: black;
   font-weight: 900;
-  text-shadow: 1px 1px 2px ${(props) => props.theme.primaryColor};
-  font-size: 1.2rem;
+  /* text-shadow: 1px 1px 2px ${(props) => props.theme.primaryColor}; */
+  font-size: 1.5rem;
 `;
 const PostImageUserInfo = styled(PostImageName)`
   font-size: 1rem;
@@ -160,11 +175,29 @@ const PostCardInfo: React.FC<PostCardInfoProps> = (props) => {
 };
 
 const PostCard: React.FC<PostCardProps> = (props) => {
+  const initialPostInfo = {
+    content: "",
+    country: [],
+    days: "",
+    facebookUrl: "",
+    follows: 0,
+    hopeLanguage: [],
+    id: 0,
+    imageUrl: "default.png",
+    instagramUrl: "",
+    language: [],
+    name: "",
+    repCountry: "",
+    repHopeLanguage: "",
+    repLanguage: "",
+    views: 0,
+  };
   const { user } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
+  const [postModalInfo, setPostModalInfo] =
+    useState<PostModalInfoProps>(initialPostInfo);
   const message = useAlert();
   const handleModal = async () => {
-    setOpen((open) => !open);
     const response = await axios
       .get(`/users/${props.id}`, {
         headers: {
@@ -175,10 +208,15 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       })
       .then((res) => {
         console.log(res, "PostModal data");
+
         if (!res.data.isSuccess) {
           alert(`${props.id} 데이터 조회 실패`);
           throw new Error(res.data);
         }
+        setPostModalInfo((pre) => {
+          return { ...pre, ...res.data.data };
+        });
+        setOpen((open) => !open);
         return res.data.data;
       });
   };
@@ -190,16 +228,18 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           <Image
             src={`https://mylifeforcoding.com/users/image?imageUrl=${props.imageUrl}`}
             alt="포스팅 프로필 이미지"
-            width="300px"
-            height="200px"
+            width="100px"
+            height="100px"
             className="post-image"
             objectFit="cover"
           />
           <PostImageInfoBox>
-            <PostImageName>{props.name}</PostImageName>
-            <PostImageUserInfo>{`${props.repCountry} ${props.repLanguage} ${props.repHopeLanguage}`}</PostImageUserInfo>
+            <PostImageName>{`${props.repCountry}  ${props.name}`}</PostImageName>
+            <PostImageUserInfo>{`🗣 ${props.repLanguage}`}</PostImageUserInfo>
+            <PostImageUserInfo>{`📖 ${props.repHopeLanguage}`}</PostImageUserInfo>
           </PostImageInfoBox>
         </PostImageBox>
+
         <PostCardContent>{props.children}</PostCardContent>
         <PostCardInfo
           pastDate={props.pastDate}
@@ -211,12 +251,21 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       {open ? (
         <PostModal
           visible={open}
-          pastDate={props.pastDate}
-          viewCount={props.viewCount}
-          likeCount={props.likeCount}
-          imageUrl={`https://mylifeforcoding.com/users/image?imageUrl=${props.imageUrl}`}
-          name={props.name}
-          id={props.id}
+          content={postModalInfo.content}
+          country={postModalInfo.country}
+          days={postModalInfo.days}
+          facebookUrl={postModalInfo.facebookUrl}
+          follows={postModalInfo.follows}
+          hopeLanguage={postModalInfo.hopeLanguage}
+          id={postModalInfo.id}
+          imageUrl={postModalInfo.imageUrl}
+          instagramUrl={postModalInfo.instagramUrl}
+          language={postModalInfo.language}
+          name={postModalInfo.name}
+          repCountry={postModalInfo.repCountry}
+          repHopeLanguage={postModalInfo.repHopeLanguage}
+          repLanguage={postModalInfo.repLanguage}
+          views={postModalInfo.views}
         >
           {props.children}
         </PostModal>
