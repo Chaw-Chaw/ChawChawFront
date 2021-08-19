@@ -390,26 +390,7 @@ const PostModal: React.FC<PostModalProps> = (props) => {
     LocaleLanguage[item] ? LocaleLanguage[item] : ""
   );
   const tryChat = async () => {
-    await axios
-      .post(
-        "/chat/room",
-        { userId: props.id },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${user?.token}`,
-            Accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        if (!res.data.isSuccess) {
-          throw new Error(res.data);
-        }
-        router.push({ pathname: "/chat", query: res.data.data });
-        return res.data;
-      })
-      .catch((err) => console.error(err));
+    router.push({ pathname: "/chat", query: { userId: props.id } });
   };
 
   const follow = async () => {

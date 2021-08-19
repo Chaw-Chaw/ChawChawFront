@@ -23,6 +23,7 @@ interface UserPropertys {
   repLanguage?: string;
   repHopeLanguage?: string;
   token?: string;
+  id?: number;
 }
 
 interface AuthContextObj {
