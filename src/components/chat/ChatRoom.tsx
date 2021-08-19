@@ -52,6 +52,7 @@ const ChatRoom: React.FC = () => {
   const [chatMessages, setChatMessages] = useState<any>([]);
   const [message, setMessage] = useState<string>("");
   const router = useRouter();
+  const [mainRoomId, setMainRoomId] = useState(4);
   const [chatListInfo, setChatListInfo] = useState<any>([]);
 
   const getMessageLog = async (roomId: string) => {
@@ -99,7 +100,9 @@ const ChatRoom: React.FC = () => {
           ...mainMessageLog.messages,
         ]);
         setChatListInfo([...messageLog]);
-        connect(mainMessageLog.roodId);
+        const roomId = mainMessageLog.roodId;
+        connect(roomId);
+        setMainRoomId(roomId);
         return () => disconnect();
       })
       .catch((err) => console.error(err));
@@ -160,7 +163,7 @@ const ChatRoom: React.FC = () => {
     client.current.publish({
       destination: "/message",
       body: JSON.stringify({
-        roomId: 4,
+        roomId: mainRoomId,
         senderId: user.id,
         sender: user.name,
         regDate: now.toISOString().substring(0, 19),
