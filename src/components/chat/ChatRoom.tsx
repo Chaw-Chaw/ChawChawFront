@@ -92,13 +92,18 @@ const ChatRoom: React.FC = () => {
         console.log(res.data, "getUserMessageLog");
         const messageLog = res.data.data;
         const mainMessageLog = messageLog.find(
-          (item: any) => (item.senderId = userId)
+          (item: any) => item.senderId === userId
         );
         console.log(mainMessageLog, "MainmessageLog");
-        setChatMessages((chatMessage: any) => [
-          ...chatMessage,
-          ...mainMessageLog.messages,
-        ]);
+        if (mainMessageLog) {
+          setChatMessages((chatMessage: any) => [
+            ...chatMessage,
+            ...mainMessageLog.messages.reverse(),
+          ]);
+        } else {
+          setChatMessages((chatMessage: any) => [...chatMessage]);
+        }
+
         setChatListInfo([...messageLog]);
         const roomId = mainMessageLog.roodId;
         connect(roomId);
