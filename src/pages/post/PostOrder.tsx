@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import { SelectInfoDropDown, DropDown } from "../../components/common";
 interface PostOrderProps {
-  sortInfo: string[];
   setSortInfo: Dispatch<SetStateAction<string[]>>;
 }
 const PostOrderBox = styled.div`

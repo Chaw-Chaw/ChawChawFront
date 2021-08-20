@@ -1,11 +1,16 @@
 import styled from "styled-components";
 import { Input, Button } from "../../components/common";
-import { IoIosSearch } from "react-icons/io";
-import React, { Dispatch, SetStateAction, useRef, useState } from "react";
+import { IoIosSearch, IoMdReturnLeft } from "react-icons/io";
+import React, {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useRef,
+  useState,
+} from "react";
 interface PostSearchProps {
-  searchName: string;
   setSearchName: Dispatch<SetStateAction<string>>;
-  searchHandler: (input: string) => void;
+  searchHandler: () => void;
 }
 
 const PostSearch: React.FC<PostSearchProps> = (props) => {
@@ -15,16 +20,25 @@ const PostSearch: React.FC<PostSearchProps> = (props) => {
       <SearchIconBox>
         <IoIosSearch />
       </SearchIconBox>
-      <SearchInput ref={searchInputRef} />
+      <SearchInput
+        onChange={(e) => {
+          e.preventDefault();
+          props.setSearchName(e.target.value);
+        }}
+      />
       <SearchButton
         secondary
         onClick={(e) => {
           e.preventDefault();
-          if (searchInputRef.current) {
-            console.log(searchInputRef.current.value, "search");
-            props.setSearchName(searchInputRef.current.value);
-            props.searchHandler(searchInputRef.current.value);
-          }
+          // const searchInput = searchInputRef.current;
+          // if (searchInput) {
+          //   props.setSearchName((pre) => {
+          //     if (searchInput) {
+          //       console.log(searchInput.value, "search");
+          //       return searchInput.value;
+          //     } else return pre;
+          //   });
+          props.searchHandler();
         }}
       >
         <span>search</span>

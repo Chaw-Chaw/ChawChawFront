@@ -35,19 +35,19 @@ export default function Post() {
     console.log(postInfo, "postInfo");
   }, [postInfo]);
 
-  const getPosts = async (searchNames: string, sortInfos: string[]) => {
+  const getPosts = async () => {
     const orderConvert = (() => {
-      if (sortInfos[2] === "최신") return "date";
-      if (sortInfos[2] === "좋아요") return "like";
-      if (sortInfos[2] === "조회수") return "view";
+      if (sortInfo[2] === "최신") return "date";
+      if (sortInfo[2] === "좋아요") return "like";
+      if (sortInfo[2] === "조회수") return "view";
       return "";
     })();
 
-    const languageConvert = LanguageLocale[sortInfos[0]]
-      ? LanguageLocale[sortInfos[0]]
+    const languageConvert = LanguageLocale[sortInfo[0]]
+      ? LanguageLocale[sortInfo[0]]
       : "";
-    const hopeLanguageConvert = LanguageLocale[sortInfos[1]]
-      ? LanguageLocale[sortInfos[1]]
+    const hopeLanguageConvert = LanguageLocale[sortInfo[1]]
+      ? LanguageLocale[sortInfo[1]]
       : "";
 
     setCookie("exclude", "", {
@@ -59,7 +59,7 @@ export default function Post() {
     console.log(document.cookie, "exclude");
     console.log(
       {
-        name: searchNames,
+        name: searchName,
         language: languageConvert,
         hopeLanguage: hopeLanguageConvert,
         order: orderConvert,
@@ -100,9 +100,10 @@ export default function Post() {
           if (pageNo.current === 1) return [...res];
           return [...item, ...res];
         });
-        setSearchName(searchNames);
-        setSortInfo(sortInfos);
+        // setSearchName(searchNames);
+        // setSortInfo(sortInfos);
         pageNo.current += 1;
+        console.log(searchName, "getPost()");
         return res;
       })
       .catch((err) => {
@@ -112,10 +113,10 @@ export default function Post() {
     return response;
   };
 
-  const searchHandler = (inputs: string) => {
+  const searchHandler = () => {
     pageNo.current = 1;
     postIds.current = "";
-    getPosts(inputs, sortInfo);
+    getPosts();
   };
 
   const target = useRef<any>(null);
@@ -126,7 +127,7 @@ export default function Post() {
     if (entry.isIntersecting) {
       console.log(entry.isIntersecting, "보인다.");
       observer.unobserve(entry.target);
-      await getPosts(searchName, sortInfo);
+      await getPosts();
       observer.observe(entry.target);
     } else {
       console.log(entry.isIntersecting, "안보인다.");
@@ -138,15 +139,18 @@ export default function Post() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    console.log(searchName, "real SearchName");
+  }, [searchName]);
+
   return (
     <Layout>
       <Container width="90%">
         <PostSearch
-          searchName={searchName}
           setSearchName={setSearchName}
           searchHandler={searchHandler}
         />
-        <PostOrder sortInfo={sortInfo} setSortInfo={setSortInfo} />
+        <PostOrder setSortInfo={setSortInfo} />
         <PostSection postInfo={postInfo} />
         <div
           ref={target}
