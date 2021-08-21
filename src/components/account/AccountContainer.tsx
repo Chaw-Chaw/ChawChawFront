@@ -14,6 +14,7 @@ const Container = styled.div<{ width?: string }>`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin-bottom: 50px;
   @media (max-width: 768px) {
     width: 450px;
   }
