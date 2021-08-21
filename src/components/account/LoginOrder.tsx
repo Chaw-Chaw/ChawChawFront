@@ -18,6 +18,9 @@ const StageCircle = styled.div<IsActiveProps>`
   color: white;
   font-size: 3rem;
   font-weight: 800;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ContactLine = styled.div<IsActiveProps>`
@@ -36,11 +39,13 @@ const Container = styled.div`
 const LoginOrder: React.FC<ActiveProps> = (props) => {
   return (
     <Container>
-      <StageCircle isActive={Number(props.activeType) >= 1}>1</StageCircle>
+      <StageCircle isActive={Number(props.activeType) >= 1}>
+        <div>1</div>
+      </StageCircle>
       <ContactLine isActive={Number(props.activeType) >= 2} />
-      <StageCircle isActive={Number(props.activeType) >= 2}>2</StageCircle>
-      <ContactLine isActive={Number(props.activeType) >= 3} />
-      <StageCircle isActive={Number(props.activeType) >= 3}>3</StageCircle>
+      <StageCircle isActive={Number(props.activeType) >= 2}>
+        <div>2</div>
+      </StageCircle>
     </Container>
   );
 };

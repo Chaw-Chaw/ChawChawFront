@@ -1,4 +1,4 @@
-import React, { MouseEvent, useContext, useState } from "react";
+import React, { MouseEvent, useContext, useEffect, useState } from "react";
 import {
   Layout,
   Header,
@@ -64,15 +64,7 @@ export default function SignUp() {
   const router = useRouter();
   const { signup, emailDuplicationCheck, user, updateUser } =
     useContext(AuthContext);
-  const userUniversity = (() => {
-    if (user) {
-      if (user.school) {
-        return user.school;
-      }
-    }
-    return "";
-  })();
-
+  const userUniversity = user.school;
   const {
     register,
     handleSubmit,
@@ -130,6 +122,15 @@ export default function SignUp() {
       // 중복된 이메일이 있으면 사용자가 회원가입이 불가능
     } else message.error("이메일을 입력해주세요.");
   };
+
+  useEffect(() => {
+    if (!user.school)
+      message.error("웹메일 인증을 먼저 진행해주세요.", {
+        onClose: () => {
+          router.push("/account/signup/webMailAuth");
+        },
+      });
+  }, [user]);
   return (
     <Layout type="signup">
       <AccountContainer

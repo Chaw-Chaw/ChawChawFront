@@ -143,14 +143,9 @@ export default function WebMailAuth() {
     }
     message.error("인증번호를 입력해주세요.");
   };
-
   const checkKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.code === "Enter") e.preventDefault();
   };
-
-  useEffect(() => {
-    console.log(user, "userIn WebSignup");
-  }, [user]);
   return (
     <Layout type="signup">
       <AccountContainer
