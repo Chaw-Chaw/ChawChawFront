@@ -27,8 +27,9 @@ const SelectInfoBox = styled.div`
   margin: 2px 2px 2px 2px;
 `;
 
+const orderOptions: any = { 최신: "date", 조회수: "view", 좋아요: "like" };
+
 const PostOrder: React.FC<PostOrderProps> = (props) => {
-  const orderOptions = ["최신", "조회수", "좋아요"];
   return (
     <PostOrderBox>
       <DropDownBox>
@@ -65,7 +66,7 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
             type="language"
             backgroundColor="white"
             color="#FF8A00"
-            options={orderOptions}
+            options={Object.keys(orderOptions)}
             initialValue="order"
             fontSize="0.9rem"
             setValues={props.setSortInfo}
@@ -78,3 +79,4 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
 };
 
 export default PostOrder;
+export { orderOptions };

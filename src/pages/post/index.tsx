@@ -1,7 +1,7 @@
 import { LanguageLocale, Layout } from "../../components/common";
 import styled from "styled-components";
 import PostSearch from "./PostSearch";
-import PostOrder from "./PostOrder";
+import PostOrder, { orderOptions } from "./PostOrder";
 import PostSection from "./PostSection";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../store/AuthContext";
@@ -25,7 +25,7 @@ export default function Post() {
   const { user } = useContext(AuthContext);
   const [postInfo, setPostInfo] = useState<any>([]);
   const postIds = useRef("");
-  const [searchName, setSearchName] = useState("");
+  const searchName = useRef("");
   const [sortInfo, setSortInfo] = useState<string[]>(["", "", ""]);
   const [isEnd, setIsEnd] = useState(false);
   const pageNo = useRef(1);
@@ -36,20 +36,13 @@ export default function Post() {
   }, [postInfo]);
 
   const getPosts = async () => {
-    const orderConvert = (() => {
-      if (sortInfo[2] === "최신") return "date";
-      if (sortInfo[2] === "좋아요") return "like";
-      if (sortInfo[2] === "조회수") return "view";
-      return "";
-    })();
-
+    const orderConvert = orderOptions[sortInfo[2]];
     const languageConvert = LanguageLocale[sortInfo[0]]
       ? LanguageLocale[sortInfo[0]]
       : "";
     const hopeLanguageConvert = LanguageLocale[sortInfo[1]]
       ? LanguageLocale[sortInfo[1]]
       : "";
-
     setCookie("exclude", "", {
       path: "/",
       secure: true,
@@ -59,7 +52,7 @@ export default function Post() {
     console.log(document.cookie, "exclude");
     console.log(
       {
-        name: searchName,
+        name: searchName.current,
         language: languageConvert,
         hopeLanguage: hopeLanguageConvert,
         order: orderConvert,
@@ -75,7 +68,7 @@ export default function Post() {
           Accept: "application/json",
         },
         params: {
-          name: searchName,
+          name: searchName.current,
           language: languageConvert,
           hopeLanguage: hopeLanguageConvert,
           order: orderConvert,
@@ -100,10 +93,8 @@ export default function Post() {
           if (pageNo.current === 1) return [...res];
           return [...item, ...res];
         });
-        // setSearchName(searchNames);
-        // setSortInfo(sortInfos);
         pageNo.current += 1;
-        console.log(searchName, "getPost()");
+        console.log(searchName.current, "getPost()");
         return res;
       })
       .catch((err) => {
@@ -113,9 +104,10 @@ export default function Post() {
     return response;
   };
 
-  const searchHandler = () => {
+  const searchHandler = (inputs: string) => {
     pageNo.current = 1;
     postIds.current = "";
+    searchName.current = inputs;
     getPosts();
   };
 
@@ -139,17 +131,10 @@ export default function Post() {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    console.log(searchName, "real SearchName");
-  }, [searchName]);
-
   return (
     <Layout>
       <Container width="90%">
-        <PostSearch
-          setSearchName={setSearchName}
-          searchHandler={searchHandler}
-        />
+        <PostSearch searchHandler={searchHandler} />
         <PostOrder setSortInfo={setSortInfo} />
         <PostSection postInfo={postInfo} />
         <div

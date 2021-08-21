@@ -9,8 +9,7 @@ import React, {
   useState,
 } from "react";
 interface PostSearchProps {
-  setSearchName: Dispatch<SetStateAction<string>>;
-  searchHandler: () => void;
+  searchHandler: (inputs: string) => void;
 }
 
 const PostSearch: React.FC<PostSearchProps> = (props) => {
@@ -20,25 +19,14 @@ const PostSearch: React.FC<PostSearchProps> = (props) => {
       <SearchIconBox>
         <IoIosSearch />
       </SearchIconBox>
-      <SearchInput
-        onChange={(e) => {
-          e.preventDefault();
-          props.setSearchName(e.target.value);
-        }}
-      />
+      <SearchInput ref={searchInputRef} />
       <SearchButton
         secondary
         onClick={(e) => {
           e.preventDefault();
-          // const searchInput = searchInputRef.current;
-          // if (searchInput) {
-          //   props.setSearchName((pre) => {
-          //     if (searchInput) {
-          //       console.log(searchInput.value, "search");
-          //       return searchInput.value;
-          //     } else return pre;
-          //   });
-          props.searchHandler();
+          const searchInput = searchInputRef.current;
+          if (!searchInput) return;
+          props.searchHandler(searchInput.value);
         }}
       >
         <span>search</span>
