@@ -28,7 +28,7 @@ export default function Post() {
   const searchName = useRef("");
   const [sortInfo, setSortInfo] = useState<string[]>(["", "", ""]);
   const [isEnd, setIsEnd] = useState(false);
-  const pageNo = useRef(1);
+  const isFirst = useRef(true);
   const message = useAlert();
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function Post() {
   }, [postInfo]);
 
   const getPosts = async () => {
-    const orderConvert = orderOptions[sortInfo[2]];
+    const orderConvert = orderOptions[sortInfo[2]] || sortInfo[2];
     const languageConvert = LanguageLocale[sortInfo[0]]
       ? LanguageLocale[sortInfo[0]]
       : "";
@@ -56,7 +56,7 @@ export default function Post() {
         language: languageConvert,
         hopeLanguage: hopeLanguageConvert,
         order: orderConvert,
-        pageNo: pageNo.current,
+        isFirst: isFirst.current,
       },
       "Params"
     );
@@ -72,7 +72,7 @@ export default function Post() {
           language: languageConvert,
           hopeLanguage: hopeLanguageConvert,
           order: orderConvert,
-          pageNo: pageNo.current,
+          isFirst: isFirst.current,
         },
       })
       .then((res) => {
@@ -85,15 +85,15 @@ export default function Post() {
         return res.data.data;
       })
       .then((res) => {
-        if (pageNo.current === 1)
+        if (isFirst.current === true)
           postIds.current += res.map((item: any) => item.id).join("/");
         else postIds.current += "/" + res.map((item: any) => item.id).join("/");
         console.log(postIds.current, "postids");
         setPostInfo((item: any) => {
-          if (pageNo.current === 1) return [...res];
+          if (isFirst.current === true) return [...res];
           return [...item, ...res];
         });
-        pageNo.current += 1;
+        isFirst.current = false;
         console.log(searchName.current, "getPost()");
         return res;
       })
@@ -105,7 +105,7 @@ export default function Post() {
   };
 
   const searchHandler = (inputs: string) => {
-    pageNo.current = 1;
+    isFirst.current = true;
     postIds.current = "";
     searchName.current = inputs;
     getPosts();
