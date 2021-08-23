@@ -133,11 +133,12 @@ export default function Chat() {
       if (Number(message.roomId) === Number(mainRoomId)) {
         setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
       }
+
       setTotalMessage((pre: any) => {
         const result = pre.map((item: any) => {
-          if (message.senderId === item.senderId) {
-            item.messages.push(message);
-            return item;
+          console.log(message.roomId, item.roomId, "listen");
+          if (message.roomId === item.roomId) {
+            item.messages = [...item.messages, message];
           }
           return item;
         });

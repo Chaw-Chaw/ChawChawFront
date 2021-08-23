@@ -47,6 +47,7 @@ const ChatRoomList: React.FC<ChatRoomListProps> = (props) => {
     <Outline>
       <Inner>
         {props.totalMessage.map((item: any) => {
+          console.log(item, "item");
           const limitMessageWord = 20;
           const lastMessageInfo = item.messages[item.messages.length - 1];
           const lastMessage = lastMessageInfo.message;
