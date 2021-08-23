@@ -33,6 +33,11 @@ const HeaderWrapper = styled.header`
     flex-direction: column;
     height: 200px;
   }
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 `;
 const HeaderComponentsBox = styled.div`
   display: flex;
@@ -173,6 +178,18 @@ const MyImage: React.FC = () => {
     </MyImageBox>
   );
 };
+
+const LogoFragment = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+const SchoolHead = styled.h2`
+  margin: 0px;
+  padding: 0px;
+  font-size: 1.5rem;
+`;
 const HeaderCondition: React.FC<HeaderProps> = (props) => {
   const headerType = props.type;
   const { user } = useContext(AuthContext);
@@ -180,6 +197,7 @@ const HeaderCondition: React.FC<HeaderProps> = (props) => {
   if (user?.token) {
     return <MyImage />;
   }
+
   if (headerType === "login") {
     return (
       <Link href="/account/signup/webMailAuth">
@@ -189,15 +207,7 @@ const HeaderCondition: React.FC<HeaderProps> = (props) => {
       </Link>
     );
   }
-  if (headerType === "signup") {
-    return (
-      <Link href="/account/login">
-        <a>
-          <Button>Login</Button>
-        </a>
-      </Link>
-    );
-  }
+
   return (
     <Link href="/account/login">
       <a>
@@ -209,9 +219,13 @@ const HeaderCondition: React.FC<HeaderProps> = (props) => {
 
 const Header: React.FC<HeaderProps> = (props) => {
   const { id, setTheme } = useContext(ThemeContext);
+  const { user } = useContext(AuthContext);
   return (
     <HeaderWrapper>
-      <Logo />
+      <LogoFragment>
+        <Logo />
+        {props.type === "post" && <SchoolHead>{user.school}</SchoolHead>}
+      </LogoFragment>
       <HeaderComponentsBox>
         <ChangeLanguageDropDown />
         <ThemeToggleBox>

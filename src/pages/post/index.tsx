@@ -31,10 +31,6 @@ export default function Post() {
   const isFirst = useRef(true);
   const message = useAlert();
 
-  useEffect(() => {
-    console.log(postInfo, "postInfo");
-  }, [postInfo]);
-
   const getPosts = async () => {
     const orderConvert = orderOptions[sortInfo[2]] || sortInfo[2];
     const languageConvert = LanguageLocale[sortInfo[0]]
@@ -129,10 +125,10 @@ export default function Post() {
     const observer = new IntersectionObserver(onIntersect, { threshold: 0.5 });
     target.current && observer.observe(target.current);
     return () => observer.disconnect();
-  }, []);
+  }, [user]);
 
   return (
-    <Layout>
+    <Layout type="post">
       <Container width="90%">
         <PostSearch searchHandler={searchHandler} />
         <PostOrder setSortInfo={setSortInfo} />
