@@ -112,6 +112,17 @@ export default function SignUp() {
     }
   };
 
+  useEffect(() => {
+    if (!user.token) {
+      return;
+    }
+    message.error("로그아웃 후 회원가입을 진행해주세요.", {
+      onClose: () => {
+        router.push("/post");
+      },
+    });
+  }, [user]);
+
   const emailDupCheckHandle = async (e: MouseEvent) => {
     e.preventDefault();
     const email = watch("email");

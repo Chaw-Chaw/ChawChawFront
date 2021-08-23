@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import {
   Layout,
@@ -72,6 +72,7 @@ const SignupTitle = styled.h2`
   font-size: 1rem;
 `;
 export default function Login() {
+  const router = useRouter();
   const message = useAlert();
   const { login, kakaoLogin, user } = useContext(AuthContext);
   const {
@@ -88,6 +89,21 @@ export default function Login() {
 
     login(data);
   };
+
+  useEffect(() => {
+    const user = window.localStorage.getItem("user");
+    if (user) {
+      const isLogin = JSON.parse(user).token;
+      if (isLogin) {
+        message.error("로그아웃 후 로그인을 진행해주세요.", {
+          onClose: () => {
+            router.push("/post");
+          },
+        });
+      }
+    }
+  }, []);
+
   return (
     <Layout type="login">
       <AccountContainer

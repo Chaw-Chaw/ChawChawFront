@@ -8,6 +8,7 @@ import { RiKakaoTalkFill } from "react-icons/ri";
 import FacebookLogin from "@greatsumini/react-facebook-login";
 import { FaFacebookF } from "react-icons/fa";
 import axios from "axios";
+import KakaoIcon from "../../../../public/svg/kakaotalk.svg";
 
 const ButtonSection = styled.div`
   width: 100%;
@@ -68,7 +69,7 @@ const styleFacebookLogin: CSS.Properties = {
   fontSize: "2.5rem",
 };
 
-const SocialSection: React.FC = (props) => {
+const SocialSection: React.FC = () => {
   const router = useRouter();
   const { facebookLogin } = useContext(AuthContext);
   const redirectUrl =
@@ -93,6 +94,7 @@ const SocialSection: React.FC = (props) => {
       <ButtonSection>
         <KakaoLogin onClick={callKakaoLogin}>
           <RiKakaoTalkFill />
+          {/* <KakaoIcon /> */}
         </KakaoLogin>
         <FacebookLogin
           style={styleFacebookLogin}
