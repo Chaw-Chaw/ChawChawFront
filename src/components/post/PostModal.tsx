@@ -59,6 +59,11 @@ const PostModalBox = styled.div<{ visible?: boolean }>`
   ::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/
   }
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
   .post-image {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;

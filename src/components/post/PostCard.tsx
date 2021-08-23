@@ -53,6 +53,11 @@ const PostCardBox = styled.div`
   :hover {
     animation: kenburns-top 0.2s ease-out both;
   }
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 `;
 
 const PostCardContent = styled.div`
