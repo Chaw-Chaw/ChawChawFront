@@ -65,7 +65,7 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
     if (!mainChatList.current) return;
     mainChatList.current.scrollIntoView({
       behavior: "smooth",
-      block: "end",
+      block: "center",
       inline: "nearest",
     });
   }, [props.mainRoomId]);

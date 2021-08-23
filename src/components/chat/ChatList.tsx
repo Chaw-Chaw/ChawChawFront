@@ -8,7 +8,7 @@ import { Router, useRouter } from "next/router";
 import { ChatBox } from "./";
 
 interface ChatRoomListProps {
-  chatListInfo: any[];
+  totalMessage: any;
   mainRoomId: number;
 }
 
@@ -35,64 +35,18 @@ const Inner = styled.div`
 `;
 
 const ChatRoomList: React.FC<ChatRoomListProps> = (props) => {
-  const [chatListInfo, setChatListInfo] = useState(props.chatListInfo);
   const router = useRouter();
   const { user } = useContext(AuthContext);
-  const client = useRef<any>({});
   useEffect(() => {
     if (props.mainRoomId < 0 || props.mainRoomId === undefined) return;
     if (!user.id) return;
-    console.log(props, "props.mainRoomId");
-    setChatListInfo((pre) => [...pre, ...props.chatListInfo]);
-    // connect(user.id.toString());
-    // return () => disconnect();
+    console.log(props.totalMessage, "props.mainRoomId");
   }, [props.mainRoomId]);
-
-  // const connect = (userId: string) => {
-  //   client.current = new StompJs.Client({
-  //     // brokerURL: "ws://localhost:8080/ws-stomp/websocket", // 웹소켓 서버로 직접 접속
-  //     webSocketFactory: () => new SockJS("https://mylifeforcoding.com/ws"), // proxy를 통한 접속
-  //     // connectHeaders: {
-  //     //   "auth-token": "spring-chat-auth-token",
-  //     // },
-  //     debug: function (str) {
-  //       console.log(str);
-  //     },
-  //     reconnectDelay: 5000,
-  //     heartbeatIncoming: 4000,
-  //     heartbeatOutgoing: 4000,
-  //     onConnect: () => {
-  //       subscribe(userId);
-  //     },
-  //     onStompError: (frame) => {
-  //       console.error(frame);
-  //     },
-  //   });
-
-  //   client.current.activate();
-  // };
-  // const subscribe = (userId: string) => {
-  //   if (Number(userId) < 0 || userId === undefined) {
-  //     alert("유저가 없습니다.");
-  //   }
-  //   client.current.subscribe(
-  //     `/queue/chat/room/wait/${userId}`,
-  //     (response: any) => {
-  //       const message = JSON.parse(response.body);
-  //       console.log(response, "subscribeChatList");
-  //       setChatListInfo((chatListInfo: any) => [...chatListInfo, message]);
-  //     }
-  //   );
-  // };
-
-  // const disconnect = () => {
-  //   client.current.deactivate();
-  // };
 
   return (
     <Outline>
       <Inner>
-        {chatListInfo.map((item) => {
+        {props.totalMessage.map((item: any) => {
           const limitMessageWord = 20;
           const lastMessageInfo = item.messages[item.messages.length - 1];
           const lastMessage = lastMessageInfo.message;

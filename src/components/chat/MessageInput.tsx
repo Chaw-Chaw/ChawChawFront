@@ -1,12 +1,18 @@
 import styled from "styled-components";
 import { Input, TextArea } from "../common/Input";
 import { AiOutlinePicture, AiOutlineSend } from "react-icons/ai";
-import { ChangeEvent, ChangeEventHandler, KeyboardEvent } from "react";
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  KeyboardEvent,
+  MouseEventHandler,
+} from "react";
 
 interface MessageInputProps {
   value: string;
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
   onKeyPress: (e: KeyboardEvent) => void;
+  onClick: () => void;
 }
 
 const InputBox = styled.div`
@@ -75,11 +81,16 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
           onKeyPress={props.onKeyPress}
           placeholder="메세지를 입력해주세요."
           autoFocus
-        ></TextInput>
+        />
         <PictureIconBox>
           <AiOutlinePicture />
         </PictureIconBox>
-        <SendIconBox>
+        <SendIconBox
+          onClick={(e) => {
+            e.preventDefault();
+            props.onClick();
+          }}
+        >
           <AiOutlineSend />
         </SendIconBox>
       </InputBoxInner>
