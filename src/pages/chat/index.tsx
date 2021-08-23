@@ -176,6 +176,7 @@ export default function Chat() {
   useEffect(() => {
     // if (!user.token) return;
     // console.log(user, "soso");
+
     const userId = router.query.userId
       ? Number(router.query.userId)
       : undefined;
@@ -189,7 +190,7 @@ export default function Chat() {
   useEffect(() => {
     connect();
     return () => disconnect();
-  }, [mainRoomId]);
+  }, [roomIds]);
 
   return (
     <Layout>
