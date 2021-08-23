@@ -130,10 +130,12 @@ const MyImage: React.FC = () => {
     }
   }, []);
   const profileImage = (() => {
-    if (user?.imageUrl === undefined || user?.imageUrl === "default.png")
-      return `https://mylifeforcoding.com/users/image?imageUrl=default.png`;
-    else
-      return `https://mylifeforcoding.com/users/image?imageUrl=${user?.imageUrl}`;
+    if (
+      user?.imageUrl === undefined ||
+      user?.imageUrl === "https://d2anzi03nvjlav.cloudfront.net/default.png"
+    )
+      return `https://d2anzi03nvjlav.cloudfront.net/default.png`;
+    else return `${user?.imageUrl}`;
   })();
   return (
     <MyImageBox>

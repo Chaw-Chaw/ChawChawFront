@@ -69,11 +69,10 @@ const ProfileImage: React.FC<ProfileImageProps> = (props) => {
   const { user } = useContext(AuthContext);
   const profileImage = (() => {
     if (user?.imageUrl === undefined || user?.imageUrl === "default.png")
-      return `https://mylifeforcoding.com/users/image?imageUrl=default.png`;
-    else
-      return `https://mylifeforcoding.com/users/image?imageUrl=${user?.imageUrl}`;
+      return `https://d2anzi03nvjlav.cloudfront.net/default.png`;
+    else return `${user?.imageUrl}`;
   })();
-
+  console.log(profileImage, "profile Image");
   return (
     <Container>
       <Image

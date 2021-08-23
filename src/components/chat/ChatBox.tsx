@@ -78,8 +78,8 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
       <ProfileImage
         src={
           props.imageUrl
-            ? `https://mylifeforcoding.com/users/image?imageUrl=${props.imageUrl}`
-            : `https://mylifeforcoding.com/users/image?imageUrl=default.png`
+            ? `${props.imageUrl}`
+            : `https://d2anzi03nvjlav.cloudfront.net/default.png`
         }
       />
       <ChatMessageBox type={type}>

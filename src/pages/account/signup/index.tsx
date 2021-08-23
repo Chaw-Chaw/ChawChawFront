@@ -113,15 +113,18 @@ export default function SignUp() {
   };
 
   useEffect(() => {
-    if (!user.token) {
-      return;
+    const user = window.localStorage.getItem("user");
+    if (user) {
+      const isLogin = JSON.parse(user).token;
+      if (isLogin) {
+        message.error("로그아웃 후 회원가입을 진행해주세요.", {
+          onClose: () => {
+            router.push("/post");
+          },
+        });
+      }
     }
-    message.error("로그아웃 후 회원가입을 진행해주세요.", {
-      onClose: () => {
-        router.push("/post");
-      },
-    });
-  }, [user]);
+  }, []);
 
   const emailDupCheckHandle = async (e: MouseEvent) => {
     e.preventDefault();

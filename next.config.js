@@ -9,6 +9,10 @@ module.exports = {
     ];
   },
   images: {
-    domains: ["images.unsplash.com", "mylifeforcoding.com"],
+    domains: [
+      "d2anzi03nvjlav.cloudfront.net",
+      "mylifeforcoding.com",
+      "d2anzi03nvjlav.cloudfront.net",
+    ],
   },
 };

@@ -188,7 +188,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     follows: 0,
     hopeLanguage: [],
     id: 0,
-    imageUrl: "default.png",
+    imageUrl: "https://d2anzi03nvjlav.cloudfront.net/default.png",
     instagramUrl: "",
     language: [],
     name: "",
@@ -231,7 +231,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       <PostCardBox onClick={handleModal}>
         <PostImageBox>
           <Image
-            src={`https://mylifeforcoding.com/users/image?imageUrl=${props.imageUrl}`}
+            src={`${props.imageUrl}`}
             alt="포스팅 프로필 이미지"
             width="100px"
             height="100px"

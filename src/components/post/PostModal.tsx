@@ -455,9 +455,7 @@ const PostModal: React.FC<PostModalProps> = (props) => {
   };
   return (
     <PostModalBox visible={props.visible}>
-      <PostImage
-        src={`https://mylifeforcoding.com/users/image?imageUrl=${props.imageUrl}`}
-      ></PostImage>
+      <PostImage src={`${props.imageUrl}`}></PostImage>
       <PostUserName>{props.name}</PostUserName>
       <PostButtonBox>
         <PostChatButton onClick={tryChat} secondary width="250px" height="45px">
