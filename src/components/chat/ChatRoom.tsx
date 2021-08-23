@@ -59,23 +59,6 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const [message, setMessage] = useState<string>("");
   const chatMessageBox = useRef<HTMLDivElement>(null);
 
-  const getMessageLog = async (roomId: string) => {
-    // const messageLog = await axios
-    //   .get(`/chat/${roomId}`, {
-    //     headers: {
-    //       "Content-type": "application/json",
-    //       Authorization: `${user?.token}`,
-    //       Accept: "application/json",
-    //     },
-    //   })
-    //   .then((res) => {
-    //     if (!res.data.isSuccess) throw new Error(res.data);
-    //     console.log(res.data);
-    //     return res.data.data;
-    //   })
-    //   .catch((err) => console.error(err));
-  };
-
   const connect = (roomId: string) => {
     client.current = new StompJs.Client({
       // brokerURL: "ws://localhost:8080/ws-stomp/websocket", // 웹소켓 서버로 직접 접속
@@ -92,8 +75,11 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
 
       onConnect: () => {
         // 여기서 subscribe 를 늘리면 되나?
-        subscribe("26");
         subscribe(roomId);
+        subscribe("24");
+        subscribe("25");
+        subscribe("27");
+        subscribe("33");
       },
       onStompError: (frame) => {
         console.error(frame);
@@ -122,7 +108,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
       return;
     }
     client.current.publish({
-      destination: "/message",
+      destination: `/queue/chat/room/${props.roomId}`,
       body: JSON.stringify({
         roomId: props.roomId,
         senderId: user.id,
