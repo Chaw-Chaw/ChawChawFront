@@ -59,8 +59,10 @@ export default function Chat() {
             ...mainMessageLog.messages.reverse(),
           ]);
         }
+        // 채팅리스트 중복 생성 제거
+        console.log(messageLog, "MessageLog");
         setChatListInfo([...messageLog]);
-        const roomId = mainMessageLog.roodId;
+        const roomId = mainMessageLog.roomId;
         setMainRoomId(roomId);
         setYourProfileImage(mainMessageLog.imageUrl);
       })

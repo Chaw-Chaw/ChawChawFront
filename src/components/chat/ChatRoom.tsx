@@ -89,7 +89,10 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
+
       onConnect: () => {
+        // 여기서 subscribe 를 늘리면 되나?
+        subscribe("26");
         subscribe(roomId);
       },
       onStompError: (frame) => {
@@ -141,7 +144,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   useEffect(() => {
     console.log(props, "props.roomId");
     setChatMessages(props.chatMessage);
-    if (props.roomId === undefined) return;
+    if (props.roomId === undefined || props.roomId === "-1") return;
     connect(props.roomId);
     return () => disconnect();
   }, [props.roomId]);
