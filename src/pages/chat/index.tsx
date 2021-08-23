@@ -80,7 +80,7 @@ export default function Chat() {
       );
       const roomId = mainMessageLog.roomId;
       if (mainMessageLog) {
-        const sortMessage = mainMessageLog.messages.reverse();
+        const sortMessage = mainMessageLog.messages;
         setMainChatMessages(sortMessage);
       }
       // 채팅리스트 중복 생성 제거
@@ -130,9 +130,7 @@ export default function Chat() {
     client.current.subscribe(destination, (response: any) => {
       const message = JSON.parse(response.body);
       console.log(response, "subscribe");
-      console.log(message.roomId, mainRoomId, " 123");
       if (Number(message.roomId) === Number(mainRoomId)) {
-        console.log("메인 채팅");
         setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
       }
       setTotalMessage((pre: any) => {
