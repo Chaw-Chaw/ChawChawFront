@@ -14,11 +14,12 @@ import {
   useEffect,
   useState,
 } from "react";
-import { AuthContext } from "../../store/AuthContext";
+import { AuthContext, UserPropertys } from "../../store/AuthContext";
 import { useAlert } from "react-alert";
 import axios from "axios";
 import { AiOutlineConsoleSql } from "react-icons/ai";
 import { Router, useRouter } from "next/router";
+import { prepareProfile } from "selenium-webdriver/firefox";
 
 interface ProfileSection {
   title?: string;
@@ -62,9 +63,10 @@ const ProfileUploadButton = styled(Button)`
 const ProfileSection: React.FC = () => {
   const message = useAlert();
   const router = useRouter();
-  const { updateUser, user } = useContext(AuthContext);
+  const [user, setUser] = useState<UserPropertys>({});
+  const { updateUser } = useContext(AuthContext);
   const [userCountries, setUserCountries] = useState<string[]>(
-    user.country ? user.country : []
+    user.country || []
   );
   const [userLanguages, setUserLanguages] = useState<string[]>(
     user.language ? user.language.map((item) => LocaleLanguage[item]) : []
@@ -74,35 +76,51 @@ const ProfileSection: React.FC = () => {
       ? user.hopeLanguage.map((item) => LocaleLanguage[item])
       : []
   );
-  const [userContent, setUserContent] = useState<string>(
-    user.content ? user.content : ""
-  );
+  const [userContent, setUserContent] = useState<string>(user.content || "");
   const [userFaceBookUrl, setUserFaceBookUrl] = useState<string>(
-    user.facebookUrl ? user.facebookUrl : "https://www.facebook.com/"
+    user.facebookUrl || "https://www.facebook.com/"
   );
   const [userInstagramUrl, setUserInstagramUrl] = useState<string>(
-    user.instagramUrl ? user.instagramUrl : "https://www.instagram.com/"
+    user.instagramUrl || "https://www.instagram.com/"
   );
 
   useEffect(() => {
-    console.log(user, "userLanguages");
-    setUserContent(user.content ? user.content : "");
-    setUserCountries(user.country ? user.country : []);
-    setUserFaceBookUrl(
-      user.facebookUrl ? user.facebookUrl : "https://www.facebook.com/"
-    );
-    setUserHopeLanguages(
-      user.hopeLanguage
-        ? user.hopeLanguage.map((item) => LocaleLanguage[item])
-        : []
-    );
-    setUserInstagramUrl(
-      user.instagramUrl ? user.instagramUrl : "https://www.instagram.com/"
-    );
-    setUserLanguages(
-      user.language ? user.language.map((item) => LocaleLanguage[item]) : []
-    );
-  }, [user]);
+    const localStorageUser = window.localStorage.getItem("user");
+
+    if (localStorageUser) {
+      const localUser: UserPropertys = JSON.parse(localStorageUser);
+      const isLogin = localUser.token;
+
+      if (!isLogin) {
+        message.error("로그인 후 이용해주세요.", {
+          onClose: () => {
+            router.push("/account/login");
+          },
+        });
+      }
+      setUser((pre) => {
+        return { ...pre, ...localUser };
+      });
+      console.log(localUser, "userLanguages");
+      setUserContent(localUser.content || "");
+
+      setUserFaceBookUrl(localUser.facebookUrl || "https://www.facebook.com/");
+      setUserInstagramUrl(
+        localUser.instagramUrl || "https://www.instagram.com/"
+      );
+      setUserCountries(localUser.country || []);
+      setUserLanguages(
+        localUser.language
+          ? localUser.language.map((item) => LocaleLanguage[item])
+          : []
+      );
+      setUserHopeLanguages(
+        localUser.hopeLanguage
+          ? localUser.hopeLanguage.map((item) => LocaleLanguage[item])
+          : []
+      );
+    }
+  }, []);
 
   const onSubmit: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();

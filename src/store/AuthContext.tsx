@@ -423,3 +423,4 @@ const AuthContextProvider: React.FC = (props) => {
 };
 
 export { AuthContext, AuthContextProvider };
+export type { UserPropertys };
