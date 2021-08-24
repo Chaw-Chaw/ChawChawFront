@@ -113,9 +113,13 @@ export default function SignUp() {
   };
 
   useEffect(() => {
-    const user = window.localStorage.getItem("user");
-    if (user) {
-      const isLogin = JSON.parse(user).token;
+    const localStorageUser = window.localStorage.getItem("user");
+
+    if (localStorageUser) {
+      const user = JSON.parse(localStorageUser);
+      const isLogin = user.token;
+      const userSchool = user.school;
+
       if (isLogin) {
         message.error("로그아웃 후 회원가입을 진행해주세요.", {
           onClose: () => {
@@ -123,6 +127,18 @@ export default function SignUp() {
           },
         });
       }
+      if (!userSchool)
+        message.error("웹메일 인증을 먼저 진행해주세요.", {
+          onClose: () => {
+            router.push("/account/signup/webMailAuth");
+          },
+        });
+    } else {
+      message.error("웹메일 인증을 먼저 진행해주세요.", {
+        onClose: () => {
+          router.push("/account/signup/webMailAuth");
+        },
+      });
     }
   }, []);
 
@@ -137,14 +153,6 @@ export default function SignUp() {
     } else message.error("이메일을 입력해주세요.");
   };
 
-  useEffect(() => {
-    if (!user.school)
-      message.error("웹메일 인증을 먼저 진행해주세요.", {
-        onClose: () => {
-          router.push("/account/signup/webMailAuth");
-        },
-      });
-  }, [user]);
   return (
     <Layout type="signup">
       <AccountContainer

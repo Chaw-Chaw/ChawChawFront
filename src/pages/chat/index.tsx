@@ -37,43 +37,62 @@ export default function Chat() {
   const [yourProfileImage, setYourProfileImage] = useState("default.png");
   const router = useRouter();
   const client = useRef<any>({});
+  const message = useAlert();
   // const [userToken, setUserToken]
 
   const getUserMessageLog = async (userId: number) => {
-    const response = await axios.post(
-      "/chat/room",
-      { userId: userId },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${user?.token}`,
-          Accept: "application/json",
-        },
-      }
-    );
+    const response = await axios
+      .post(
+        "/chat/room",
+        { userId: userId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${user?.token}`,
+            Accept: "application/json",
+          },
+        }
+      )
+      .catch((err) => err.response);
     console.log(response, "getUserMessageLog");
     dataProcess(response, userId);
   };
 
   const getMessageLog = async () => {
-    const response = await axios.get(`https://mylifeforcoding.com/chat/`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `${user?.token}`,
-        Accept: "application/json",
-      },
-    });
+    const response = await axios
+      .get(`https://mylifeforcoding.com/chat/`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${user?.token}`,
+          Accept: "application/json",
+        },
+      })
+      .catch((err) => err.response);
+
     console.log(response, "getMessageLog");
     dataProcess(response, -1);
   };
 
   const dataProcess = (res: AxiosResponse, userId: number) => {
+    // console.log(res.status, "statuscode");
+    if (res.status === 403) {
+      message.error("프로필을 작성해주세요.", {
+        onClose: () => {
+          router.push("/account/profile");
+        },
+      });
+    }
+    if (res.status === 401) {
+      // access token 만료
+      // refresh token 전송
+    }
     if (!res.data.isSuccess) {
+      console.log(res.data, "chatError");
       console.error(res.data);
       return;
     }
-    const tmpTotalMessage = res.data.data;
 
+    const tmpTotalMessage = res.data.data;
     if (userId !== -1) {
       const mainMessageLog = tmpTotalMessage.find(
         (item: any) => item.senderId === userId
@@ -83,7 +102,7 @@ export default function Chat() {
         const sortMessage = mainMessageLog.messages;
         setMainChatMessages(sortMessage);
       }
-      // 채팅리스트 중복 생성 제거
+
       setMainRoomId(roomId);
       setYourProfileImage(mainMessageLog.imageUrl);
     }
@@ -133,10 +152,8 @@ export default function Chat() {
       if (Number(message.roomId) === Number(mainRoomId)) {
         setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
       }
-
       setTotalMessage((pre: any) => {
         const result = pre.map((item: any) => {
-          console.log(message.roomId, item.roomId, "listen");
           if (message.roomId === item.roomId) {
             item.messages = [...item.messages, message];
           }
@@ -147,15 +164,16 @@ export default function Chat() {
     });
   };
 
-  const publish = (message: any) => {
-    const timezoneOffset = new Date().getTimezoneOffset() * 60000;
-    const now = new Date(Date.now() - timezoneOffset);
+  const publish = (message: any, messageType: string) => {
     if (!client.current.connected) {
       return;
     }
+    const timezoneOffset = new Date().getTimezoneOffset() * 60000;
+    const now = new Date(Date.now() - timezoneOffset);
     client.current.publish({
       destination: "/message",
       body: JSON.stringify({
+        messageType,
         roomId: mainRoomId,
         senderId: user.id,
         sender: user.name,
@@ -163,6 +181,7 @@ export default function Chat() {
         message,
       }),
     });
+    console.log("메세지 전송 선공");
   };
 
   // useEffect(() => {
@@ -173,9 +192,6 @@ export default function Chat() {
   // }, []);
 
   useEffect(() => {
-    // if (!user.token) return;
-    // console.log(user, "soso");
-
     const userId = router.query.userId
       ? Number(router.query.userId)
       : undefined;

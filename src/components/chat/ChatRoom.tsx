@@ -9,12 +9,13 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { BsBoxArrowRight } from "react-icons/bs";
 import { RiHome2Line } from "react-icons/ri";
+import PostOrder from "../../pages/post/PostOrder";
 
 interface ChatRoomProps {
   chatMessage: any[];
   yourProfileImage: string;
   roomId: string;
-  publish: (message: any) => void;
+  publish: (message: any, messageType: string) => void;
 }
 
 const Outline = styled.div`
@@ -67,6 +68,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const chatMessageBox = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const leaveChatRoom = async () => {
+    props.publish("", "EXIT");
     const response = await axios.delete(`/chat/room/${props.roomId}`, {
       headers: {
         "Content-Type": "application/json",
@@ -144,13 +146,13 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
           }}
           onKeyPress={(e) => {
             if (e.key === "Enter") {
-              props.publish(message);
+              props.publish(message, "TALK");
               setMessage("");
             }
           }}
           value={message}
           onClick={() => {
-            props.publish(message);
+            props.publish(message, "TALK");
             setMessage("");
           }}
         />
