@@ -241,28 +241,19 @@ const UrlUpdateButton = styled(UpdateButton)`
 const SocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const urlRef = useRef<HTMLInputElement>(null);
-
+  const defaultUrl =
+    props.type === "facebook"
+      ? "https://www.facebook.com/"
+      : "https://www.instagram.com/";
+  console.log(props.url, "SocialUrl Rendering Count");
   return (
-    <SocialUrlBox>
+    <SocialUrlBox key={props.url}>
       {props.type === "facebook" ? <FaFacebook /> : <AiFillInstagram />}
       <SocialUrlInput
         isActive={isActive}
         disabled={!isActive}
         ref={urlRef}
-        // value={
-        //   props.url
-        //     ? props.url
-        //     : props.type === "facebook"
-        //     ? "https://www.facebook.com/"
-        //     : "https://www.instagram.com/"
-        // }
-        defaultValue={
-          props.url
-            ? props.url
-            : props.type === "facebook"
-            ? "https://www.facebook.com/"
-            : "https://www.instagram.com/"
-        }
+        defaultValue={props.url || defaultUrl}
       />
       <UrlUpdateButton
         onClick={() => {
@@ -270,7 +261,6 @@ const SocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
           const url = urlRef.current;
           if (urlRef === null || url === null) return;
           if (isActive && props.setUrl && url) {
-            console.log(url.value);
             props.setUrl(() => {
               return url.value;
             });
