@@ -72,7 +72,7 @@ const ProfileImage: React.FC<ProfileImageProps> = (props) => {
       return `https://d2anzi03nvjlav.cloudfront.net/default.png`;
     else return `${user?.imageUrl}`;
   })();
-  console.log(profileImage, "profile Image");
+
   return (
     <Container>
       <Image

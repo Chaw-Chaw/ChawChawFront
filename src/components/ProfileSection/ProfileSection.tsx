@@ -18,13 +18,12 @@ import { AuthContext } from "../../store/AuthContext";
 import { useAlert } from "react-alert";
 import axios from "axios";
 import { AiOutlineConsoleSql } from "react-icons/ai";
+import { Router, useRouter } from "next/router";
 
 interface ProfileSection {
   title?: string;
   content?: string;
 }
-
-type Inputs = {};
 
 const Container = styled.div`
   width: 100%;
@@ -61,8 +60,8 @@ const ProfileUploadButton = styled(Button)`
 `;
 
 const ProfileSection: React.FC = () => {
-  console.log(new Date());
   const message = useAlert();
+  const router = useRouter();
   const { updateUser, user } = useContext(AuthContext);
   const [userCountries, setUserCountries] = useState<string[]>(
     user.country ? user.country : []
@@ -79,23 +78,27 @@ const ProfileSection: React.FC = () => {
     user.content ? user.content : ""
   );
   const [userFaceBookUrl, setUserFaceBookUrl] = useState<string>(
-    user.facebookUrl ? user.facebookUrl : ""
+    user.facebookUrl ? user.facebookUrl : "https://www.facebook.com/"
   );
   const [userInstagramUrl, setUserInstagramUrl] = useState<string>(
-    user.instagramUrl ? user.instagramUrl : ""
+    user.instagramUrl ? user.instagramUrl : "https://www.instagram.com/"
   );
 
   useEffect(() => {
     console.log(user, "userLanguages");
     setUserContent(user.content ? user.content : "");
     setUserCountries(user.country ? user.country : []);
-    setUserFaceBookUrl(user.facebookUrl ? user.facebookUrl : "");
+    setUserFaceBookUrl(
+      user.facebookUrl ? user.facebookUrl : "https://www.facebook.com/"
+    );
     setUserHopeLanguages(
       user.hopeLanguage
         ? user.hopeLanguage.map((item) => LocaleLanguage[item])
         : []
     );
-    setUserInstagramUrl(user.instagramUrl ? user.instagramUrl : "");
+    setUserInstagramUrl(
+      user.instagramUrl ? user.instagramUrl : "https://www.instagram.com/"
+    );
     setUserLanguages(
       user.language ? user.language.map((item) => LocaleLanguage[item]) : []
     );
@@ -149,7 +152,6 @@ const ProfileSection: React.FC = () => {
           return false;
         }
         message.success("프로필이 업로드 되었습니다.");
-        console.log(res, "profile Update");
         return res.data.data;
       })
       .then((res) => updateUser(userProfile))
@@ -212,6 +214,7 @@ const ProfileSection: React.FC = () => {
       });
     console.log(response);
   };
+
   return (
     <Container>
       <ProfileHeader>
