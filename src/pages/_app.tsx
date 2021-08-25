@@ -26,9 +26,7 @@ const GlobalStyles = createGlobalStyle`
 }
   body{
     background: ${(props) => props.theme.bodyBackgroundColor};
-    
     font-family: "BMJUA";
-    
     min-height: 100vh;
     margin: 0;
     color: ${(props) => props.theme.bodyFontColor};
@@ -40,22 +38,16 @@ function MyApp({ Component, pageProps }: AppProps) {
   const AlertTemplate: React.FC<AlertComponentPropsWithStyle> = ({
     message,
     close,
-    style,
     options,
-  }) => (
-    <>
-      <Message
-        style={style}
-        message={message}
-        onClick={close}
-        type={options.type}
-      >
+  }) => {
+    return (
+      <Message message={message} onClick={close} type={options.type}>
         {/* {options.type === "info" && "!"}
       {options.type === "success" && ":)"}
       {options.type === "error" && ":("} */}
       </Message>
-    </>
-  );
+    );
+  };
 
   return (
     <CookiesProvider>

@@ -381,18 +381,12 @@ const PostModal: React.FC<PostModalProps> = (props) => {
   const pastDays =
     (endDate.getTime() - stDate.getTime()) / (1000 * 60 * 60 * 24);
   const repCountry = props.repCountry;
-  const repLanguage = LocaleLanguage[props.repLanguage]
-    ? LocaleLanguage[props.repLanguage]
-    : "";
-  const repHopeLanguage = LocaleLanguage[props.repHopeLanguage]
-    ? LocaleLanguage[props.repHopeLanguage]
-    : "";
+  const repLanguage = LocaleLanguage[props.repLanguage] || "";
+  const repHopeLanguage = LocaleLanguage[props.repHopeLanguage] || "";
   const country = props.country;
-  const language = props.language.map((item) =>
-    LocaleLanguage[item] ? LocaleLanguage[item] : ""
-  );
-  const hopeLanguage = props.hopeLanguage.map((item) =>
-    LocaleLanguage[item] ? LocaleLanguage[item] : ""
+  const language = props.language.map((item) => LocaleLanguage[item] || "");
+  const hopeLanguage = props.hopeLanguage.map(
+    (item) => LocaleLanguage[item] || ""
   );
   const tryChat = async () => {
     router.push({ pathname: "/chat", query: { userId: props.id } });

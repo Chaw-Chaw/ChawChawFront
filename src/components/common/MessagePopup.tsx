@@ -5,21 +5,16 @@ import { Button } from "./";
 interface MessageProps {
   onClick?: () => void;
   message?: ReactNode;
-  style?: React.CSSProperties;
   type?: string;
 }
 const MessageContainer = styled.div`
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.1);
+  width: 100vw;
+  height: 100vh;
+  pointer-events: all;
+  background-color: rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 200;
 `;
 const MessageBox = styled.div`
   background-color: ${(props) => props.theme.bodyBackgroundColor};
@@ -65,7 +60,7 @@ const MessageConfirmButton = styled(Button)`
 const Message: React.FC<MessageProps> = (props) => {
   return (
     <MessageContainer>
-      <MessageBox style={props.style}>
+      <MessageBox>
         <MessageTitleBox>
           <span>{props.type}</span>
         </MessageTitleBox>
