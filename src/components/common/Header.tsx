@@ -51,6 +51,7 @@ const MyImageBox = styled.div`
   align-items: center;
   justify-content: center;
   img {
+    cursor: pointer;
     border-radius: 100%;
     box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
   }
@@ -110,33 +111,12 @@ const Option = styled.div`
     color: white;
   }
 `;
-const ImageBox = styled.div``;
 
-const MyImage: React.FC = () => {
+const MyImage: React.FC<{ profileImage: string }> = ({ profileImage }) => {
   const [isActive, setIsActive] = useState(false);
-  const { logout, user } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   const router = useRouter();
-  const message = useAlert();
 
-  useEffect(() => {
-    console.log(user, "header");
-    if (!user?.token) {
-      message.error("로그인을 해주세요.", {
-        onClose: () => {
-          router.push("/account/login");
-        },
-      });
-      return;
-    }
-  }, []);
-  const profileImage = (() => {
-    if (
-      user?.imageUrl === undefined ||
-      user?.imageUrl === "https://d2anzi03nvjlav.cloudfront.net/default.png"
-    )
-      return `https://d2anzi03nvjlav.cloudfront.net/default.png`;
-    else return `${user?.imageUrl}`;
-  })();
   return (
     <MyImageBox>
       <Image
@@ -158,7 +138,7 @@ const MyImage: React.FC = () => {
         </Option>
         <Option
           onClick={() => {
-            router.push("/chat");
+            router.push({ pathname: "/chat", query: { userId: -1 } });
           }}
         >
           <BsChat />
@@ -195,9 +175,11 @@ const SchoolHead = styled.h2`
 const HeaderCondition: React.FC<HeaderProps> = (props) => {
   const headerType = props.type;
   const { user } = useContext(AuthContext);
+  const profileImage =
+    user?.imageUrl || `https://d2anzi03nvjlav.cloudfront.net/default.png`;
 
   if (user?.token) {
-    return <MyImage />;
+    return <MyImage profileImage={profileImage} />;
   }
 
   if (headerType === "login") {
