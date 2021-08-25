@@ -197,7 +197,14 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     repLanguage: "",
     views: 0,
   };
-  const { user } = useContext(AuthContext);
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
   const [open, setOpen] = useState(false);
   const [postModalInfo, setPostModalInfo] =
     useState<PostModalInfoProps>(initialPostInfo);

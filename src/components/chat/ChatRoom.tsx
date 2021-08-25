@@ -63,7 +63,14 @@ const MessageHeaderButton = styled.button`
 `;
 
 const ChatRoom: React.FC<ChatRoomProps> = (props) => {
-  const { user } = useContext(AuthContext);
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
   const [message, setMessage] = useState<string>("");
   const chatMessageBox = useRef<HTMLDivElement>(null);
   const router = useRouter();

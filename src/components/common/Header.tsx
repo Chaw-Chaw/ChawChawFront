@@ -174,7 +174,14 @@ const SchoolHead = styled.h2`
 `;
 const HeaderCondition: React.FC<HeaderProps> = (props) => {
   const headerType = props.type;
-  const { user } = useContext(AuthContext);
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
   const profileImage =
     user?.imageUrl || `https://d2anzi03nvjlav.cloudfront.net/default.png`;
 
@@ -203,7 +210,17 @@ const HeaderCondition: React.FC<HeaderProps> = (props) => {
 
 const Header: React.FC<HeaderProps> = (props) => {
   const { id, setTheme } = useContext(ThemeContext);
-  const { user } = useContext(AuthContext);
+  // const { user } = useContext(AuthContext);
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
+  // console.log(a, "user in header");
+
   return (
     <HeaderWrapper>
       <LogoFragment>

@@ -74,7 +74,7 @@ const SignupTitle = styled.h2`
 export default function Login() {
   const router = useRouter();
   const message = useAlert();
-  const { login, kakaoLogin, user } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -95,7 +95,7 @@ export default function Login() {
     if (user) {
       const isLogin = JSON.parse(user).token;
       if (isLogin) {
-        message.error("로그아웃 후 로그인을 진행해주세요.", {
+        message.error("로그아웃 후 로그인 해주세요.", {
           onClose: () => {
             router.push("/post");
           },
@@ -103,7 +103,6 @@ export default function Login() {
       }
     }
   }, []);
-
   return (
     <Layout type="login">
       <AccountContainer

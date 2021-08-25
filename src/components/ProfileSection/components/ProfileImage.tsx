@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useContext } from "react";
+import React, { ChangeEvent, useContext, useState } from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import DefaultImage from "../../../../public/Layout/default_profile.png";
@@ -66,12 +66,16 @@ const InputFileButton = styled.label`
 `;
 
 const ProfileImage: React.FC<ProfileImageProps> = (props) => {
-  const { user } = useContext(AuthContext);
-  const profileImage = (() => {
-    if (user?.imageUrl === undefined || user?.imageUrl === "default.png")
-      return `https://d2anzi03nvjlav.cloudfront.net/default.png`;
-    else return `${user?.imageUrl}`;
-  })();
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
+  const profileImage =
+    user?.imageUrl || `https://d2anzi03nvjlav.cloudfront.net/default.png`;
 
   return (
     <Container>

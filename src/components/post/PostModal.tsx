@@ -365,7 +365,14 @@ const PostLikeBox = styled.div`
 const PostModal: React.FC<PostModalProps> = (props) => {
   const [isFollow, setIsFollow] = useState(false);
   const router = useRouter();
-  const { user } = useContext(AuthContext);
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
   const now = new Date();
   const dateArr = props.days.substring(0, 10).split("-");
   const stDate = new Date(

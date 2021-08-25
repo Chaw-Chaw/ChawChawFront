@@ -62,8 +62,15 @@ export default function SignUp() {
   const [isEmailDupCheck, setIsEmailDupCheck] = useState(false);
   const message = useAlert();
   const router = useRouter();
-  const { signup, emailDuplicationCheck, user, updateUser } =
-    useContext(AuthContext);
+  const { signup, emailDuplicationCheck, updateUser } = useContext(AuthContext);
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
   const userUniversity = user.school;
   const {
     register,
@@ -113,33 +120,22 @@ export default function SignUp() {
   };
 
   useEffect(() => {
-    const localStorageUser = window.localStorage.getItem("user");
+    const isLogin = user.token;
+    const userSchool = user.school;
 
-    if (localStorageUser) {
-      const user = JSON.parse(localStorageUser);
-      const isLogin = user.token;
-      const userSchool = user.school;
-
-      if (isLogin) {
-        message.error("로그아웃 후 회원가입을 진행해주세요.", {
-          onClose: () => {
-            router.push("/post");
-          },
-        });
-      }
-      if (!userSchool)
-        message.error("웹메일 인증을 먼저 진행해주세요.", {
-          onClose: () => {
-            router.push("/account/signup/webMailAuth");
-          },
-        });
-    } else {
+    if (isLogin) {
+      message.error("로그아웃 후 회원가입을 진행해주세요.", {
+        onClose: () => {
+          router.push("/post");
+        },
+      });
+    }
+    if (!userSchool)
       message.error("웹메일 인증을 먼저 진행해주세요.", {
         onClose: () => {
           router.push("/account/signup/webMailAuth");
         },
       });
-    }
   }, []);
 
   const emailDupCheckHandle = async (e: MouseEvent) => {

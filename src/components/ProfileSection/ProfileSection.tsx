@@ -63,17 +63,26 @@ const ProfileUploadButton = styled(Button)`
 const ProfileSection: React.FC = () => {
   const message = useAlert();
   const router = useRouter();
-  const [user, setUser] = useState<UserPropertys>({});
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
   const { updateUser } = useContext(AuthContext);
   const [userCountries, setUserCountries] = useState<string[]>(
     user.country || []
   );
   const [userLanguages, setUserLanguages] = useState<string[]>(
-    user.language ? user.language.map((item) => LocaleLanguage[item]) : []
+    user.language
+      ? user.language.map((item: string) => LocaleLanguage[item])
+      : []
   );
   const [userHopeLanguages, setUserHopeLanguages] = useState<string[]>(
     user.hopeLanguage
-      ? user.hopeLanguage.map((item) => LocaleLanguage[item])
+      ? user.hopeLanguage.map((item: string) => LocaleLanguage[item])
       : []
   );
   const [userContent, setUserContent] = useState<string>(user.content || "");
@@ -84,43 +93,43 @@ const ProfileSection: React.FC = () => {
     user.instagramUrl || "https://www.instagram.com/"
   );
 
-  useEffect(() => {
-    const localStorageUser = window.localStorage.getItem("user");
+  // useEffect(() => {
+  //   const localStorageUser = window.localStorage.getItem("user");
 
-    if (localStorageUser) {
-      const localUser: UserPropertys = JSON.parse(localStorageUser);
-      const isLogin = localUser.token;
+  //   if (localStorageUser) {
+  //     const localUser: UserPropertys = JSON.parse(localStorageUser);
+  //     const isLogin = localUser.token;
 
-      if (!isLogin) {
-        message.error("로그인 후 이용해주세요.", {
-          onClose: () => {
-            router.push("/account/login");
-          },
-        });
-      }
-      setUser((pre) => {
-        return { ...pre, ...localUser };
-      });
-      console.log(localUser, "userLanguages");
-      setUserContent(localUser.content || "");
+  //     if (!isLogin) {
+  //       message.error("로그인 후 이용해주세요.", {
+  //         onClose: () => {
+  //           router.push("/account/login");
+  //         },
+  //       });
+  //     }
+  //     setUser((pre) => {
+  //       return { ...pre, ...localUser };
+  //     });
+  //     console.log(localUser, "userLanguages");
+  //     setUserContent(localUser.content || "");
 
-      setUserFaceBookUrl(localUser.facebookUrl || "https://www.facebook.com/");
-      setUserInstagramUrl(
-        localUser.instagramUrl || "https://www.instagram.com/"
-      );
-      setUserCountries(localUser.country || []);
-      setUserLanguages(
-        localUser.language
-          ? localUser.language.map((item) => LocaleLanguage[item])
-          : []
-      );
-      setUserHopeLanguages(
-        localUser.hopeLanguage
-          ? localUser.hopeLanguage.map((item) => LocaleLanguage[item])
-          : []
-      );
-    }
-  }, []);
+  //     setUserFaceBookUrl(localUser.facebookUrl || "https://www.facebook.com/");
+  //     setUserInstagramUrl(
+  //       localUser.instagramUrl || "https://www.instagram.com/"
+  //     );
+  //     setUserCountries(localUser.country || []);
+  //     setUserLanguages(
+  //       localUser.language
+  //         ? localUser.language.map((item) => LocaleLanguage[item])
+  //         : []
+  //     );
+  //     setUserHopeLanguages(
+  //       localUser.hopeLanguage
+  //         ? localUser.hopeLanguage.map((item) => LocaleLanguage[item])
+  //         : []
+  //     );
+  //   }
+  // }, []);
 
   const onSubmit: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();

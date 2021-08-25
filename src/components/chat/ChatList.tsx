@@ -36,7 +36,15 @@ const Inner = styled.div`
 
 const ChatRoomList: React.FC<ChatRoomListProps> = (props) => {
   const router = useRouter();
-  const { user } = useContext(AuthContext);
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
+
   useEffect(() => {
     if (props.mainRoomId < 0 || props.mainRoomId === undefined) return;
     if (!user.id) return;

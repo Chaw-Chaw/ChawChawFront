@@ -54,8 +54,16 @@ export default function WebMailAuth() {
   const message = useAlert();
   const webmailRef = useRef<HTMLInputElement>(null);
   const [webmailValidate, setWebmailValidate] = useState(false);
-  const { sendWebmail, user, signup, webmailVerify, updateUser } =
+  const { sendWebmail, signup, webmailVerify, updateUser } =
     useContext(AuthContext);
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
   const {
     register,
     handleSubmit,

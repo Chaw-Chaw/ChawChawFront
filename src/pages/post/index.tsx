@@ -22,7 +22,14 @@ const Container = styled.div<{ width?: string }>`
 `;
 export default function Post() {
   const [cookies, setCookie] = useCookies(["exclude"]);
-  const { user } = useContext(AuthContext);
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
   const [postInfo, setPostInfo] = useState<any>([]);
   const postIds = useRef("");
   const searchName = useRef("");
@@ -125,7 +132,7 @@ export default function Post() {
     const observer = new IntersectionObserver(onIntersect, { threshold: 0.5 });
     target.current && observer.observe(target.current);
     return () => observer.disconnect();
-  }, [user]);
+  }, []);
 
   return (
     <Layout type="post">

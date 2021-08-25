@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import styled, { css } from "styled-components";
 import { Button } from "../../components/common";
@@ -84,7 +84,14 @@ const BannerButton = styled.div`
 `;
 
 const Banner: React.FC = () => {
-  const { user } = useContext(AuthContext);
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
   const router = useRouter();
   // useEffect(()=>{
   // },[user])

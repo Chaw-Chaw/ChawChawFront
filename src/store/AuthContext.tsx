@@ -114,9 +114,11 @@ const AuthContextProvider: React.FC = (props) => {
   const router = useRouter();
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
     setUser((preUser) => {
-      return { ...preUser, ...res };
+      const newUser = { ...preUser, ...res };
+      window.localStorage.setItem("user", JSON.stringify(newUser));
+      return newUser;
     });
-    console.log(user, "Save userInfo");
+    console.log("Save userInfo");
     return res;
   };
 
@@ -376,10 +378,14 @@ const AuthContextProvider: React.FC = (props) => {
   //     driver.quit();
   //   }
   // };
+
   const updateUser = (newUserInfo: UserPropertys) => {
     setUser((preUser) => {
-      return { ...preUser, ...newUserInfo };
+      const newUser = { ...preUser, ...newUserInfo };
+      window.localStorage.setItem("user", JSON.stringify(newUser));
+      return newUser;
     });
+    console.log("update userInfo");
   };
 
   const contextValue: AuthContextObj = {
@@ -397,23 +403,6 @@ const AuthContextProvider: React.FC = (props) => {
     webmailVerify,
     // verifyUniversity,
   };
-  useEffect(() => {
-    const initUser = window.localStorage.getItem("user");
-    setUser((preUser) => {
-      return initUser === null ? preUser : JSON.parse(initUser);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (JSON.stringify(user) === JSON.stringify({})) {
-      console.log("페이지 초기화");
-      window.localStorage.clear();
-      return;
-    } else {
-      console.log(user, "Change userInfo");
-      window.localStorage.setItem("user", JSON.stringify(user));
-    }
-  }, [user]);
 
   return (
     <AuthContext.Provider value={contextValue}>

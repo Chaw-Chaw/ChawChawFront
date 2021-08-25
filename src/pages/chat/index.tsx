@@ -28,7 +28,14 @@ const Container = styled.div`
 `;
 
 export default function Chat() {
-  const { user } = useContext(AuthContext);
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
   // const [user, setUser] = useState<UserPropertys>({});
   const [mainChatMessages, setMainChatMessages] = useState<any>([]);
   const [totalMessage, setTotalMessage] = useState<any>([]);
@@ -183,31 +190,22 @@ export default function Chat() {
   };
 
   useEffect(() => {
-    const localStorageUser = window.localStorage.getItem("user");
-    if (localStorageUser) {
-      const user = JSON.parse(localStorageUser);
-      const isLogin = user.token;
-      if (!isLogin) {
-        message.error("로그인 후 서비스를 이용해주세요.", {
-          onClose: () => {
-            router.push("/account/login");
-          },
-        });
-      }
+    const isLogin = user.token;
+    if (!isLogin) {
+      message.error("로그인 후 서비스를 이용해주세요.", {
+        onClose: () => {
+          router.push("/account/login");
+        },
+      });
     }
   }, []);
 
   useEffect(() => {
-    if (JSON.stringify(router.query) === JSON.stringify({})) {
-      console.log(user, "chat in User 1");
-      return;
-    }
+    if (JSON.stringify(router.query) === JSON.stringify({})) return;
     const userId = router.query.userId
       ? Number(router.query.userId)
       : undefined;
     if (userId === undefined) return;
-
-    console.log(user, "chat in User 2");
     if (userId !== -1) {
       getUserMessageLog(userId);
     } else {
