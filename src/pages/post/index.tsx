@@ -10,6 +10,7 @@ import { useAlert } from "react-alert";
 import axios, { AxiosResponse } from "axios";
 import { useCookies } from "react-cookie";
 import { getCookieParser } from "next/dist/next-server/server/api-utils";
+import { RiCoinsLine } from "react-icons/ri";
 
 const Container = styled.div<{ width?: string }>`
   width: ${(props) => (props.width ? props.width : "500px")};
@@ -37,6 +38,7 @@ export default function Post() {
   const [isEnd, setIsEnd] = useState(false);
   const isFirst = useRef(true);
   const message = useAlert();
+  console.log(isFirst, "isFirst");
 
   const getPosts = async () => {
     const orderConvert = orderOptions[sortInfo[2]] || sortInfo[2];
@@ -78,33 +80,32 @@ export default function Post() {
           isFirst: isFirst.current,
         },
       })
-      .then((res) => {
-        console.log(res, "res");
-        if (res.data.responseMessage === "조회 결과가 존재하지 않음") {
-          setIsEnd(true);
-          message.error("더이상 POST가 존재하지 않습니다.");
-          throw new Error(res.data.responseMessage);
-        }
-        return res.data.data;
-      })
-      .then((res) => {
-        if (isFirst.current === true)
-          postIds.current += res.map((item: any) => item.id).join("/");
-        else postIds.current += "/" + res.map((item: any) => item.id).join("/");
-        console.log(postIds.current, "postids");
-        setPostInfo((item: any) => {
-          if (isFirst.current === true) return [...res];
-          return [...item, ...res];
-        });
-        isFirst.current = false;
-        console.log(searchName.current, "getPost()");
-        return res;
-      })
-      .catch((err) => {
-        setIsEnd(true);
-        console.error(err);
-      });
-    return response;
+      .catch((err) => err.response);
+    const data = response.data.data;
+    if (response.status === 401) {
+      // access token 만료
+      // refresh token 전송
+    }
+
+    console.log(response, "res");
+
+    if (response.data.responseMessage === "조회 결과가 존재하지 않음") {
+      setIsEnd(true);
+      message.error("더이상 POST가 존재하지 않습니다.");
+      console.error(response.data.responseMessage);
+      return;
+    }
+
+    if (isFirst.current === true)
+      postIds.current += data.map((item: any) => item.id).join("/");
+    else postIds.current += "/" + data.map((item: any) => item.id).join("/");
+    console.log(postIds.current, "postids");
+    setPostInfo((item: any) => {
+      if (isFirst.current === true) return [...data];
+      return [...item, ...data];
+    });
+    isFirst.current = false;
+    console.log(searchName.current, "getPost()");
   };
 
   const searchHandler = (inputs: string) => {

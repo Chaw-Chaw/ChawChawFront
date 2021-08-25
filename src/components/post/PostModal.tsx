@@ -418,41 +418,49 @@ const PostModal: React.FC<PostModalProps> = (props) => {
   //     .catch((err) => console.error(err));
   // };
   const follow = async () => {
-    await axios
+    const response = await axios
       .post(`/follow/${props.id}`, {
         headers: {
           Authorization: `${user?.token}`,
         },
       })
-      .then((res) => {
-        if (!res.data.isSuccess) {
-          throw new Error(res.data);
-        }
-        alert("follow");
-        console.log("follow 성공!");
-        setIsFollow(true);
-        return res.data;
-      })
-      .catch((err) => console.error(err));
+      .catch((err) => err.response);
+
+    if (response.status === 401) {
+      // access token 만료
+      // refresh token 전송
+    }
+    if (!response.data.isSuccess) {
+      console.error(response.data);
+      return;
+    }
+    alert("follow");
+    console.log("follow 성공!");
+    setIsFollow(true);
+    return response.data;
   };
 
   const unFollow = async () => {
-    await axios
+    const response = await axios
       .delete(`/follow/${props.id}`, {
         headers: {
           Authorization: `${user?.token}`,
         },
       })
-      .then((res) => {
-        if (!res.data.isSuccess) {
-          throw new Error(res.data);
-        }
-        alert("unfollow");
-        console.log("unfollow 성공!");
-        setIsFollow(false);
-        return res.data;
-      })
-      .catch((err) => console.error(err));
+      .catch((err) => err.response);
+
+    if (response.status === 401) {
+      // access token 만료
+      // refresh token 전송
+    }
+
+    if (!response.data.isSuccess) {
+      console.error(response.data);
+    }
+    alert("unfollow");
+    console.log("unfollow 성공!");
+    setIsFollow(false);
+    return response.data;
   };
   return (
     <PostModalBox visible={props.visible}>

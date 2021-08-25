@@ -165,7 +165,7 @@ const ProfileSection: React.FC = () => {
       repHopeLanguage: hopeLanguage[0],
     };
     console.log(userProfile, "profileInfo");
-    await axios
+    const response = await axios
       .post("/users/profile", userProfile, {
         headers: {
           "Content-Type": "application/json",
@@ -173,16 +173,19 @@ const ProfileSection: React.FC = () => {
           Accept: "application/json",
         },
       })
-      .then((res) => {
-        if (!res.data.isSuccess) {
-          throw new Error(res.data);
-          return false;
-        }
-        message.success("프로필이 업로드 되었습니다.");
-        return res.data.data;
-      })
-      .then((res) => updateUser(userProfile))
-      .catch((err) => console.error(err));
+      .catch((err) => err.response);
+
+    if (response.status === 401) {
+      // access token 만료
+      // refresh token 전송
+    }
+
+    if (!response.data.isSuccess) {
+      console.error(response.data);
+      return;
+    }
+    message.success("프로필이 업로드 되었습니다.");
+    updateUser(userProfile);
   };
   const sendImage = async (image: FormData) => {
     await axios

@@ -54,7 +54,7 @@ export default function WebMailAuth() {
   const message = useAlert();
   const webmailRef = useRef<HTMLInputElement>(null);
   const [webmailValidate, setWebmailValidate] = useState(false);
-  const { sendWebmail, signup, webmailVerify, updateUser } =
+  const { sendWebmail, signup, webmailVerify, updateUser, verificationNumber } =
     useContext(AuthContext);
   const [user, setUser] = useState(
     (() => {
@@ -81,7 +81,7 @@ export default function WebMailAuth() {
     }
     const webmail = webmailRef.current.value;
     if (webmail === "") message.error("웹메일을 입력해주세요.");
-    const validationWebmail = webmailVerify(webmail);
+    const validationWebmail = webmailVerify({ web_email: webmail });
     if (validationWebmail) {
       setWebmailValidate(false);
       setActiveVerificationNumber(false);
@@ -93,63 +93,32 @@ export default function WebMailAuth() {
     }
   };
 
-  const verificationNumSubmit: SubmitHandler<Inputs> = (data) => {
-    if (!webmailRef.current) {
+  const verificationNumSubmit: SubmitHandler<Inputs> = async (data) => {
+    if (!webmailRef.current) return;
+    if (!(data.verificationNum && !activeVerificationNumber)) {
+      message.error("인증번호를 입력해주세요.");
       return;
     }
-    if (data.verificationNum && !activeVerificationNumber) {
-      // const verificationNumSubmitBody = {
-      //   email: webmailRef.current.value,
-      //   verificationNumber: data.verificationNum?.toString(),
-      //   provider: user?.provider,
-      // };
-      // console.log(verificationNumSubmitBody, "verificationNumSubmitBody");
-      axios
-        .post(
-          "/mail/verification",
-          {
-            email: webmailRef.current.value,
-            verificationNumber: data.verificationNum?.toString(),
-            provider: user?.provider,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          }
-        )
-        .then((res) => {
-          if (!res.data.isSuccess) {
-            console.log(res.data, "인증번호 확인 실패");
-            message.error("인증번호가 잘못 되었습니다.");
+    if (!isSocialSignup) {
+      router.push("/account/signup");
+      return;
+    }
 
-            throw new Error(res.data.responseMessage);
-          }
-          console.log(res.data);
-          message.success("인증번호 확인을 완료하였습니다.");
-          return res.data;
-        })
-        .then((res) => {
-          if (!user?.provider) {
-            router.push("/account/signup");
-            return res;
-          } else {
-            signup({
-              email: user?.email,
-              password: "",
-              name: user?.name,
-              web_email: user?.web_email,
-              school: user?.school,
-              imageUrl: user?.imageUrl,
-              provider: user?.provider,
-            });
-          }
-        })
-        .catch((err) => console.log(err));
-      return;
-    }
-    message.error("인증번호를 입력해주세요.");
+    verificationNumber({
+      web_email: webmailRef.current.value,
+      verificationNum: data.verificationNum?.toString(),
+      provider: user?.provider,
+    });
+
+    signup({
+      email: user?.email,
+      password: "",
+      name: user?.name,
+      web_email: user?.web_email,
+      school: user?.school,
+      imageUrl: user?.imageUrl,
+      provider: user?.provider,
+    });
   };
   const checkKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.code === "Enter") e.preventDefault();

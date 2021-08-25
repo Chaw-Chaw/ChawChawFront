@@ -218,19 +218,23 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           Accept: "application/json",
         },
       })
-      .then((res) => {
-        console.log(res, "PostModal data");
+      .catch((err) => err.response);
+    if (response.status === 401) {
+      // access token 만료
+      // refresh token 전송
+    }
+    console.log(response, "PostModal data");
 
-        if (!res.data.isSuccess) {
-          alert(`${props.id} 데이터 조회 실패`);
-          throw new Error(res.data);
-        }
-        setPostModalInfo((pre) => {
-          return { ...pre, ...res.data.data };
-        });
-        setOpen((open) => !open);
-        return res.data.data;
-      });
+    if (!response.data.isSuccess) {
+      alert(`${props.id} 데이터 조회 실패`);
+      console.error(response.data);
+      return;
+    }
+    setPostModalInfo((pre) => {
+      return { ...pre, ...response.data.data };
+    });
+    setOpen((open) => !open);
+    return response.data.data;
   };
 
   return (

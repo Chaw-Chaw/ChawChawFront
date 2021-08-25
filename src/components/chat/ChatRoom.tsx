@@ -75,7 +75,6 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const chatMessageBox = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const leaveChatRoom = async () => {
-    props.publish("", "EXIT");
     const response = await axios.delete(`/chat/room/${props.roomId}`, {
       headers: {
         "Content-Type": "application/json",

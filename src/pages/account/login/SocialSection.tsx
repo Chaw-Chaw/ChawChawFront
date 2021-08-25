@@ -94,7 +94,6 @@ const SocialSection: React.FC = () => {
       <ButtonSection>
         <KakaoLogin onClick={callKakaoLogin}>
           <RiKakaoTalkFill />
-          {/* <KakaoIcon /> */}
         </KakaoLogin>
         <FacebookLogin
           style={styleFacebookLogin}
