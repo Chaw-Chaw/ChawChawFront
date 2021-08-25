@@ -9,7 +9,7 @@ import styled from "styled-components";
 import DefaultImage from "../../../public/Layout/btsSugar.jpeg";
 import axios, { AxiosResponse } from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
-import { AuthContext } from "../../store/AuthContext";
+import { AuthContext, UserPropertys } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
@@ -29,10 +29,10 @@ const Container = styled.div`
 
 export default function Chat() {
   const { user } = useContext(AuthContext);
-  // const [user, setUser] = useState<any>({});
+  // const [user, setUser] = useState<UserPropertys>({});
   const [mainChatMessages, setMainChatMessages] = useState<any>([]);
   const [totalMessage, setTotalMessage] = useState<any>([]);
-  const [roomIds, setRoomIds] = useState<number[]>([]);
+  const roomIds = useRef<number[]>([]);
   const [mainRoomId, setMainRoomId] = useState(-1);
   const [yourProfileImage, setYourProfileImage] = useState("default.png");
   const router = useRouter();
@@ -109,11 +109,9 @@ export default function Chat() {
 
     setTotalMessage([...res.data.data]);
     console.log(tmpTotalMessage, "totalMessage");
-    setRoomIds(
-      tmpTotalMessage.map((item: any) => {
-        return item.roomId;
-      })
-    );
+    roomIds.current = tmpTotalMessage.map((item: any) => {
+      return item.roomId;
+    });
   };
 
   const connect = () => {
@@ -128,7 +126,7 @@ export default function Chat() {
       heartbeatOutgoing: 4000,
 
       onConnect: () => {
-        roomIds.forEach((item) => {
+        roomIds.current.forEach((item) => {
           subscribe(`/queue/chat/room/${item}`);
         });
         subscribe(`/queue/chat/room/wait/${user.id}`);
@@ -184,28 +182,40 @@ export default function Chat() {
     console.log("메세지 전송 선공");
   };
 
-  // useEffect(() => {
-  //   const user = window.localStorage.getItem("user");
-  //   if (user) {
-
-  //   }
-  // }, []);
+  useEffect(() => {
+    const localStorageUser = window.localStorage.getItem("user");
+    if (localStorageUser) {
+      const user = JSON.parse(localStorageUser);
+      const isLogin = user.token;
+      if (!isLogin) {
+        message.error("로그인 후 서비스를 이용해주세요.", {
+          onClose: () => {
+            router.push("/account/login");
+          },
+        });
+      }
+    }
+  }, []);
 
   useEffect(() => {
+    if (JSON.stringify(router.query) === JSON.stringify({})) {
+      console.log(user, "chat in User 1");
+      return;
+    }
     const userId = router.query.userId
       ? Number(router.query.userId)
       : undefined;
-    if (userId !== undefined) {
+    if (userId === undefined) return;
+
+    console.log(user, "chat in User 2");
+    if (userId !== -1) {
       getUserMessageLog(userId);
     } else {
       getMessageLog();
     }
-  }, [router.query]);
-
-  useEffect(() => {
     connect();
     return () => disconnect();
-  }, [roomIds]);
+  }, [router.query]);
 
   return (
     <Layout>
