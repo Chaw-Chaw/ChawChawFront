@@ -13,8 +13,7 @@ import { AuthContext, UserPropertys } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { CgNpm } from "react-icons/cg";
-import { addConsoleHandler } from "selenium-webdriver/lib/logging";
+
 import { useAlert } from "react-alert";
 
 const Container = styled.div`
@@ -36,7 +35,6 @@ export default function Chat() {
       return JSON.parse(localStorageUser);
     })()
   );
-  // const [user, setUser] = useState<UserPropertys>({});
   const [mainChatMessages, setMainChatMessages] = useState<any>([]);
   const [totalMessage, setTotalMessage] = useState<any>([]);
   const roomIds = useRef<number[]>([]);
@@ -45,7 +43,6 @@ export default function Chat() {
   const router = useRouter();
   const client = useRef<any>({});
   const message = useAlert();
-  // const [userToken, setUserToken]
 
   const getUserMessageLog = async (userId: number) => {
     const response = await axios
@@ -63,6 +60,8 @@ export default function Chat() {
       .catch((err) => err.response);
     console.log(response, "getUserMessageLog");
     dataProcess(response, userId);
+    connect();
+    return () => disconnect();
   };
 
   const getMessageLog = async () => {
@@ -78,6 +77,8 @@ export default function Chat() {
 
     console.log(response, "getMessageLog");
     dataProcess(response, -1);
+    connect();
+    return () => disconnect();
   };
 
   const dataProcess = (res: AxiosResponse, userId: number) => {
@@ -107,6 +108,7 @@ export default function Chat() {
       const roomId = mainMessageLog.roomId;
       if (mainMessageLog) {
         const sortMessage = mainMessageLog.messages;
+
         setMainChatMessages(sortMessage);
       }
 
@@ -115,7 +117,6 @@ export default function Chat() {
     }
 
     setTotalMessage([...res.data.data]);
-    console.log(tmpTotalMessage, "totalMessage");
     roomIds.current = tmpTotalMessage.map((item: any) => {
       return item.roomId;
     });
@@ -142,7 +143,6 @@ export default function Chat() {
         console.error(frame);
       },
     });
-
     client.current.activate();
   };
 
@@ -211,8 +211,6 @@ export default function Chat() {
     } else {
       getMessageLog();
     }
-    connect();
-    return () => disconnect();
   }, [router.query]);
 
   return (

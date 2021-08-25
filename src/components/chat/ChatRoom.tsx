@@ -75,16 +75,22 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const chatMessageBox = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const leaveChatRoom = async () => {
-    const response = await axios.delete(`/chat/room/${props.roomId}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `${user?.token}`,
-        Accept: "application/json",
-      },
-    });
+    const response = await axios
+      .delete(`/chat/room/${props.roomId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${user?.token}`,
+          Accept: "application/json",
+        },
+      })
+      .catch((err) => {
+        console.error(err);
+        return err.response;
+      });
     console.log(response.data, "leaveChatRoom");
     if (!response.data.isSuccess) {
       console.error(response.data);
+      router.push("/post");
       return;
     }
     router.push("/post");
