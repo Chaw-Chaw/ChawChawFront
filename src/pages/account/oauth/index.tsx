@@ -13,13 +13,14 @@ export default function Oauth(props: OauthProps) {
   const { kakaoLogin } = useContext(AuthContext);
 
   useEffect(() => {
+    if (JSON.stringify(router.query) === JSON.stringify({})) return;
     const kakaoToken = router.query.code?.toString();
     console.log(router.query);
     if (kakaoToken !== undefined) {
       console.log(kakaoToken, "KaKao Auth code 받음");
       main(kakaoToken);
     }
-  }, [router.query]);
+  }, [JSON.stringify(router.query)]);
 
   const main = (kakaoToken: string) => {
     kakaoLogin({ kakaoToken });
