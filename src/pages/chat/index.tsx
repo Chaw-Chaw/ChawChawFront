@@ -174,16 +174,9 @@ export default function Chat() {
       if (message.roomId === thisRoomId) {
         setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
       }
-      const isNotNewChatRoom = totalMessage.find(
-        (item: any) => item.roomId === message.roomId
-      );
 
       // 새로운 채팅방이 생성되었을 경우
-      if (
-        message.messageType === "ENTER" &&
-        message.senderId !== user.id &&
-        !isNotNewChatRoom
-      ) {
+      if (thisRoomId === user.id) {
         subscribe(`/queue/chat/room/${message.roomId}`);
         const newChatList = {
           imageUrl: message.imageUrl,
@@ -326,6 +319,8 @@ export default function Chat() {
           yourProfileImage={yourProfileImage}
           roomId={mainRoomId}
           publish={publish}
+          disconnect={disconnect}
+          setMainRoomId={setMainRoomId}
         />
         {windowSize > 1000 ? (
           <ChatRoomList

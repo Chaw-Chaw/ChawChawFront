@@ -2,7 +2,15 @@ import { Message, MessageInput } from ".";
 import styled from "styled-components";
 import DefaultImage from "../../../public/Layout/btsSugar.jpeg";
 
-import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useController } from "react-hook-form";
 import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
@@ -17,6 +25,8 @@ interface ChatRoomProps {
   yourProfileImage: string;
   roomId: number;
   publish: (message: any, messageType: string) => void;
+  disconnect: () => void;
+  setMainRoomId: Dispatch<SetStateAction<number>>;
 }
 
 const Outline = styled.div`
@@ -94,10 +104,13 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
       // router.push({ pathname: "/chat", query: { userId: -1 } });
       return;
     }
-    router.push({ pathname: "/chat", query: { userId: -1 } });
+    props.setMainRoomId(-1);
+    // props.disconnect();
+    // router.push({ pathname: "/chat", query: { userId: -1 } });
   };
 
   const backHome = () => {
+    props.disconnect();
     router.push("/post");
   };
 
