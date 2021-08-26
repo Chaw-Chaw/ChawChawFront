@@ -27,7 +27,12 @@ const SelectInfoBox = styled.div`
   margin: 2px 2px 2px 2px;
 `;
 
-const orderOptions: any = { 최신: "date", 조회수: "view", 좋아요: "like" };
+const orderOptions: any = {
+  order: "",
+  최신: "date",
+  조회수: "view",
+  좋아요: "like",
+};
 
 const PostOrder: React.FC<PostOrderProps> = (props) => {
   return (

@@ -21,6 +21,14 @@ const Container = styled.div<{ width?: string }>`
   flex-direction: column;
   margin-bottom: 200px;
 `;
+
+const Divider = styled.div<{ display: boolean }>`
+  display: ${(props) => (props.display ? "flex" : "none")};
+  width: 100%;
+
+  height: 100px;
+  border-bottom: 1px solid ${(props) => props.theme.secondaryColor};
+`;
 export default function Post() {
   const [cookies, setCookie] = useCookies(["exclude"]);
   const [user, setUser] = useState(
@@ -91,7 +99,7 @@ export default function Post() {
 
     if (response.data.responseMessage === "조회 결과가 존재하지 않음") {
       setIsEnd(true);
-      message.error("더이상 POST가 존재하지 않습니다.");
+
       console.error(response.data.responseMessage);
       return;
     }
@@ -149,6 +157,7 @@ export default function Post() {
             height: "300px",
           }}
         ></div>
+        <Divider display={isEnd} />
       </Container>
     </Layout>
   );

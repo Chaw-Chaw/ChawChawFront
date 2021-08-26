@@ -113,6 +113,18 @@ const PostModalContent = styled.div`
         ? " rgb(0, 0, 0, 0.2)"
         : "rgb(255, 255, 255, 0.2)"};
 `;
+
+const PostModalContentText = styled.textarea`
+  width: 100%;
+  color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
+  height: 100%;
+  font-size: 1rem;
+  resize: none;
+  box-sizing: border-box;
+  font-family: "BMJUA";
+  border: none;
+  background-color: ${(props) => props.theme.bodyBackgroundColor};
+`;
 const PostModalInfoBox = styled.div`
   width: 100%;
   height: 60px;
@@ -152,6 +164,7 @@ const LikeBox = styled.div`
   margin-right: 20px;
   svg {
     margin-right: 5px;
+    color: red;
   }
 `;
 
@@ -209,7 +222,7 @@ const PostImageBox = styled.div`
 `;
 
 const PostUserName = styled.h2`
-  margin: 0px auto;
+  margin: 10px auto;
   font-size: 1.5rem;
   font-weight: 900;
 `;
@@ -222,10 +235,19 @@ const PostChatButton = styled(Button)`
   }
 `;
 
-const PostSocialUrlBox = styled.div`
+const PostSocialUrlBox = styled.div<{ type: string }>`
   display: flex;
   font-size: 1.4rem;
   width: 100%;
+  svg {
+    width: 25;
+    height: 25;
+    color: ${(props) => (props.type === "facebook" ? "#3d5a97" : "#eb559b")};
+  }
+  a {
+    text-decoration: none;
+    color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
+  }
 `;
 
 const SocialUrlText = styled.a`
@@ -241,13 +263,13 @@ const PostSocialList: React.FC<{
     <PostInfoListBox>
       <PostInfoTitle>{props.title}</PostInfoTitle>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <PostSocialUrlBox>
+        <PostSocialUrlBox type={"facebook"}>
           <FaFacebook />
           <SocialUrlText href={props.faceBookUrl}>
             {props.faceBookUrl}
           </SocialUrlText>
         </PostSocialUrlBox>
-        <PostSocialUrlBox>
+        <PostSocialUrlBox type={"instagram"}>
           <AiFillInstagram />
           <SocialUrlText href={props.instagramUrl}>
             {props.instagramUrl}
@@ -357,7 +379,7 @@ const PostLikeBox = styled.div`
   right: 35px;
   cursor: pointer;
   svg {
-    color: ${(props) => props.theme.primaryColor};
+    color: red;
     font-size: 45px;
   }
 `;
@@ -495,7 +517,9 @@ const PostModal: React.FC<PostModalProps> = (props) => {
         faceBookUrl={props.facebookUrl}
         instagramUrl={props.instagramUrl}
       />
-      <PostModalContent>{props.children}</PostModalContent>
+      <PostModalContent>
+        <PostModalContentText>{props.children}</PostModalContentText>
+      </PostModalContent>
       <PostModalInfo
         days={String(pastDays)}
         views={props.views}

@@ -10,6 +10,8 @@ import { CgNpm } from "react-icons/cg";
 import { AuthContext } from "../../store/AuthContext";
 import { useAlert } from "react-alert";
 import { PostModalInfoProps } from "./PostModal";
+import theme from "../../theme/light";
+import Chaw from "../../../public/Layout/flags/ad.png";
 
 interface PostCardInfoProps {
   pastDate: number;
@@ -27,12 +29,14 @@ interface PostCardProps extends PostCardInfoProps {
 
 const PostCardBox = styled.div`
   /* margin: 0px 15px 20px 15px; */
-
   width: 300px;
   display: flex;
   flex-direction: column;
   height: 360px;
   max-height: 400px;
+  border: 0.5px solid
+    ${(props) =>
+      props.theme.id === "light" ? "none" : props.theme.primaryColor};
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
   border-radius: 20px;
   box-sizing: border-box;
@@ -59,7 +63,17 @@ const PostCardBox = styled.div`
   -webkit-user-select: none;
   user-select: none;
 `;
-
+const PostCardContentText = styled.textarea`
+  width: 100%;
+  color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
+  height: 100%;
+  font-size: 1rem;
+  resize: none;
+  box-sizing: border-box;
+  font-family: "BMJUA";
+  border: none;
+  background-color: ${(props) => props.theme.bodyBackgroundColor};
+`;
 const PostCardContent = styled.div`
   width: 100%;
   padding: 5px 10px;
@@ -120,6 +134,7 @@ const LikeBox = styled.div`
   margin-right: 10px;
   svg {
     margin-right: 5px;
+    color: red;
   }
 `;
 
@@ -152,7 +167,8 @@ const PostImageInfoBox = styled.div`
 `;
 
 const PostImageName = styled.span`
-  color: black;
+  color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
+
   font-weight: 900;
   /* text-shadow: 1px 1px 2px ${(props) => props.theme.primaryColor}; */
   font-size: 1.5rem;
@@ -197,6 +213,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     repLanguage: "",
     views: 0,
   };
+
   const [user, setUser] = useState(
     (() => {
       if (typeof window === "undefined") return {};
@@ -209,6 +226,11 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const [postModalInfo, setPostModalInfo] =
     useState<PostModalInfoProps>(initialPostInfo);
   const message = useAlert();
+
+  const myLoader = ({ src, width }: any) => {
+    return `https://example.com/${src}?w=${width}`;
+  };
+
   const handleModal = async () => {
     const response = await axios
       .get(`/users/${props.id}`, {
@@ -250,13 +272,25 @@ const PostCard: React.FC<PostCardProps> = (props) => {
             objectFit="cover"
           />
           <PostImageInfoBox>
-            <PostImageName>{`${props.repCountry}  ${props.name}`}</PostImageName>
+            <PostImageName>
+              <Image
+                src={
+                  `/Layout/flags/${props.repCountry}.png` ||
+                  `/public/Layout/chaw.png`
+                }
+                width={17}
+                height={17}
+                alt="국가"
+              />
+              {` ${props.name}`}
+            </PostImageName>
             <PostImageUserInfo>{`🗣 ${props.repLanguage}`}</PostImageUserInfo>
             <PostImageUserInfo>{`📖 ${props.repHopeLanguage}`}</PostImageUserInfo>
           </PostImageInfoBox>
         </PostImageBox>
-
-        <PostCardContent>{props.children}</PostCardContent>
+        <PostCardContent>
+          <PostCardContentText disabled>{props.children}</PostCardContentText>
+        </PostCardContent>
         <PostCardInfo
           pastDate={props.pastDate}
           viewCount={props.viewCount}

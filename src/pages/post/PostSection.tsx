@@ -1,7 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import { PostCard } from "../../components/post/PostCard";
-import { CountryEmoji, LocaleLanguage } from "../../components/common";
+import {
+  CountryEmoji,
+  CountryLocale,
+  LocaleLanguage,
+} from "../../components/common";
 
 const PostSectionBox = styled.div`
   width: calc(100% - 50px);
@@ -52,15 +56,11 @@ const PostSection: React.FC<PostSectionProps> = (props) => {
               );
               const pastDays =
                 (endDate.getTime() - stDate.getTime()) / (1000 * 60 * 60 * 24);
-              const repCountry = CountryEmoji[item.repCountry]
-                ? CountryEmoji[item.repCountry]
-                : "";
-              const repLanguage = LocaleLanguage[item.repLanguage]
-                ? LocaleLanguage[item.repLanguage]
-                : "";
-              const repHopeLanguage = LocaleLanguage[item.repHopeLanguage]
-                ? LocaleLanguage[item.repHopeLanguage]
-                : "";
+              const repCountry =
+                CountryLocale[item.repCountry].toLowerCase() || "";
+              const repLanguage = LocaleLanguage[item.repLanguage] || "";
+              const repHopeLanguage =
+                LocaleLanguage[item.repHopeLanguage] || "";
 
               return (
                 <PostCard
