@@ -103,7 +103,7 @@ const SocialSection: React.FC = () => {
             const facebookToken = response?.accessToken;
             const facebookId = response?.userID;
             if (facebookToken && facebookId) {
-              // facebookLogin({ facebookToken, facebookId });
+              facebookLogin({ facebookToken, facebookId });
               console.log(facebookId, facebookToken, "facebook Login 인수들");
             }
             //console.log("id: ", response.id);

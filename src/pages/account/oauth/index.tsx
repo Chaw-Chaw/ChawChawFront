@@ -22,7 +22,7 @@ export default function Oauth(props: OauthProps) {
   }, [router.query]);
 
   const main = (kakaoToken: string) => {
-    // kakaoLogin({ kakaoToken });
+    kakaoLogin({ kakaoToken });
   };
 
   return <div></div>;

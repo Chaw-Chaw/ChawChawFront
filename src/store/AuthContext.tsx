@@ -142,13 +142,13 @@ const AuthContextProvider: React.FC = (props) => {
       )
       .catch((err) => err.response);
     const data = response.data.data;
-
+    console.log(response);
     if (!response.data.isSuccess) {
       message.error("로그인에 실패하셨습니다.");
       console.error(response.data.responseMessage);
       return;
     }
-    console.log(response);
+
     const token = response.headers.authorization;
     const newData = { ...data, token };
     saveUser(newData);
