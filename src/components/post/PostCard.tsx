@@ -67,7 +67,8 @@ const PostCardBox = styled.div`
 const PostCardContentText = styled.textarea`
   width: 100%;
   color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
-  height: 100%;
+  height: 220px;
+  overflow: hidden;
   font-size: 1rem;
   resize: none;
   box-sizing: border-box;
