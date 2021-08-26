@@ -174,14 +174,7 @@ const SchoolHead = styled.h2`
 `;
 const HeaderCondition: React.FC<HeaderProps> = (props) => {
   const headerType = props.type;
-  const [user, setUser] = useState(
-    (() => {
-      if (typeof window === "undefined") return {};
-      const localStorageUser = window.localStorage.getItem("user");
-      if (!localStorageUser) return {};
-      return JSON.parse(localStorageUser);
-    })()
-  );
+  const { user } = useContext(AuthContext);
   const profileImage =
     user?.imageUrl || `https://d2anzi03nvjlav.cloudfront.net/default.png`;
 

@@ -20,6 +20,7 @@ import axios from "axios";
 import { AiOutlineConsoleSql } from "react-icons/ai";
 import { Router, useRouter } from "next/router";
 import { prepareProfile } from "selenium-webdriver/firefox";
+import { IoMdReturnRight } from "react-icons/io";
 
 interface ProfileSection {
   title?: string;
@@ -63,15 +64,8 @@ const ProfileUploadButton = styled(Button)`
 const ProfileSection: React.FC = () => {
   const message = useAlert();
   const router = useRouter();
-  const [user, setUser] = useState(
-    (() => {
-      if (typeof window === "undefined") return {};
-      const localStorageUser = window.localStorage.getItem("user");
-      if (!localStorageUser) return {};
-      return JSON.parse(localStorageUser);
-    })()
-  );
-  const { updateUser } = useContext(AuthContext);
+
+  const { user, updateUser } = useContext(AuthContext);
   const [userCountries, setUserCountries] = useState<string[]>(
     user.country || []
   );
@@ -244,6 +238,7 @@ const ProfileSection: React.FC = () => {
       });
     console.log(response);
   };
+
 
   return (
     <Container>
