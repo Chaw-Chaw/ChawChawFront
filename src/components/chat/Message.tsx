@@ -29,7 +29,7 @@ const MyMessageBox = styled.div`
   /* border: 1px solid ${(props) => props.theme.primaryColor}; */
   background-color: ${(props) => props.theme.primaryColor};
   border-radius: 20px;
-  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
   color: white;
   margin-left: auto;
 `;

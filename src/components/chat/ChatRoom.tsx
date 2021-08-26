@@ -15,7 +15,7 @@ import PostOrder from "../../pages/post/PostOrder";
 interface ChatRoomProps {
   chatMessage: any[];
   yourProfileImage: string;
-  roomId: string;
+  roomId: number;
   publish: (message: any, messageType: string) => void;
 }
 
@@ -92,6 +92,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
     if (!response.data.isSuccess) {
       console.error(response.data);
       router.push({ pathname: "/chat", query: { userId: -1 } });
+
       return;
     }
     router.push({ pathname: "/chat", query: { userId: -1 } });

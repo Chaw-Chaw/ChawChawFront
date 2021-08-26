@@ -1,4 +1,11 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { ProfileImage } from "./ProfileImage";
 import * as StompJs from "@stomp/stompjs";
@@ -10,6 +17,7 @@ import { ChatBox } from "./";
 interface ChatRoomListProps {
   totalMessage: any;
   mainRoomId: number;
+  setMainRoomId: Dispatch<SetStateAction<number>>;
 }
 
 const Outline = styled.div`
@@ -69,12 +77,7 @@ const ChatRoomList: React.FC<ChatRoomListProps> = (props) => {
               sender={item.sender}
               roomId={item.roomId}
               mainRoomId={props.mainRoomId}
-              onClick={() => {
-                router.push({
-                  pathname: "/chat",
-                  query: { userId: item.senderId },
-                });
-              }}
+              onClick={() => props.setMainRoomId(item.roomId)}
             >
               {limitMessage}
             </ChatBox>
