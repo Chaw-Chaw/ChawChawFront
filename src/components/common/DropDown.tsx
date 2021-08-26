@@ -238,8 +238,8 @@ const ChangeLanguageDropDown: React.FC = (props) => {
 };
 
 const SelectInfoDropDown: React.FC<SelectInfoDropDownProps> = (props) => {
-  const countryList = CountryEmojiNames;
-  const languageList = Object.values(LocaleLanguage);
+  const countryList = [props.initialValue, ...Object.keys(CountryLocale)];
+  const languageList = [props.initialValue, ...Object.values(LocaleLanguage)];
 
   return (
     <DropDown
