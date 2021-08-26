@@ -48,7 +48,7 @@ const PostModalBox = styled.div<{ visible?: boolean }>`
   display: ${(props) => (props.visible ? "flex" : "none")};
   flex-direction: column;
   align-items: center;
-  height: 700px;
+  height: 750px;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   border-radius: 20px;
@@ -193,7 +193,6 @@ const PostInfoIconBox = styled.div`
 
 const PostImageSection = styled.div`
   width: 100%;
-  height: 300px;
   min-height: 300px;
   display: flex;
   flex-direction: column;
@@ -222,13 +221,13 @@ const PostImageBox = styled.div`
 `;
 
 const PostUserName = styled.h2`
-  margin: 10px auto;
+  margin: 0px auto;
   font-size: 1.5rem;
   font-weight: 900;
 `;
 
 const PostChatButton = styled(Button)`
-  margin: 5px auto;
+  margin: 15px auto;
   min-height: 30px;
   @media (max-width: 500px) {
     width: 150px;
@@ -518,7 +517,7 @@ const PostModal: React.FC<PostModalProps> = (props) => {
         instagramUrl={props.instagramUrl}
       />
       <PostModalContent>
-        <PostModalContentText>{props.children}</PostModalContentText>
+        <PostModalContentText disabled value={props.content} />
       </PostModalContent>
       <PostModalInfo
         days={String(pastDays)}

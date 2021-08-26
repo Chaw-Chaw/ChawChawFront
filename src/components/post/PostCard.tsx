@@ -25,6 +25,7 @@ interface PostCardProps extends PostCardInfoProps {
   repHopeLanguage: string;
   name: string;
   id: number;
+  content: string;
 }
 
 const PostCardBox = styled.div`
@@ -78,8 +79,7 @@ const PostCardContent = styled.div`
   width: 100%;
   padding: 5px 10px;
   box-sizing: border-box;
-  min-height: 175px;
-  max-height: 175px;
+  height: 220px;
   overflow: hidden;
   font-weight: 400;
   font-size: 0.9rem;
@@ -289,7 +289,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           </PostImageInfoBox>
         </PostImageBox>
         <PostCardContent>
-          <PostCardContentText disabled>{props.children}</PostCardContentText>
+          <PostCardContentText disabled value={props.content} />
         </PostCardContent>
         <PostCardInfo
           pastDate={props.pastDate}

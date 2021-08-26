@@ -74,9 +74,8 @@ const PostSection: React.FC<PostSectionProps> = (props) => {
                   repCountry={repCountry}
                   repLanguage={repLanguage}
                   repHopeLanguage={repHopeLanguage}
-                >
-                  {item.content}
-                </PostCard>
+                  content={item.content}
+                />
               );
             })
           : null}
