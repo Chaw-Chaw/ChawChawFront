@@ -164,6 +164,7 @@ export default function Chat() {
         setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
       }
       setTotalMessage((pre: any) => {
+        //새로운 채팅방 리스트 생성
         if (message.messageType === "ENTER" && message.senderId !== user.id) {
           const newChatList = {
             imageUrl: message.imageUrl,
@@ -173,14 +174,17 @@ export default function Chat() {
             senderId: message.senderId,
           };
           return [...pre, newChatList];
+        } else {
+          const result = pre.map((item: any) => {
+            if (message.roomId === item.roomId) {
+              //마지막 메세지만 저장하면됨.
+              item.messages = [message];
+            }
+            return item;
+          });
+          return result;
         }
-        const result = pre.map((item: any) => {
-          if (message.roomId === item.roomId) {
-            item.messages = [...item.messages, message];
-          }
-          return item;
-        });
-        return result;
+        // 각 채팅방 마다 들어오는 메세지 저장
       });
     });
   };
@@ -207,7 +211,6 @@ export default function Chat() {
 
   const publishEnterChat = () => {
     setTimeout(() => {
-      console.log(mainChatMessagesRef.current, "mainChatRoom");
       const isInMyMessage = mainChatMessagesRef.current.find(
         (item: any) => item.senderId === user.id
       );
@@ -227,7 +230,6 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
-    console.log("apapap2341235234625635463562");
     if (JSON.stringify(router.query) === JSON.stringify({})) return;
     const userId = router.query.userId
       ? Number(router.query.userId)
@@ -238,8 +240,13 @@ export default function Chat() {
       publishEnterChat();
     } else {
       getMessageLog();
+      setMainChatMessages([]);
     }
   }, [router.query]);
+
+  useEffect(() => {
+    console.log(mainChatMessages, "main");
+  }, [mainChatMessages]);
 
   return (
     <Layout>
