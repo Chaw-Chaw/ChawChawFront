@@ -40,7 +40,7 @@ export default function Chat() {
   const [totalMessage, setTotalMessage] = useState<any>([]);
   const roomIds = useRef<number[]>([]);
   const [mainRoomId, setMainRoomId] = useState(-1);
-
+  const mainRoomIdRef = useRef(-1);
   const [yourProfileImage, setYourProfileImage] = useState(
     "https://d2anzi03nvjlav.cloudfront.net/default.png"
   );
@@ -124,7 +124,6 @@ export default function Chat() {
 
           return newMessages;
         });
-        // console.log(mainChatMessages, "mainChatMessages111");
       }
       setMainRoomId(roomId);
       setYourProfileImage(mainMessageLog.imageUrl);
@@ -170,8 +169,8 @@ export default function Chat() {
       const message = JSON.parse(response.body);
       console.log(response, "subscribe");
       // 메인 채팅룸이면 메인채팅 메세지에 저장
-      console.log(message.roomId, thisRoomId, "이게 맞냐");
-      if (message.roomId === thisRoomId) {
+      console.log(message.roomId, mainRoomIdRef.current, "이게 맞냐");
+      if (message.roomId === mainRoomIdRef.current) {
         setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
       }
 
@@ -209,15 +208,6 @@ export default function Chat() {
 
       // 기존 채팅방에 들어오는 메세지일 경우
       setTotalMessage((pre: any) => {
-        // const result = pre.map((item: any) => {
-        //   if (message.roomId === item.roomId) {
-        //     //마지막 메세지만 저장하면됨.
-        //     item.messages = [...item.messages, message];
-        //     return item;
-        //   } else {
-        //     return item;
-        //   }
-        // });
         const result: any = [];
         pre.forEach((item: any) => {
           if (message.roomId === item.roomId) {
@@ -299,10 +289,17 @@ export default function Chat() {
 
   useEffect(() => {
     console.log(mainRoomId, "왜그러지");
+    mainRoomIdRef.current = mainRoomId;
     const mainChatLog = totalMessage.find(
       (item: any) => item.roomId === mainRoomId
     );
     if (!mainChatLog) return;
+    const isMyMessage = mainChatLog.messages.find(
+      (item: any) => item.senderId === user.id
+    );
+    if (!isMyMessage) {
+      publish(`${user.name}님이 입장하셨습니다.`, "ENTER");
+    }
     console.log(mainChatLog, "mainChatLog");
     setMainChatMessages([...mainChatLog.messages]);
   }, [mainRoomId]);
