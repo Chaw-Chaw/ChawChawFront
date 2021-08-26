@@ -100,10 +100,10 @@ const SocialSection: React.FC = () => {
           appId="1235018336951383"
           onSuccess={(response) => {
             console.log(response, "Login Success!");
-            const accessToken = response?.accessToken;
-            const email = response?.userID;
-            if (accessToken && email) {
-              facebookLogin({ accessToken, email });
+            const facebookToken = response?.accessToken;
+            const facebookId = response?.userID;
+            if (facebookToken && facebookId) {
+              facebookLogin({ facebookToken, facebookId });
             }
             //console.log("id: ", response.id);
           }}

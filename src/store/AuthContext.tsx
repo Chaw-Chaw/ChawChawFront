@@ -42,17 +42,18 @@ interface AuthContextObj {
 }
 
 interface AuthReqProps {
-  accessToken?: string | undefined;
   email?: string;
   password?: string;
   profile?: Object;
-  code?: string;
   web_email?: string;
   verificationNum?: string;
   name?: string;
   imageUrl?: string;
   school?: string;
   provider?: string;
+  kakaoToken?: string;
+  facebookId?: string;
+  facebookToken?: string;
 }
 interface AuthResProps<AxiosResponse> {
   responseMessage?: string;
@@ -97,10 +98,17 @@ const AuthContext = React.createContext<AuthContextObj>({
 
 const AuthContextProvider: React.FC = (props) => {
   const message = useAlert();
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
   const router = useRouter();
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
-    setUser((preUser) => {
+    setUser((preUser: UserPropertys) => {
       const newUser = { ...preUser, ...res };
       window.localStorage.setItem("user", JSON.stringify(newUser));
       return newUser;
@@ -124,8 +132,6 @@ const AuthContextProvider: React.FC = (props) => {
           provider: "",
           email: email,
           password: password,
-          code: "",
-          accessToken: "",
         },
         {
           headers: {
@@ -142,24 +148,21 @@ const AuthContextProvider: React.FC = (props) => {
       console.error(response.data.responseMessage);
       return;
     }
-    console.log(data);
+    console.log(response);
     const token = response.headers.authorization;
     const newData = { ...data, token };
     saveUser(newData);
     router.push("/post");
   };
 
-  const kakaoLogin = async ({ code }: AuthReqProps) => {
+  const kakaoLogin = async ({ kakaoToken }: AuthReqProps) => {
     console.log("카카오 로그인 함수 실행");
     const response = await axios
       .post(
         "/login",
         {
           provider: "kakao",
-          email: "",
-          password: "",
-          code: code,
-          accessToken: "",
+          kakaoToken: kakaoToken,
         },
         {
           headers: {
@@ -198,17 +201,15 @@ const AuthContextProvider: React.FC = (props) => {
     router.push("/post");
   };
 
-  const facebookLogin = async ({ accessToken, email }: AuthReqProps) => {
-    console.log(accessToken, email, "페이스북 로그인 함수 실행");
+  const facebookLogin = async ({ facebookToken, facebookId }: AuthReqProps) => {
+    console.log(facebookToken, facebookId, "페이스북 로그인 함수 실행");
     const response = await axios
       .post(
         "/login",
         {
           provider: "facebook",
-          email: email,
-          password: "",
-          code: "",
-          accessToken: accessToken,
+          facebookId: facebookId,
+          facebookToken: facebookToken,
         },
         {
           headers: {
@@ -397,8 +398,9 @@ const AuthContextProvider: React.FC = (props) => {
   // };
 
   const updateUser = (newUserInfo: UserPropertys) => {
-    setUser((preUser) => {
+    setUser((preUser: UserPropertys) => {
       const newUser = { ...preUser, ...newUserInfo };
+      console.log(preUser, newUser, "updateUser");
       window.localStorage.setItem("user", JSON.stringify(newUser));
       return newUser;
     });
