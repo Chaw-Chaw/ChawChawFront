@@ -13,7 +13,7 @@ import { AuthContext, UserPropertys } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-
+import { debounce } from "lodash";
 import { useAlert } from "react-alert";
 
 const Container = styled.div`
@@ -39,13 +39,21 @@ export default function Chat() {
   const mainChatMessagesRef = useRef<any>([]);
   const [totalMessage, setTotalMessage] = useState<any>([]);
   const roomIds = useRef<number[]>([]);
-  const mainRoomId = useRef(-1);
+  const [mainRoomId, setMainRoomId] = useState(-1);
+  const mainRoomIdRef = useRef(-1);
   const [yourProfileImage, setYourProfileImage] = useState(
     "https://d2anzi03nvjlav.cloudfront.net/default.png"
   );
   const router = useRouter();
   const client = useRef<any>({});
   const message = useAlert();
+
+  const [windowSize, setWindowSize] = useState(
+    (() => {
+      if (typeof window === "undefined") return 1000;
+      return window.innerWidth;
+    })()
+  );
 
   const getUserMessageLog = async (userId: number) => {
     const response = await axios
@@ -118,7 +126,10 @@ export default function Chat() {
         });
         // console.log(mainChatMessages, "mainChatMessages111");
       }
-      mainRoomId.current = roomId;
+      setMainRoomId(() => {
+        mainRoomIdRef.current = roomId;
+        return roomId;
+      });
       setYourProfileImage(mainMessageLog.imageUrl);
     }
 
@@ -161,7 +172,8 @@ export default function Chat() {
       const message = JSON.parse(response.body);
       console.log(response, "subscribe");
       // 메인 채팅룸이면 메인채팅 메세지에 저장
-      if (Number(message.roomId) === Number(mainRoomId.current)) {
+      console.log(message.roomId, mainRoomIdRef.current, "이게 맞냐");
+      if (Number(message.roomId) === Number(mainRoomIdRef.current)) {
         setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
       }
       const isNotNewChatRoom = totalMessage.find(
@@ -208,7 +220,7 @@ export default function Chat() {
         const result = pre.map((item: any) => {
           if (message.roomId === item.roomId) {
             //마지막 메세지만 저장하면됨.
-            item.messages = [message];
+            item.messages = [...item.messages, message];
           }
           return item;
         });
@@ -227,7 +239,7 @@ export default function Chat() {
       destination: "/message",
       body: JSON.stringify({
         messageType,
-        roomId: mainRoomId.current,
+        roomId: mainRoomId,
         senderId: user.id,
         sender: user.name,
         regDate: now.toISOString().substring(0, 19),
@@ -246,6 +258,10 @@ export default function Chat() {
     }, 500);
   };
 
+  const handleResize = debounce(() => {
+    setWindowSize(window.innerWidth);
+  }, 200);
+
   useEffect(() => {
     const isLogin = user.token;
     if (!isLogin) {
@@ -255,10 +271,17 @@ export default function Chat() {
         },
       });
     }
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   useEffect(() => {
-    if (JSON.stringify(router.query) === JSON.stringify({})) return;
+    if (JSON.stringify(router.query) === JSON.stringify({})) {
+      // location.reload();
+      return;
+    }
     const userId = router.query.userId
       ? Number(router.query.userId)
       : undefined;
@@ -274,24 +297,32 @@ export default function Chat() {
   }, [router.query]);
 
   useEffect(() => {
-    console.log(mainChatMessages, "main");
-  }, [mainChatMessages]);
-  useEffect(() => {
-    console.log(totalMessage, "totalMess");
-  }, [totalMessage]);
+    mainRoomIdRef.current = mainRoomId;
+    const mainChatLog = totalMessage.find(
+      (item: any) => item.roomId === mainRoomId
+    );
+    if (!mainChatLog) return;
+
+    console.log(mainChatLog, "mainChatLog");
+    setMainChatMessages(mainChatLog.messages);
+  }, [mainRoomId]);
+
   return (
     <Layout>
       <Container>
         <ChatRoom
           chatMessage={mainChatMessages}
           yourProfileImage={yourProfileImage}
-          roomId={mainRoomId.current.toString()}
+          roomId={mainRoomId}
           publish={publish}
         />
-        <ChatRoomList
-          totalMessage={totalMessage}
-          mainRoomId={mainRoomId.current}
-        />
+        {windowSize > 1000 ? (
+          <ChatRoomList
+            setMainRoomId={setMainRoomId}
+            totalMessage={totalMessage}
+            mainRoomId={mainRoomId}
+          />
+        ) : null}
       </Container>
     </Layout>
   );
