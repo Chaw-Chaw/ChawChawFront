@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { BsBoxArrowRight } from "react-icons/bs";
 import { RiHome2Line } from "react-icons/ri";
+import { BsChatDots } from "react-icons/bs";
 import PostOrder from "../../pages/post/PostOrder";
 
 interface ChatRoomProps {
@@ -122,6 +123,9 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
           </MessageHeaderButton>
           <MessageHeaderButton onClick={leaveChatRoom}>
             <BsBoxArrowRight />
+          </MessageHeaderButton>
+          <MessageHeaderButton>
+            <BsChatDots />
           </MessageHeaderButton>
         </Header>
         {/* use Memo 적용할것 */}
