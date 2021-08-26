@@ -48,14 +48,12 @@ const ChatRoomList: React.FC<ChatRoomListProps> = (props) => {
   useEffect(() => {
     if (props.mainRoomId < 0 || props.mainRoomId === undefined) return;
     if (!user.id) return;
-    console.log(props.totalMessage, "props.mainRoomId");
   }, [props.mainRoomId]);
 
   return (
     <Outline>
       <Inner>
         {props.totalMessage.map((item: any) => {
-          console.log(item, "item");
           const limitMessageWord = 20;
           const lastMessageInfo = item.messages[item.messages.length - 1];
           const lastMessage = lastMessageInfo.message;

@@ -36,9 +36,10 @@ export default function Chat() {
     })()
   );
   const [mainChatMessages, setMainChatMessages] = useState<any>([]);
+  const mainChatMessagesRef = useRef<any>([]);
   const [totalMessage, setTotalMessage] = useState<any>([]);
   const roomIds = useRef<number[]>([]);
-  const [mainRoomId, setMainRoomId] = useState(-1);
+  const mainRoomId = useRef(-1);
   const [yourProfileImage, setYourProfileImage] = useState(
     "https://d2anzi03nvjlav.cloudfront.net/default.png"
   );
@@ -110,15 +111,18 @@ export default function Chat() {
       const roomId = mainMessageLog.roomId;
       if (mainMessageLog) {
         const sortMessage = mainMessageLog.messages;
-
-        setMainChatMessages(sortMessage);
+        setMainChatMessages((pre: any) => {
+          const newMessages = sortMessage;
+          mainChatMessagesRef.current = newMessages;
+          return newMessages;
+        });
+        // console.log(mainChatMessages, "mainChatMessages111");
       }
-
-      setMainRoomId(roomId);
+      mainRoomId.current = roomId;
       setYourProfileImage(mainMessageLog.imageUrl);
     }
 
-    setTotalMessage([...res.data.data]);
+    setTotalMessage(res.data.data);
     roomIds.current = tmpTotalMessage.map((item: any) => {
       return item.roomId;
     });
@@ -156,8 +160,11 @@ export default function Chat() {
     client.current.subscribe(destination, (response: any) => {
       const message = JSON.parse(response.body);
       console.log(response, "subscribe");
+      if (Number(message.roomId) === Number(mainRoomId.current)) {
+        setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
+      }
       setTotalMessage((pre: any) => {
-        if (message.messageType === "ENTER") {
+        if (message.messageType === "ENTER" && message.senderId !== user.id) {
           const newChatList = {
             imageUrl: message.imageUrl,
             messages: [message],
@@ -165,7 +172,7 @@ export default function Chat() {
             sender: message.sender,
             senderId: message.senderId,
           };
-          return [pre, newChatList];
+          return [...pre, newChatList];
         }
         const result = pre.map((item: any) => {
           if (message.roomId === item.roomId) {
@@ -175,9 +182,6 @@ export default function Chat() {
         });
         return result;
       });
-      if (Number(message.roomId) === Number(mainRoomId)) {
-        setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
-      }
     });
   };
 
@@ -191,7 +195,7 @@ export default function Chat() {
       destination: "/message",
       body: JSON.stringify({
         messageType,
-        roomId: mainRoomId,
+        roomId: mainRoomId.current,
         senderId: user.id,
         sender: user.name,
         regDate: now.toISOString().substring(0, 19),
@@ -199,6 +203,16 @@ export default function Chat() {
       }),
     });
     console.log("메세지 전송 선공");
+  };
+
+  const publishEnterChat = () => {
+    setTimeout(() => {
+      console.log(mainChatMessagesRef.current, "mainChatRoom");
+      const isInMyMessage = mainChatMessagesRef.current.find(
+        (item: any) => item.senderId === user.id
+      );
+      if (!isInMyMessage) publish(`${user.name}님이 입장하셨습니다.`, "ENTER");
+    }, 500);
   };
 
   useEffect(() => {
@@ -213,6 +227,7 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
+    console.log("apapap2341235234625635463562");
     if (JSON.stringify(router.query) === JSON.stringify({})) return;
     const userId = router.query.userId
       ? Number(router.query.userId)
@@ -220,6 +235,7 @@ export default function Chat() {
     if (userId === undefined) return;
     if (userId !== -1) {
       getUserMessageLog(userId);
+      publishEnterChat();
     } else {
       getMessageLog();
     }
@@ -231,10 +247,13 @@ export default function Chat() {
         <ChatRoom
           chatMessage={mainChatMessages}
           yourProfileImage={yourProfileImage}
-          roomId={mainRoomId.toString()}
+          roomId={mainRoomId.current.toString()}
           publish={publish}
         />
-        <ChatRoomList totalMessage={totalMessage} mainRoomId={mainRoomId} />
+        <ChatRoomList
+          totalMessage={totalMessage}
+          mainRoomId={mainRoomId.current}
+        />
       </Container>
     </Layout>
   );
