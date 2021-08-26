@@ -215,7 +215,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
   );
 };
 
-const SocialUrlBox = styled.div`
+const SocialUrlBox = styled.div<{ type?: string }>`
   display: flex;
   font-size: 1.5rem;
   justify-content: start;
@@ -224,6 +224,11 @@ const SocialUrlBox = styled.div`
   width: 450px;
   @media (max-width: 500px) {
     width: 270px;
+  }
+  svg {
+    color: ${(props) => (props.type === "facebook" ? "#3d5a97" : "#eb559b")};
+    /* background-color: ${(props) =>
+      props.type === "facebook" ? "#3d5a97" : "#eb559b"}; */
   }
 `;
 const SocialUrlInput = styled(Input)<{ isActive?: boolean }>`
@@ -247,7 +252,7 @@ const SocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
       : "https://www.instagram.com/";
   console.log(props.url, "SocialUrl Rendering Count");
   return (
-    <SocialUrlBox key={props.url}>
+    <SocialUrlBox key={props.url} type={props.type}>
       {props.type === "facebook" ? <FaFacebook /> : <AiFillInstagram />}
       <SocialUrlInput
         isActive={isActive}
