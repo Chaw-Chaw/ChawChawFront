@@ -186,8 +186,10 @@ const AuthContextProvider: React.FC = (props) => {
       console.log(response.data, "로그인 실패");
 
       if (response.data.responseMessage === "회원가입 필요") {
+        updateUser(response.data.data);
         message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
           onClose: () => {
+            saveUser(response.data.data);
             router.push("/account/signup/webMailAuth");
           },
         });
@@ -236,6 +238,7 @@ const AuthContextProvider: React.FC = (props) => {
       if (response.data.responseMessage === "회원가입 필요") {
         message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
           onClose: () => {
+            saveUser(response.data.data);
             router.push("/account/signup/webMailAuth");
           },
         });
