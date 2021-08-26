@@ -160,31 +160,59 @@ export default function Chat() {
     client.current.subscribe(destination, (response: any) => {
       const message = JSON.parse(response.body);
       console.log(response, "subscribe");
+      // 메인 채팅룸이면 메인채팅 메세지에 저장
       if (Number(message.roomId) === Number(mainRoomId.current)) {
         setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
       }
+      const isNotNewChatRoom = totalMessage.find(
+        (item: any) => item.roomId === message.roomId
+      );
+
+      // 새로운 채팅방이 생성되었을 경우
+      if (
+        message.messageType === "ENTER" &&
+        message.senderId !== user.id &&
+        !isNotNewChatRoom
+      ) {
+        subscribe(`/queue/chat/room/${message.roomId}`);
+        const newChatList = {
+          imageUrl: message.imageUrl,
+          messages: [message],
+          roomId: message.roomId,
+          sender: message.sender,
+          senderId: message.senderId,
+        };
+        setTotalMessage((pre: any) => [...pre, newChatList]);
+        return;
+      }
+
+      // 채팅방을 삭제해야할 경우
+      if (message.messageType === "EXIT") {
+        setTotalMessage((pre: any) => {
+          const removeChatRoomIndex = pre.findIndex(
+            (item: any) => message.roomId === item.roomId
+          );
+          const result = pre;
+          if (removeChatRoomIndex) {
+            console.log(result, "before");
+            result.splice(removeChatRoomIndex, 1);
+            console.log(result, "after");
+          }
+          return [...result];
+        });
+        return;
+      }
+
+      // 기존 채팅방에 들어오는 메세지일 경우
       setTotalMessage((pre: any) => {
-        //새로운 채팅방 리스트 생성
-        if (message.messageType === "ENTER" && message.senderId !== user.id) {
-          const newChatList = {
-            imageUrl: message.imageUrl,
-            messages: [message],
-            roomId: message.roomId,
-            sender: message.sender,
-            senderId: message.senderId,
-          };
-          return [...pre, newChatList];
-        } else {
-          const result = pre.map((item: any) => {
-            if (message.roomId === item.roomId) {
-              //마지막 메세지만 저장하면됨.
-              item.messages = [message];
-            }
-            return item;
-          });
-          return result;
-        }
-        // 각 채팅방 마다 들어오는 메세지 저장
+        const result = pre.map((item: any) => {
+          if (message.roomId === item.roomId) {
+            //마지막 메세지만 저장하면됨.
+            item.messages = [message];
+          }
+          return item;
+        });
+        return result;
       });
     });
   };
@@ -237,6 +265,7 @@ export default function Chat() {
     if (userId === undefined) return;
     if (userId !== -1) {
       getUserMessageLog(userId);
+      console.log("두번이냐?");
       publishEnterChat();
     } else {
       getMessageLog();
@@ -247,7 +276,9 @@ export default function Chat() {
   useEffect(() => {
     console.log(mainChatMessages, "main");
   }, [mainChatMessages]);
-
+  useEffect(() => {
+    console.log(totalMessage, "totalMess");
+  }, [totalMessage]);
   return (
     <Layout>
       <Container>

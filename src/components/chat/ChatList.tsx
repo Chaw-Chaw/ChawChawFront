@@ -19,9 +19,9 @@ const Outline = styled.div`
   height: calc(100vh - 150px);
   /* margin-bottom: 50px; */
   width: 100%;
-  max-width: 460px;
-  @media (max-width: 500px) {
-    min-width: 320px;
+  max-width: 400px;
+  @media (max-width: 1000px) {
+    display: none;
   }
   padding: 20px 20px 20px 20px;
 `;
