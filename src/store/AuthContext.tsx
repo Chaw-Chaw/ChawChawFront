@@ -184,6 +184,7 @@ const AuthContextProvider: React.FC = (props) => {
 
     if (!response.data.isSuccess) {
       console.log(response.data, "로그인 실패");
+
       if (response.data.responseMessage === "회원가입 필요") {
         message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
           onClose: () => {
