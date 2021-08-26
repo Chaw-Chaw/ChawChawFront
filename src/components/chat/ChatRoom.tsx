@@ -91,8 +91,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
     console.log(response.data, "leaveChatRoom");
     if (!response.data.isSuccess) {
       console.error(response.data);
-      router.push({ pathname: "/chat", query: { userId: -1 } });
-
+      // router.push({ pathname: "/chat", query: { userId: -1 } });
       return;
     }
     router.push({ pathname: "/chat", query: { userId: -1 } });

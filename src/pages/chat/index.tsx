@@ -35,12 +35,12 @@ export default function Chat() {
       return JSON.parse(localStorageUser);
     })()
   );
+
   const [mainChatMessages, setMainChatMessages] = useState<any>([]);
-  const mainChatMessagesRef = useRef<any>([]);
   const [totalMessage, setTotalMessage] = useState<any>([]);
   const roomIds = useRef<number[]>([]);
   const [mainRoomId, setMainRoomId] = useState(-1);
-  const mainRoomIdRef = useRef(-1);
+
   const [yourProfileImage, setYourProfileImage] = useState(
     "https://d2anzi03nvjlav.cloudfront.net/default.png"
   );
@@ -121,15 +121,12 @@ export default function Chat() {
         const sortMessage = mainMessageLog.messages;
         setMainChatMessages((pre: any) => {
           const newMessages = sortMessage;
-          mainChatMessagesRef.current = newMessages;
+
           return newMessages;
         });
         // console.log(mainChatMessages, "mainChatMessages111");
       }
-      setMainRoomId(() => {
-        mainRoomIdRef.current = roomId;
-        return roomId;
-      });
+      setMainRoomId(roomId);
       setYourProfileImage(mainMessageLog.imageUrl);
     }
 
@@ -168,12 +165,13 @@ export default function Chat() {
   };
 
   const subscribe = (destination: string) => {
+    const thisRoomId = Number(destination.split("/").pop());
     client.current.subscribe(destination, (response: any) => {
       const message = JSON.parse(response.body);
       console.log(response, "subscribe");
       // 메인 채팅룸이면 메인채팅 메세지에 저장
-      console.log(message.roomId, mainRoomIdRef.current, "이게 맞냐");
-      if (Number(message.roomId) === Number(mainRoomIdRef.current)) {
+      console.log(message.roomId, thisRoomId, "이게 맞냐");
+      if (message.roomId === thisRoomId) {
         setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
       }
       const isNotNewChatRoom = totalMessage.find(
@@ -212,20 +210,34 @@ export default function Chat() {
           }
           return [...result];
         });
+        client.current.unsubscribe();
         return;
       }
 
       // 기존 채팅방에 들어오는 메세지일 경우
       setTotalMessage((pre: any) => {
-        const result = pre.map((item: any) => {
+        // const result = pre.map((item: any) => {
+        //   if (message.roomId === item.roomId) {
+        //     //마지막 메세지만 저장하면됨.
+        //     item.messages = [...item.messages, message];
+        //     return item;
+        //   } else {
+        //     return item;
+        //   }
+        // });
+        const result: any = [];
+        pre.forEach((item: any) => {
           if (message.roomId === item.roomId) {
-            //마지막 메세지만 저장하면됨.
-            item.messages = [...item.messages, message];
+            result.push({ ...item, messages: [...item.messages, message] });
+            return;
           }
-          return item;
+          result.push(item);
+          return;
         });
+        console.log(result, "after");
         return result;
       });
+      return;
     });
   };
 
@@ -251,7 +263,7 @@ export default function Chat() {
 
   const publishEnterChat = () => {
     setTimeout(() => {
-      const isInMyMessage = mainChatMessagesRef.current.find(
+      const isInMyMessage = mainChatMessages.find(
         (item: any) => item.senderId === user.id
       );
       if (!isInMyMessage) publish(`${user.name}님이 입장하셨습니다.`, "ENTER");
@@ -278,34 +290,33 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
-    if (JSON.stringify(router.query) === JSON.stringify({})) {
-      // location.reload();
-      return;
-    }
+    if (JSON.stringify(router.query) === JSON.stringify({})) return;
     const userId = router.query.userId
       ? Number(router.query.userId)
       : undefined;
     if (userId === undefined) return;
     if (userId !== -1) {
       getUserMessageLog(userId);
-      console.log("두번이냐?");
       publishEnterChat();
     } else {
       getMessageLog();
       setMainChatMessages([]);
     }
-  }, [router.query]);
+  }, [JSON.stringify(router.query)]);
 
   useEffect(() => {
-    mainRoomIdRef.current = mainRoomId;
+    console.log(mainRoomId, "왜그러지");
     const mainChatLog = totalMessage.find(
       (item: any) => item.roomId === mainRoomId
     );
     if (!mainChatLog) return;
-
     console.log(mainChatLog, "mainChatLog");
-    setMainChatMessages(mainChatLog.messages);
+    setMainChatMessages([...mainChatLog.messages]);
   }, [mainRoomId]);
+
+  // useEffect(() => {
+  //   console.log(mainChatMessages, "mainChatMessage");
+  // }, [JSON.stringify(mainChatMessages)]);
 
   return (
     <Layout>

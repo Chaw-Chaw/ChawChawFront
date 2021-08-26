@@ -77,7 +77,14 @@ const ChatRoomList: React.FC<ChatRoomListProps> = (props) => {
               sender={item.sender}
               roomId={item.roomId}
               mainRoomId={props.mainRoomId}
-              onClick={() => props.setMainRoomId(item.roomId)}
+              onClick={() => {
+                props.setMainRoomId(item.roomId);
+                return;
+                // router.push({
+                //   pathname: "/chat",
+                //   query: { userId: item.senderId },
+                // });
+              }}
             >
               {limitMessage}
             </ChatBox>
