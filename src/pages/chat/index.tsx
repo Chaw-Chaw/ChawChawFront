@@ -39,7 +39,9 @@ export default function Chat() {
   const [totalMessage, setTotalMessage] = useState<any>([]);
   const roomIds = useRef<number[]>([]);
   const [mainRoomId, setMainRoomId] = useState(-1);
-  const [yourProfileImage, setYourProfileImage] = useState("default.png");
+  const [yourProfileImage, setYourProfileImage] = useState(
+    "https://d2anzi03nvjlav.cloudfront.net/default.png"
+  );
   const router = useRouter();
   const client = useRef<any>({});
   const message = useAlert();
@@ -154,10 +156,17 @@ export default function Chat() {
     client.current.subscribe(destination, (response: any) => {
       const message = JSON.parse(response.body);
       console.log(response, "subscribe");
-      if (Number(message.roomId) === Number(mainRoomId)) {
-        setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
-      }
       setTotalMessage((pre: any) => {
+        if (message.messageType === "ENTER") {
+          const newChatList = {
+            imageUrl: message.imageUrl,
+            messages: [message],
+            roomId: message.roomId,
+            sender: message.sender,
+            senderId: message.senderId,
+          };
+          return [pre, newChatList];
+        }
         const result = pre.map((item: any) => {
           if (message.roomId === item.roomId) {
             item.messages = [...item.messages, message];
@@ -166,6 +175,9 @@ export default function Chat() {
         });
         return result;
       });
+      if (Number(message.roomId) === Number(mainRoomId)) {
+        setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
+      }
     });
   };
 

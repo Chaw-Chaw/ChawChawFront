@@ -138,7 +138,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
                 } else {
                   return (
                     <Message
-                      src={`https://mylifeforcoding.com/users/image?imageUrl=${props.yourProfileImage}`}
+                      src={`${props.yourProfileImage}`}
                       key={index}
                       regDate={chatMessage.regDate}
                     >
