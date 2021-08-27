@@ -145,12 +145,13 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
   };
   const RemoveButton = () => {
     // 왜 두개 이상의 배열에서 갑자기 한개로 줄어들까?
+    // setState 안에서 prestate는 읽기 전용이다. 클로저 변수가 이용되기 때문에 pre값을 직접 수정하는것은 미친짓이다
     if (props.setValues) {
       props.setValues((preState) => {
-        preState.pop();
-
-        console.log(preState, "removeButton");
-        return [...preState];
+        const result = [...preState];
+        result.pop();
+        console.log(result, "removeButton");
+        return [...result];
       });
     }
   };
@@ -191,9 +192,11 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
         {(() => {
           if (props.values) {
             const valuesLength = Object.values(props.values).length;
+            // dropbox값이 없을때
             if (valuesLength === 0)
               return <ControlBtnButton onClick={AddButton}>+</ControlBtnButton>;
-            else if (valuesLength > 0 && valuesLength < props.count)
+            // dropbox 값이 있을때
+            if (valuesLength > 0 && valuesLength < props.count)
               return (
                 <ControlBtnButtonContainer>
                   <AddControlBtnButton onClick={AddButton}>
@@ -204,10 +207,10 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
                   </RemoveControlBtnButton>
                 </ControlBtnButtonContainer>
               );
-            else
-              return (
-                <ControlBtnButton onClick={RemoveButton}>-</ControlBtnButton>
-              );
+            // dropbox
+            return (
+              <ControlBtnButton onClick={RemoveButton}>-</ControlBtnButton>
+            );
           }
         })()}
       </ButtonsBox>
