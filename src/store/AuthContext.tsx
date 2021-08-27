@@ -298,7 +298,17 @@ const AuthContextProvider: React.FC = (props) => {
   };
 
   const signup = async (props: AuthReqProps) => {
-    const info = {
+    //provider에 따라 info 달라짐
+    const socialSignupInfo = {
+      email: props.email,
+      name: props.name,
+      web_email: props.web_email,
+      school: props.school,
+      imageUrl: props.imageUrl,
+      provider: props.provider,
+    };
+
+    const signupInfo = {
       email: props.email,
       password: props.password,
       name: props.name,
@@ -308,6 +318,7 @@ const AuthContextProvider: React.FC = (props) => {
       provider: props.provider,
     };
 
+    const info = props.provider ? socialSignupInfo : signupInfo;
     console.log(info, "회원가입 정보");
 
     const response = await axios
@@ -325,6 +336,7 @@ const AuthContextProvider: React.FC = (props) => {
     if (!response.data.isSuccess) {
       message.error("회원가입에 실패하였습니다.");
       console.error("회원가입에 실패하였습니다.");
+      window.localStorage.removeItem("user");
       return;
     }
     message.success("회원가입에 성공하셨습니다.");

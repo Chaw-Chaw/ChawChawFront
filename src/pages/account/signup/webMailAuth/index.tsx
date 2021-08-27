@@ -119,7 +119,6 @@ export default function WebMailAuth() {
     signup({
       email: user?.email,
       name: user?.name,
-      password: "",
       web_email: user?.web_email,
       school: user?.school,
       imageUrl: user?.imageUrl,
