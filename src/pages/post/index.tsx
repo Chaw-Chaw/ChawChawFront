@@ -133,6 +133,7 @@ export default function Post() {
       // });
       document.cookie = "exclude=" + postIds.current;
       await getPosts();
+      document.cookie = "exclude=; expires=Thu, 18 Dec 2013 12:00:00 GMT";
       observer.observe(entry.target);
     } else {
       console.log(entry.isIntersecting, "안보인다.");
