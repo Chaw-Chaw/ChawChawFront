@@ -54,16 +54,22 @@ export default function WebMailAuth() {
   const message = useAlert();
   const webmailRef = useRef<HTMLInputElement>(null);
   const [webmailValidate, setWebmailValidate] = useState(false);
-  const { sendWebmail, signup, webmailVerify, updateUser, verificationNumber } =
-    useContext(AuthContext);
-  const [user, setUser] = useState(
-    (() => {
-      if (typeof window === "undefined") return {};
-      const localStorageUser = window.localStorage.getItem("user");
-      if (!localStorageUser) return {};
-      return JSON.parse(localStorageUser);
-    })()
-  );
+  const {
+    sendWebmail,
+    signup,
+    webmailVerify,
+    updateUser,
+    verificationNumber,
+    user,
+  } = useContext(AuthContext);
+  // const [user, setUser] = useState(
+  //   (() => {
+  //     if (typeof window === "undefined") return {};
+  //     const localStorageUser = window.localStorage.getItem("user");
+  //     if (!localStorageUser) return {};
+  //     return JSON.parse(localStorageUser);
+  //   })()
+  // );
   const {
     register,
     handleSubmit,
@@ -113,6 +119,7 @@ export default function WebMailAuth() {
     signup({
       email: user?.email,
       name: user?.name,
+      password: "",
       web_email: user?.web_email,
       school: user?.school,
       imageUrl: user?.imageUrl,

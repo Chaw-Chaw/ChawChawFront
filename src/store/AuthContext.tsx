@@ -307,6 +307,7 @@ const AuthContextProvider: React.FC = (props) => {
       imageUrl: props.imageUrl,
       provider: props.provider,
     };
+
     console.log(info, "회원가입 정보");
 
     const response = await axios
