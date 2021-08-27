@@ -191,10 +191,10 @@ export default function Chat() {
       // 채팅방을 삭제해야할 경우
       if (message.messageType === "EXIT") {
         setTotalMessage((pre: any) => {
-          const removeChatRoomIndex = pre.findIndex(
+          const result = [...pre];
+          const removeChatRoomIndex = result.findIndex(
             (item: any) => message.roomId === item.roomId
           );
-          const result = pre;
           if (removeChatRoomIndex) {
             console.log(result, "before");
             result.splice(removeChatRoomIndex, 1);
