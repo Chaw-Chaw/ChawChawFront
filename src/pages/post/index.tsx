@@ -56,12 +56,7 @@ export default function Post() {
     const hopeLanguageConvert = LanguageLocale[sortInfo[1]]
       ? LanguageLocale[sortInfo[1]]
       : "";
-    setCookie("exclude", "", {
-      path: "/",
-      secure: true,
-      sameSite: "none",
-    });
-    document.cookie = "exclude=" + postIds.current;
+
     console.log(document.cookie, "exclude");
     console.log(
       {
@@ -131,6 +126,12 @@ export default function Post() {
     if (entry.isIntersecting) {
       console.log(entry.isIntersecting, "보인다.");
       observer.unobserve(entry.target);
+      // setCookie("exclude", "", {
+      //   path: "/",
+      //   secure: true,
+      //   sameSite: "none",
+      // });
+      document.cookie = "exclude=" + postIds.current;
       await getPosts();
       observer.observe(entry.target);
     } else {
