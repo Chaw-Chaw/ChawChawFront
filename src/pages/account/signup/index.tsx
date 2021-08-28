@@ -14,6 +14,7 @@ import { AuthContext } from "../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
+import { useCookies } from "react-cookie";
 
 interface Inputs {
   email: string;
@@ -27,14 +28,10 @@ export default function SignUp() {
   const message = useAlert();
   const router = useRouter();
   const { signup, emailDuplicationCheck, updateUser } = useContext(AuthContext);
-  const [user, setUser] = useState(
-    (() => {
-      if (typeof window === "undefined") return {};
-      const localStorageUser = window.localStorage.getItem("user");
-      if (!localStorageUser) return {};
-      return JSON.parse(localStorageUser);
-    })()
-  );
+  const { user } = useContext(AuthContext);
+  const [cookies] = useCookies(["accessToken"]);
+  const accessToken = cookies.accessToken;
+
   const userUniversity = user.school;
   const {
     register,
@@ -84,16 +81,15 @@ export default function SignUp() {
   };
 
   useEffect(() => {
-    const isLogin = user.token;
     const userSchool = user.school;
-
-    if (isLogin) {
+    if (accessToken) {
       message.error("로그아웃 후 회원가입을 진행해주세요.", {
         onClose: () => {
           router.push("/post");
         },
       });
     }
+
     if (!userSchool)
       message.error("웹메일 인증을 먼저 진행해주세요.", {
         onClose: () => {

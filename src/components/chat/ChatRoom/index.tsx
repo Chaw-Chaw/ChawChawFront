@@ -1,5 +1,12 @@
 import styled from "styled-components";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { MessageInput } from "./MessageInput";
@@ -8,6 +15,8 @@ import InfoMessage from "../Message/InfoMessage";
 import { BsBoxArrowRight } from "react-icons/bs";
 import { RiHome2Line } from "react-icons/ri";
 import { BsChatDots } from "react-icons/bs";
+import { useCookies } from "react-cookie";
+import { AuthContext } from "../../../store/AuthContext";
 
 interface ChatRoomProps {
   chatMessage: any[];
@@ -19,31 +28,31 @@ interface ChatRoomProps {
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = (props) => {
-  const [user, setUser] = useState(
-    (() => {
-      if (typeof window === "undefined") return {};
-      const localStorageUser = window.localStorage.getItem("user");
-      if (!localStorageUser) return {};
-      return JSON.parse(localStorageUser);
-    })()
-  );
+  const { user, grantRefresh } = useContext(AuthContext);
+  const [cookies] = useCookies(["accessToken"]);
   const [message, setMessage] = useState<string>("");
   const chatMessageBox = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const accessToken = cookies.accessToken;
   const leaveChatRoom = async () => {
     const response = await axios
       .delete(`/chat/room/${props.roomId}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${user?.token}`,
+          Authorization: accessToken,
           Accept: "application/json",
         },
       })
-      .catch((err) => {
-        console.error(err);
-        return err.response;
-      });
+      .catch((err) => err.response);
+
     console.log(response.data, "leaveChatRoom");
+
+    if (response.status === 401) {
+      //acessToken 만료
+      grantRefresh();
+      return;
+    }
+
     if (!response.data.isSuccess) {
       console.error(response.data);
       // router.push({ pathname: "/chat", query: { userId: -1 } });

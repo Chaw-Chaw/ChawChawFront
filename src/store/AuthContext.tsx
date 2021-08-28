@@ -103,7 +103,14 @@ const AuthContext = React.createContext<AuthContextObj>({
 
 const AuthContextProvider: React.FC = (props) => {
   const message = useAlert();
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
   const router = useRouter();
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
@@ -112,7 +119,6 @@ const AuthContextProvider: React.FC = (props) => {
       window.localStorage.setItem("user", JSON.stringify(newUser));
       return newUser;
     });
-    console.log("Save userInfo");
     return res;
   };
 
@@ -126,8 +132,9 @@ const AuthContextProvider: React.FC = (props) => {
   const loginSuccess = (response: AxiosResponse) => {
     const accessToken = response.headers.authorization;
     const newData = { ...response.data.data };
-    console.log(accessToken, "loginSucess 시");
+    // console.log(accessToken, "acessToken");
     setCookie("accessToken", accessToken, {
+      path: "/",
       secure: true,
       sameSite: "strict",
     });
@@ -136,7 +143,6 @@ const AuthContextProvider: React.FC = (props) => {
   };
 
   const grantRefresh = async () => {
-    console.log("grant 실행 시작");
     const response = await axios
       .post("/users/auth/refresh", {
         headers: {
@@ -145,17 +151,16 @@ const AuthContextProvider: React.FC = (props) => {
         },
       })
       .catch((err) => {
-        message.error("재로그인에 실패하셨습니다.", {
-          onClose: () => {
-            router.push("/account/login");
-          },
-        });
         console.error(err, "grant access Token Fail");
         return err.response;
       });
 
     if (response.status === 401) {
-      console.log(response, "grant access token fail");
+      message.error("재로그인에 실패하셨습니다.", {
+        onClose: () => {
+          router.push("/account/login");
+        },
+      });
       return;
     }
 
@@ -166,6 +171,7 @@ const AuthContextProvider: React.FC = (props) => {
     console.log(response, "Success get accessToken");
     // 성공할경우
     loginSuccess(response);
+    location.reload();
     return;
   };
 
@@ -194,7 +200,6 @@ const AuthContextProvider: React.FC = (props) => {
       console.error(response.data.responseMessage);
       return;
     }
-
     loginSuccess(response);
     router.push("/post");
   };

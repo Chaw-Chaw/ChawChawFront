@@ -4,35 +4,24 @@ import PostSearch from "./PostSearch";
 import PostOrder, { orderOptions } from "./PostOrder";
 import PostSection from "./PostSection";
 import { useContext, useEffect, useRef, useState } from "react";
-
 import axios from "axios";
 import { AuthContext } from "../../store/AuthContext";
+import { useCookies } from "react-cookie";
+import { useRouter } from "next/router";
+import { useAlert } from "react-alert";
 
-const Container = styled.div<{ width?: string }>`
-  width: ${(props) => (props.width ? props.width : "500px")};
-  max-width: 1000px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-bottom: 200px;
-`;
-
-const Divider = styled.div<{ display: boolean }>`
-  display: ${(props) => (props.display ? "flex" : "none")};
-  width: 100%;
-
-  height: 100px;
-  border-bottom: 1px solid ${(props) => props.theme.secondaryColor};
-`;
 export default function Post() {
-  const { isLogin, grantRefresh } = useContext(AuthContext);
+  const { grantRefresh } = useContext(AuthContext);
   const [postInfo, setPostInfo] = useState<any>([]);
   const [sortInfo, setSortInfo] = useState<string[]>(["", "", ""]);
   const [isEnd, setIsEnd] = useState(false);
   const isFirst = useRef(true);
   const postIds = useRef("");
   const searchName = useRef("");
+  const [cookies] = useCookies(["accessToken"]);
+  const message = useAlert();
+  const router = useRouter();
+  const accessToken = cookies.accessToken;
 
   const getPosts = async () => {
     const orderConvert = orderOptions[sortInfo[2]] || sortInfo[2];
@@ -42,8 +31,6 @@ export default function Post() {
     const hopeLanguageConvert = LanguageLocale[sortInfo[1]]
       ? LanguageLocale[sortInfo[1]]
       : "";
-
-    console.log(document.cookie, "exclude");
     console.log(
       {
         name: searchName.current,
@@ -63,19 +50,23 @@ export default function Post() {
           order: orderConvert,
           isFirst: isFirst.current,
         },
+        headers: {
+          Authorization: accessToken,
+        },
       })
       .catch((err) => err.response);
+
     const data = response.data.data;
     if (response.status === 401) {
       // access token 만료
       // refresh token 전송
+      grantRefresh();
+      return;
     }
 
     console.log(response, "res");
-
     if (response.data.responseMessage === "조회 결과가 존재하지 않음") {
       setIsEnd(true);
-
       console.error(response.data.responseMessage);
       return;
     }
@@ -107,9 +98,12 @@ export default function Post() {
     if (entry.isIntersecting) {
       console.log(entry.isIntersecting, "보인다.");
       observer.unobserve(entry.target);
+
+      // 쿠키 설정이 비동기 식인가? 아니다. Path 설정을 안해두면 두번쨰 exclude 를 만들어버린다.
+
       document.cookie = "exclude=" + postIds.current;
       await getPosts();
-      document.cookie = "exclude=; expires=Thu, 18 Dec 2013 12:00:00 GMT";
+      // document.cookie = "exclude=;expires=Thu, 18 Dec 2013 12:00:00 GMT";
       observer.observe(entry.target);
     } else {
       console.log(entry.isIntersecting, "안보인다.");
@@ -117,11 +111,16 @@ export default function Post() {
   };
 
   useEffect(() => {
-    if (!isLogin) {
-      console.log("no login");
-      return;
+    if (!accessToken) {
+      message.error("로그인 후에 서비스를 이용해주세요.", {
+        onClose: () => {
+          router.push("/account/login");
+        },
+      });
     }
-    const observer = new IntersectionObserver(onIntersect, { threshold: 0.5 });
+    const observer = new IntersectionObserver(onIntersect, {
+      threshold: 0.5,
+    });
     target.current && observer.observe(target.current);
     return () => observer.disconnect();
   }, []);
@@ -145,3 +144,21 @@ export default function Post() {
     </Layout>
   );
 }
+
+const Container = styled.div<{ width?: string }>`
+  width: ${(props) => (props.width ? props.width : "500px")};
+  max-width: 1000px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 200px;
+`;
+
+const Divider = styled.div<{ display: boolean }>`
+  display: ${(props) => (props.display ? "flex" : "none")};
+  width: 100%;
+
+  height: 100px;
+  border-bottom: 1px solid ${(props) => props.theme.secondaryColor};
+`;

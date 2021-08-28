@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Layout, Input, Label, Button } from "../../../../components/common/";
 import AccountContainer from "../../../../components/account/AccountContainer";
 import LoginOrder from "../../../../components/account/LoginOrder";
@@ -8,6 +8,7 @@ import { AuthContext } from "../../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
+import { useCookies } from "react-cookie";
 type Inputs = {
   webmail: string;
   verificationNum: number;
@@ -20,7 +21,6 @@ export default function WebMailAuth() {
   const [webmailValidate, setWebmailValidate] = useState(false);
   const { sendWebmail, signup, webmailVerify, verificationNumber, user } =
     useContext(AuthContext);
-
   const {
     register,
     handleSubmit,
@@ -30,6 +30,8 @@ export default function WebMailAuth() {
     user?.provider === "facebook" || user?.provider === "kakao" ? true : false;
   const [activeVerificationNumber, setActiveVerificationNumber] =
     useState<boolean>(true);
+  const [cookies] = useCookies(["accessToken"]);
+  const accessToken = cookies.accessToken;
 
   const webmailSubmit: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     if (!webmailRef.current) {
@@ -78,6 +80,16 @@ export default function WebMailAuth() {
   const checkKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.code === "Enter") e.preventDefault();
   };
+
+  useEffect(() => {
+    if (accessToken) {
+      message.error("로그아웃 후 회원가입을 진행해주세요.", {
+        onClose: () => {
+          router.push("/post");
+        },
+      });
+    }
+  }, []);
   return (
     <Layout type="signup">
       <AccountContainer

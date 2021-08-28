@@ -1,23 +1,18 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAlert } from "react-alert";
+import { useCookies } from "react-cookie";
 import { Layout } from "../../../components/common";
 import ProfileSection from "../../../components/ProfileSection";
+import { AuthContext } from "../../../store/AuthContext";
 
 export default function Profile() {
-  const [user, setUser] = useState(
-    (() => {
-      if (typeof window === "undefined") return {};
-      const localStorageUser = window.localStorage.getItem("user");
-      if (!localStorageUser) return {};
-      return JSON.parse(localStorageUser);
-    })()
-  );
+  const [cookies] = useCookies(["accessToken"]);
   const message = useAlert();
   const router = useRouter();
+  const accessToken = cookies.accessToken;
   useEffect(() => {
-    const isLogin = user.token;
-    if (!isLogin) {
+    if (!accessToken) {
       message.error("로그인 후 이용해주세요.", {
         onClose: () => {
           router.push("/account/login");

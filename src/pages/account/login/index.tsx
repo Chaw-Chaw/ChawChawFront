@@ -14,6 +14,7 @@ import { AuthContext } from "../../../store/AuthContext";
 import SocialSection from "./SocialSection";
 import Link from "next/link";
 import { useAlert } from "react-alert";
+import { useCookies } from "react-cookie";
 
 interface Inputs {
   email: string;
@@ -21,6 +22,7 @@ interface Inputs {
 }
 
 export default function Login() {
+  const [cookies] = useCookies(["accessToken"]);
   const router = useRouter();
   const message = useAlert();
   const { login } = useContext(AuthContext);
@@ -29,6 +31,7 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
+  const accessToken = cookies.accessToken;
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     if (data.email === "" || data.password === "") {
@@ -40,19 +43,15 @@ export default function Login() {
   };
 
   useEffect(() => {
-    const user = window.localStorage.getItem("user");
-    if (user) {
-      const isLogin = JSON.parse(user).token;
-      if (isLogin) {
-        message.error("로그아웃 후 로그인 해주세요.", {
-          onClose: () => {
-            router.push("/post");
-          },
-        });
-      }
+    if (accessToken) {
+      message.error("로그아웃 후 로그인 해주세요.", {
+        onClose: () => {
+          router.push("/post");
+        },
+      });
     }
   }, []);
-  
+
   return (
     <Layout type="login">
       <AccountContainer

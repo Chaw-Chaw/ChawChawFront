@@ -5,13 +5,15 @@ import { Button } from "../Button/Button";
 import { HeaderProps } from ".";
 import MyImage from "./MyImage";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
+import { useCookies } from "react-cookie";
 
 const HeaderCondition: React.FC<HeaderProps> = (props) => {
   const headerType = props.type;
-  const { user, isLogin } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
+  const [cookies] = useCookies(["accessToken"]);
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
   // token이 없는게 문제다.
-  if (isLogin) {
+  if (cookies.accessToken) {
     return <MyImage profileImage={profileImage} />;
   }
 

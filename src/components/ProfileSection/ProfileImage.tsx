@@ -6,33 +6,39 @@ import { Button } from "../common";
 import axios from "axios";
 import { useAlert } from "react-alert";
 import { DEFAULT_PROFILE_IMAGE } from "../../constants";
+import { useCookies } from "react-cookie";
 
 const ProfileImage: React.FC = () => {
-  const { user, updateUser } = useContext(AuthContext);
+  const { user, updateUser, grantRefresh } = useContext(AuthContext);
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
   const message = useAlert();
+  const [cookies] = useCookies(["accessToken"]);
+  const accessToken = cookies.accessToken;
 
   const sendImage = async (image: FormData) => {
-    await axios
+    const response = await axios
       .post("/users/image", image, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: accessToken,
         },
       })
-      .then((res) => {
-        if (res.data.isSuccess) {
-          message.success("이미지 업로드 성공!");
-          console.log(res.data, "image Upload");
-          return res.data.data;
-        } else {
-          throw new Error(res.data);
-        }
-      })
-      .then((res) => {
-        updateUser({ imageUrl: res });
-        return res;
-      })
-      .catch((err) => console.error(err.responseMessage));
+      .catch((err) => err.response);
+
+    if (response.status === 401) {
+      grantRefresh();
+      return;
+    }
+
+    if (response.data.isSuccess) {
+      message.success("이미지 업로드 성공!");
+      console.log(response.data, "image Upload");
+    } else {
+      console.error(response.data, "이미지 업로드 실패");
+      return;
+    }
+    updateUser({ imageUrl: response.data.data });
+    return;
   };
 
   const imageUpload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -53,15 +59,21 @@ const ProfileImage: React.FC = () => {
       .delete("/users/image", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${user?.token}`,
+          Authorization: accessToken,
           Accept: "*/*",
         },
       })
-      .then((res) => {
-        updateUser({ imageUrl: res.data.data });
-        return res;
-      });
-    console.log(response);
+      .catch((err) => err.response);
+
+    if (response.status === 401) {
+      grantRefresh();
+      return;
+    }
+
+    if (!response.data.isSuccess) {
+      console.error(response.data);
+    }
+    updateUser({ imageUrl: response.data.data });
   };
 
   return (

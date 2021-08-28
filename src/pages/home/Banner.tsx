@@ -1,22 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Image from "next/image";
 import styled from "styled-components";
 import { Button } from "../../components/common";
 import BannerImage from "../../../public/Main/conversation.jpeg";
 import { useRouter } from "next/router";
+import { useCookies } from "react-cookie";
 
 const Banner: React.FC = () => {
-  const [user, setUser] = useState(
-    (() => {
-      if (typeof window === "undefined") return {};
-      const localStorageUser = window.localStorage.getItem("user");
-      if (!localStorageUser) return {};
-      return JSON.parse(localStorageUser);
-    })()
-  );
+  const [cookies] = useCookies(["accessToken"]);
   const router = useRouter();
-  // useEffect(()=>{
-  // },[user])
   return (
     <Container>
       <Image src={BannerImage} alt="배너 이미지" objectFit="cover" />
@@ -26,7 +18,7 @@ const Banner: React.FC = () => {
           height="5rem"
           fontSize="2.8rem"
           onClick={() => {
-            if (user.token) {
+            if (cookies.accessToken) {
               router.push("/post");
             } else {
               router.push("/account/login");

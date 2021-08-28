@@ -1,16 +1,15 @@
 import styled from "styled-components";
 import { Button, LanguageLocale, LocaleLanguage } from "../common";
-import { ChangeEvent, MouseEventHandler, useContext, useState } from "react";
+import { MouseEventHandler, useContext, useState } from "react";
 import { AuthContext, UserPropertys } from "../../store/AuthContext";
 import { useAlert } from "react-alert";
 import axios from "axios";
-
-import { useRouter } from "next/router";
 import { DEFAULT_FACEBOOK_URL, DEFAULT_INSTAGRAM_URL } from "../../constants";
 import { ProfileContent } from "./ProfileContent";
 import { ProfileImage } from "./ProfileImage";
 import { ProfileSocialUrl } from "./ProfileSocialUrl";
 import { ProfileSelectInfo } from "./ProfileSelectInfo";
+import { useCookies } from "react-cookie";
 
 interface ProfileSection {
   title?: string;
@@ -19,7 +18,9 @@ interface ProfileSection {
 
 const ProfileSection: React.FC = () => {
   const message = useAlert();
-  const router = useRouter();
+  const { grantRefresh } = useContext(AuthContext);
+  const [cookies] = useCookies(["accessToken"]);
+  const accessToken = cookies.accessToken;
 
   const { user, updateUser } = useContext(AuthContext);
   const [userCountries, setUserCountries] = useState<string[]>(
@@ -72,7 +73,7 @@ const ProfileSection: React.FC = () => {
       .post("/users/profile", userProfile, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${user?.token}`,
+          Authorization: accessToken,
           Accept: "application/json",
         },
       })
@@ -81,6 +82,7 @@ const ProfileSection: React.FC = () => {
     if (response.status === 401) {
       // access token 만료
       // refresh token 전송
+      grantRefresh();
     }
 
     if (!response.data.isSuccess) {

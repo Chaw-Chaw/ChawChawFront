@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Image from "next/image";
 import PostModal from "../PostModal";
 import { ModalLayout } from "../../common";
@@ -8,6 +8,8 @@ import { PostModalInfoProps } from "../PostModal";
 import { PostCardInfoProps, PostCardInfo } from "../PostCard/PostCardInfo";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import { PostCardImageInfoProps, PostCardImageInfo } from "./PostCardImageInfo";
+import { useCookies } from "react-cookie";
+import { AuthContext } from "../../../store/AuthContext";
 
 interface PostCardProps extends PostCardInfoProps, PostCardImageInfoProps {
   imageUrl: string;
@@ -34,24 +36,19 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     views: 0,
   };
 
-  const [user, setUser] = useState(
-    (() => {
-      if (typeof window === "undefined") return {};
-      const localStorageUser = window.localStorage.getItem("user");
-      if (!localStorageUser) return {};
-      return JSON.parse(localStorageUser);
-    })()
-  );
   const [open, setOpen] = useState(false);
   const [postModalInfo, setPostModalInfo] =
     useState<PostModalInfoProps>(initialPostInfo);
+  const [cookies] = useCookies(["accessToken"]);
+  const accessToken = cookies.accessToken;
+  const { grantRefresh } = useContext(AuthContext);
 
   const handleModal = async () => {
     const response = await axios
       .get(`/users/${props.id}`, {
         headers: {
           "Content-type": "application/json",
-          Authorization: `${user?.token}`,
+          Authorization: accessToken,
           Accept: "application/json",
         },
       })
@@ -59,6 +56,8 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     if (response.status === 401) {
       // access token 만료
       // refresh token 전송
+      grantRefresh();
+      return;
     }
     console.log(response, "PostModal data");
 

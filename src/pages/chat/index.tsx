@@ -12,6 +12,7 @@ import SockJS from "sockjs-client";
 import { debounce } from "lodash";
 import { useAlert } from "react-alert";
 import { DEFAULT_PROFILE_IMAGE, BACKEND_URL } from "../../constants";
+import { useCookies } from "react-cookie";
 
 const Container = styled.div`
   display: flex;
@@ -24,15 +25,16 @@ const Container = styled.div`
 `;
 
 export default function Chat() {
-  const [user, setUser] = useState(
-    (() => {
-      if (typeof window === "undefined") return {};
-      const localStorageUser = window.localStorage.getItem("user");
-      if (!localStorageUser) return {};
-      return JSON.parse(localStorageUser);
-    })()
-  );
+  // const [user, setUser] = useState(
+  //   (() => {
+  //     if (typeof window === "undefined") return {};
+  //     const localStorageUser = window.localStorage.getItem("user");
+  //     if (!localStorageUser) return {};
+  //     return JSON.parse(localStorageUser);
+  //   })()
+  // );
 
+  const { user, grantRefresh } = useContext(AuthContext);
   const [mainChatMessages, setMainChatMessages] = useState<any>([]);
   const [totalMessage, setTotalMessage] = useState<any>([]);
   const roomIds = useRef<number[]>([]);
@@ -44,6 +46,8 @@ export default function Chat() {
   const router = useRouter();
   const client = useRef<any>({});
   const message = useAlert();
+  const [cookies] = useCookies(["accessToken"]);
+  const accessToken = cookies.accessToken;
 
   const [windowSize, setWindowSize] = useState(
     (() => {
@@ -60,7 +64,7 @@ export default function Chat() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `${user?.token}`,
+            Authorization: accessToken,
             Accept: "application/json",
           },
         }
@@ -74,10 +78,10 @@ export default function Chat() {
 
   const getMessageLog = async () => {
     const response = await axios
-      .get(`https://mylifeforcoding.com/chat/`, {
+      .get(BACKEND_URL + "/chat/", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${user?.token}`,
+          Authorization: accessToken,
           Accept: "application/json",
         },
       })
@@ -101,6 +105,8 @@ export default function Chat() {
     if (res.status === 401) {
       // access token 만료
       // refresh token 전송
+      grantRefresh();
+      return;
     }
     if (!res.data.isSuccess) {
       console.log(res.data, "chatError");
@@ -115,7 +121,6 @@ export default function Chat() {
       );
       const roomId = mainMessageLog.roomId;
       if (mainMessageLog) {
-        // const sortMessage = mainMessageLog.messages;
         setMainChatMessages(mainMessageLog.messages);
       }
       setMainRoomId(roomId);
@@ -252,9 +257,8 @@ export default function Chat() {
   }, 200);
 
   useEffect(() => {
-    const isLogin = user.token;
-    if (!isLogin) {
-      message.error("로그인 후 서비스를 이용해주세요.", {
+    if (!accessToken) {
+      message.error("로그인 후에 서비스를 이용해주세요.", {
         onClose: () => {
           router.push("/account/login");
         },
@@ -282,7 +286,7 @@ export default function Chat() {
   }, [JSON.stringify(router.query)]);
 
   useEffect(() => {
-    console.log(mainRoomId, "왜그러지");
+    console.log(mainRoomId, "메인 룸 변경");
     mainRoomIdRef.current = mainRoomId;
     const mainChatLog = totalMessage.find(
       (item: any) => item.roomId === mainRoomId
@@ -294,13 +298,8 @@ export default function Chat() {
     if (!isMyMessage) {
       publish(`${user.name}님이 입장하셨습니다.`, "ENTER");
     }
-    console.log(mainChatLog, "mainChatLog");
     setMainChatMessages([...mainChatLog.messages]);
   }, [mainRoomId]);
-
-  // useEffect(() => {
-  //   console.log(mainChatMessages, "mainChatMessage");
-  // }, [JSON.stringify(mainChatMessages)]);
 
   return (
     <Layout>
