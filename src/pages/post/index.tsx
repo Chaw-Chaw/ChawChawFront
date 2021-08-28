@@ -101,7 +101,7 @@ export default function Post() {
 
       // 쿠키 설정이 비동기 식인가? 아니다. Path 설정을 안해두면 두번쨰 exclude 를 만들어버린다.
 
-      document.cookie = "exclude=" + postIds.current;
+      document.cookie = "exclude=" + postIds.current + ";path=/;";
       await getPosts();
       // document.cookie = "exclude=;expires=Thu, 18 Dec 2013 12:00:00 GMT";
       observer.observe(entry.target);
