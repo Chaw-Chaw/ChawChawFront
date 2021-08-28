@@ -125,13 +125,12 @@ const AuthContextProvider: React.FC = (props) => {
   const logout = () => {
     setUser({});
     window.localStorage.clear();
-    new Promise((resolve, reject) => {
-      resolve(null);
-    })
-      .then(() => removeCookie("accessToken"))
-      .then(() => {
-        router.push("/account/login");
-      });
+    removeCookie("accessToken", {
+      path: "/",
+      secure: true,
+      sameSite: "strict",
+    });
+    router.push("/account/login");
   };
 
   const loginSuccess = (response: AxiosResponse) => {
