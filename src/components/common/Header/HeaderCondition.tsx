@@ -11,9 +11,10 @@ const HeaderCondition: React.FC<HeaderProps> = (props) => {
   const headerType = props.type;
   const { user } = useContext(AuthContext);
   const [cookies] = useCookies(["accessToken"]);
+  const accessToken = cookies.accessToken;
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
   // token이 없는게 문제다.
-  if (cookies.accessToken) {
+  if (accessToken) {
     return <MyImage profileImage={profileImage} />;
   }
 

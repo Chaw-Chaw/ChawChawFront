@@ -128,7 +128,6 @@ const AuthContextProvider: React.FC = (props) => {
     removeCookie("accessToken", {
       path: "/",
       secure: true,
-      sameSite: "strict",
     });
     // document.cookie = "accessToken=;expires=Thu, 18 Dec 2013 12:00:00 GMT";
     router.push("/account/login");
@@ -141,7 +140,6 @@ const AuthContextProvider: React.FC = (props) => {
     setCookie("accessToken", accessToken, {
       path: "/",
       secure: true,
-      sameSite: "strict",
     });
     setTimeout(grantRefresh, ACCESS_TOKEN_TIME - 60000);
     saveUser(newData);
