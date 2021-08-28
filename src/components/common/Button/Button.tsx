@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import CSS from "csstype";
 
 interface ButtonProps {
   width?: string;
@@ -23,8 +22,6 @@ const Button = styled.button<ButtonProps>`
     if (props.secondary) return props.theme.bodyBackgroundColor;
     return props.theme.primaryColor;
   }};
-  /* border: ${(props) =>
-    props.secondary ? `1px solid ${props.theme.primaryColor}` : "none"}; */
   border: 1px solid ${(props) => props.theme.primaryColor};
   width: ${(props) => (props.width ? props.width : "6rem")};
   height: ${(props) => (props.height ? props.height : "2rem")};
@@ -50,14 +47,4 @@ const Button = styled.button<ButtonProps>`
   }
 `;
 
-const UpdateButton = styled.button`
-  font-family: "BMJUA";
-  font-size: 1rem;
-  color: ${(props) => props.theme.primaryColor};
-  border: none;
-  background-color: ${(props) => props.theme.bodyBackgroundColor};
-  cursor: pointer;
-  margin-right: auto;
-`;
-
-export { Button, UpdateButton };
+export { Button };

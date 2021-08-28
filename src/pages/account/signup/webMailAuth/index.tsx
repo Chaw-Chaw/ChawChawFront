@@ -1,17 +1,5 @@
-import React, {
-  ChangeEvent,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import {
-  Layout,
-  Input,
-  Label,
-  Button,
-  universityList,
-} from "../../../../components/common/";
+import React, { useContext, useRef, useState } from "react";
+import { Layout, Input, Label, Button } from "../../../../components/common/";
 import AccountContainer from "../../../../components/account/AccountContainer";
 import LoginOrder from "../../../../components/account/LoginOrder";
 import styled from "styled-components";
@@ -19,61 +7,23 @@ import Link from "next/link";
 import { AuthContext } from "../../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAlert } from "react-alert";
-import axios from "axios";
 import { useRouter } from "next/router";
 type Inputs = {
   webmail: string;
   verificationNum: number;
 };
-const InputSection = styled.div`
-  width: 100%;
-  margin: 20px 0;
-`;
-const ButtonSection = styled.div<{ marginRight?: string; marginLeft?: string }>`
-  margin-right: ${(props) => (props.marginRight ? props.marginRight : "0px")};
-  margin-left: ${(props) => (props.marginLeft ? props.marginLeft : "0px")};
-  width: 100%;
-`;
-
-const MovePageButtonSection = styled.div`
-  margin-top: 20px;
-  width: 100%;
-  display: flex;
-`;
-const Form = styled.form`
-  width: 100%;
-`;
-
-const RequiredText = styled.span`
-  color: ${(props) => props.theme.primaryColor};
-  font-size: 0.8rem;
-`;
 
 export default function WebMailAuth() {
   const router = useRouter();
   const message = useAlert();
   const webmailRef = useRef<HTMLInputElement>(null);
   const [webmailValidate, setWebmailValidate] = useState(false);
-  const {
-    sendWebmail,
-    signup,
-    webmailVerify,
-    updateUser,
-    verificationNumber,
-    user,
-  } = useContext(AuthContext);
-  // const [user, setUser] = useState(
-  //   (() => {
-  //     if (typeof window === "undefined") return {};
-  //     const localStorageUser = window.localStorage.getItem("user");
-  //     if (!localStorageUser) return {};
-  //     return JSON.parse(localStorageUser);
-  //   })()
-  // );
+  const { sendWebmail, signup, webmailVerify, verificationNumber, user } =
+    useContext(AuthContext);
+
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<Inputs>();
   const isSocialSignup =
@@ -197,3 +147,27 @@ export default function WebMailAuth() {
     </Layout>
   );
 }
+
+const InputSection = styled.div`
+  width: 100%;
+  margin: 20px 0;
+`;
+const ButtonSection = styled.div<{ marginRight?: string; marginLeft?: string }>`
+  margin-right: ${(props) => (props.marginRight ? props.marginRight : "0px")};
+  margin-left: ${(props) => (props.marginLeft ? props.marginLeft : "0px")};
+  width: 100%;
+`;
+
+const MovePageButtonSection = styled.div`
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+`;
+const Form = styled.form`
+  width: 100%;
+`;
+
+const RequiredText = styled.span`
+  color: ${(props) => props.theme.primaryColor};
+  font-size: 0.8rem;
+`;

@@ -14,63 +14,12 @@ import { AuthContext } from "../../../store/AuthContext";
 import SocialSection from "./SocialSection";
 import Link from "next/link";
 import { useAlert } from "react-alert";
-type Inputs = {
+
+interface Inputs {
   email: string;
   password: string;
-};
+}
 
-const InputSection = styled.div`
-  width: 100%;
-  margin: 10px 0px;
-`;
-const ButtonSection = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-`;
-
-const LoginButton = styled(Button)`
-  width: 100%;
-  height: 60px;
-  font-size: 1rem;
-  border-radius: 1rem;
-`;
-
-const Form = styled.form`
-  width: 70%;
-  @media (max-width: 500px) {
-    width: 320px;
-  }
-`;
-
-const RequiredText = styled.span`
-  color: ${(props) => props.theme.primaryColor};
-  font-size: 0.8rem;
-`;
-
-const SignupBox = styled.div`
-  margin-top: 20px;
-  margin-bottom: 10px;
-  width: 70%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  a {
-    color: ${(props) => props.theme.primaryColor};
-    text-decoration: none;
-    font-weight: 900;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-`;
-
-const SignupTitle = styled.h2`
-  margin: 0px;
-  margin-right: 5px;
-  color: ${(props) =>
-    props.theme.id === "light" ? "rgba(0, 0, 0, 0.3)" : "white"};
-  font-size: 1rem;
-`;
 export default function Login() {
   const router = useRouter();
   const message = useAlert();
@@ -103,6 +52,7 @@ export default function Login() {
       }
     }
   }, []);
+  
   return (
     <Layout type="login">
       <AccountContainer
@@ -159,3 +109,56 @@ export default function Login() {
     </Layout>
   );
 }
+
+const InputSection = styled.div`
+  width: 100%;
+  margin: 10px 0px;
+`;
+const ButtonSection = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+`;
+
+const LoginButton = styled(Button)`
+  width: 100%;
+  height: 60px;
+  font-size: 1rem;
+  border-radius: 1rem;
+`;
+
+const Form = styled.form`
+  width: 70%;
+  @media (max-width: 500px) {
+    width: 320px;
+  }
+`;
+
+const RequiredText = styled.span`
+  color: ${(props) => props.theme.primaryColor};
+  font-size: 0.8rem;
+`;
+
+const SignupBox = styled.div`
+  margin-top: 20px;
+  margin-bottom: 10px;
+  width: 70%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  a {
+    color: ${(props) => props.theme.primaryColor};
+    text-decoration: none;
+    font-weight: 900;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+`;
+
+const SignupTitle = styled.h2`
+  margin: 0px;
+  margin-right: 5px;
+  color: ${(props) =>
+    props.theme.id === "light" ? "rgba(0, 0, 0, 0.3)" : "white"};
+  font-size: 1rem;
+`;

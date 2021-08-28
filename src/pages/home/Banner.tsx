@@ -1,11 +1,48 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { Button } from "../../components/common";
 import BannerImage from "../../../public/Main/conversation.jpeg";
-import Link from "next/link";
-import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
+
+const Banner: React.FC = () => {
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
+  const router = useRouter();
+  // useEffect(()=>{
+  // },[user])
+  return (
+    <Container>
+      <Image src={BannerImage} alt="배너 이미지" objectFit="cover" />
+      <BannerButton>
+        <Button
+          width="16rem"
+          height="5rem"
+          fontSize="2.8rem"
+          onClick={() => {
+            if (user.token) {
+              router.push("/post");
+            } else {
+              router.push("/account/login");
+            }
+          }}
+        >
+          Just Start
+        </Button>
+      </BannerButton>
+      <BannerText>ExChange languages</BannerText>
+      <ScrollingText>{"Scrolling ⬇️"}</ScrollingText>
+    </Container>
+  );
+};
+
+export default Banner;
 
 const Container = styled.div`
   display: flex;
@@ -82,42 +119,3 @@ const BannerButton = styled.div`
     }
   }
 `;
-
-const Banner: React.FC = () => {
-  const [user, setUser] = useState(
-    (() => {
-      if (typeof window === "undefined") return {};
-      const localStorageUser = window.localStorage.getItem("user");
-      if (!localStorageUser) return {};
-      return JSON.parse(localStorageUser);
-    })()
-  );
-  const router = useRouter();
-  // useEffect(()=>{
-  // },[user])
-  return (
-    <Container>
-      <Image src={BannerImage} alt="배너 이미지" objectFit="cover" />
-      <BannerButton>
-        <Button
-          width="16rem"
-          height="5rem"
-          fontSize="2.8rem"
-          onClick={() => {
-            if (user.token) {
-              router.push("/post");
-            } else {
-              router.push("/account/login");
-            }
-          }}
-        >
-          Just Start
-        </Button>
-      </BannerButton>
-      <BannerText>ExChange languages</BannerText>
-      <ScrollingText>{"Scrolling ⬇️"}</ScrollingText>
-    </Container>
-  );
-};
-
-export default Banner;

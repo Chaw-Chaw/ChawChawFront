@@ -7,6 +7,23 @@ interface ActiveProps {
 interface IsActiveProps {
   isActive?: boolean;
 }
+
+const LoginOrder: React.FC<ActiveProps> = (props) => {
+  return (
+    <Container>
+      <StageCircle isActive={Number(props.activeType) >= 1}>
+        <div>1</div>
+      </StageCircle>
+      <ContactLine isActive={Number(props.activeType) >= 2} />
+      <StageCircle isActive={Number(props.activeType) >= 2}>
+        <div>2</div>
+      </StageCircle>
+    </Container>
+  );
+};
+
+export default LoginOrder;
+
 const StageCircle = styled.div<IsActiveProps>`
   width: 70px;
   height: 70px;
@@ -35,19 +52,3 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 `;
-
-const LoginOrder: React.FC<ActiveProps> = (props) => {
-  return (
-    <Container>
-      <StageCircle isActive={Number(props.activeType) >= 1}>
-        <div>1</div>
-      </StageCircle>
-      <ContactLine isActive={Number(props.activeType) >= 2} />
-      <StageCircle isActive={Number(props.activeType) >= 2}>
-        <div>2</div>
-      </StageCircle>
-    </Container>
-  );
-};
-
-export default LoginOrder;

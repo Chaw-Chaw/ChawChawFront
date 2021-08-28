@@ -2,6 +2,21 @@ import React from "react";
 import styled from "styled-components";
 import { FaChevronDown } from "react-icons/fa";
 
+const ArrowDivider: React.FC = () => {
+  return (
+    <>
+      <ArrowFragment>
+        <FaChevronDown />
+      </ArrowFragment>
+      <ArrowWrapper>
+        <ArrowBar />
+      </ArrowWrapper>
+    </>
+  );
+};
+
+export { ArrowDivider };
+
 const ArrowFragment = styled.div`
   color: ${(props) => props.theme.primaryColor};
   position: fixed;
@@ -26,18 +41,3 @@ const ArrowWrapper = styled.div`
   font-size: 2rem;
   transform: translate(-50%, -50%);
 `;
-
-const ArrowDivider: React.FC = () => {
-  return (
-    <>
-      <ArrowFragment>
-        <FaChevronDown />
-      </ArrowFragment>
-      <ArrowWrapper>
-        <ArrowBar />
-      </ArrowWrapper>
-    </>
-  );
-};
-
-export { ArrowDivider };

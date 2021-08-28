@@ -4,7 +4,10 @@ import { useRouter } from "next/router";
 import { universityList } from "../components/common";
 // import { Builder, By, Key, until } from "selenium-webdriver";
 import { useAlert } from "react-alert";
-import { redirect } from "next/dist/next-server/server/api-utils";
+// import { redirect } from "next/dist/next-server/server/api-utils";
+import { ACCESS_TOKEN_TIME } from "../constants";
+import { useCookies } from "react-cookie";
+
 interface UserPropertys {
   provider?: string;
   email?: string;
@@ -28,6 +31,7 @@ interface UserPropertys {
 
 interface AuthContextObj {
   user: UserPropertys;
+  grantRefresh: () => Promise<void>;
   login: (res: AuthReqProps) => void;
   kakaoLogin: (res: AuthReqProps) => void;
   facebookLogin: (res: AuthReqProps) => void;
@@ -94,18 +98,13 @@ const AuthContext = React.createContext<AuthContextObj>({
   updateUser: () => {},
   webmailVerify: () => false,
   verificationNumber: () => {},
+  grantRefresh: () => new Promise(() => {}),
 });
 
 const AuthContextProvider: React.FC = (props) => {
   const message = useAlert();
-  const [user, setUser] = useState(
-    (() => {
-      if (typeof window === "undefined") return {};
-      const localStorageUser = window.localStorage.getItem("user");
-      if (!localStorageUser) return {};
-      return JSON.parse(localStorageUser);
-    })()
-  );
+  const [user, setUser] = useState({});
+  const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
   const router = useRouter();
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
     setUser((preUser: UserPropertys) => {
@@ -120,7 +119,54 @@ const AuthContextProvider: React.FC = (props) => {
   const logout = () => {
     setUser({});
     window.localStorage.clear();
+    removeCookie("accessToken");
     router.push("/account/login");
+  };
+
+  const loginSuccess = (response: AxiosResponse) => {
+    const accessToken = response.headers.authorization;
+    const newData = { ...response.data.data };
+    console.log(accessToken, "loginSucess 시");
+    setCookie("accessToken", accessToken, {
+      secure: true,
+      sameSite: "strict",
+    });
+    setTimeout(grantRefresh, ACCESS_TOKEN_TIME - 60000);
+    saveUser(newData);
+  };
+
+  const grantRefresh = async () => {
+    console.log("grant 실행 시작");
+    const response = await axios
+      .post("/users/auth/refresh", {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      })
+      .catch((err) => {
+        message.error("재로그인에 실패하셨습니다.", {
+          onClose: () => {
+            router.push("/account/login");
+          },
+        });
+        console.error(err, "grant access Token Fail");
+        return err.response;
+      });
+
+    if (response.status === 401) {
+      console.log(response, "grant access token fail");
+      return;
+    }
+
+    if (!response.data.isSuccess) {
+      console.error(response.data);
+      return;
+    }
+    console.log(response, "Success get accessToken");
+    // 성공할경우
+    loginSuccess(response);
+    return;
   };
 
   const login = async ({ email, password }: AuthReqProps) => {
@@ -141,7 +187,7 @@ const AuthContextProvider: React.FC = (props) => {
         }
       )
       .catch((err) => err.response);
-    const data = response.data.data;
+
     console.log(response);
     if (!response.data.isSuccess) {
       message.error("로그인에 실패하셨습니다.");
@@ -149,9 +195,7 @@ const AuthContextProvider: React.FC = (props) => {
       return;
     }
 
-    const token = response.headers.authorization;
-    const newData = { ...data, token };
-    saveUser(newData);
+    loginSuccess(response);
     router.push("/post");
   };
 
@@ -180,11 +224,9 @@ const AuthContextProvider: React.FC = (props) => {
         console.error(err);
         return err.response;
       });
-    const data = response.data.data;
 
     if (!response.data.isSuccess) {
       console.log(response.data, "로그인 실패");
-
       if (response.data.responseMessage === "회원가입 필요") {
         updateUser(response.data.data);
         message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
@@ -198,9 +240,7 @@ const AuthContextProvider: React.FC = (props) => {
       console.error(response.data);
       return;
     }
-    const token = response.headers.authorization;
-    const newData = { ...data, token };
-    saveUser(newData);
+    loginSuccess(response);
     router.push("/post");
   };
 
@@ -231,8 +271,6 @@ const AuthContextProvider: React.FC = (props) => {
         return err.response;
       });
 
-    const data = response.data.data;
-
     console.log(response, "facebookLogin");
     if (!response.data.isSuccess) {
       if (response.data.responseMessage === "회원가입 필요") {
@@ -247,9 +285,7 @@ const AuthContextProvider: React.FC = (props) => {
       console.error(response.data);
       return;
     }
-    const token = response.headers.authorization;
-    const newData = { ...data, token };
-    saveUser(newData);
+    loginSuccess(response);
     router.push("/post");
   };
 
@@ -437,6 +473,7 @@ const AuthContextProvider: React.FC = (props) => {
     updateUser,
     webmailVerify,
     verificationNumber,
+    grantRefresh,
   };
 
   return (

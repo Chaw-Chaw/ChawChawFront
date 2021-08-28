@@ -1,13 +1,32 @@
 import React, { ReactNode } from "react";
 import styled from "styled-components";
-import { Button } from "./";
+import { Button } from ".";
 
-interface MessageProps {
+interface AlertMessageProps {
   onClick?: () => void;
   message?: ReactNode;
   type?: string;
 }
-const MessageContainer = styled.div`
+
+const AlertMessage: React.FC<AlertMessageProps> = (props) => {
+  return (
+    <AlertMessageContainer>
+      <AlertMessageBox>
+        <AlertMessageTitleBox>
+          <span>{props.type}</span>
+        </AlertMessageTitleBox>
+        {props.message}
+        <AlertMessageConfirmButton onClick={props.onClick}>
+          확인
+        </AlertMessageConfirmButton>
+      </AlertMessageBox>
+    </AlertMessageContainer>
+  );
+};
+
+export { AlertMessage, AlertMessageConfirmButton, AlertMessageBox };
+
+const AlertMessageContainer = styled.div`
   width: 100vw;
   height: 100vh;
   pointer-events: all;
@@ -16,7 +35,7 @@ const MessageContainer = styled.div`
   justify-content: center;
   align-items: center;
 `;
-const MessageBox = styled.div`
+const AlertMessageBox = styled.div`
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   width: 500px;
   height: 200px;
@@ -32,7 +51,7 @@ const MessageBox = styled.div`
   }
 `;
 
-const MessageTitleBox = styled.div`
+const AlertMessageTitleBox = styled.div`
   position: absolute;
   top: 0;
   background-color: ${(props) => props.theme.primaryColor};
@@ -51,26 +70,8 @@ const MessageTitleBox = styled.div`
   box-sizing: border-box;
 `;
 
-const MessageConfirmButton = styled(Button)`
+const AlertMessageConfirmButton = styled(Button)`
   border-radius: 10px;
   position: absolute;
   bottom: 40px;
 `;
-
-const Message: React.FC<MessageProps> = (props) => {
-  return (
-    <MessageContainer>
-      <MessageBox>
-        <MessageTitleBox>
-          <span>{props.type}</span>
-        </MessageTitleBox>
-        {props.message}
-        <MessageConfirmButton onClick={props.onClick}>
-          확인
-        </MessageConfirmButton>
-      </MessageBox>
-    </MessageContainer>
-  );
-};
-
-export { Message, MessageConfirmButton, MessageBox };

@@ -1,10 +1,6 @@
 import { Layout } from "../../components/common";
-import {
-  Message,
-  MessageInput,
-  ChatRoom,
-  ChatRoomList,
-} from "../../components/chat";
+import ChatRoom from "../../components/chat/ChatRoom";
+import ChatList from "../../components/chat/ChatList";
 import styled from "styled-components";
 import DefaultImage from "../../../public/Layout/btsSugar.jpeg";
 import axios, { AxiosResponse } from "axios";
@@ -15,6 +11,7 @@ import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { debounce } from "lodash";
 import { useAlert } from "react-alert";
+import { DEFAULT_PROFILE_IMAGE, BACKEND_URL } from "../../constants";
 
 const Container = styled.div`
   display: flex;
@@ -42,7 +39,7 @@ export default function Chat() {
   const [mainRoomId, setMainRoomId] = useState(-1);
   const mainRoomIdRef = useRef(-1);
   const [yourProfileImage, setYourProfileImage] = useState(
-    "https://d2anzi03nvjlav.cloudfront.net/default.png"
+    DEFAULT_PROFILE_IMAGE
   );
   const router = useRouter();
   const client = useRef<any>({});
@@ -118,12 +115,8 @@ export default function Chat() {
       );
       const roomId = mainMessageLog.roomId;
       if (mainMessageLog) {
-        const sortMessage = mainMessageLog.messages;
-        setMainChatMessages((pre: any) => {
-          const newMessages = sortMessage;
-
-          return newMessages;
-        });
+        // const sortMessage = mainMessageLog.messages;
+        setMainChatMessages(mainMessageLog.messages);
       }
       setMainRoomId(roomId);
       setYourProfileImage(mainMessageLog.imageUrl);
@@ -138,7 +131,7 @@ export default function Chat() {
   const connect = () => {
     client.current = new StompJs.Client({
       // brokerURL: "ws://localhost:8080/ws-stomp/websocket", // 웹소켓 서버로 직접 접속
-      webSocketFactory: () => new SockJS("https://mylifeforcoding.com/ws"), // proxy를 통한 접속
+      webSocketFactory: () => new SockJS(BACKEND_URL + "/ws"), // proxy를 통한 접속
       debug: function (str) {
         console.log(str);
       },
@@ -195,6 +188,7 @@ export default function Chat() {
           const removeChatRoomIndex = result.findIndex(
             (item: any) => message.roomId === item.roomId
           );
+          if (result.length === 1) return [];
           if (removeChatRoomIndex) {
             console.log(result, "before");
             result.splice(removeChatRoomIndex, 1);
@@ -320,7 +314,7 @@ export default function Chat() {
           setMainRoomId={setMainRoomId}
         />
         {windowSize > 1000 ? (
-          <ChatRoomList
+          <ChatList
             setMainRoomId={setMainRoomId}
             totalMessage={totalMessage}
             mainRoomId={mainRoomId}

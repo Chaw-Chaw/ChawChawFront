@@ -1,12 +1,7 @@
 import styled from "styled-components";
-import { Input, TextArea } from "../common/Input";
+import { TextArea } from "../../common/Input";
 import { AiOutlinePicture, AiOutlineSend } from "react-icons/ai";
-import {
-  ChangeEvent,
-  ChangeEventHandler,
-  KeyboardEvent,
-  MouseEventHandler,
-} from "react";
+import { ChangeEventHandler, KeyboardEvent } from "react";
 
 interface MessageInputProps {
   value: string;

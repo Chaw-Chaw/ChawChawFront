@@ -1,14 +1,70 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import CSS from "csstype";
-import Link from "next/link";
 import { AuthContext } from "../../../store/AuthContext";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import FacebookLogin from "@greatsumini/react-facebook-login";
 import { FaFacebookF } from "react-icons/fa";
-import axios from "axios";
-import KakaoIcon from "../../../../public/svg/kakaotalk.svg";
+import {
+  DEVELOPMENT_OAUTH_URL,
+  FACEBOOK_APP_ID,
+  KAKAO_CLIENT_ID,
+  KAKAO_OAUTH_URL,
+  PRODUCT_OAUTH_URL,
+} from "../../../constants";
+
+const SocialSection: React.FC = () => {
+  const router = useRouter();
+  const { facebookLogin } = useContext(AuthContext);
+  const redirectUrl =
+    process.env.NODE_ENV === "development"
+      ? DEVELOPMENT_OAUTH_URL
+      : PRODUCT_OAUTH_URL;
+
+  const callKakaoLogin = () => {
+    router.push({
+      pathname: KAKAO_OAUTH_URL,
+      query: {
+        response_type: "code",
+        client_id: KAKAO_CLIENT_ID,
+        redirect_uri: redirectUrl,
+      },
+    });
+  };
+
+  return (
+    <SocialContainer>
+      <SocialButtonTitle>소셜계정으로 로그인 | 회원가입</SocialButtonTitle>
+      <ButtonSection>
+        <KakaoLogin onClick={callKakaoLogin}>
+          <RiKakaoTalkFill />
+        </KakaoLogin>
+        <FacebookLogin
+          style={styleFacebookLogin}
+          appId={FACEBOOK_APP_ID}
+          onSuccess={(response) => {
+            console.log(response, "Login Success!");
+            const facebookToken = response?.accessToken;
+            const facebookId = response?.userID;
+            if (facebookToken && facebookId) {
+              facebookLogin({ facebookToken, facebookId });
+            }
+            //console.log("id: ", response.id);
+          }}
+          onFail={(error) => {
+            console.log("Login Failed!");
+            console.log("status: ", error.status);
+          }}
+        >
+          <FaFacebookF />
+        </FacebookLogin>
+      </ButtonSection>
+    </SocialContainer>
+  );
+};
+
+export default SocialSection;
 
 const ButtonSection = styled.div`
   width: 100%;
@@ -49,10 +105,7 @@ const KakaoLogin = styled.button`
   color: #3c1d1e;
   font-size: 2.5rem;
 `;
-// const FacebookLogin = styled(KakaoLogin)`
-//   color: white;
-//   background: #3d5a97;
-// `;
+
 const styleFacebookLogin: CSS.Properties = {
   cursor: "pointer",
   width: "60px",
@@ -68,56 +121,3 @@ const styleFacebookLogin: CSS.Properties = {
   color: "white",
   fontSize: "2.5rem",
 };
-
-const SocialSection: React.FC = () => {
-  const router = useRouter();
-  const { facebookLogin } = useContext(AuthContext);
-  const redirectUrl =
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:3000/account/oauth"
-      : "https://chawchaw.vercel.app/account/oauth";
-
-  const callKakaoLogin = () => {
-    router.push({
-      pathname: "https://kauth.kakao.com/oauth/authorize",
-      query: {
-        response_type: "code",
-        client_id: "de32392365a519fc6df93e6196a5ad6b",
-        redirect_uri: redirectUrl,
-      },
-    });
-  };
-
-  return (
-    <SocialContainer>
-      <SocialButtonTitle>소셜계정으로 로그인 | 회원가입</SocialButtonTitle>
-      <ButtonSection>
-        <KakaoLogin onClick={callKakaoLogin}>
-          <RiKakaoTalkFill />
-        </KakaoLogin>
-        <FacebookLogin
-          style={styleFacebookLogin}
-          appId="1235018336951383"
-          onSuccess={(response) => {
-            console.log(response, "Login Success!");
-            const facebookToken = response?.accessToken;
-            const facebookId = response?.userID;
-            if (facebookToken && facebookId) {
-              facebookLogin({ facebookToken, facebookId });
-              console.log(facebookId, facebookToken, "facebook Login 인수들");
-            }
-            //console.log("id: ", response.id);
-          }}
-          onFail={(error) => {
-            console.log("Login Failed!");
-            console.log("status: ", error.status);
-          }}
-        >
-          <FaFacebookF />
-        </FacebookLogin>
-      </ButtonSection>
-    </SocialContainer>
-  );
-};
-
-export default SocialSection;

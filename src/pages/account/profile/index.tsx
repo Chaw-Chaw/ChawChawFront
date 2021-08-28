@@ -1,9 +1,8 @@
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAlert } from "react-alert";
 import { Layout } from "../../../components/common";
-import ProfileSection from "../../../components/ProfileSection/ProfileSection";
-import { AuthContext } from "../../../store/AuthContext";
+import ProfileSection from "../../../components/ProfileSection";
 
 export default function Profile() {
   const [user, setUser] = useState(

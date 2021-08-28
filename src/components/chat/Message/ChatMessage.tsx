@@ -1,11 +1,43 @@
 import styled from "styled-components";
-import { ProfileImage } from "./ProfileImage";
+import { MessageImage } from "./MessageImage";
 
 interface MessageProps {
   src?: string;
   userName?: string;
   regDate: string;
 }
+
+const ChatMessage: React.FC<MessageProps> = (props) => {
+  const regDate = props.regDate.split("T").join(" ");
+  return (
+    <>
+      {props.src ? (
+        <>
+          <MessageContainer>
+            <MessageImage src={props.src} />
+            <YourMessageContainer>
+              <MessageUserName>{props.userName}</MessageUserName>
+              <YourMessageBox>{props.children}</YourMessageBox>
+            </YourMessageContainer>
+          </MessageContainer>
+          <RegDateMessage>{regDate}</RegDateMessage>
+        </>
+      ) : (
+        <>
+          <MessageContainer>
+            <MyMessageContainer>
+              <MyMessageBox>{props.children}</MyMessageBox>
+              <RegDateMessageMe>{regDate}</RegDateMessageMe>
+            </MyMessageContainer>
+          </MessageContainer>
+        </>
+      )}
+    </>
+  );
+};
+
+export default ChatMessage;
+
 const YourMessageBox = styled.div`
   padding: 12px;
   box-sizing: border-box;
@@ -67,34 +99,3 @@ const MyMessageContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
-const Message: React.FC<MessageProps> = (props) => {
-  const regDate = props.regDate.split("T").join(" ");
-  return (
-    <>
-      {props.src ? (
-        <>
-          <MessageContainer>
-            <ProfileImage src={props.src} />
-            <YourMessageContainer>
-              <MessageUserName>{props.userName}</MessageUserName>
-              <YourMessageBox>{props.children}</YourMessageBox>
-            </YourMessageContainer>
-          </MessageContainer>
-          <RegDateMessage>{regDate}</RegDateMessage>
-        </>
-      ) : (
-        <>
-          <MessageContainer>
-            <MyMessageContainer>
-              <MyMessageBox>{props.children}</MyMessageBox>
-              <RegDateMessageMe>{regDate}</RegDateMessageMe>
-            </MyMessageContainer>
-          </MessageContainer>
-        </>
-      )}
-    </>
-  );
-};
-
-export { Message };

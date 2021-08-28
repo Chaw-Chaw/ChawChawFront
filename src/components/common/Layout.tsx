@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
-import { Header } from ".";
+import Header from "./Header";
 import Head from "next/head";
+import { AuthContext } from "../../store/AuthContext";
 
 const Layout: React.FC<{ type?: string }> = (props) => {
   return (

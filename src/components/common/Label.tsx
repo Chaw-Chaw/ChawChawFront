@@ -4,6 +4,18 @@ interface LabelProps {
   tag?: string;
   htmlFor?: string;
 }
+
+const Label: React.FC<LabelProps> = (props) => {
+  return (
+    <Box>
+      <MainLabel htmlFor={props.htmlFor}>{props.children}</MainLabel>
+      {props.tag ? <Tag>({props.tag})</Tag> : null}
+    </Box>
+  );
+};
+
+export { Label };
+
 const MainLabel = styled.label`
   font-size: 1.2rem;
   font-weight: 600;
@@ -19,14 +31,3 @@ const Box = styled.div`
   display: flex;
   align-items: flex-end;
 `;
-
-const Label: React.FC<LabelProps> = (props) => {
-  return (
-    <Box>
-      <MainLabel htmlFor={props.htmlFor}>{props.children}</MainLabel>
-      {props.tag ? <Tag>({props.tag})</Tag> : null}
-    </Box>
-  );
-};
-
-export { Label };

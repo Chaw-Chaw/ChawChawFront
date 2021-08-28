@@ -7,7 +7,7 @@ import {
   SetStateAction,
 } from "react";
 import styled from "styled-components";
-import { TextArea, Label, UpdateButton } from "../../common";
+import { TextArea, Label, UpdateButton } from "../common";
 
 interface ProfileContentProps {
   placeholder?: string;
@@ -15,29 +15,6 @@ interface ProfileContentProps {
   setValues: Dispatch<SetStateAction<string>>;
   values: string;
 }
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 20px;
-  @media (max-width: 768px) {
-    margin: 10px auto;
-  }
-`;
-const Title = styled(Label)`
-  font-size: 1.2rem;
-`;
-const Content = styled(TextArea)<{ isActive?: boolean }>`
-  font-size: 1rem;
-  border: ${(props) => (props.isActive ? "2px solid orange" : "none")};
-  width: 400px;
-  @media (max-width: 500px) {
-    width: calc(100% - 50px);
-  }
-  resize: none;
-  min-height: 10px;
-  max-height: 230px;
-  box-sizing: border-box;
-`;
 
 const ProfileContent: React.FC<ProfileContentProps> = (props) => {
   const textAreaResizHandle = () => {
@@ -94,3 +71,27 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
 };
 
 export { ProfileContent };
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  @media (max-width: 768px) {
+    margin: 10px auto;
+  }
+`;
+const Title = styled(Label)`
+  font-size: 1.2rem;
+`;
+const Content = styled(TextArea)<{ isActive?: boolean }>`
+  font-size: 1rem;
+  border: ${(props) => (props.isActive ? "2px solid orange" : "none")};
+  width: 400px;
+  @media (max-width: 500px) {
+    width: calc(100% - 50px);
+  }
+  resize: none;
+  min-height: 10px;
+  max-height: 230px;
+  box-sizing: border-box;
+`;

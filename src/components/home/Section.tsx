@@ -1,7 +1,5 @@
 import React, { RefObject } from "react";
-import Image from "next/image";
-import styled, { css } from "styled-components";
-import Link from "next/link";
+import styled from "styled-components";
 
 interface SectionProps {
   icon?: string;
@@ -11,6 +9,35 @@ interface SectionProps {
   content?: string;
   ref?: RefObject<HTMLDivElement>;
 }
+
+const Section: React.FC<SectionProps> = (props) => {
+  return (
+    <Wrapper ref={props.ref}>
+      <IconBox>{props.icon}</IconBox>
+      <Title>{props.title}</Title>
+      {props.subtitle?.split("`").map((line, index) => {
+        return (
+          <Subtitle key={index} color={props.color}>
+            {line}
+            <br />
+          </Subtitle>
+        );
+      })}
+      <Divider />
+      {props.content?.split("`").map((line, index) => {
+        return (
+          <Content key={index}>
+            {line}
+            <br />
+          </Content>
+        );
+      })}
+    </Wrapper>
+  );
+};
+
+export { Section };
+
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -65,30 +92,3 @@ const Content = styled.span`
 const Divider = styled.div`
   margin: 10px 0px;
 `;
-const Section: React.FC<SectionProps> = (props) => {
-  return (
-    <Wrapper ref={props.ref}>
-      <IconBox>{props.icon}</IconBox>
-      <Title>{props.title}</Title>
-      {props.subtitle?.split("`").map((line, index) => {
-        return (
-          <Subtitle key={index} color={props.color}>
-            {line}
-            <br />
-          </Subtitle>
-        );
-      })}
-      <Divider />
-      {props.content?.split("`").map((line, index) => {
-        return (
-          <Content key={index}>
-            {line}
-            <br />
-          </Content>
-        );
-      })}
-    </Wrapper>
-  );
-};
-
-export { Section };

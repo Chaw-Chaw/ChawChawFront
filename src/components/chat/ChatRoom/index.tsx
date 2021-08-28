@@ -1,24 +1,13 @@
-import { Message, MessageInput } from ".";
 import styled from "styled-components";
-import DefaultImage from "../../../public/Layout/btsSugar.jpeg";
-
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { useController } from "react-hook-form";
-import { AuthContext } from "../../store/AuthContext";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
+import { MessageInput } from "./MessageInput";
+import ChatMessage from "../Message/ChatMessage";
+import InfoMessage from "../Message/InfoMessage";
 import { BsBoxArrowRight } from "react-icons/bs";
 import { RiHome2Line } from "react-icons/ri";
 import { BsChatDots } from "react-icons/bs";
-import PostOrder from "../../pages/post/PostOrder";
 
 interface ChatRoomProps {
   chatMessage: any[];
@@ -28,6 +17,130 @@ interface ChatRoomProps {
   disconnect: () => void;
   setMainRoomId: Dispatch<SetStateAction<number>>;
 }
+
+const ChatRoom: React.FC<ChatRoomProps> = (props) => {
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageUser = window.localStorage.getItem("user");
+      if (!localStorageUser) return {};
+      return JSON.parse(localStorageUser);
+    })()
+  );
+  const [message, setMessage] = useState<string>("");
+  const chatMessageBox = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const leaveChatRoom = async () => {
+    const response = await axios
+      .delete(`/chat/room/${props.roomId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${user?.token}`,
+          Accept: "application/json",
+        },
+      })
+      .catch((err) => {
+        console.error(err);
+        return err.response;
+      });
+    console.log(response.data, "leaveChatRoom");
+    if (!response.data.isSuccess) {
+      console.error(response.data);
+      // router.push({ pathname: "/chat", query: { userId: -1 } });
+      return;
+    }
+    props.setMainRoomId(-1);
+
+    // props.disconnect();
+    // router.push({ pathname: "/chat", query: { userId: -1 } });
+  };
+
+  const backHome = () => {
+    props.disconnect();
+    router.push("/post");
+  };
+
+  const scrollToBottom = () => {
+    if (!chatMessageBox.current) return;
+    chatMessageBox.current.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+      inline: "nearest",
+    });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [props.chatMessage]);
+
+  return (
+    <Outline>
+      <Inner>
+        <Header>
+          <MessageHeaderButton onClick={backHome}>
+            <RiHome2Line />
+          </MessageHeaderButton>
+          <MessageHeaderButton onClick={leaveChatRoom}>
+            <BsBoxArrowRight />
+          </MessageHeaderButton>
+          <MessageHeaderButton>
+            <BsChatDots />
+          </MessageHeaderButton>
+        </Header>
+        {/* use Memo 적용할것 */}
+        <MessageContainer>
+          {props.chatMessage && props.chatMessage.length > 0 && (
+            <div ref={chatMessageBox}>
+              {props.chatMessage.map((chatMessage: any, index: any) => {
+                // 토크 타입이 아닌 정보는 InfoMessage
+                if (chatMessage.messageType !== "TALK")
+                  return <InfoMessage>{chatMessage.message}</InfoMessage>;
+                // 토크 타입인 일반메세지 분류
+                if (user.id === chatMessage.senderId) {
+                  return (
+                    <ChatMessage key={index} regDate={chatMessage.regDate}>
+                      {chatMessage.message}
+                    </ChatMessage>
+                  );
+                } else {
+                  return (
+                    <ChatMessage
+                      src={`${props.yourProfileImage}`}
+                      key={index}
+                      regDate={chatMessage.regDate}
+                    >
+                      {chatMessage.message}
+                    </ChatMessage>
+                  );
+                }
+              })}
+            </div>
+          )}
+        </MessageContainer>
+        <MessageInput
+          onChange={(e) => {
+            // if (e.key === "Enter") return;
+            e.preventDefault();
+            setMessage(e.target.value);
+          }}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") {
+              props.publish(message, "TALK");
+              setMessage("");
+            }
+          }}
+          value={message}
+          onClick={() => {
+            props.publish(message, "TALK");
+            setMessage("");
+          }}
+        />
+      </Inner>
+    </Outline>
+  );
+};
+
+export default ChatRoom;
 
 const Outline = styled.div`
   border: none;
@@ -72,122 +185,3 @@ const MessageHeaderButton = styled.button`
   font-size: 2rem;
   cursor: pointer;
 `;
-
-const ChatRoom: React.FC<ChatRoomProps> = (props) => {
-  const [user, setUser] = useState(
-    (() => {
-      if (typeof window === "undefined") return {};
-      const localStorageUser = window.localStorage.getItem("user");
-      if (!localStorageUser) return {};
-      return JSON.parse(localStorageUser);
-    })()
-  );
-  const [message, setMessage] = useState<string>("");
-  const chatMessageBox = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-  const leaveChatRoom = async () => {
-    const response = await axios
-      .delete(`/chat/room/${props.roomId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${user?.token}`,
-          Accept: "application/json",
-        },
-      })
-      .catch((err) => {
-        console.error(err);
-        return err.response;
-      });
-    console.log(response.data, "leaveChatRoom");
-    if (!response.data.isSuccess) {
-      console.error(response.data);
-      // router.push({ pathname: "/chat", query: { userId: -1 } });
-      return;
-    }
-    props.setMainRoomId(-1);
-    // props.disconnect();
-    // router.push({ pathname: "/chat", query: { userId: -1 } });
-  };
-
-  const backHome = () => {
-    props.disconnect();
-    router.push("/post");
-  };
-
-  const scrollToBottom = () => {
-    if (!chatMessageBox.current) return;
-    chatMessageBox.current.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-      inline: "nearest",
-    });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [props.chatMessage]);
-
-  return (
-    <Outline>
-      <Inner>
-        <Header>
-          <MessageHeaderButton onClick={backHome}>
-            <RiHome2Line />
-          </MessageHeaderButton>
-          <MessageHeaderButton onClick={leaveChatRoom}>
-            <BsBoxArrowRight />
-          </MessageHeaderButton>
-          <MessageHeaderButton>
-            <BsChatDots />
-          </MessageHeaderButton>
-        </Header>
-        {/* use Memo 적용할것 */}
-        <MessageContainer>
-          {props.chatMessage && props.chatMessage.length > 0 && (
-            <div ref={chatMessageBox}>
-              {props.chatMessage.map((chatMessage: any, index: any) => {
-                if (user.id === chatMessage.senderId) {
-                  return (
-                    <Message key={index} regDate={chatMessage.regDate}>
-                      {chatMessage.message}
-                    </Message>
-                  );
-                } else {
-                  return (
-                    <Message
-                      src={`${props.yourProfileImage}`}
-                      key={index}
-                      regDate={chatMessage.regDate}
-                    >
-                      {chatMessage.message}
-                    </Message>
-                  );
-                }
-              })}
-            </div>
-          )}
-        </MessageContainer>
-        <MessageInput
-          onChange={(e) => {
-            // if (e.key === "Enter") return;
-            e.preventDefault();
-            setMessage(e.target.value);
-          }}
-          onKeyPress={(e) => {
-            if (e.key === "Enter") {
-              props.publish(message, "TALK");
-              setMessage("");
-            }
-          }}
-          value={message}
-          onClick={() => {
-            props.publish(message, "TALK");
-            setMessage("");
-          }}
-        />
-      </Inner>
-    </Outline>
-  );
-};
-
-export { ChatRoom };

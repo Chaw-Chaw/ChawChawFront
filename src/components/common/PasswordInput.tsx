@@ -1,6 +1,5 @@
 import { Input } from ".";
 import React, { useState } from "react";
-import Image from "next/image";
 import styled from "styled-components";
 import { AiOutlineEye } from "react-icons/ai";
 import { AiOutlineEyeInvisible } from "react-icons/ai";
@@ -10,6 +9,27 @@ interface PasswordInputProps {
   placeholder?: string;
   register?: object;
 }
+
+const PasswordInput: React.FC<PasswordInputProps> = (props) => {
+  const [showPassword, setShowPassword] = useState(false);
+  return (
+    <>
+      <PasswordWrapper>
+        <PasswordInputStyled
+          name={props.name}
+          type={showPassword ? "text" : "password"}
+          placeholder={props.placeholder}
+          {...props.register}
+        />
+        <ShowButton onClick={() => setShowPassword((state) => !state)}>
+          {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
+        </ShowButton>
+      </PasswordWrapper>
+    </>
+  );
+};
+export { PasswordInput };
+
 const PasswordWrapper = styled.div`
   display: flex;
   ~ div {
@@ -44,23 +64,3 @@ const ShowButton = styled.div`
   padding: 10px;
   cursor: pointer;
 `;
-
-const PasswordInput: React.FC<PasswordInputProps> = (props) => {
-  const [showPassword, setShowPassword] = useState(false);
-  return (
-    <>
-      <PasswordWrapper>
-        <PasswordInputStyled
-          name={props.name}
-          type={showPassword ? "text" : "password"}
-          placeholder={props.placeholder}
-          {...props.register}
-        />
-        <ShowButton onClick={() => setShowPassword((state) => !state)}>
-          {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
-        </ShowButton>
-      </PasswordWrapper>
-    </>
-  );
-};
-export { PasswordInput };

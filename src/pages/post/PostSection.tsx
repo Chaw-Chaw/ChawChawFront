@@ -1,30 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { PostCard } from "../../components/post/PostCard";
-import {
-  CountryEmoji,
-  CountryLocale,
-  LocaleLanguage,
-} from "../../components/common";
-
-const PostSectionBox = styled.div`
-  width: calc(100% - 50px);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 20px 25px;
-  @media (max-width: 1100px) {
-    max-width: 700px;
-  }
-  @media (max-width: 768px) {
-    max-width: 350px;
-  } ;
-`;
-const PostSectionContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-`;
+import { CountryLocale, LocaleLanguage } from "../../components/common";
 
 interface PostSectionProps {
   postInfo: {
@@ -85,3 +62,22 @@ const PostSection: React.FC<PostSectionProps> = (props) => {
 };
 
 export default PostSection;
+
+const PostSectionBox = styled.div`
+  width: calc(100% - 50px);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 20px 25px;
+  @media (max-width: 1100px) {
+    max-width: 700px;
+  }
+  @media (max-width: 768px) {
+    max-width: 350px;
+  } ;
+`;
+const PostSectionContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;

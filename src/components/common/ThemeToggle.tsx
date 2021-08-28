@@ -1,5 +1,4 @@
-import React, { Children, ReactNode, useContext } from "react";
-import Link from "next/link";
+import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 
 interface ThemeToggleProps {

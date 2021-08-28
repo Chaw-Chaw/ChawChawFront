@@ -3,6 +3,17 @@ import { Layout } from "../components/common";
 import Banner from "./home/Banner";
 import ScrollBanner from "./home/ScrollBanner";
 
+export default function Home() {
+  return (
+    <Layout>
+      <Main>
+        <Banner />
+        <ScrollBanner />
+      </Main>
+    </Layout>
+  );
+}
+
 const Main = styled.div`
   display: flex;
   flex-direction: column;
@@ -18,14 +29,3 @@ const Main = styled.div`
     width: 320px;
   }
 `;
-
-export default function Home() {
-  return (
-    <Layout>
-      <Main>
-        <Banner />
-        <ScrollBanner />
-      </Main>
-    </Layout>
-  );
-}

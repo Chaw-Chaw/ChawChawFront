@@ -1,8 +1,5 @@
-import { useRouter } from "next/router";
-import React, { useContext, useEffect } from "react";
-import { useAlert } from "react-alert";
+import React from "react";
 import styled from "styled-components";
-import { AuthContext } from "../../store/AuthContext";
 import { Divider } from "../common";
 
 interface AccountContainerProps {

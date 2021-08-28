@@ -4,13 +4,9 @@ import PostSearch from "./PostSearch";
 import PostOrder, { orderOptions } from "./PostOrder";
 import PostSection from "./PostSection";
 import { useContext, useEffect, useRef, useState } from "react";
+
+import axios from "axios";
 import { AuthContext } from "../../store/AuthContext";
-import { useRouter } from "next/router";
-import { useAlert } from "react-alert";
-import axios, { AxiosResponse } from "axios";
-import { useCookies } from "react-cookie";
-import { getCookieParser } from "next/dist/next-server/server/api-utils";
-import { RiCoinsLine } from "react-icons/ri";
 
 const Container = styled.div<{ width?: string }>`
   width: ${(props) => (props.width ? props.width : "500px")};
@@ -30,23 +26,13 @@ const Divider = styled.div<{ display: boolean }>`
   border-bottom: 1px solid ${(props) => props.theme.secondaryColor};
 `;
 export default function Post() {
-  const [cookies, setCookie] = useCookies(["exclude"]);
-  const [user, setUser] = useState(
-    (() => {
-      if (typeof window === "undefined") return {};
-      const localStorageUser = window.localStorage.getItem("user");
-      if (!localStorageUser) return {};
-      return JSON.parse(localStorageUser);
-    })()
-  );
+  const { isLogin, grantRefresh } = useContext(AuthContext);
   const [postInfo, setPostInfo] = useState<any>([]);
-  const postIds = useRef("");
-  const searchName = useRef("");
   const [sortInfo, setSortInfo] = useState<string[]>(["", "", ""]);
   const [isEnd, setIsEnd] = useState(false);
   const isFirst = useRef(true);
-  const message = useAlert();
-  console.log(isFirst, "isFirst");
+  const postIds = useRef("");
+  const searchName = useRef("");
 
   const getPosts = async () => {
     const orderConvert = orderOptions[sortInfo[2]] || sortInfo[2];
@@ -70,11 +56,6 @@ export default function Post() {
     );
     const response = await axios
       .get(`/users`, {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `${user?.token}`,
-          Accept: "application/json",
-        },
         params: {
           name: searchName.current,
           language: languageConvert,
@@ -126,11 +107,6 @@ export default function Post() {
     if (entry.isIntersecting) {
       console.log(entry.isIntersecting, "보인다.");
       observer.unobserve(entry.target);
-      // setCookie("exclude", "", {
-      //   path: "/",
-      //   secure: true,
-      //   sameSite: "none",
-      // });
       document.cookie = "exclude=" + postIds.current;
       await getPosts();
       document.cookie = "exclude=; expires=Thu, 18 Dec 2013 12:00:00 GMT";
@@ -139,7 +115,12 @@ export default function Post() {
       console.log(entry.isIntersecting, "안보인다.");
     }
   };
+
   useEffect(() => {
+    if (!isLogin) {
+      console.log("no login");
+      return;
+    }
     const observer = new IntersectionObserver(onIntersect, { threshold: 0.5 });
     target.current && observer.observe(target.current);
     return () => observer.disconnect();

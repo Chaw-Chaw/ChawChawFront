@@ -1,7 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { useRouter } from "next/router";
-import { LoadingSpinner } from "../../../components/common";
-import Script from "next/script";
 import { AuthContext } from "../../../store/AuthContext";
 
 interface OauthProps {

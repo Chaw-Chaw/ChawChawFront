@@ -1,17 +1,7 @@
 import Image from "next/image";
 import styled from "styled-components";
 
-const ImageBox = styled.div`
-  width: 50px;
-  height: 50px;
-  border-radius: 100%;
-  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
-
-  .message-sender-image {
-    border-radius: 100%;
-  }
-`;
-const ProfileImage: React.FC<{ src: string }> = (props) => {
+const MessageImage: React.FC<{ src: string }> = (props) => {
   return (
     <ImageBox>
       <Image
@@ -26,4 +16,15 @@ const ProfileImage: React.FC<{ src: string }> = (props) => {
   );
 };
 
-export { ProfileImage };
+export { MessageImage };
+
+const ImageBox = styled.div`
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
+
+  .message-sender-image {
+    border-radius: 100%;
+  }
+`;

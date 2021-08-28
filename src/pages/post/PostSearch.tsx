@@ -1,13 +1,7 @@
 import styled from "styled-components";
 import { Input, Button } from "../../components/common";
-import { IoIosSearch, IoMdReturnLeft } from "react-icons/io";
-import React, {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useRef,
-  useState,
-} from "react";
+import { IoIosSearch } from "react-icons/io";
+import React, { useRef } from "react";
 interface PostSearchProps {
   searchHandler: (inputs: string) => void;
 }
@@ -34,6 +28,7 @@ const PostSearch: React.FC<PostSearchProps> = (props) => {
     </PostSearchBox>
   );
 };
+
 const PostSearchBox = styled.div`
   border: 1px solid ${(props) => props.theme.primaryColor};
   background-color: ${(props) => props.theme.bodyBackgroundColor};

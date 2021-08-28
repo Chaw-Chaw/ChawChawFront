@@ -1,12 +1,10 @@
 import React, { MouseEvent, useContext, useEffect, useState } from "react";
 import {
   Layout,
-  Header,
   Input,
   Label,
   Button,
   PasswordInput,
-  Message,
 } from "../../../components/common/";
 import AccountContainer from "../../../components/account/AccountContainer";
 import LoginOrder from "../../../components/account/LoginOrder";
@@ -16,47 +14,13 @@ import { AuthContext } from "../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
-type Inputs = {
+
+interface Inputs {
   email: string;
   username: string;
   password: string;
   passwordConfirm: string;
-};
-const InputSection = styled.div`
-  width: 100%;
-  margin: 10px 0;
-`;
-const ButtonSection = styled.div<{ marginRight?: string; marginLeft?: string }>`
-  margin-right: ${(props) => (props.marginRight ? props.marginRight : "0px")};
-  margin-left: ${(props) => (props.marginLeft ? props.marginLeft : "0px")};
-  width: 100%;
-`;
-
-const MovePageButtonSection = styled.div`
-  margin-top: 20px;
-  width: 100%;
-  display: flex;
-`;
-
-const EmailInputBox = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const EmailDuplicationCheckButton = styled(Button)`
-  margin: 0px 0px 8px 5px;
-  height: 40px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-`;
-
-const Form = styled.form`
-  width: 100%;
-`;
-const RequiredText = styled.span`
-  color: ${(props) => props.theme.primaryColor};
-  font-size: 0.8rem;
-`;
+}
 
 export default function SignUp() {
   const [isEmailDupCheck, setIsEmailDupCheck] = useState(false);
@@ -243,3 +207,40 @@ export default function SignUp() {
     </Layout>
   );
 }
+
+const InputSection = styled.div`
+  width: 100%;
+  margin: 10px 0;
+`;
+
+const ButtonSection = styled.div<{ marginRight?: string; marginLeft?: string }>`
+  margin-right: ${(props) => (props.marginRight ? props.marginRight : "0px")};
+  margin-left: ${(props) => (props.marginLeft ? props.marginLeft : "0px")};
+  width: 100%;
+`;
+
+const MovePageButtonSection = styled.div`
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+`;
+
+const EmailInputBox = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const EmailDuplicationCheckButton = styled(Button)`
+  margin: 0px 0px 8px 5px;
+  height: 40px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+`;
+
+const Form = styled.form`
+  width: 100%;
+`;
+const RequiredText = styled.span`
+  color: ${(props) => props.theme.primaryColor};
+  font-size: 0.8rem;
+`;

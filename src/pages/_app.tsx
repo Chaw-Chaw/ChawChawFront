@@ -1,21 +1,15 @@
 import type { AppProps } from "next/app";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import LightTheme from "../theme/light";
 import DarkTheme from "../theme/dark";
-import { AuthContextProvider } from "../store/AuthContext";
+import { AuthContext, AuthContextProvider } from "../store/AuthContext";
 import { CookiesProvider } from "react-cookie";
 import {
-  transitions,
-  positions,
   Provider as AlertProvider,
   AlertComponentPropsWithStyle,
 } from "react-alert";
-import {
-  Message,
-  MessageConfirmButton,
-  MessageBox,
-} from "../components/common";
+import { AlertMessage } from "../components/common";
 
 const GlobalStyles = createGlobalStyle`
 @font-face {
@@ -41,11 +35,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     options,
   }) => {
     return (
-      <Message message={message} onClick={close} type={options.type}>
+      <AlertMessage message={message} onClick={close} type={options.type}>
         {/* {options.type === "info" && "!"}
       {options.type === "success" && ":)"}
       {options.type === "error" && ":("} */}
-      </Message>
+      </AlertMessage>
     );
   };
 
