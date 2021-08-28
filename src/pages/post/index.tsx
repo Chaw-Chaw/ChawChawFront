@@ -111,13 +111,13 @@ export default function Post() {
   };
 
   useEffect(() => {
-    if (!accessToken) {
-      message.error("로그인 후에 서비스를 이용해주세요.", {
-        onClose: () => {
-          router.push("/account/login");
-        },
-      });
-    }
+    // if (!accessToken) {
+    //   message.error("로그인 후에 서비스를 이용해주세요.", {
+    //     onClose: () => {
+    //       router.push("/account/login");
+    //     },
+    //   });
+    // }
     const observer = new IntersectionObserver(onIntersect, {
       threshold: 0.5,
     });
