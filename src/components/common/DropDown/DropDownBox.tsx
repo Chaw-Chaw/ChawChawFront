@@ -14,7 +14,7 @@ interface DropDownProps extends initialBoxProps {
   color?: string;
   initialValue?: string;
   isActive?: boolean;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: () => void;
   postOrder?: boolean;
   value?: string;
@@ -27,7 +27,7 @@ const DropDownBox: React.FC<DropDownProps> = (props) => {
   const clickHander: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     if (props.onClick) {
-      props.onClick();
+      props.onClick(e);
     }
   };
   return (

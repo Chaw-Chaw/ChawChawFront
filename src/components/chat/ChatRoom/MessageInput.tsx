@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import { TextArea } from "../../common/Input";
 import { AiOutlinePicture, AiOutlineSend } from "react-icons/ai";
-import { ChangeEventHandler, KeyboardEvent } from "react";
+import { ChangeEventHandler, KeyboardEvent, MouseEventHandler } from "react";
 
 interface MessageInputProps {
   value: string;
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
   onKeyPress: (e: KeyboardEvent) => void;
-  onClick: () => void;
+  onClick: MouseEventHandler<HTMLDivElement>;
 }
 
 const InputBox = styled.div`
@@ -83,7 +83,7 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
         <SendIconBox
           onClick={(e) => {
             e.preventDefault();
-            props.onClick();
+            props.onClick(e);
           }}
         >
           <AiOutlineSend />

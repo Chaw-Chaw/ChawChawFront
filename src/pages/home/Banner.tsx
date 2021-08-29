@@ -17,7 +17,8 @@ const Banner: React.FC = () => {
           width="16rem"
           height="5rem"
           fontSize="2.8rem"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             if (cookies.accessToken) {
               router.push("/post");
             } else {

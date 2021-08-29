@@ -24,7 +24,10 @@ const DropDown: React.FC<DropDownProps> = (props) => {
       fontSize={props.fontSize}
       width={props.width}
       height={props.height}
-      onClick={() => setIsActive((isActive) => !isActive)}
+      onClick={(e) => {
+        e.preventDefault();
+        setIsActive((isActive) => !isActive);
+      }}
       onMouseLeave={() => setIsActive(false)}
       color={
         props.postOrder && props.initialValue !== props.value

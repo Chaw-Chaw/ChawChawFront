@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { MouseEventHandler, useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import { MessageImage } from "../Message/MessageImage";
@@ -9,7 +9,7 @@ interface ChatBoxProps {
   sender: any;
   roomId: number;
   mainRoomId: number;
-  onClick: () => void;
+  onClick: MouseEventHandler<HTMLDivElement>;
 }
 
 const ChatBox: React.FC<ChatBoxProps> = (props) => {
@@ -29,7 +29,10 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
     <ChatContainer
       ref={type ? mainChatList : null}
       type={type}
-      onClick={type ? () => {} : props.onClick}
+      onClick={(e) => {
+        if (type) return;
+        props.onClick(e);
+      }}
     >
       <MessageImage
         src={props.imageUrl ? `${props.imageUrl}` : DEFAULT_PROFILE_IMAGE}

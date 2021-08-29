@@ -37,7 +37,12 @@ const SocialSection: React.FC = () => {
     <SocialContainer>
       <SocialButtonTitle>소셜계정으로 로그인 | 회원가입</SocialButtonTitle>
       <ButtonSection>
-        <KakaoLogin onClick={callKakaoLogin}>
+        <KakaoLogin
+          onClick={(e) => {
+            e.preventDefault();
+            callKakaoLogin();
+          }}
+        >
           <RiKakaoTalkFill />
         </KakaoLogin>
         <FacebookLogin

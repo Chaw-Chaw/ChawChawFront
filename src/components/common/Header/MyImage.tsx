@@ -6,6 +6,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { prepareProfile } from "selenium-webdriver/firefox";
 
 const MyImage: React.FC<{ profileImage: string }> = ({ profileImage }) => {
   const [isActive, setIsActive] = useState(false);
@@ -19,12 +20,16 @@ const MyImage: React.FC<{ profileImage: string }> = ({ profileImage }) => {
         alt="프로필 이미지"
         width="50px"
         height="50px"
-        onClick={() => setIsActive((isActive) => !isActive)}
+        onClick={(e) => {
+          e.preventDefault();
+          setIsActive((isActive) => !isActive);
+        }}
         objectFit="cover"
       />
       <SelectMenu isActive={isActive}>
         <Option
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             router.push("/account/profile");
           }}
         >
@@ -32,7 +37,8 @@ const MyImage: React.FC<{ profileImage: string }> = ({ profileImage }) => {
           <span>프로필</span>
         </Option>
         <Option
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             router.push({ pathname: "/chat", query: { userId: -1 } });
           }}
         >
@@ -40,7 +46,8 @@ const MyImage: React.FC<{ profileImage: string }> = ({ profileImage }) => {
           <span>채팅창</span>
         </Option>
         <Option
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             router.push("/account/setting");
           }}
         >

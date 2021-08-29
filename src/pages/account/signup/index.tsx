@@ -131,7 +131,10 @@ export default function SignUp() {
                 <RequiredText>이메일 형식을 맞춰주세요.</RequiredText>
               )}
               <EmailDuplicationCheckButton
-                onClick={(e: MouseEvent) => emailDupCheckHandle(e)}
+                onClick={(e: MouseEvent) => {
+                  e.preventDefault();
+                  emailDupCheckHandle(e);
+                }}
               >
                 중복검사
               </EmailDuplicationCheckButton>

@@ -52,7 +52,8 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
         onInput={textAreaResize}
       />
       <UpdateButton
-        onClick={() => {
+        onClick={(e) => {
+          e.preventDefault();
           setIsActive((isActive) => !isActive);
           const content = textAreaRef.current;
           if (textAreaRef === null || content === null) return;

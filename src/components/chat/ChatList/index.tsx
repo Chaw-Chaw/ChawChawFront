@@ -38,7 +38,8 @@ const ChatList: React.FC<ChatListProps> = (props) => {
                 sender={item.sender}
                 roomId={item.roomId}
                 mainRoomId={props.mainRoomId}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   props.setMainRoomId(item.roomId);
                   return;
                 }}

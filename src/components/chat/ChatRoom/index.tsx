@@ -139,7 +139,8 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
             }
           }}
           value={message}
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             props.publish(message, "TALK");
             setMessage("");
           }}

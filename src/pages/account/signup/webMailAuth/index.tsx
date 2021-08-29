@@ -112,7 +112,10 @@ export default function WebMailAuth() {
         </InputSection>
         <ButtonSection>
           <Button
-            onClick={(e) => webmailSubmit(e)}
+            onClick={(e) => {
+              e.preventDefault();
+              webmailSubmit(e);
+            }}
             width="100%"
             height="2rem"
             fontSize="1rem"

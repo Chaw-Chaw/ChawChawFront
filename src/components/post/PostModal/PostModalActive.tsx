@@ -3,7 +3,7 @@ import { Button } from "../../common";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { useContext, useState } from "react";
+import { MouseEventHandler, useContext, useState } from "react";
 import { useCookies } from "react-cookie";
 import { AuthContext } from "../../../store/AuthContext";
 
@@ -17,7 +17,8 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
   const { grantRefresh } = useContext(AuthContext);
   const [cookies] = useCookies(["accessToken"]);
   const accessToken = cookies.accessToken;
-  const tryChat = () => {
+  const tryChat: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
     router.push({ pathname: "/chat", query: { userId: props.id } });
   };
   const follow = async () => {

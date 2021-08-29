@@ -75,7 +75,12 @@ const PostCard: React.FC<PostCardProps> = (props) => {
 
   return (
     <div>
-      <PostCardBox onClick={handleModal}>
+      <PostCardBox
+        onClick={(e) => {
+          e.preventDefault();
+          handleModal();
+        }}
+      >
         <PostImageBox>
           <Image
             src={`${props.imageUrl}`}

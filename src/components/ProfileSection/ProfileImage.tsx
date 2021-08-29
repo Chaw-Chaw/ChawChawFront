@@ -1,4 +1,9 @@
-import React, { ChangeEvent, useContext, useState } from "react";
+import React, {
+  ChangeEvent,
+  MouseEventHandler,
+  useContext,
+  useState,
+} from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import { AuthContext } from "../../store/AuthContext";
@@ -54,7 +59,8 @@ const ProfileImage: React.FC = () => {
     sendImage(image);
   };
 
-  const deleteImage = async () => {
+  const deleteImage: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    e.preventDefault();
     const response = await axios
       .delete("/users/image", {
         headers: {

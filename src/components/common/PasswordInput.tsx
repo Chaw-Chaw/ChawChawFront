@@ -21,7 +21,12 @@ const PasswordInput: React.FC<PasswordInputProps> = (props) => {
           placeholder={props.placeholder}
           {...props.register}
         />
-        <ShowButton onClick={() => setShowPassword((state) => !state)}>
+        <ShowButton
+          onClick={(e) => {
+            e.preventDefault();
+            setShowPassword((state) => !state);
+          }}
+        >
           {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
         </ShowButton>
       </PasswordWrapper>

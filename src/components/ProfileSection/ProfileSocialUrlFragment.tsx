@@ -29,7 +29,8 @@ const ProfileSocialUrlFragment: React.FC<ProfileSocialUrlFragmentProps> = (
         defaultValue={props.url || defaultUrl}
       />
       <UrlUpdateButton
-        onClick={() => {
+        onClick={(e) => {
+          e.preventDefault();
           setIsActive((isActive) => !isActive);
           const url = urlRef.current;
           if (urlRef === null || url === null) return;

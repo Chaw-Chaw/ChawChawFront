@@ -1,3 +1,4 @@
+import { MouseEventHandler } from "react";
 import styled from "styled-components";
 import { Button, SelectInfoDropDown } from "../common";
 import { ProfileListItemProps, ProfileListItem } from "./ProfileListItem";
@@ -7,7 +8,8 @@ interface ProfileSelectInfoProps extends ProfileListItemProps {
 }
 
 const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
-  const AddButton = () => {
+  const AddButton: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
     console.log(props.values, "before");
     if (props.setValues && props.values) {
       if (props.values[props.values.length - 1] !== "") {
@@ -18,7 +20,8 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
       }
     }
   };
-  const RemoveButton = () => {
+  const RemoveButton: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
     // 왜 두개 이상의 배열에서 갑자기 한개로 줄어들까?
     // setState 안에서 prestate는 읽기 전용이다. 클로저 변수가 이용되기 때문에 pre값을 직접 수정하는것은 미친짓이다
     if (props.setValues) {
