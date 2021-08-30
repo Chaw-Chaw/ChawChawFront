@@ -14,8 +14,7 @@ interface ChatBoxProps {
 
 const ChatBox: React.FC<ChatBoxProps> = (props) => {
   const mainChatList = useRef<HTMLDivElement>(null);
-  const regDate = props.regDate.split("T").join(" ");
-
+  const regDate = props.regDate ? props.regDate.split("T").join(" ") : "";
   const type = props.roomId === props.mainRoomId ? "current" : "";
   useEffect(() => {
     if (!mainChatList.current) return;
