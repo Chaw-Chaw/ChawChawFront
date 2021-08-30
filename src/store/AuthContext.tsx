@@ -142,7 +142,7 @@ const AuthContextProvider: React.FC = (props) => {
       path: "/",
       secure: true,
     });
-    setTimeout(grantRefresh, ACCESS_TOKEN_TIME - 60000);
+    setTimeout(grantRefresh, 2000);
     saveUser(newData);
   };
 
@@ -151,7 +151,7 @@ const AuthContextProvider: React.FC = (props) => {
       .post("/users/auth/refresh", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: accessToken,
+          // Authorization: accessToken,
           Accept: "application/json",
         },
       })
