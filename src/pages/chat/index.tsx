@@ -229,9 +229,10 @@ export default function Chat() {
     }
     const timezoneOffset = new Date().getTimezoneOffset() * 60000;
     const now = new Date(Date.now() - timezoneOffset);
+
     client.current.publish({
       destination: "/message",
-      // headers: { authorization: accessToken },
+      headers: { authorization: accessToken },
       body: JSON.stringify({
         messageType,
         roomId: mainRoomId,
