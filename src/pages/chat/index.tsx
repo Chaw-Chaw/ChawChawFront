@@ -1,6 +1,6 @@
 import { Layout } from "../../components/common";
-import ChatRoom from "../../components/chat/ChatRoom";
-import ChatList from "../../components/chat/ChatList";
+import ChatRoom from "./ChatRoom";
+import ChatList from "./ChatList";
 import styled from "styled-components";
 import DefaultImage from "../../../public/Layout/btsSugar.jpeg";
 import axios, { AxiosResponse } from "axios";

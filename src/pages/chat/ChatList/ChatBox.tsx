@@ -1,7 +1,7 @@
 import React, { MouseEventHandler, useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
-import { MessageImage } from "../Message/MessageImage";
+import { MessageImage } from "../../../components/chat/Message/MessageImage";
 
 interface ChatBoxProps {
   imageUrl: any;

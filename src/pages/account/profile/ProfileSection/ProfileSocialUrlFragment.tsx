@@ -1,10 +1,16 @@
 import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { DEFAULT_FACEBOOK_URL, DEFAULT_INSTAGRAM_URL } from "../../constants";
-import { ProfileListItem, ProfileListItemProps } from "./ProfileListItem";
+import {
+  DEFAULT_FACEBOOK_URL,
+  DEFAULT_INSTAGRAM_URL,
+} from "../../../../constants";
+import {
+  ProfileListItem,
+  ProfileListItemProps,
+} from "../../../../components/profile/ProfileListItem";
 import { FaFacebook } from "react-icons/fa";
 import { AiFillInstagram } from "react-icons/ai";
 import styled from "styled-components";
-import { Input, UpdateButton } from "../common";
+import { Input, UpdateButton } from "../../../../components/common";
 
 interface ProfileSocialUrlFragmentProps {
   type?: string;

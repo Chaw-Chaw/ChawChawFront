@@ -5,7 +5,7 @@ import { DropDownBox, DropDownProps } from "./DropDownBox";
 interface SelectMenuProps extends DropDownProps {}
 
 const DropDown: React.FC<DropDownProps> = (props) => {
-  const [value, setValue] = useState(props.initialValue);
+  // const [value, setValue] = useState(props.initialValue);
   const [isActive, setIsActive] = useState(false);
   const index = props?.index;
   const option = props.options;

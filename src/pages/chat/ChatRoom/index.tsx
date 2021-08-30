@@ -10,14 +10,15 @@ import {
 import { useRouter } from "next/router";
 import axios from "axios";
 import { MessageInput } from "./MessageInput";
-import ChatMessage from "../Message/ChatMessage";
-import InfoMessage from "../Message/InfoMessage";
+import ChatMessage from "../../../components/chat/Message/ChatMessage";
+import InfoMessage from "../../../components/chat/Message/InfoMessage";
 import { BsBoxArrowRight } from "react-icons/bs";
 import { RiHome2Line } from "react-icons/ri";
 import { BsChatDots } from "react-icons/bs";
 import { useCookies } from "react-cookie";
 import { AuthContext } from "../../../store/AuthContext";
-import { ChangeLanguageDropDown } from "../../common";
+import { ChangeLanguageDropDown } from "../../../components/common";
+import translate from "google-translate-api";
 
 interface ChatRoomProps {
   chatMessage: any[];
@@ -36,6 +37,11 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const router = useRouter();
   const [selectLanguage, setSelectLanguage] = useState<string[]>(["Korean"]);
   const accessToken = cookies.accessToken;
+
+  const sendMessage = () => {
+    props.publish(message, "TALK");
+    setMessage("");
+  };
 
   const leaveChatRoom = async () => {
     const response = await axios
@@ -58,13 +64,9 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
 
     if (!response.data.isSuccess) {
       console.error(response.data);
-      // router.push({ pathname: "/chat", query: { userId: -1 } });
       return;
     }
     props.setMainRoomId(-1);
-
-    // props.disconnect();
-    // router.push({ pathname: "/chat", query: { userId: -1 } });
   };
 
   const backHome = () => {
@@ -75,7 +77,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const scrollToBottom = () => {
     if (!chatMessageBox.current) return;
     chatMessageBox.current.scrollIntoView({
-      behavior: "smooth",
+      behavior: "auto",
       block: "end",
       inline: "nearest",
     });
@@ -146,15 +148,13 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
           }}
           onKeyPress={(e) => {
             if (e.key === "Enter") {
-              props.publish(message, "TALK");
-              setMessage("");
+              sendMessage();
             }
           }}
           value={message}
           onClick={(e) => {
             e.preventDefault();
-            props.publish(message, "TALK");
-            setMessage("");
+            sendMessage();
           }}
         />
       </Inner>
@@ -181,7 +181,6 @@ const Outline = styled.div`
 const Inner = styled.div`
   overflow: auto;
   box-sizing: border-box;
-  /* padding: 20px; */
   height: 100%;
 `;
 
@@ -200,6 +199,8 @@ const Header = styled.div`
 const MessageContainer = styled.div`
   height: calc(100% - 102px);
   width: 100%;
+  box-sizing: border-box;
+  padding-right: 20px;
   overflow: auto;
 `;
 const MessageHeaderButton = styled.button`

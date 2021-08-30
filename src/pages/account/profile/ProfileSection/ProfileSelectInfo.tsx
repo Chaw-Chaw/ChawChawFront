@@ -1,7 +1,10 @@
 import { MouseEventHandler } from "react";
 import styled from "styled-components";
-import { Button, SelectInfoDropDown } from "../common";
-import { ProfileListItemProps, ProfileListItem } from "./ProfileListItem";
+import { Button, SelectInfoDropDown } from "../../../../components/common";
+import {
+  ProfileListItemProps,
+  ProfileListItem,
+} from "../../../../components/profile/ProfileListItem";
 interface ProfileSelectInfoProps extends ProfileListItemProps {
   type: string;
   count: number;

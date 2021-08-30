@@ -7,7 +7,7 @@ import {
   SetStateAction,
 } from "react";
 import styled from "styled-components";
-import { TextArea, Label, UpdateButton } from "../common";
+import { TextArea, Label, UpdateButton } from "../../../../components/common";
 
 interface ProfileContentProps {
   placeholder?: string;

@@ -6,11 +6,11 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import { AuthContext } from "../../store/AuthContext";
-import { Button } from "../common";
+import { AuthContext } from "../../../../store/AuthContext";
+import { Button } from "../../../../components/common";
 import axios from "axios";
 import { useAlert } from "react-alert";
-import { DEFAULT_PROFILE_IMAGE } from "../../constants";
+import { DEFAULT_PROFILE_IMAGE } from "../../../../constants";
 import { useCookies } from "react-cookie";
 
 const ProfileImage: React.FC = () => {

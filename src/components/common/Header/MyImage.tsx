@@ -34,7 +34,7 @@ const MyImage: React.FC<{ profileImage: string }> = ({ profileImage }) => {
           }}
         >
           <CgProfile />
-          <span>프로필</span>
+          <span>프로필 | 설정</span>
         </Option>
         <Option
           onClick={(e) => {
@@ -45,7 +45,7 @@ const MyImage: React.FC<{ profileImage: string }> = ({ profileImage }) => {
           <BsChat />
           <span>채팅창</span>
         </Option>
-        <Option
+        {/* <Option
           onClick={(e) => {
             e.preventDefault();
             router.push("/account/setting");
@@ -53,7 +53,7 @@ const MyImage: React.FC<{ profileImage: string }> = ({ profileImage }) => {
         >
           <AiOutlineSetting />
           <span>설정</span>
-        </Option>
+        </Option> */}
         <Option onClick={logout}>
           <AiOutlineLogout />
           <span>로그아웃</span>
