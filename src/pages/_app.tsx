@@ -83,6 +83,14 @@ function MyApp({ Component, pageProps }: AppProps) {
                 site: "chawchaw.vercel.app",
                 cardType: "summary",
               }}
+              additionalLinkTags={[
+                {
+                  type: "image/png",
+                  sizes: "32x32",
+                  href: "/Layout/chaw.png",
+                  rel: "icon",
+                },
+              ]}
             />
             <Component {...pageProps} />
           </AuthContextProvider>
