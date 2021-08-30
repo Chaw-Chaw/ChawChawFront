@@ -136,7 +136,7 @@ const AuthContextProvider: React.FC = (props) => {
   const loginSuccess = (response: AxiosResponse) => {
     const accessToken = response.headers.authorization;
     const newData = { ...response.data.data };
-    // console.log(accessToken, "acessToken");
+    console.log(accessToken, "acessToken");
     setCookie("accessToken", accessToken, {
       path: "/",
       secure: true,

@@ -25,7 +25,6 @@ const Header: React.FC<HeaderProps> = (props) => {
         {props.type === "post" && <SchoolHead>{user.school}</SchoolHead>}
       </LogoFragment>
       <HeaderComponentsBox>
-        <ChangeLanguageDropDown />
         <ThemeToggleBox>
           <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
         </ThemeToggleBox>

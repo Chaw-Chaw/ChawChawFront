@@ -1,5 +1,11 @@
 import styled from "styled-components";
-import { Button, LanguageLocale, LocaleLanguage } from "../common";
+import {
+  Button,
+  CountriesList,
+  CountryLocale,
+  LanguageLocale,
+  LocaleLanguage,
+} from "../common";
 import { MouseEventHandler, useContext, useState } from "react";
 import { AuthContext, UserPropertys } from "../../store/AuthContext";
 import { useAlert } from "react-alert";
@@ -24,17 +30,17 @@ const ProfileSection: React.FC = () => {
 
   const { user, updateUser } = useContext(AuthContext);
   const [userCountries, setUserCountries] = useState<string[]>(
-    user.country || []
+    user.country || ["Select"]
   );
   const [userLanguages, setUserLanguages] = useState<string[]>(
     user.language
       ? user.language.map((item: string) => LocaleLanguage[item])
-      : []
+      : ["Select"]
   );
   const [userHopeLanguages, setUserHopeLanguages] = useState<string[]>(
     user.hopeLanguage
       ? user.hopeLanguage.map((item: string) => LocaleLanguage[item])
-      : []
+      : ["Select"]
   );
   const [userContent, setUserContent] = useState<string>(user.content || "");
   const [userFaceBookUrl, setUserFaceBookUrl] = useState<string>(
@@ -46,14 +52,19 @@ const ProfileSection: React.FC = () => {
 
   const onSubmit: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
-    const country = userCountries;
-    const language = userLanguages.map((item) => {
-      if (item === "") return item;
-      return LanguageLocale[item];
+    const country: string[] = [];
+    userCountries.forEach((item) => {
+      if (Object.keys(CountryLocale).includes(item)) country.push(item);
     });
-    const hopeLanguage = userHopeLanguages.map((item) => {
-      if (item === "") return item;
-      return LanguageLocale[item];
+    const language: string[] = [];
+    userLanguages.forEach((item) => {
+      const convertedItem = LanguageLocale[item];
+      if (convertedItem) language.push(convertedItem);
+    });
+    const hopeLanguage: string[] = [];
+    userHopeLanguages.forEach((item) => {
+      const convertedItem = LanguageLocale[item];
+      if (convertedItem) hopeLanguage.push(convertedItem);
     });
 
     const userProfile = {

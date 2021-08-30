@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import { SelectInfoDropDown, DropDown } from "../../components/common";
 interface PostOrderProps {
+  sortInfo: string[];
   setSortInfo: Dispatch<SetStateAction<string[]>>;
 }
 
@@ -20,6 +21,7 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
             fontSize="0.9rem"
             setValues={props.setSortInfo}
             index={0}
+            value={props.sortInfo[0]}
           />
         </SelectInfoBox>
         <SelectInfoBox>
@@ -33,6 +35,7 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
             fontSize="0.9rem"
             setValues={props.setSortInfo}
             index={1}
+            value={props.sortInfo[1]}
           />
         </SelectInfoBox>
         <SelectInfoBox>
@@ -47,6 +50,7 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
             fontSize="0.9rem"
             setValues={props.setSortInfo}
             index={2}
+            value={props.sortInfo[2]}
           />
         </SelectInfoBox>
       </DropDownBox>

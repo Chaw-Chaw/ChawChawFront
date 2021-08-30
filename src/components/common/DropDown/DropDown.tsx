@@ -12,11 +12,14 @@ const DropDown: React.FC<DropDownProps> = (props) => {
   const setInfo = (item: string) => {
     if (props.setValues && index !== undefined) {
       props.setValues((preState) => {
-        preState[index] = item;
-        return [...preState];
+        const result = preState;
+        result[index] = item;
+        return [...result];
       });
     }
   };
+
+  console.log(props.initialValue, "initvalue", props.value, "value");
 
   return (
     <DropDownBox
@@ -39,7 +42,7 @@ const DropDown: React.FC<DropDownProps> = (props) => {
           ? props.color
           : props.backgroundColor
       }
-      value={value}
+      value={props.value}
     >
       <SelectMenu
         width={props.width}
@@ -53,7 +56,7 @@ const DropDown: React.FC<DropDownProps> = (props) => {
               key={index}
               onClick={() => {
                 if (item) {
-                  setValue(item);
+                  // setValue(item);
                   setInfo(item);
                 }
               }}

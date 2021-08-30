@@ -17,6 +17,7 @@ import { RiHome2Line } from "react-icons/ri";
 import { BsChatDots } from "react-icons/bs";
 import { useCookies } from "react-cookie";
 import { AuthContext } from "../../../store/AuthContext";
+import { ChangeLanguageDropDown } from "../../common";
 
 interface ChatRoomProps {
   chatMessage: any[];
@@ -33,7 +34,9 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const [message, setMessage] = useState<string>("");
   const chatMessageBox = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const [selectLanguage, setSelectLanguage] = useState<string[]>(["Korean"]);
   const accessToken = cookies.accessToken;
+
   const leaveChatRoom = async () => {
     const response = await axios
       .delete(`/chat/room/${props.roomId}`, {
@@ -82,6 +85,10 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
     scrollToBottom();
   }, [props.chatMessage]);
 
+  useEffect(() => {
+    console.log(selectLanguage[0], "change lang");
+  }, [JSON.stringify(selectLanguage)]);
+
   return (
     <Outline>
       <Inner>
@@ -95,6 +102,10 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
           <MessageHeaderButton>
             <BsChatDots />
           </MessageHeaderButton>
+          <ChangeLanguageDropDown
+            selectLanguage={selectLanguage}
+            setSelectLanguage={setSelectLanguage}
+          />
         </Header>
         {/* use Memo 적용할것 */}
         <MessageContainer>
@@ -127,6 +138,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
           )}
         </MessageContainer>
         <MessageInput
+          roomId={props.roomId}
           onChange={(e) => {
             // if (e.key === "Enter") return;
             e.preventDefault();
@@ -174,6 +186,8 @@ const Inner = styled.div`
 `;
 
 const Header = styled.div`
+  gap: 0px 10px;
+  align-items: center;
   position: sticky;
   top: 0px;
   width: 100%;

@@ -4,11 +4,44 @@ import { AiOutlinePicture, AiOutlineSend } from "react-icons/ai";
 import { ChangeEventHandler, KeyboardEvent, MouseEventHandler } from "react";
 
 interface MessageInputProps {
+  roomId: number;
   value: string;
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
   onKeyPress: (e: KeyboardEvent) => void;
   onClick: MouseEventHandler<HTMLDivElement>;
 }
+
+const MessageInput: React.FC<MessageInputProps> = (props) => {
+  const isNotActive = props.roomId === -1 ? true : false;
+  return (
+    <InputBox>
+      <InputBoxInner>
+        <TextInput
+          disabled={isNotActive}
+          value={props.value}
+          onChange={props.onChange}
+          onKeyPress={props.onKeyPress}
+          placeholder="메세지를 입력해주세요."
+          autoFocus
+        />
+        <PictureIconBox>
+          <AiOutlinePicture />
+        </PictureIconBox>
+        <SendIconBox
+          onClick={(e) => {
+            e.preventDefault();
+            if (isNotActive) return;
+            props.onClick(e);
+          }}
+        >
+          <AiOutlineSend />
+        </SendIconBox>
+      </InputBoxInner>
+    </InputBox>
+  );
+};
+
+export { MessageInput };
 
 const InputBox = styled.div`
   display: flex;
@@ -65,32 +98,3 @@ const PictureIconBox = styled.div`
 const SendIconBox = styled(PictureIconBox)`
   right: 10px;
 `;
-
-const MessageInput: React.FC<MessageInputProps> = (props) => {
-  return (
-    <InputBox>
-      <InputBoxInner>
-        <TextInput
-          value={props.value}
-          onChange={props.onChange}
-          onKeyPress={props.onKeyPress}
-          placeholder="메세지를 입력해주세요."
-          autoFocus
-        />
-        <PictureIconBox>
-          <AiOutlinePicture />
-        </PictureIconBox>
-        <SendIconBox
-          onClick={(e) => {
-            e.preventDefault();
-            props.onClick(e);
-          }}
-        >
-          <AiOutlineSend />
-        </SendIconBox>
-      </InputBoxInner>
-    </InputBox>
-  );
-};
-
-export { MessageInput };

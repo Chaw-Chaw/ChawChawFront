@@ -11,9 +11,9 @@ const SelectInfoDropDown: React.FC<SelectInfoDropDownProps> = (props) => {
   return (
     <DropDown
       fontWeight="900"
-      fontSize={props.fontSize ? props.fontSize : "0.7rem"}
-      width={props.width ? props.width : "80px"}
-      height={props.height ? props.height : "30px"}
+      fontSize={props.fontSize || "0.7rem"}
+      width={props.width || "80px"}
+      height={props.height || "30px"}
       options={(() => {
         if (props.options) return props.options;
         if (props.type === "country") return countryList;
@@ -21,21 +21,14 @@ const SelectInfoDropDown: React.FC<SelectInfoDropDownProps> = (props) => {
           return languageList;
         else return countryList;
       })()}
-      backgroundColor={
-        props.backgroundColor ? props.backgroundColor : "#06C074"
-      }
-      color={props.color ? props.color : "white"}
-      initialValue={(() => {
-        if (props.initialValue) return props.initialValue;
-        if (props.type === "country") return "Select Country";
-        if (props.type === "language" || props.type === "hopeLanguage")
-          return "Select Language";
-        else return "Select";
-      })()}
+      backgroundColor={props.backgroundColor || "#06C074"}
+      color={props.color || "white"}
+      initialValue={props.initialValue}
       postOrder={props.postOrder}
       index={props.index}
       type={props.type}
       setValues={props.setValues}
+      value={props.value}
     />
   );
 };

@@ -8,13 +8,13 @@ interface ProfileSelectInfoProps extends ProfileListItemProps {
 }
 
 const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
+  const colors = ["#06C074", "#5A65E8", "#4BC6DA"];
   const AddButton: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    console.log(props.values, "before");
     if (props.setValues && props.values) {
-      if (props.values[props.values.length - 1] !== "") {
+      if (props.values[props.values.length - 1] !== "Select") {
         props.setValues((preState) => {
-          return [...preState, ""];
+          return [...preState, "Select"];
         });
         // console.log(props.values, "after");
       }
@@ -33,7 +33,6 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
       });
     }
   };
-  const colors = ["#06C074", "#5A65E8", "#4BC6DA"];
 
   return (
     <ProfileListItem title={props.title} description={props.description}>
@@ -50,6 +49,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
                     backgroundColor={colors[index % 3]}
                     initialValue={item}
                     setValues={props.setValues}
+                    value={item}
                   />
                 </DropDownMainBox>
               );
@@ -62,6 +62,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
                   backgroundColor={colors[index % 3]}
                   initialValue={item}
                   setValues={props.setValues}
+                  value={item}
                 />
               </DropDownBox>
             );

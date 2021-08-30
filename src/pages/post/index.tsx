@@ -13,7 +13,11 @@ import { useAlert } from "react-alert";
 export default function Post() {
   const { grantRefresh } = useContext(AuthContext);
   const [postInfo, setPostInfo] = useState<any>([]);
-  const [sortInfo, setSortInfo] = useState<string[]>(["", "", ""]);
+  const [sortInfo, setSortInfo] = useState<string[]>([
+    "Main Language",
+    "Hope Language",
+    "order",
+  ]);
   const [isEnd, setIsEnd] = useState(false);
   const isFirst = useRef(true);
   const postIds = useRef("");
@@ -129,7 +133,7 @@ export default function Post() {
     <Layout type="post">
       <Container width="90%">
         <PostSearch searchHandler={searchHandler} />
-        <PostOrder setSortInfo={setSortInfo} />
+        <PostOrder setSortInfo={setSortInfo} sortInfo={sortInfo} />
         <PostSection postInfo={postInfo} />
         <div
           ref={target}
