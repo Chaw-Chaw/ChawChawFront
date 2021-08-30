@@ -7,7 +7,7 @@ import { AuthContext } from "../../store/AuthContext";
 const Layout: React.FC<{ type?: string }> = (props) => {
   return (
     <>
-      <Head>
+      {/* <Head>
         <title>ChawChaw</title>
         <link
           rel="icon"
@@ -15,7 +15,7 @@ const Layout: React.FC<{ type?: string }> = (props) => {
           sizes="32x32"
           href="/Layout/chaw.png"
         />
-      </Head>
+      </Head> */}
       <Header type={props.type} />
       <Inner>{props.children}</Inner>
     </>
