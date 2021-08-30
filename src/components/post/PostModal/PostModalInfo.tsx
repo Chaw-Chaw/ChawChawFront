@@ -62,6 +62,7 @@ const PostModalPastDateBox = styled.div`
 const PostModalViewCountBox = styled.div`
   display: flex;
   align-items: center;
+  margin-top: 10px;
   margin-bottom: 10px;
   svg {
     margin-left: 3px;

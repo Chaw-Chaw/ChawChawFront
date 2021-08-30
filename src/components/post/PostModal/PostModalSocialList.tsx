@@ -35,18 +35,16 @@ const PostModalSocialUrlBox = styled.div<{ type: string }>`
   display: flex;
   font-size: 1.4rem;
   width: 100%;
+  align-items: center;
   svg {
-    width: 25;
-    height: 25;
+    width: 20px;
+    height: 20px;
     color: ${(props) => (props.type === "facebook" ? "#3d5a97" : "#eb559b")};
   }
-  a {
-    text-decoration: none;
-    color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
-  }
 `;
-
 const PostModalSocialUrlText = styled.a`
+  text-decoration: none;
+  color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
   font-size: 1rem;
   margin-left: 10px;
 `;
