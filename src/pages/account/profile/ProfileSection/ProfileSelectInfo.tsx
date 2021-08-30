@@ -100,7 +100,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
   );
 };
 
-export { ProfileSelectInfo };
+export default ProfileSelectInfo;
 
 const DropDownBox = styled.div`
   margin-right: 5px;

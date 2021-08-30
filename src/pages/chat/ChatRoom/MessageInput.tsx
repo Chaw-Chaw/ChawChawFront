@@ -51,7 +51,7 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
   );
 };
 
-export { MessageInput };
+export default MessageInput;
 
 const InputBox = styled.div`
   display: flex;

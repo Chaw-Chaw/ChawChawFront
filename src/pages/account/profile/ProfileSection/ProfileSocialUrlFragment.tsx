@@ -53,7 +53,7 @@ const ProfileSocialUrlFragment: React.FC<ProfileSocialUrlFragmentProps> = (
   );
 };
 
-export { ProfileSocialUrlFragment };
+export default ProfileSocialUrlFragment;
 export type { ProfileSocialUrlFragmentProps };
 
 const ProfileSocialUrlBox = styled.div<{ type?: string }>`

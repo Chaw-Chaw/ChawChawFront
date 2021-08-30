@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useContext, useEffect } from "react";
 import styled from "styled-components";
-import { ChatBox } from "./ChatBox";
+import ChatBox from "./ChatBox";
 import { AuthContext } from "../../../store/AuthContext";
 
 interface ChatListProps {

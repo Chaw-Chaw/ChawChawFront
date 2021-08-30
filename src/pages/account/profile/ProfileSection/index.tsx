@@ -14,10 +14,10 @@ import {
   DEFAULT_FACEBOOK_URL,
   DEFAULT_INSTAGRAM_URL,
 } from "../../../../constants";
-import { ProfileContent } from "./ProfileContent";
-import { ProfileImage } from "./ProfileImage";
-import { ProfileSocialUrl } from "./ProfileSocialUrl";
-import { ProfileSelectInfo } from "./ProfileSelectInfo";
+import ProfileContent from "./ProfileContent";
+import ProfileImage from "./ProfileImage";
+import ProfileSocialUrl from "./ProfileSocialUrl";
+import ProfileSelectInfo from "./ProfileSelectInfo";
 import { useCookies } from "react-cookie";
 
 interface ProfileSection {

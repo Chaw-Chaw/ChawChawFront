@@ -9,7 +9,7 @@ import {
 } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { MessageInput } from "./MessageInput";
+import MessageInput from "./MessageInput";
 import ChatMessage from "../../../components/chat/Message/ChatMessage";
 import InfoMessage from "../../../components/chat/Message/InfoMessage";
 import { BsBoxArrowRight } from "react-icons/bs";

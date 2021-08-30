@@ -46,7 +46,7 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
   );
 };
 
-export { ChatBox };
+export default ChatBox;
 const ChatContainer = styled.div<{ type: string }>`
   cursor: pointer;
   display: flex;

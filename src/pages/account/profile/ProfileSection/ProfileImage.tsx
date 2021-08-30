@@ -107,7 +107,7 @@ const ProfileImage: React.FC = () => {
     </Container>
   );
 };
-export { ProfileImage };
+export default ProfileImage;
 
 const Container = styled.div`
   display: flex;

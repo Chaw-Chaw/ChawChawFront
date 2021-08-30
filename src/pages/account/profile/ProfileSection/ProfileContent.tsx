@@ -70,7 +70,7 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
   );
 };
 
-export { ProfileContent };
+export default ProfileContent;
 
 const Container = styled.div`
   display: flex;

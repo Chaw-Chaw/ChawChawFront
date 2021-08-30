@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { ProfileListItem } from "../../../../components/profile/ProfileListItem";
-import { ProfileSocialUrlFragment } from "./ProfileSocialUrlFragment";
+import ProfileSocialUrlFragment from "./ProfileSocialUrlFragment";
 
 interface ProfileSocialUrlProps {
   setFaceBookUrl?: Dispatch<SetStateAction<string>>;
@@ -33,4 +33,4 @@ const ProfileSocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
   );
 };
 
-export { ProfileSocialUrl };
+export default ProfileSocialUrl;
