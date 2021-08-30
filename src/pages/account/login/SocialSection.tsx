@@ -62,7 +62,9 @@ const SocialSection: React.FC = () => {
             console.log("status: ", error.status);
           }}
         >
-          <FaFacebookF />
+          <IconBox>
+            <FaFacebookF />
+          </IconBox>
         </FacebookLogin>
       </ButtonSection>
     </SocialContainer>
@@ -70,6 +72,24 @@ const SocialSection: React.FC = () => {
 };
 
 export default SocialSection;
+
+const IconBox = styled.div`
+  cursor: pointer;
+  width: 60px;
+  height: 60px;
+  border: none;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
+  border-radius: 100%;
+  margin: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #3d5a97;
+  svg {
+    color: white;
+    font-size: 2.5rem;
+  }
+`;
 
 const ButtonSection = styled.div`
   width: 100%;
@@ -114,17 +134,6 @@ const KakaoLogin = styled.div`
 `;
 
 const styleFacebookLogin: CSS.Properties = {
-  cursor: "pointer",
-  width: "60px",
-  height: "60px",
   border: "none",
-  boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.5)",
-  borderRadius: "100%",
-  margin: "0px",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  background: "#3d5a97",
-  color: "white",
-  fontSize: "2.5rem",
+  background: "none",
 };
