@@ -95,7 +95,7 @@ const SocialButtonTitle = styled.h2`
   font-size: 1rem;
 `;
 
-const KakaoLogin = styled.button`
+const KakaoLogin = styled.div`
   cursor: pointer;
   width: 60px;
   height: 60px;
@@ -107,8 +107,10 @@ const KakaoLogin = styled.button`
   justify-content: center;
   align-items: center;
   background: #fae100;
-  color: #3c1d1e;
-  font-size: 2.5rem;
+  svg {
+    font-size: 2.5rem;
+    color: #3c1d1e;
+  }
 `;
 
 const styleFacebookLogin: CSS.Properties = {
