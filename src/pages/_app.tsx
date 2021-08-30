@@ -10,6 +10,7 @@ import {
   AlertComponentPropsWithStyle,
 } from "react-alert";
 import { AlertMessage } from "../components/common";
+import { DefaultSeo } from "next-seo";
 
 const GlobalStyles = createGlobalStyle`
 @font-face {
@@ -56,6 +57,33 @@ function MyApp({ Component, pageProps }: AppProps) {
         <AlertProvider template={AlertTemplate}>
           <GlobalStyles />
           <AuthContextProvider>
+            <DefaultSeo
+              title={"ChawChaw 언어를 교환합시다.🗣"}
+              description={"대학내 교환학생 언어교환 채팅 어플리케이션입니다."}
+              canonical="https://www.chawchaw.vercel.app"
+              openGraph={{
+                type: "website",
+                locale: "en_IE",
+                title: "ChawChaw 언어를 교환합시다.🗣",
+                description:
+                  "대학내 교환학생 언어교환 채팅 어플리케이션입니다.",
+                images: [
+                  {
+                    url: "https://i.ibb.co/m0NY7yQ/image.jpg",
+                    width: 800,
+                    height: 600,
+                    alt: "ChawChaw 소개 이미지",
+                  },
+                ],
+                url: "https://www.chawchaw.vercel.app",
+                site_name: "ChawChaw",
+              }}
+              twitter={{
+                handle: "@chawchawTwitter",
+                site: "chawchaw.vercel.app",
+                cardType: "summary",
+              }}
+            />
             <Component {...pageProps} />
           </AuthContextProvider>
         </AlertProvider>

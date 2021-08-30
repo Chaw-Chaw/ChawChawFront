@@ -1,3 +1,4 @@
+import Head from "next/head";
 import styled from "styled-components";
 import { Layout } from "../components/common";
 import Banner from "./home/Banner";

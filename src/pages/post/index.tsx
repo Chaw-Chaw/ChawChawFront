@@ -103,7 +103,7 @@ export default function Post() {
 
       document.cookie = "exclude=" + postIds.current + ";path=/;";
       await getPosts();
-      // document.cookie = "exclude=;expires=Thu, 18 Dec 2013 12:00:00 GMT";
+      document.cookie = "exclude=;path=/;expires=Thu, 18 Dec 2013 12:00:00 GMT";
       observer.observe(entry.target);
     } else {
       console.log(entry.isIntersecting, "안보인다.");
