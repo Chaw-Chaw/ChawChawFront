@@ -70,6 +70,15 @@ const ProfileSection: React.FC = () => {
       if (convertedItem) hopeLanguage.push(convertedItem);
     });
 
+    if (
+      country.length === 0 ||
+      language.length === 0 ||
+      hopeLanguage.length === 0
+    ) {
+      message.error("나라와 언어들을 하나 이상 선택해주세요.");
+      return;
+    }
+
     const userProfile = {
       country,
       language,

@@ -35,6 +35,15 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     repLanguage: "",
     views: 0,
   };
+  const postCardContentArr = props.content.split("\n");
+  const postCardContentTmp =
+    postCardContentArr.length > 11
+      ? postCardContentArr.slice(0, 9).concat(["..."]).join("\n")
+      : postCardContentArr.join("\n");
+  const postCardContent =
+    postCardContentTmp.length > 220
+      ? postCardContentTmp.substring(0, 219) + "..."
+      : postCardContentTmp;
 
   const [open, setOpen] = useState(false);
   const [postModalInfo, setPostModalInfo] =
@@ -98,7 +107,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           />
         </PostImageBox>
         <PostCardContent>
-          <PostCardContentText disabled value={props.content} />
+          <PostCardContentText disabled value={postCardContent} />
         </PostCardContent>
         <PostCardInfo
           pastDate={props.pastDate}
@@ -175,7 +184,6 @@ const PostCardContentText = styled.textarea`
   width: 100%;
   color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
   height: 220px;
-  overflow: hidden;
   font-size: 1rem;
   resize: none;
   box-sizing: border-box;

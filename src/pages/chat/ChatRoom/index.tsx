@@ -39,6 +39,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const accessToken = cookies.accessToken;
 
   const sendMessage = () => {
+    if (message === "") return;
     props.publish(message, "TALK");
     setMessage("");
   };

@@ -3728,7 +3728,7 @@ const LocaleLanguage: any = {
   uz: "Uzbek",
   ve: "Venda",
   vi: "Vietnamese",
-  vo: "Volap체k",
+  vo: "Volapük",
   wa: "Walloon",
   cy: "Welsh",
   wo: "Wolof",

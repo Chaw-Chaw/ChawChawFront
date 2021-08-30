@@ -1,3 +1,4 @@
+import { initial } from "lodash";
 import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 
@@ -7,6 +8,7 @@ interface initialBoxProps {
   width?: string;
   height?: string;
   backgroundColor?: string;
+  value?: string;
 }
 
 interface DropDownProps extends initialBoxProps {
@@ -17,7 +19,6 @@ interface DropDownProps extends initialBoxProps {
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: () => void;
   postOrder?: boolean;
-  value?: string;
   index?: number;
   type?: string;
   setValues?: Dispatch<SetStateAction<string[]>>;
@@ -30,6 +31,7 @@ const DropDownBox: React.FC<DropDownProps> = (props) => {
       props.onClick(e);
     }
   };
+  console.log(props.value);
   return (
     <InitialBox
       fontWeight={props.fontWeight}
@@ -39,6 +41,7 @@ const DropDownBox: React.FC<DropDownProps> = (props) => {
       onClick={clickHander}
       color={props.color}
       backgroundColor={props.backgroundColor}
+      value={props.value}
     >
       {props.children}
       <span>{props.value}</span>
@@ -81,6 +84,16 @@ const InitialBox = styled.div<initialBoxProps>`
     position: absolute;
     left: 5px;
   }
+  /* span {
+    color: ${(props) => {
+    if (props.value === "Select") return props.theme.primaryColor;
+    return "white";
+  }};
+    font-size: ${(props) => {
+    if (props.value === "Select") return "1.2rem";
+    return props.fontSize;
+  }};
+  } */
 
   font-family: "BMJUA";
 

@@ -40,6 +40,11 @@ const PostModalInfoBox = styled.div`
   font-size: 0.7rem;
   color: ${(props) =>
     props.theme.id === "light" ? "rgb(0,0,0,0.5)" : "white"};
+  border-top: 1px solid
+    ${(props) =>
+      props.theme.id === "light"
+        ? " rgb(0, 0, 0, 0.2)"
+        : "rgb(255, 255, 255, 0.2)"};
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 `;

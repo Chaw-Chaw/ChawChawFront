@@ -54,12 +54,29 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
           />
         </SelectInfoBox>
       </DropDownBox>
+      <ExplainIcons>
+        <span>🗣 : Mother Language</span>
+        <span>📖 : Want to learn this language</span>
+      </ExplainIcons>
     </PostOrderBox>
   );
 };
 
 export default PostOrder;
 export { orderOptions };
+
+const ExplainIcons = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  span {
+    margin-left: 10px;
+  }
+  /* margin-: auto; */
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
 
 const PostOrderBox = styled.div`
   margin: 20px 0px 20px 0px;

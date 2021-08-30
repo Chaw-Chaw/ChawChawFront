@@ -69,14 +69,14 @@ const PostModal: React.FC<PostModalProps> = (props) => {
         values={hopeLanguage}
         mainValue={repHopeLanguage}
       />
+      <PostModalContent>
+        <PostModalContentText disabled value={props.content} />
+      </PostModalContent>
       <PostModalSocialList
         title="Contact to me"
         faceBookUrl={props.facebookUrl}
         instagramUrl={props.instagramUrl}
       />
-      <PostModalContent>
-        <PostModalContentText disabled value={props.content} />
-      </PostModalContent>
       <PostModalInfo
         days={String(pastDays)}
         views={props.views}
@@ -137,11 +137,6 @@ const PostModalContent = styled.div`
   }
   font-weight: 400;
   font-size: 0.9rem;
-  border-bottom: 1px solid
-    ${(props) =>
-      props.theme.id === "light"
-        ? " rgb(0, 0, 0, 0.2)"
-        : "rgb(255, 255, 255, 0.2)"};
 `;
 
 const PostModalContentText = styled.textarea`

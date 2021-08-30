@@ -50,4 +50,5 @@ const PostImageName = styled.span`
 
 const PostImageUserInfo = styled(PostImageName)`
   font-size: 1rem;
+  margin-top: 8px;
 `;

@@ -112,6 +112,7 @@ const AuthContextProvider: React.FC = (props) => {
     })()
   );
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
+  const accessToken = cookies.accessToken;
   const router = useRouter();
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
     setUser((preUser: UserPropertys) => {
@@ -150,6 +151,7 @@ const AuthContextProvider: React.FC = (props) => {
       .post("/users/auth/refresh", {
         headers: {
           "Content-Type": "application/json",
+          Authorization: accessToken,
           Accept: "application/json",
         },
       })

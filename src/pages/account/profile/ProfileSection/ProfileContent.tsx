@@ -35,7 +35,6 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
   );
   useEffect(() => {
     textAreaResizHandle();
-    console.log(props.values, "content");
     setContent(props.values);
   }, [props.values]);
   return (

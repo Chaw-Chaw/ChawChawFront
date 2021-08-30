@@ -1,7 +1,13 @@
 import styled from "styled-components";
 import { TextArea } from "../../../components/common/Input";
 import { AiOutlinePicture, AiOutlineSend } from "react-icons/ai";
-import { ChangeEventHandler, KeyboardEvent, MouseEventHandler } from "react";
+import {
+  ChangeEventHandler,
+  KeyboardEvent,
+  MouseEventHandler,
+  useRef,
+  useState,
+} from "react";
 
 interface MessageInputProps {
   roomId: number;
@@ -20,7 +26,11 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
           disabled={isNotActive}
           value={props.value}
           onChange={props.onChange}
-          onKeyPress={props.onKeyPress}
+          onKeyPress={(e) => {
+            e.preventDefault();
+            if (isNotActive) return;
+            props.onKeyPress(e);
+          }}
           placeholder="메세지를 입력해주세요."
           autoFocus
         />
