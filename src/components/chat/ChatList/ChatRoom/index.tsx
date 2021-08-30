@@ -144,11 +144,12 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
           roomId={props.roomId}
           onChange={(e) => {
             // if (e.key === "Enter") return;
-            e.preventDefault();
+
             setMessage(e.target.value);
           }}
           onKeyPress={(e) => {
             if (e.key === "Enter") {
+              e.preventDefault();
               sendMessage();
             }
           }}

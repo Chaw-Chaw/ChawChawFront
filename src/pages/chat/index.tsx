@@ -231,6 +231,7 @@ export default function Chat() {
     const now = new Date(Date.now() - timezoneOffset);
     client.current.publish({
       destination: "/message",
+      // headers: { authorization: accessToken },
       body: JSON.stringify({
         messageType,
         roomId: mainRoomId,

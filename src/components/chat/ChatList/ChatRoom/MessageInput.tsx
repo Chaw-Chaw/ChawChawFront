@@ -27,7 +27,6 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
           value={props.value}
           onChange={props.onChange}
           onKeyPress={(e) => {
-            e.preventDefault();
             if (isNotActive) return;
             props.onKeyPress(e);
           }}
