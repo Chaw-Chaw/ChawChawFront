@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Input, Button } from "../../components/common";
+import { Input, Button } from "../common";
 import { IoIosSearch } from "react-icons/io";
 import React, { useRef } from "react";
 interface PostSearchProps {

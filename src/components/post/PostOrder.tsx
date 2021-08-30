@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
-import { SelectInfoDropDown, DropDown } from "../../components/common";
+import { SelectInfoDropDown, DropDown } from "../common";
 interface PostOrderProps {
   sortInfo: string[];
   setSortInfo: Dispatch<SetStateAction<string[]>>;

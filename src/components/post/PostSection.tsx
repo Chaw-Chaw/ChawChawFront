@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { PostCard } from "../../components/post/PostCard";
-import { CountryLocale, LocaleLanguage } from "../../components/common";
+import { PostCard } from "./PostCard";
+import { CountryLocale, LocaleLanguage } from "../common";
 
 interface PostSectionProps {
   postInfo: {

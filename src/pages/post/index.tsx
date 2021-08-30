@@ -1,8 +1,8 @@
 import { LanguageLocale, Layout } from "../../components/common";
 import styled from "styled-components";
-import PostSearch from "./PostSearch";
-import PostOrder, { orderOptions } from "./PostOrder";
-import PostSection from "./PostSection";
+import PostSearch from "../../components/post/PostSearch";
+import PostOrder, { orderOptions } from "../../components/post/PostOrder";
+import PostSection from "../../components/post/PostSection";
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../store/AuthContext";
