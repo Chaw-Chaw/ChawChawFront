@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { ProfileListItem } from "../../../../components/profile/ProfileListItem";
+import { ProfileListItem } from "../ProfileListItem";
 import ProfileSocialUrlFragment from "./ProfileSocialUrlFragment";
 
 interface ProfileSocialUrlProps {

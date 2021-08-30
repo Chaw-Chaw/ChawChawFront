@@ -10,14 +10,14 @@ import {
 import { useRouter } from "next/router";
 import axios from "axios";
 import MessageInput from "./MessageInput";
-import ChatMessage from "../../../components/chat/Message/ChatMessage";
-import InfoMessage from "../../../components/chat/Message/InfoMessage";
+import ChatMessage from "../../Message/ChatMessage";
+import InfoMessage from "../../Message/InfoMessage";
 import { BsBoxArrowRight } from "react-icons/bs";
 import { RiHome2Line } from "react-icons/ri";
 import { BsChatDots } from "react-icons/bs";
 import { useCookies } from "react-cookie";
-import { AuthContext } from "../../../store/AuthContext";
-import { ChangeLanguageDropDown } from "../../../components/common";
+import { AuthContext } from "../../../../store/AuthContext";
+import { ChangeLanguageDropDown } from "../../../common";
 import translate from "google-translate-api";
 
 interface ChatRoomProps {

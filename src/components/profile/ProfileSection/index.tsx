@@ -5,15 +5,15 @@ import {
   CountryLocale,
   LanguageLocale,
   LocaleLanguage,
-} from "../../../../components/common";
+} from "../../common";
 import { MouseEventHandler, useContext, useState } from "react";
-import { AuthContext, UserPropertys } from "../../../../store/AuthContext";
+import { AuthContext, UserPropertys } from "../../../store/AuthContext";
 import { useAlert } from "react-alert";
 import axios from "axios";
 import {
   DEFAULT_FACEBOOK_URL,
   DEFAULT_INSTAGRAM_URL,
-} from "../../../../constants";
+} from "../../../constants";
 import ProfileContent from "./ProfileContent";
 import ProfileImage from "./ProfileImage";
 import ProfileSocialUrl from "./ProfileSocialUrl";

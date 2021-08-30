@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { TextArea } from "../../../components/common/Input";
+import { TextArea } from "../../../common/Input";
 import { AiOutlinePicture, AiOutlineSend } from "react-icons/ai";
 import {
   ChangeEventHandler,

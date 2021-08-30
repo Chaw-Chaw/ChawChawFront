@@ -1,7 +1,7 @@
 import React, { MouseEventHandler, useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
-import { MessageImage } from "../../../components/chat/Message/MessageImage";
+import { MessageImage } from "../Message/MessageImage";
 
 interface ChatBoxProps {
   imageUrl: any;
@@ -14,7 +14,7 @@ interface ChatBoxProps {
 
 const ChatBox: React.FC<ChatBoxProps> = (props) => {
   const mainChatList = useRef<HTMLDivElement>(null);
-  const regDate = props.regDate ? props.regDate.split("T").join(" ") : "";
+  const regDate = props.regDate.split("T").join(" ");
   const type = props.roomId === props.mainRoomId ? "current" : "";
   useEffect(() => {
     if (!mainChatList.current) return;

@@ -31,7 +31,6 @@ const DropDownBox: React.FC<DropDownProps> = (props) => {
       props.onClick(e);
     }
   };
-  console.log(props.value);
   return (
     <InitialBox
       fontWeight={props.fontWeight}

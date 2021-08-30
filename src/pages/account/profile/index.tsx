@@ -4,7 +4,7 @@ import { useAlert } from "react-alert";
 import { useCookies } from "react-cookie";
 import styled from "styled-components";
 import { Layout } from "../../../components/common";
-import ProfileSection from "./ProfileSection";
+import ProfileSection from "../../../components/profile/ProfileSection";
 import { AuthContext } from "../../../store/AuthContext";
 
 export default function Profile() {
