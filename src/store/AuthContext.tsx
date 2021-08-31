@@ -142,7 +142,7 @@ const AuthContextProvider: React.FC = (props) => {
       path: "/",
       secure: true,
     });
-    setTimeout(grantRefresh, 2000);
+    setTimeout(grantRefresh, ACCESS_TOKEN_TIME - 60000);
     saveUser(newData);
   };
 
