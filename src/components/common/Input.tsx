@@ -36,6 +36,7 @@ const TextArea = styled.textarea`
   font-family: "Source Sans Pro";
   margin-bottom: 8px;
   width: 100%;
+  font-family: "Source Sans Pro";
   box-sizing: border-box;
   height: 40px;
   color: ${(props) =>

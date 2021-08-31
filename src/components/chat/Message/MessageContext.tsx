@@ -10,10 +10,6 @@ interface MessageContextProps {
 }
 
 const MessageContext: React.FC<MessageContextProps> = (props) => {
-  const closeContext = () => props.setIsActive(false);
-  useEffect(() => {
-    document.addEventListener("click", closeContext);
-  }, []);
   return (
     <MessageContextSelect
       onClick={props.onClick}

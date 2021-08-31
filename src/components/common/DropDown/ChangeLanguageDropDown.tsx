@@ -14,10 +14,8 @@ const ChangeLanguageDropDown: React.FC<ChangeLanguageDropDownProps> = (
   props
 ) => {
   const initialValue = LanguageLocale[props.selectLanguage[0]].toUpperCase();
-  const { user } = useContext(AuthContext);
-  const myHopeLanguages = user.hopeLanguage
-    ? ["ko", ...user.hopeLanguage]
-    : ["ko"];
+  const Languages: string[] = Object.values(LanguageLocale);
+  const myHopeLanguages = ["ko", ...Languages];
   const options = myHopeLanguages.map((item) => LocaleLanguage[item]);
 
   return (

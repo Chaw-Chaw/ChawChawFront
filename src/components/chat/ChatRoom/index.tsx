@@ -85,7 +85,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
 
   useEffect(() => {
     scrollToBottom();
-    console.log(props.chatMessage, "chatRoom IN");
+    // console.log(props.chatMessage, "chatRoom IN");
   }, [props.chatMessage]);
 
   useEffect(() => {

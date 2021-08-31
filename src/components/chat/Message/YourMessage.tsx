@@ -3,8 +3,13 @@ import styled from "styled-components";
 import { MessageContext } from "./MessageContext";
 import { ChatMessageProps } from "./ChatMessage";
 import { MessageImage } from "./MessageImage";
-import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
+import {
+  DEFAULT_PROFILE_IMAGE,
+  GOOGLE_TRANSLATE_API_KEY,
+} from "../../../constants";
 import { MyMessageProps } from "./MyMessage";
+import { LanguageLocale } from "../../common";
+import axios from "axios";
 
 interface YourMessageProps extends MyMessageProps {
   src: string;
@@ -13,9 +18,40 @@ interface YourMessageProps extends MyMessageProps {
 
 const YourMessage: React.FC<YourMessageProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
-  const onRightClick: MouseEventHandler<HTMLDivElement> = (e) => {
+  const [context, setContext] = useState(props.context);
+  const selectLanguage = LanguageLocale[props.selectLanguage[0]];
+  const onClick: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     setIsActive((pre) => !pre);
+    return;
+  };
+
+  const translateContext: React.MouseEventHandler<HTMLDivElement> = async (
+    e
+  ) => {
+    e.preventDefault();
+    const url = `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_API_KEY}`;
+    console.log(context, selectLanguage, "번역 시작");
+    const response: any = await axios
+      .get(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        params: {
+          q: context,
+          source: "",
+          target: selectLanguage,
+        },
+      })
+      .catch((err) => err.response);
+    if (response.status !== 200) {
+      console.error(response, "번역 에러");
+      return;
+    }
+    const convertContext = response.data.data.translations[0].translatedText;
+    setContext(convertContext);
+    console.log(convertContext, "드디어 나오는거냐");
     return;
   };
 
@@ -24,14 +60,14 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
       <YourMessageInfo>
         <MessageImage src={props.src || DEFAULT_PROFILE_IMAGE} />
         {/* <MessageUserName>{props.userName}</MessageUserName> */}
-        <YourMessageBox onContextMenu={onRightClick}>
+        <YourMessageBox onClick={onClick}>
           <MessageContext
             isActive={isActive}
             setIsActive={setIsActive}
             type="you"
-            onClick={props.onClick}
+            onClick={translateContext}
           />
-          {props.context}
+          {context}
         </YourMessageBox>
       </YourMessageInfo>
       <RegDateMessage>{props.regDate}</RegDateMessage>
@@ -46,6 +82,7 @@ const YourMessageInfo = styled.div`
 `;
 
 const YourMessageBox = styled.div`
+  cursor: pointer;
   position: relative;
   padding: 12px;
   box-sizing: border-box;
@@ -58,6 +95,7 @@ const YourMessageBox = styled.div`
   border-radius: 20px;
   border-top-left-radius: 0px;
   margin-left: 10px;
+  font-family: "Source Sans Pro";
 `;
 
 const MessageUserName = styled.h2`

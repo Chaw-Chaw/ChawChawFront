@@ -1,5 +1,8 @@
+import axios from "axios";
 import { Dispatch, MouseEventHandler, SetStateAction, useState } from "react";
 import styled from "styled-components";
+import { GOOGLE_TRANSLATE_API_KEY } from "../../../constants";
+import { LanguageLocale } from "../../common";
 import { ChatMessageProps } from "./ChatMessage";
 import { MessageContext } from "./MessageContext";
 import { RegDateMessage } from "./YourMessage";
@@ -7,28 +10,57 @@ import { RegDateMessage } from "./YourMessage";
 interface MyMessageProps {
   regDate: string;
   context: string;
-  onClick: React.MouseEventHandler<HTMLDivElement>;
+  selectLanguage: string[];
 }
 
 const MyMessage: React.FC<MyMessageProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
-  const [context, setContext] = useState(props.children);
-  const onRightClick: MouseEventHandler<HTMLDivElement> = (e) => {
+  const [context, setContext] = useState(props.context);
+  const selectLanguage = LanguageLocale[props.selectLanguage[0]];
+  const onClick: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     setIsActive((pre) => !pre);
     return;
   };
 
+  const translateContext: React.MouseEventHandler<HTMLDivElement> = async (
+    e
+  ) => {
+    e.preventDefault();
+    const url = `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_API_KEY}`;
+    console.log(context, selectLanguage, "번역 시작");
+    const response: any = await axios
+      .get(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        params: {
+          q: context,
+          source: "",
+          target: selectLanguage,
+        },
+      })
+      .catch((err) => err.response);
+    if (response.status !== 200) {
+      console.error(response, "번역 에러");
+      return;
+    }
+    const convertContext = response.data.data.translations[0].translatedText;
+    setContext(convertContext);
+    console.log(convertContext, "드디어 나오는거냐");
+    return;
+  };
   return (
     <MyMessageContainer>
-      <MyMessageBox onContextMenu={onRightClick}>
+      <MyMessageBox onClick={onClick}>
         <MessageContext
           isActive={isActive}
           setIsActive={setIsActive}
           type="me"
-          onClick={props.onClick}
+          onClick={translateContext}
         />
-        <div>{props.context}</div>
+        <div>{context}</div>
       </MyMessageBox>
       <RegDateMessage>{props.regDate}</RegDateMessage>
     </MyMessageContainer>
@@ -38,6 +70,7 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
 export { MyMessage };
 export type { MyMessageProps };
 const MyMessageBox = styled.div`
+  cursor: pointer;
   position: relative;
   padding: 12px;
   box-sizing: border-box;
@@ -50,6 +83,7 @@ const MyMessageBox = styled.div`
   border-radius: 20px;
   border-top-right-radius: 0px;
   color: white;
+  font-family: "Source Sans Pro";
 `;
 
 const MyMessageContainer = styled.div`

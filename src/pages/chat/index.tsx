@@ -14,26 +14,7 @@ import { useAlert } from "react-alert";
 import { DEFAULT_PROFILE_IMAGE, BACKEND_URL } from "../../constants";
 import { useCookies } from "react-cookie";
 
-const Container = styled.div`
-  display: flex;
-  width: 100%;
-  /* max-width: 500px;
-  @media (max-width: 500px) {
-    max-width: 320px;
-  } */
-  justify-content: center;
-`;
-
 export default function Chat() {
-  // const [user, setUser] = useState(
-  //   (() => {
-  //     if (typeof window === "undefined") return {};
-  //     const localStorageUser = window.localStorage.getItem("user");
-  //     if (!localStorageUser) return {};
-  //     return JSON.parse(localStorageUser);
-  //   })()
-  // );
-
   const { user, grantRefresh } = useContext(AuthContext);
   const [mainChatMessages, setMainChatMessages] = useState<any>([]);
   const [totalMessage, setTotalMessage] = useState<any>([]);
@@ -299,8 +280,9 @@ export default function Chat() {
     if (!isMyMessage) {
       publish(`${user.name}님이 입장하셨습니다.`, "ENTER");
     }
-    console.log(mainChatLog, "mainChatLog");
+    // console.log(mainChatLog, "mainChatLog");
     setMainChatMessages([...mainChatLog.messages]);
+    setYourProfileImage(mainChatLog.imageUrl);
   }, [mainRoomId]);
 
   return (
@@ -325,3 +307,13 @@ export default function Chat() {
     </Layout>
   );
 }
+
+const Container = styled.div`
+  display: flex;
+  width: 100%;
+  /* max-width: 500px;
+  @media (max-width: 500px) {
+    max-width: 320px;
+  } */
+  justify-content: center;
+`;

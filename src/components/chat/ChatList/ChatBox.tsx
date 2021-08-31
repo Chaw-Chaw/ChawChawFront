@@ -65,6 +65,7 @@ const ChatContainer = styled.div<{ type: string }>`
 `;
 
 const ChatUserName = styled.h2<{ type: string }>`
+  font-family: "BMJUA";
   font-size: 1.3rem;
   margin: 0px;
   margin-bottom: 10px;
@@ -79,6 +80,7 @@ const ChatMessageBox = styled.div<{ type: string }>`
   width: 80%;
   display: flex;
   flex-direction: column;
+  font-family: "Source Sans Pro";
 `;
 
 const RegDateMessage = styled.div`
@@ -86,4 +88,5 @@ const RegDateMessage = styled.div`
   color: ${(props) => props.theme.secondaryColor};
   margin-top: 4px;
   margin-left: auto;
+  font-family: "BMJUA";
 `;
