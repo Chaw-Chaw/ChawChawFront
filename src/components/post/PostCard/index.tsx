@@ -42,7 +42,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       : postCardContentArr.join("\n");
   const postCardContent =
     postCardContentTmp.length > 220
-      ? postCardContentTmp.substring(0, 219) + "..."
+      ? postCardContentTmp.substring(0, 199) + "..."
       : postCardContentTmp;
 
   const [open, setOpen] = useState(false);
