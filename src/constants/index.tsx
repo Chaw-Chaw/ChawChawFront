@@ -9,6 +9,8 @@ export const DEVELOPMENT_OAUTH_URL = "http://localhost:3000/account/oauth";
 export const PRODUCT_OAUTH_URL = "https://chawchaw.vercel.app/account/oauth";
 export const BACKEND_URL = "https://mylifeforcoding.com";
 export const KAKAO_OAUTH_URL = "https://kauth.kakao.com/oauth/authorize";
+
 export const KAKAO_CLIENT_ID = "de32392365a519fc6df93e6196a5ad6b";
 export const FACEBOOK_APP_ID = "1235018336951383";
-export const GOOGLE_PROJECT_ID = "259242347220";
+export const GOOGLE_TRANSLATE_API_KEY =
+  "AIzaSyAPPDPbRJpIyu85TfVohtElpSnt7rFehN0";

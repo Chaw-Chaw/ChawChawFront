@@ -1,5 +1,5 @@
 import { Layout } from "../../components/common";
-import ChatRoom from "../../components/chat/ChatList/ChatRoom";
+import ChatRoom from "../../components/chat/ChatRoom";
 import ChatList from "../../components/chat/ChatList";
 import styled from "styled-components";
 import DefaultImage from "../../../public/Layout/btsSugar.jpeg";
@@ -167,7 +167,6 @@ export default function Chat() {
       const message = JSON.parse(response.body);
       console.log(response, "subscribe");
       // 메인 채팅룸이면 메인채팅 메세지에 저장
-      console.log(message.roomId, mainRoomIdRef.current, "이게 맞냐");
       if (message.roomId === mainRoomIdRef.current) {
         setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
       }
@@ -300,6 +299,7 @@ export default function Chat() {
     if (!isMyMessage) {
       publish(`${user.name}님이 입장하셨습니다.`, "ENTER");
     }
+    console.log(mainChatLog, "mainChatLog");
     setMainChatMessages([...mainChatLog.messages]);
   }, [mainRoomId]);
 

@@ -10,6 +10,7 @@ interface ChatBoxProps {
   roomId: number;
   mainRoomId: number;
   onClick: MouseEventHandler<HTMLDivElement>;
+  context: string;
 }
 
 const ChatBox: React.FC<ChatBoxProps> = (props) => {
@@ -38,7 +39,7 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
       />
       <ChatMessageBox type={type}>
         <ChatUserName type={type}>{props.sender}</ChatUserName>
-        {props.children}
+        {props.context}
         <RegDateMessage>{regDate}</RegDateMessage>
       </ChatMessageBox>
     </ChatContainer>

@@ -10,15 +10,14 @@ import {
 import { useRouter } from "next/router";
 import axios from "axios";
 import MessageInput from "./MessageInput";
-import ChatMessage from "../../Message/ChatMessage";
-import InfoMessage from "../../Message/InfoMessage";
+import ChatMessage from "../Message/ChatMessage";
+import InfoMessage from "../Message/InfoMessage";
 import { BsBoxArrowRight } from "react-icons/bs";
 import { RiHome2Line } from "react-icons/ri";
 import { BsChatDots } from "react-icons/bs";
 import { useCookies } from "react-cookie";
-import { AuthContext } from "../../../../store/AuthContext";
-import { ChangeLanguageDropDown } from "../../../common";
-import translate from "google-translate-api";
+import { AuthContext } from "../../../store/AuthContext";
+import { ChangeLanguageDropDown } from "../../common";
 
 interface ChatRoomProps {
   chatMessage: any[];
@@ -86,6 +85,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
 
   useEffect(() => {
     scrollToBottom();
+    console.log(props.chatMessage, "chatRoom IN");
   }, [props.chatMessage]);
 
   useEffect(() => {
@@ -119,26 +119,19 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
                 if (chatMessage.messageType !== "TALK")
                   return <InfoMessage>{chatMessage.message}</InfoMessage>;
                 // 토크 타입인 일반메세지 분류
-                if (user.id === chatMessage.senderId) {
-                  return (
-                    <ChatMessage
-                      key={index}
-                      regDate={chatMessage.regDate}
-                      context={chatMessage.message}
-                      selectLanguage={selectLanguage}
-                    />
-                  );
-                } else {
-                  return (
-                    <ChatMessage
-                      src={`${props.yourProfileImage}`}
-                      key={index}
-                      regDate={chatMessage.regDate}
-                      context={chatMessage.message}
-                      selectLanguage={selectLanguage}
-                    />
-                  );
-                }
+                return (
+                  <ChatMessage
+                    src={
+                      user.id === chatMessage.senderId
+                        ? undefined
+                        : `${props.yourProfileImage}`
+                    }
+                    key={index}
+                    regDate={chatMessage.regDate}
+                    context={chatMessage.message}
+                    selectLanguage={selectLanguage}
+                  />
+                );
               })}
             </div>
           )}

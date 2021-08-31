@@ -13,10 +13,10 @@ const ChatList: React.FC<ChatListProps> = (props) => {
   const { user } = useContext(AuthContext);
   console.log(props.totalMessage);
 
-  useEffect(() => {
-    if (props.mainRoomId < 0 || props.mainRoomId === undefined) return;
-    if (!user.id) return;
-  }, [props.mainRoomId]);
+  // useEffect(() => {
+  //   if (props.mainRoomId < 0 || props.mainRoomId === undefined) return;
+  //   if (!user.id) return;
+  // }, [props.mainRoomId]);
 
   return (
     <Outline>
@@ -43,9 +43,8 @@ const ChatList: React.FC<ChatListProps> = (props) => {
                   props.setMainRoomId(item.roomId);
                   return;
                 }}
-              >
-                {limitMessage}
-              </ChatBox>
+                context={limitMessage}
+              />
             );
           })}
       </Inner>
