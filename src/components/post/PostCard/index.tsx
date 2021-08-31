@@ -189,6 +189,7 @@ const PostCardContentText = styled.textarea`
   box-sizing: border-box;
   font-family: "BMJUA";
   border: none;
+  font-family: "Source Sans Pro";
   background-color: ${(props) => props.theme.bodyBackgroundColor};
 `;
 const PostCardContent = styled.div`
