@@ -121,9 +121,12 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
                 // 토크 타입인 일반메세지 분류
                 if (user.id === chatMessage.senderId) {
                   return (
-                    <ChatMessage key={index} regDate={chatMessage.regDate}>
-                      {chatMessage.message}
-                    </ChatMessage>
+                    <ChatMessage
+                      key={index}
+                      regDate={chatMessage.regDate}
+                      context={chatMessage.message}
+                      selectLanguage={selectLanguage}
+                    />
                   );
                 } else {
                   return (
@@ -131,9 +134,9 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
                       src={`${props.yourProfileImage}`}
                       key={index}
                       regDate={chatMessage.regDate}
-                    >
-                      {chatMessage.message}
-                    </ChatMessage>
+                      context={chatMessage.message}
+                      selectLanguage={selectLanguage}
+                    />
                   );
                 }
               })}

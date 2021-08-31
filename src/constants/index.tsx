@@ -11,3 +11,4 @@ export const BACKEND_URL = "https://mylifeforcoding.com";
 export const KAKAO_OAUTH_URL = "https://kauth.kakao.com/oauth/authorize";
 export const KAKAO_CLIENT_ID = "de32392365a519fc6df93e6196a5ad6b";
 export const FACEBOOK_APP_ID = "1235018336951383";
+export const GOOGLE_PROJECT_ID = "259242347220";

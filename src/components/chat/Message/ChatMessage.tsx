@@ -1,70 +1,66 @@
+import { MouseEventHandler, useState } from "react";
 import styled from "styled-components";
+import { MessageContext } from "./MessageContext";
 import { MessageImage } from "./MessageImage";
+import { MyMessage } from "./MyMessage";
+import { YourMessage } from "./YourMessage";
 
-interface MessageProps {
+interface ChatMessageProps {
   src?: string;
   userName?: string;
   regDate: string;
+  context: string;
+  selectLanguage: string[];
 }
 
-const ChatMessage: React.FC<MessageProps> = (props) => {
+const ChatMessage: React.FC<ChatMessageProps> = (props) => {
+  const { Translate } = require("@google-cloud/translate").v2;
+  const translate = new Translate();
   const regDate = props.regDate.split("T").join(" ");
+  const [context, setContext] = useState(props.context);
+  const selectLanguage = props.selectLanguage[0];
+
+  const translateContext: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    const translateText = async () => {
+      let [translations] = await translate.translate(context, selectLanguage);
+      translations = Array.isArray(translations)
+        ? translations
+        : [translations];
+      console.log("Translations:");
+      translations.forEach((translation: any, i: any) => {
+        console.log(`${context[i]} => (${selectLanguage}) ${translation}`);
+      });
+    };
+    // const convertContext = response.text;
+    // console.log(convertContext, "번역된 언어");
+    // setContext(convertContext);
+    return;
+  };
+
   return (
-    <>
+    <MessageContainer>
       {props.src ? (
-        <>
-          <MessageContainer>
-            <MessageImage src={props.src} />
-            <YourMessageContainer>
-              <MessageUserName>{props.userName}</MessageUserName>
-              <YourMessageBox>{props.children}</YourMessageBox>
-            </YourMessageContainer>
-          </MessageContainer>
-          <RegDateMessage>{regDate}</RegDateMessage>
-        </>
+        <YourMessage
+          regDate={regDate}
+          src={props.src}
+          userName={props.userName}
+          context={context}
+          onClick={translateContext}
+        />
       ) : (
-        <>
-          <MessageContainer>
-            <MyMessageContainer>
-              <MyMessageBox>{props.children}</MyMessageBox>
-              <RegDateMessageMe>{regDate}</RegDateMessageMe>
-            </MyMessageContainer>
-          </MessageContainer>
-        </>
+        <MyMessage
+          context={context}
+          regDate={regDate}
+          onClick={translateContext}
+        />
       )}
-    </>
+    </MessageContainer>
   );
 };
 
 export default ChatMessage;
-
-const YourMessageBox = styled.div`
-  padding: 12px;
-  box-sizing: border-box;
-  display: flex;
-  max-width: 300px;
-  min-width: 70px;
-  min-height: 50px;
-  border: 1px solid ${(props) => props.theme.primaryColor};
-  background-color: ${(props) => props.theme.bodyBackgroundColor};
-  border-radius: 20px;
-  border-top-left-radius: 0px;
-`;
-
-const MyMessageBox = styled.div`
-  padding: 12px;
-  box-sizing: border-box;
-  display: flex;
-  max-width: 300px;
-  min-width: 70px;
-  min-height: 50px;
-  /* border: 1px solid ${(props) => props.theme.primaryColor}; */
-  background-color: ${(props) => props.theme.primaryColor};
-  border-radius: 20px;
-  border-top-right-radius: 0px;
-  color: white;
-  margin-left: auto;
-`;
+export type { ChatMessageProps };
 
 const MessageContainer = styled.div`
   display: flex;
@@ -72,30 +68,4 @@ const MessageContainer = styled.div`
   width: 100%;
   box-sizing: border-box;
   margin-top: 10px;
-`;
-
-const MessageUserName = styled.h2`
-  font-size: 1rem;
-  margin: 0px;
-  margin-bottom: 2px;
-  color: rgb(126, 126, 126);
-`;
-const YourMessageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-left: 10px;
-`;
-const RegDateMessage = styled.div`
-  font-size: 0.5rem;
-  color: ${(props) => props.theme.secondaryColor};
-  margin-top: 4px;
-`;
-const RegDateMessageMe = styled(RegDateMessage)`
-  margin-left: auto;
-`;
-const MyMessageContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
 `;
