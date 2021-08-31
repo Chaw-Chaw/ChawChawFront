@@ -42,7 +42,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       : postCardContentArr.join("\n");
   const postCardContent =
     postCardContentTmp.length > 220
-      ? postCardContentTmp.substring(0, 199) + "..."
+      ? postCardContentTmp.substring(0, 150) + "..."
       : postCardContentTmp;
 
   const [open, setOpen] = useState(false);
@@ -187,7 +187,6 @@ const PostCardContentText = styled.textarea`
   font-size: 1rem;
   resize: none;
   box-sizing: border-box;
-  font-family: "BMJUA";
   border: none;
   font-family: "Source Sans Pro";
   background-color: ${(props) => props.theme.bodyBackgroundColor};

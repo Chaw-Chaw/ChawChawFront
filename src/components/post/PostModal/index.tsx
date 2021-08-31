@@ -146,7 +146,7 @@ const PostModalContentText = styled.textarea`
   font-size: 1rem;
   resize: none;
   box-sizing: border-box;
-  font-family: "BMJUA";
+  font-family: "Source Sans Pro";
   border: none;
   background-color: ${(props) => props.theme.bodyBackgroundColor};
 `;
