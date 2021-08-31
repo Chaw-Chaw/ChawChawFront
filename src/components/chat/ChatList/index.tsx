@@ -21,32 +21,33 @@ const ChatList: React.FC<ChatListProps> = (props) => {
   return (
     <Outline>
       <Inner>
-        {props.totalMessage.length !== 0 &&
-          props.totalMessage.map((item: any) => {
-            const limitMessageWord = 20;
-            const lastMessageInfo = item.messages[item.messages.length - 1];
-            const lastMessage = lastMessageInfo.message;
-            const limitMessage =
-              lastMessage.length > limitMessageWord
-                ? lastMessage.substring(0, limitMessageWord) + "..."
-                : lastMessage;
-            return (
-              <ChatBox
-                key={item.roomId}
-                imageUrl={item.imageUrl}
-                regDate={lastMessageInfo.regDate}
-                sender={item.sender}
-                roomId={item.roomId}
-                mainRoomId={props.mainRoomId}
-                onClick={(e) => {
-                  e.preventDefault();
-                  props.setMainRoomId(item.roomId);
-                  return;
-                }}
-                context={limitMessage}
-              />
-            );
-          })}
+        {props.totalMessage.length === 0
+          ? null
+          : props.totalMessage.map((item: any) => {
+              const limitMessageWord = 20;
+              const lastMessageInfo = item.messages[item.messages.length - 1];
+              const lastMessage = lastMessageInfo.message;
+              const limitMessage =
+                lastMessage.length > limitMessageWord
+                  ? lastMessage.substring(0, limitMessageWord) + "..."
+                  : lastMessage;
+              return (
+                <ChatBox
+                  key={item.roomId}
+                  imageUrl={item.imageUrl}
+                  regDate={lastMessageInfo.regDate}
+                  sender={item.sender}
+                  roomId={item.roomId}
+                  mainRoomId={props.mainRoomId}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    props.setMainRoomId(item.roomId);
+                    return;
+                  }}
+                  context={limitMessage}
+                />
+              );
+            })}
       </Inner>
     </Outline>
   );
