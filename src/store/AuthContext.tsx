@@ -157,6 +157,7 @@ const AuthContextProvider: React.FC = (props) => {
       })
       .catch((err) => {
         console.error(err, "grant access Token Fail");
+        console.log(err, "grant access Token Fail");
         return err.response;
       });
 
