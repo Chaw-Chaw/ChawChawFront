@@ -7,9 +7,10 @@ import {
   DEFAULT_PROFILE_IMAGE,
   GOOGLE_TRANSLATE_API_KEY,
 } from "../../../constants";
-import { MyMessageProps } from "./MyMessage";
+import { MyMessageProps, MessageImageBox, RegDateMessage } from "./MyMessage";
 import { LanguageLocale } from "../../common";
 import axios from "axios";
+import Image from "next/image";
 
 interface YourMessageProps extends MyMessageProps {
   src: string;
@@ -58,25 +59,39 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
 
   return (
     <YourMessageContainer>
-      <YourMessageInfo>
-        <MessageImage src={props.src || DEFAULT_PROFILE_IMAGE} />
-        {/* <MessageUserName>{props.userName}</MessageUserName> */}
-        <YourMessageBox onClick={onClick}>
-          <MessageContext
-            isActive={isActive}
-            setIsActive={setIsActive}
-            type="you"
-            onClick={translateContext}
+      {props.imageUrl ? (
+        <MessageImageBox>
+          <Image
+            className="chat_image"
+            src={`${props.imageUrl}`}
+            alt="채팅 이미지"
+            layout="fill"
+            // width="230"
+            // height="230"
+            // objectFit="cover"
           />
-          {context}
-        </YourMessageBox>
-      </YourMessageInfo>
+        </MessageImageBox>
+      ) : (
+        <YourMessageInfo>
+          <MessageImage src={props.src || DEFAULT_PROFILE_IMAGE} />
+          {/* <MessageUserName>{props.userName}</MessageUserName> */}
+          <YourMessageBox onClick={onClick}>
+            <MessageContext
+              isActive={isActive}
+              setIsActive={setIsActive}
+              type="you"
+              onClick={translateContext}
+            />
+            {context}
+          </YourMessageBox>
+        </YourMessageInfo>
+      )}
       <RegDateMessage>{props.regDate}</RegDateMessage>
     </YourMessageContainer>
   );
 };
 
-export { YourMessage, RegDateMessage };
+export { YourMessage };
 
 const YourMessageInfo = styled.div`
   display: flex;
@@ -109,10 +124,4 @@ const YourMessageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-`;
-
-const RegDateMessage = styled.div`
-  font-size: 0.5rem;
-  color: ${(props) => props.theme.secondaryColor};
-  margin-top: 4px;
 `;

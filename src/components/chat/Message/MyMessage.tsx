@@ -6,7 +6,6 @@ import { GOOGLE_TRANSLATE_API_KEY } from "../../../constants";
 import { LanguageLocale } from "../../common";
 import { ChatMessageProps } from "./ChatMessage";
 import { MessageContext } from "./MessageContext";
-import { RegDateMessage } from "./YourMessage";
 
 interface MyMessageProps {
   regDate: string;
@@ -50,39 +49,64 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
       console.error(response, "번역 에러");
       return;
     }
+
     const convertContext = response.data.data.translations[0].translatedText;
     setContext(convertContext);
     console.log(convertContext, "드디어 나오는거냐");
     return;
   };
+
   return (
     <MyMessageContainer>
-      <MyMessageBox onClick={onClick}>
-        <MessageContext
-          isActive={isActive}
-          setIsActive={setIsActive}
-          type="me"
-          onClick={translateContext}
-        />
-        {props.imageUrl ? (
+      {props.imageUrl ? (
+        <MessageImageBox>
           <Image
+            className="chat_image"
             src={`${props.imageUrl}`}
             alt="채팅 이미지"
-            width="230px"
-            height="230px"
-            objectFit="contain"
+            layout="fill"
+            // width="230"
+            // height="230"
+            // objectFit="cover"
           />
-        ) : (
-          <div>{context}</div>
-        )}
-      </MyMessageBox>
+        </MessageImageBox>
+      ) : (
+        <>
+          <MyMessageBox onClick={onClick}>
+            <MessageContext
+              isActive={isActive}
+              setIsActive={setIsActive}
+              type="me"
+              onClick={translateContext}
+            />
+
+            <div>{context}</div>
+          </MyMessageBox>
+        </>
+      )}
       <RegDateMessage>{props.regDate}</RegDateMessage>
     </MyMessageContainer>
   );
 };
 
-export { MyMessage };
+export { MyMessage, MessageImageBox, RegDateMessage };
 export type { MyMessageProps };
+
+const MessageImageBox = styled.div`
+  max-width: 230px;
+  max-height: 300px;
+  > div {
+    position: unset !important;
+  }
+  .chat_image {
+    object-fit: contain;
+    width: 100% !important;
+    position: relative !important;
+    height: unset !important;
+    border-radius: 20px;
+  }
+`;
+
 const MyMessageBox = styled.div`
   cursor: pointer;
   position: relative;
@@ -106,4 +130,10 @@ const MyMessageContainer = styled.div`
   flex-direction: column;
   align-items: flex-end;
   margin-left: auto;
+`;
+
+const RegDateMessage = styled.div`
+  font-size: 0.5rem;
+  color: ${(props) => props.theme.secondaryColor};
+  margin-top: 4px;
 `;
