@@ -5,9 +5,15 @@ import {
   ChangeEventHandler,
   KeyboardEvent,
   MouseEventHandler,
+  useContext,
   useRef,
   useState,
 } from "react";
+import axios from "axios";
+import { useCookies } from "react-cookie";
+import { AuthContext } from "../../../store/AuthContext";
+import { useAlert } from "react-alert";
+import { prepareProfile } from "selenium-webdriver/firefox";
 
 interface MessageInputProps {
   roomId: number;
@@ -15,10 +21,57 @@ interface MessageInputProps {
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
   onKeyPress: (e: KeyboardEvent) => void;
   onClick: MouseEventHandler<HTMLDivElement>;
+  publish: (message: any, messageType: string) => void;
 }
 
 const MessageInput: React.FC<MessageInputProps> = (props) => {
   const isNotActive = props.roomId === -1 ? true : false;
+  const [image, setImage] = useState();
+  const [cookies] = useCookies(["accessToken"]);
+  const { grantRefresh } = useContext(AuthContext);
+  const accessToken = cookies.accessToken;
+  const message = useAlert();
+
+  const sendImage = async (image: FormData) => {
+    const response = await axios
+      .post("/chat/image", image, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: accessToken,
+        },
+      })
+      .catch((err) => err.response);
+
+    if (response.status === 401) {
+      grantRefresh();
+      return;
+    }
+
+    if (response.data.isSuccess) {
+      console.log(response.data.data, "image Upload");
+      const imageUrl = response.data.data;
+      props.publish(imageUrl, "IMAGE");
+    } else {
+      console.error(response.data, "이미지 업로드 실패");
+      return;
+    }
+
+    return;
+  };
+  const imageSend: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    e.preventDefault();
+    const target = e.target as HTMLInputElement;
+    const file: File = (target.files as FileList)[0];
+    if (file === undefined) return;
+    if (file.size > 1024 * 1024 * 5) {
+      message.error("5MB 이상 파일을 업로드 할 수 없습니다.");
+      return;
+    }
+    const image = new FormData();
+    image.append("file", file);
+    sendImage(image);
+  };
+
   return (
     <InputBox>
       <InputBoxInner>
@@ -33,7 +86,14 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
           placeholder="메세지를 입력해주세요."
           autoFocus
         />
-        <PictureIconBox>
+        <PictureIconBox htmlFor="image-file">
+          <input
+            id="image-file"
+            type="file"
+            style={{ display: "none" }}
+            accept="image/png, image/jpeg"
+            onChange={imageSend}
+          />
           <AiOutlinePicture />
         </PictureIconBox>
         <SendIconBox
@@ -89,7 +149,7 @@ const TextInput = styled(TextArea)`
   border-radius: 20rem;
 `;
 
-const PictureIconBox = styled.div`
+const PictureIconBox = styled.label`
   position: absolute;
   width: 40px;
   height: 40px;
@@ -104,6 +164,17 @@ const PictureIconBox = styled.div`
   right: 60px;
 `;
 
-const SendIconBox = styled(PictureIconBox)`
+const SendIconBox = styled.div`
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  svg {
+    height: 40px;
+    width: 40px;
+    color: ${(props) =>
+      props.theme.id === "light" ? "rgb(0, 0, 0, 0.5)" : "white"};
+  }
+  top: 3.5px;
   right: 10px;
 `;

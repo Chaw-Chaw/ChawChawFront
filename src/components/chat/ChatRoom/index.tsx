@@ -116,8 +116,12 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
             <div ref={chatMessageBox}>
               {props.chatMessage.map((chatMessage: any, index: any) => {
                 // 토크 타입이 아닌 정보는 InfoMessage
-                if (chatMessage.messageType !== "TALK")
+                if (
+                  chatMessage.messageType === "ENTER" ||
+                  chatMessage.messageType === "EXIT"
+                )
                   return <InfoMessage>{chatMessage.message}</InfoMessage>;
+
                 // 토크 타입인 일반메세지 분류
                 return (
                   <ChatMessage
@@ -125,6 +129,11 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
                       user.id === chatMessage.senderId
                         ? undefined
                         : `${props.yourProfileImage}`
+                    }
+                    imageUrl={
+                      chatMessage.messageType === "IMAGE"
+                        ? chatMessage.message
+                        : undefined
                     }
                     key={index}
                     regDate={chatMessage.regDate}
@@ -153,6 +162,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
             e.preventDefault();
             sendMessage();
           }}
+          publish={props.publish}
         />
       </Inner>
     </Outline>

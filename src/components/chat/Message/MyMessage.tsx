@@ -1,4 +1,5 @@
 import axios from "axios";
+import Image from "next/image";
 import { Dispatch, MouseEventHandler, SetStateAction, useState } from "react";
 import styled from "styled-components";
 import { GOOGLE_TRANSLATE_API_KEY } from "../../../constants";
@@ -11,6 +12,7 @@ interface MyMessageProps {
   regDate: string;
   context: string;
   selectLanguage: string[];
+  imageUrl?: string;
 }
 
 const MyMessage: React.FC<MyMessageProps> = (props) => {
@@ -19,6 +21,7 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
   const selectLanguage = LanguageLocale[props.selectLanguage[0]];
   const onClick: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
+    if (props.imageUrl) return;
     setIsActive((pre) => !pre);
     return;
   };
@@ -27,6 +30,7 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
     e
   ) => {
     e.preventDefault();
+    if (props.imageUrl) return;
     const url = `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_API_KEY}`;
     console.log(context, selectLanguage, "번역 시작");
     const response: any = await axios
@@ -60,7 +64,17 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
           type="me"
           onClick={translateContext}
         />
-        <div>{context}</div>
+        {props.imageUrl ? (
+          <Image
+            src={`${props.imageUrl}`}
+            alt="채팅 이미지"
+            width="230px"
+            height="230px"
+            objectFit="contain"
+          />
+        ) : (
+          <div>{context}</div>
+        )}
       </MyMessageBox>
       <RegDateMessage>{props.regDate}</RegDateMessage>
     </MyMessageContainer>

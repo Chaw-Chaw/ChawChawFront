@@ -22,6 +22,7 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
   const selectLanguage = LanguageLocale[props.selectLanguage[0]];
   const onClick: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
+    if (props.imageUrl) return;
     setIsActive((pre) => !pre);
     return;
   };
