@@ -135,14 +135,16 @@ const AuthContextProvider: React.FC = (props) => {
   };
 
   const loginSuccess = (response: AxiosResponse) => {
-    const accessToken = response.headers.authorization;
-    const newData = { ...response.data.data };
+    const tokenInfo = response.data.data.token;
+    const accessToken = "Bearer " + tokenInfo.accessToken;
+    const accessTokenExpiresIn = tokenInfo.expiresIn;
+    const newData = { ...response.data.data.profile };
     console.log(accessToken, "acessToken");
     setCookie("accessToken", accessToken, {
       path: "/",
       secure: true,
     });
-    setTimeout(grantRefresh, ACCESS_TOKEN_TIME - 60000);
+    setTimeout(grantRefresh, accessTokenExpiresIn - 60000);
     saveUser(newData);
   };
 
@@ -151,7 +153,7 @@ const AuthContextProvider: React.FC = (props) => {
       .post("/users/auth/refresh", {
         headers: {
           "Content-Type": "application/json",
-          // Authorization: accessToken,
+          Authorization: "Bearer " + accessToken,
           Accept: "application/json",
         },
       })

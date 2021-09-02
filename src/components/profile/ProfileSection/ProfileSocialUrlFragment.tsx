@@ -22,6 +22,7 @@ const ProfileSocialUrlFragment: React.FC<ProfileSocialUrlFragmentProps> = (
   const urlRef = useRef<HTMLInputElement>(null);
   const defaultUrl =
     props.type === "facebook" ? DEFAULT_FACEBOOK_URL : DEFAULT_INSTAGRAM_URL;
+
   return (
     <ProfileSocialUrlBox key={props.url} type={props.type}>
       {props.type === "facebook" ? <FaFacebook /> : <AiFillInstagram />}
