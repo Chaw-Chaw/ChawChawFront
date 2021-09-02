@@ -13,29 +13,30 @@ import { debounce } from "lodash";
 import { useAlert } from "react-alert";
 import { DEFAULT_PROFILE_IMAGE, BACKEND_URL } from "../../constants";
 import { useCookies } from "react-cookie";
+import { ChatContext, RoomType, MessageType } from "../../store/ChatContext";
 
 export default function Chat() {
   const { user, grantRefresh } = useContext(AuthContext);
-  const [mainChatMessages, setMainChatMessages] = useState<any>([]);
-  const [totalMessage, setTotalMessage] = useState<any>([]);
-  const roomIds = useRef<number[]>([]);
-  const [mainRoomId, setMainRoomId] = useState(-1);
-  const mainRoomIdRef = useRef(-1);
-  const [yourProfileImage, setYourProfileImage] = useState(
-    DEFAULT_PROFILE_IMAGE
-  );
+  const {
+    mainRoomId,
+    setMainRoomId,
+    mainChatMessages,
+    setMainChatMessages,
+    totalMessage,
+    setTotalMessage,
+  } = useContext(ChatContext);
   const router = useRouter();
-  const client = useRef<any>({});
   const message = useAlert();
   const [cookies] = useCookies(["accessToken"]);
   const accessToken = cookies.accessToken;
-
+  const client = useRef<any>({});
   const [windowSize, setWindowSize] = useState(
     (() => {
       if (typeof window === "undefined") return 1000;
       return window.innerWidth;
     })()
   );
+  const roomIds = useRef(null);
 
   const getUserMessageLog = async (userId: number) => {
     const response = await axios
@@ -95,24 +96,22 @@ export default function Chat() {
       return;
     }
 
-    const tmpTotalMessage = res.data.data;
+    const tmpTotalMessage: RoomType[] = res.data.data;
     if (userId !== -1) {
       const mainMessageLog = tmpTotalMessage.find(
-        (item: any) => item.senderId === userId
+        (item) => item.senderId === userId
       );
-      const roomId = mainMessageLog.roomId;
+      const roomId = mainMessageLog ? mainMessageLog.roomId : -1;
       if (mainMessageLog) {
         setMainChatMessages(mainMessageLog.messages);
       }
       setMainRoomId(roomId);
-      setYourProfileImage(mainMessageLog.imageUrl);
     }
-
     setTotalMessage(res.data.data);
-    roomIds.current = tmpTotalMessage.map((item: any) => {
-      return item.roomId;
-    });
+    roomIds.current = res.data.data.map((item: any) => item.roomId);
   };
+
+  //@stomp/stompjs 는 typescript 지원 안함
 
   const connect = () => {
     client.current = new StompJs.Client({
@@ -126,15 +125,17 @@ export default function Chat() {
       heartbeatOutgoing: 4000,
 
       onConnect: () => {
-        roomIds.current.forEach((item) => {
-          subscribe(`/queue/chat/room/${item}`);
+        // 모든 subscribe는 여기서 구독이 이루어집니다.
+        totalMessage.forEach((item) => {
+          chatRoomSubscribe(item.roomId);
         });
-        subscribe(`/queue/chat/room/wait/${user.id}`);
+        waitChannelSubscribe();
       },
       onStompError: (frame) => {
         console.error(frame);
       },
     });
+
     client.current.activate();
   };
 
@@ -142,19 +143,59 @@ export default function Chat() {
     client.current.deactivate();
   };
 
-  const subscribe = (destination: string) => {
-    const thisRoomId = Number(destination.split("/").pop());
-    client.current.subscribe(destination, (response: any) => {
-      const message = JSON.parse(response.body);
-      console.log(response, "subscribe");
-      // 메인 채팅룸이면 메인채팅 메세지에 저장
-      if (message.roomId === mainRoomIdRef.current) {
-        setMainChatMessages((chatMessage: any) => [...chatMessage, message]);
-      }
+  const chatRoomSubscribe = (roomId: number) => {
+    const subscription = client.current.subscribe(
+      `/queue/chat/room/${roomId}`,
+      (response: any) => {
+        const message: MessageType = JSON.parse(response.body);
+        console.log(response, "subscribe");
 
-      // 새로운 채팅방이 생성되었을 경우
-      if (thisRoomId === user.id) {
-        subscribe(`/queue/chat/room/${message.roomId}`);
+        setMainChatMessages((pre: MessageType[]) => [...pre, message]);
+
+        // 채팅방을 삭제해야할 경우
+        if (message.messageType === "EXIT") {
+          setTotalMessage((pre) => {
+            const result = [...pre];
+            const removeChatRoomIndex = result.findIndex(
+              (item) => message.roomId === item.roomId
+            );
+            if (result.length === 1) return [];
+            if (removeChatRoomIndex) {
+              console.log(result, "before");
+              result.splice(removeChatRoomIndex, 1);
+              console.log(result, "after");
+            }
+            return [...result];
+          });
+          subscription.unsubscribe();
+          return;
+        }
+
+        // 기존 채팅방에 들어오는 메세지일 경우
+        setTotalMessage((pre: any) => {
+          const result: any = [];
+          pre.forEach((item: any) => {
+            if (message.roomId === item.roomId) {
+              result.push({ ...item, messages: [...item.messages, message] });
+              return;
+            }
+            result.push(item);
+            return;
+          });
+          console.log(result, "after");
+          return result;
+        });
+      }
+    );
+  };
+
+  const waitChannelSubscribe = () => {
+    client.current.subscribe(
+      `/queue/chat/room/wait/${user.id}`,
+      (response: any) => {
+        const message: MessageType = JSON.parse(response.body);
+        // 채팅룸 개설
+        chatRoomSubscribe(message.roomId);
         const newChatList = {
           imageUrl: message.imageUrl,
           messages: [message],
@@ -162,51 +203,17 @@ export default function Chat() {
           sender: message.sender,
           senderId: message.senderId,
         };
-        setTotalMessage((pre: any) => [...pre, newChatList]);
-        return;
+        setTotalMessage((pre) => [...pre, newChatList]);
       }
-
-      // 채팅방을 삭제해야할 경우
-      if (message.messageType === "EXIT") {
-        setTotalMessage((pre: any) => {
-          const result = [...pre];
-          const removeChatRoomIndex = result.findIndex(
-            (item: any) => message.roomId === item.roomId
-          );
-          if (result.length === 1) return [];
-          if (removeChatRoomIndex) {
-            console.log(result, "before");
-            result.splice(removeChatRoomIndex, 1);
-            console.log(result, "after");
-          }
-          return [...result];
-        });
-        client.current.unsubscribe();
-        return;
-      }
-
-      // 기존 채팅방에 들어오는 메세지일 경우
-      setTotalMessage((pre: any) => {
-        const result: any = [];
-        pre.forEach((item: any) => {
-          if (message.roomId === item.roomId) {
-            result.push({ ...item, messages: [...item.messages, message] });
-            return;
-          }
-          result.push(item);
-          return;
-        });
-        console.log(result, "after");
-        return result;
-      });
-      return;
-    });
+    );
   };
 
-  const publish = (message: any, messageType: string) => {
+  const publish = (message: string, messageType: string) => {
     if (!client.current.connected) {
+      console.log("있냐");
       return;
     }
+
     const timezoneOffset = new Date().getTimezoneOffset() * 60000;
     const now = new Date(Date.now() - timezoneOffset);
 
@@ -220,6 +227,7 @@ export default function Chat() {
         sender: user.name,
         regDate: now.toISOString().substring(0, 19),
         message,
+        imageUrl: user.imageUrl,
       }),
     });
     console.log("메세지 전송 선공");
@@ -246,6 +254,8 @@ export default function Chat() {
         },
       });
     }
+
+    // 윈도우 사이즈 계산
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -257,6 +267,7 @@ export default function Chat() {
     const userId = router.query.userId
       ? Number(router.query.userId)
       : undefined;
+
     if (userId === undefined) return;
     if (userId !== -1) {
       getUserMessageLog(userId);
@@ -267,42 +278,26 @@ export default function Chat() {
     }
   }, [JSON.stringify(router.query)]);
 
+  // 메인룸 변경
   useEffect(() => {
     console.log(mainRoomId, "메인 룸 변경");
-    mainRoomIdRef.current = mainRoomId;
-    const mainChatLog = totalMessage.find(
-      (item: any) => item.roomId === mainRoomId
-    );
+    const mainChatLog = totalMessage.find((item) => item.roomId === mainRoomId);
     if (!mainChatLog) return;
     const isMyMessage = mainChatLog.messages.find(
-      (item: any) => item.senderId === user.id
+      (item) => item.senderId === user.id
     );
     if (!isMyMessage) {
       publish(`${user.name}님이 입장하셨습니다.`, "ENTER");
     }
-    // console.log(mainChatLog, "mainChatLog");
+
     setMainChatMessages([...mainChatLog.messages]);
-    setYourProfileImage(mainChatLog.imageUrl);
   }, [mainRoomId]);
 
   return (
     <Layout>
       <Container>
-        <ChatRoom
-          chatMessage={mainChatMessages}
-          yourProfileImage={yourProfileImage}
-          roomId={mainRoomId}
-          publish={publish}
-          disconnect={disconnect}
-          setMainRoomId={setMainRoomId}
-        />
-        {windowSize > 1000 ? (
-          <ChatList
-            setMainRoomId={setMainRoomId}
-            totalMessage={totalMessage}
-            mainRoomId={mainRoomId}
-          />
-        ) : null}
+        <ChatRoom publish={publish} disconnect={disconnect} />
+        {windowSize > 1000 ? <ChatList /> : null}
       </Container>
     </Layout>
   );

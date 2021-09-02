@@ -3,19 +3,15 @@ import styled from "styled-components";
 import Header from "./Header";
 import Head from "next/head";
 import { AuthContext } from "../../store/AuthContext";
+import { ChatContext } from "../../store/ChatContext";
 
 const Layout: React.FC<{ type?: string }> = (props) => {
+  // useEffect(() => {
+  //   connect(client.current);
+  //   return () => disconnect(client.current);
+  // }, []);
   return (
     <>
-      {/* <Head>
-        <title>ChawChaw</title>
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href="/Layout/chaw.png"
-        />
-      </Head> */}
       <Header type={props.type} />
       <Inner>{props.children}</Inner>
     </>

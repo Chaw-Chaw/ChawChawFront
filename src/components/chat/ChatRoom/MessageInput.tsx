@@ -6,27 +6,25 @@ import {
   KeyboardEvent,
   MouseEventHandler,
   useContext,
-  useRef,
   useState,
 } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { AuthContext } from "../../../store/AuthContext";
 import { useAlert } from "react-alert";
-import { prepareProfile } from "selenium-webdriver/firefox";
+import { ChatContext } from "../../../store/ChatContext";
 
 interface MessageInputProps {
-  roomId: number;
   value: string;
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
   onKeyPress: (e: KeyboardEvent) => void;
   onClick: MouseEventHandler<HTMLDivElement>;
-  publish: (message: any, messageType: string) => void;
+  publish: (message: string, messageType: string) => void;
 }
 
 const MessageInput: React.FC<MessageInputProps> = (props) => {
-  const isNotActive = props.roomId === -1 ? true : false;
-  const [image, setImage] = useState();
+  const { mainRoomId } = useContext(ChatContext);
+  const isNotActive = mainRoomId === -1 ? true : false;
   const [cookies] = useCookies(["accessToken"]);
   const { grantRefresh } = useContext(AuthContext);
   const accessToken = cookies.accessToken;

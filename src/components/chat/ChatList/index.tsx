@@ -1,29 +1,17 @@
-import React, { Dispatch, SetStateAction, useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import ChatBox from "./ChatBox";
-import { AuthContext } from "../../../store/AuthContext";
+import { ChatContext } from "../../../store/ChatContext";
 
-interface ChatListProps {
-  totalMessage: any;
-  mainRoomId: number;
-  setMainRoomId: Dispatch<SetStateAction<number>>;
-}
-
-const ChatList: React.FC<ChatListProps> = (props) => {
-  // const { user } = useContext(AuthContext);
-  // console.log(props.totalMessage);
-
-  // useEffect(() => {
-  //   if (props.mainRoomId < 0 || props.mainRoomId === undefined) return;
-  //   if (!user.id) return;
-  // }, [props.mainRoomId]);
+const ChatList: React.FC = (props) => {
+  const { totalMessage, setMainRoomId } = useContext(ChatContext);
 
   return (
     <Outline>
       <Inner>
-        {props.totalMessage.length === 0
+        {totalMessage.length === 0
           ? null
-          : props.totalMessage.map((item: any) => {
+          : totalMessage.map((item) => {
               const limitMessageWord = 20;
               const lastMessageInfo = item.messages[item.messages.length - 1];
               const lastMessage = lastMessageInfo.message;
@@ -34,14 +22,13 @@ const ChatList: React.FC<ChatListProps> = (props) => {
               return (
                 <ChatBox
                   key={item.roomId}
-                  imageUrl={item.imageUrl}
+                  imageUrl={item.messages[0].imageUrl}
                   regDate={lastMessageInfo.regDate}
                   sender={item.sender}
                   roomId={item.roomId}
-                  mainRoomId={props.mainRoomId}
                   onClick={(e) => {
                     e.preventDefault();
-                    props.setMainRoomId(item.roomId);
+                    setMainRoomId(item.roomId);
                     return;
                   }}
                   context={limitMessage}

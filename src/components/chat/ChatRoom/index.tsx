@@ -18,22 +18,22 @@ import { BsChatDots } from "react-icons/bs";
 import { useCookies } from "react-cookie";
 import { AuthContext } from "../../../store/AuthContext";
 import { ChangeLanguageDropDown } from "../../common";
+import { ChatContext } from "../../../store/ChatContext";
 
 interface ChatRoomProps {
-  chatMessage: any[];
-  yourProfileImage: string;
-  roomId: number;
-  publish: (message: any, messageType: string) => void;
+  publish: (message: string, messageType: string) => void;
   disconnect: () => void;
-  setMainRoomId: Dispatch<SetStateAction<number>>;
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = (props) => {
+  const { mainRoomId, setMainRoomId, mainChatMessages } =
+    useContext(ChatContext);
   const { user, grantRefresh } = useContext(AuthContext);
   const [cookies] = useCookies(["accessToken"]);
   const [message, setMessage] = useState<string>("");
   const chatMessageBox = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
   const [selectLanguage, setSelectLanguage] = useState<string[]>(["Korean"]);
   const accessToken = cookies.accessToken;
 
@@ -45,7 +45,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
 
   const leaveChatRoom = async () => {
     const response = await axios
-      .delete(`/chat/room/${props.roomId}`, {
+      .delete(`/chat/room/${mainRoomId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: accessToken,
@@ -66,7 +66,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
       console.error(response.data);
       return;
     }
-    props.setMainRoomId(-1);
+    setMainRoomId(-1);
   };
 
   const backHome = () => {
@@ -85,8 +85,8 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
 
   useEffect(() => {
     scrollToBottom();
-    // console.log(props.chatMessage, "chatRoom IN");
-  }, [props.chatMessage]);
+    // console.log(.chatMessage, "chatRoom IN");
+  }, [mainChatMessages]);
 
   useEffect(() => {
     console.log(selectLanguage[0], "change lang");
@@ -112,41 +112,42 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
         </Header>
         {/* use Memo 적용할것 */}
         <MessageContainer>
-          {props.chatMessage && props.chatMessage.length > 0 && (
-            <div ref={chatMessageBox}>
-              {props.chatMessage.map((chatMessage: any, index: any) => {
-                // 토크 타입이 아닌 정보는 InfoMessage
-                if (
-                  chatMessage.messageType === "ENTER" ||
-                  chatMessage.messageType === "EXIT"
-                )
-                  return <InfoMessage>{chatMessage.message}</InfoMessage>;
+          {mainRoomId !== -1 &&
+            mainChatMessages &&
+            mainChatMessages.length > 0 && (
+              <div ref={chatMessageBox}>
+                {mainChatMessages.map((chatMessage, index) => {
+                  // 토크 타입이 아닌 정보는 InfoMessage
+                  if (
+                    chatMessage.messageType === "ENTER" ||
+                    chatMessage.messageType === "EXIT"
+                  )
+                    return <InfoMessage>{chatMessage.message}</InfoMessage>;
 
-                // 토크 타입인 일반메세지 분류
-                return (
-                  <ChatMessage
-                    src={
-                      user.id === chatMessage.senderId
-                        ? undefined
-                        : `${props.yourProfileImage}`
-                    }
-                    imageUrl={
-                      chatMessage.messageType === "IMAGE"
-                        ? chatMessage.message
-                        : undefined
-                    }
-                    key={index}
-                    regDate={chatMessage.regDate}
-                    context={chatMessage.message}
-                    selectLanguage={selectLanguage}
-                  />
-                );
-              })}
-            </div>
-          )}
+                  // 토크 타입인 일반메세지 분류
+                  return (
+                    <ChatMessage
+                      src={
+                        user.id === chatMessage.senderId
+                          ? undefined
+                          : `${chatMessage.imageUrl}`
+                      }
+                      imageUrl={
+                        chatMessage.messageType === "IMAGE"
+                          ? chatMessage.message
+                          : undefined
+                      }
+                      key={index}
+                      regDate={chatMessage.regDate}
+                      context={chatMessage.message}
+                      selectLanguage={selectLanguage}
+                    />
+                  );
+                })}
+              </div>
+            )}
         </MessageContainer>
         <MessageInput
-          roomId={props.roomId}
           onChange={(e) => {
             // if (e.key === "Enter") return;
             setMessage(e.target.value);

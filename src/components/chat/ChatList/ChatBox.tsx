@@ -1,6 +1,7 @@
 import React, { MouseEventHandler, useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
+import { ChatContext } from "../../../store/ChatContext";
 import { MessageImage } from "../Message/MessageImage";
 
 interface ChatBoxProps {
@@ -8,15 +9,15 @@ interface ChatBoxProps {
   regDate: any;
   sender: any;
   roomId: number;
-  mainRoomId: number;
   onClick: MouseEventHandler<HTMLDivElement>;
   context: string;
 }
 
 const ChatBox: React.FC<ChatBoxProps> = (props) => {
+  const { mainRoomId } = useContext(ChatContext);
   const mainChatList = useRef<HTMLDivElement>(null);
   const regDate = props.regDate.split("T").join(" ");
-  const type = props.roomId === props.mainRoomId ? "current" : "";
+  const type = props.roomId === mainRoomId ? "current" : "";
   useEffect(() => {
     if (!mainChatList.current) return;
     mainChatList.current.scrollIntoView({
@@ -24,7 +25,7 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
       block: "center",
       inline: "nearest",
     });
-  }, [props.mainRoomId]);
+  }, [mainRoomId]);
   return (
     <ChatContainer
       ref={type ? mainChatList : null}
