@@ -5,7 +5,6 @@ import { universityList } from "../components/common";
 // import { Builder, By, Key, until } from "selenium-webdriver";
 import { useAlert } from "react-alert";
 // import { redirect } from "next/dist/next-server/server/api-utils";
-import { ACCESS_TOKEN_TIME } from "../constants";
 import { useCookies } from "react-cookie";
 
 interface UserPropertys {
@@ -135,17 +134,21 @@ const AuthContextProvider: React.FC = (props) => {
   };
 
   const loginSuccess = (response: AxiosResponse) => {
-    const tokenInfo = response.data.data.token;
+    // 일반 로그인 || 리프레시 로그인
+    const tokenInfo = response.data.data.token || response.data.data;
     const accessToken = "Bearer " + tokenInfo.accessToken;
     const accessTokenExpiresIn = tokenInfo.expiresIn;
-    const newData = { ...response.data.data.profile };
+
     console.log(accessToken, "acessToken");
     setCookie("accessToken", accessToken, {
       path: "/",
       secure: true,
     });
     setTimeout(grantRefresh, accessTokenExpiresIn - 60000);
-    saveUser(newData);
+    if (response.data.data.profile) {
+      const newData = { ...response.data.data.profile };
+      saveUser(newData);
+    }
   };
 
   const grantRefresh = async () => {
