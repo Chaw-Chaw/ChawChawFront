@@ -1,7 +1,6 @@
 export const DEFAULT_PROFILE_IMAGE =
   "https://d2anzi03nvjlav.cloudfront.net/default.png";
 // 밀리초
-export const ACCESS_TOKEN_TIME = 1800 * 1000;
 
 export const DEFAULT_FACEBOOK_URL = "https://www.facebook.com";
 export const DEFAULT_INSTAGRAM_URL = "https://www.instagram.com";
