@@ -1,0 +1,47 @@
+import React, { useContext } from "react";
+import styled, { ThemeContext } from "styled-components";
+import { AuthContext } from "../../../store/AuthContext";
+import { Logo } from "../Logo";
+import { ThemeToggle } from "../ThemeToggle";
+import HeaderCondition from "./HeaderCondition";
+import MyImage from "./MyImage";
+
+const MobileHeader: React.FC = () => {
+  const { id, setTheme } = useContext(ThemeContext);
+
+  return (
+    <MobileHeaderContainer>
+      <HeaderCondition />
+      <Logo />
+      <ThemeToggleBox>
+        <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
+      </ThemeToggleBox>
+    </MobileHeaderContainer>
+  );
+};
+
+export { MobileHeader };
+const ThemeToggleBox = styled.div`
+  margin: 1rem;
+  border: 1px solid white;
+  border-radius: 25px;
+`;
+
+const MobileHeaderContainer = styled.div`
+  background-color: ${(props) => props.theme.primaryColor};
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 70px;
+  box-sizing: border-box;
+  padding: 5px 16px;
+  position: sticky;
+  z-index: 100;
+  top: 0%;
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+`;

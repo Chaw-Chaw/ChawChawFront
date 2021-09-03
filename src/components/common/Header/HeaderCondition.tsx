@@ -6,6 +6,7 @@ import { HeaderProps } from ".";
 import MyImage from "./MyImage";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import { useCookies } from "react-cookie";
+import styled from "styled-components";
 
 const HeaderCondition: React.FC<HeaderProps> = (props) => {
   const headerType = props.type;
@@ -22,7 +23,9 @@ const HeaderCondition: React.FC<HeaderProps> = (props) => {
     return (
       <Link href="/account/signup/webMailAuth">
         <a>
-          <Button>Signup</Button>
+          <ButtonOutline>
+            <Button>Signup</Button>
+          </ButtonOutline>
         </a>
       </Link>
     );
@@ -31,10 +34,22 @@ const HeaderCondition: React.FC<HeaderProps> = (props) => {
   return (
     <Link href="/account/login">
       <a>
-        <Button>Login</Button>
+        <ButtonOutline>
+          <Button>Login</Button>
+        </ButtonOutline>
       </a>
     </Link>
   );
 };
 
 export default HeaderCondition;
+
+const ButtonOutline = styled.div`
+  border-radius: 20rem;
+  @media (max-width: 768px) {
+    border: 1px solid white;
+    button {
+      box-shadow: none;
+    }
+  }
+`;

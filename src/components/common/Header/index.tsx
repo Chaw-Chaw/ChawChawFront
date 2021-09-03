@@ -4,6 +4,8 @@ import { Logo, ThemeToggle } from "..";
 import { ChangeLanguageDropDown } from "../DropDown/ChangeLanguageDropDown";
 import { AuthContext } from "../../../store/AuthContext";
 import HeaderCondition from "./HeaderCondition";
+import { ScreenContext } from "../../../store/ScreenContext";
+import { MobileHeader } from "./MobileHeader";
 
 interface HeaderProps {
   type?: string;
@@ -12,6 +14,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = (props) => {
   const { id, setTheme } = useContext(ThemeContext);
   const { grantRefresh, user } = useContext(AuthContext);
+  const { windowSize } = useContext(ScreenContext);
 
   // useEffect(() => {
   //   grantRefresh();
@@ -19,18 +22,24 @@ const Header: React.FC<HeaderProps> = (props) => {
 
   // console.log(a, "user in header");
   return (
-    <HeaderWrapper>
-      <LogoFragment>
-        <Logo />
-        {props.type === "post" && <SchoolHead>{user.school}</SchoolHead>}
-      </LogoFragment>
-      <HeaderComponentsBox>
-        <ThemeToggleBox>
-          <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
-        </ThemeToggleBox>
-        <HeaderCondition type={props.type} />
-      </HeaderComponentsBox>
-    </HeaderWrapper>
+    <>
+      {windowSize > 768 ? (
+        <HeaderWrapper>
+          <LogoFragment>
+            <Logo />
+            {props.type === "post" && <SchoolHead>{user.school}</SchoolHead>}
+          </LogoFragment>
+          <HeaderComponentsBox>
+            <ThemeToggleBox>
+              <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
+            </ThemeToggleBox>
+            <HeaderCondition type={props.type} />
+          </HeaderComponentsBox>
+        </HeaderWrapper>
+      ) : (
+        <MobileHeader />
+      )}
+    </>
   );
 };
 
@@ -52,10 +61,6 @@ const HeaderWrapper = styled.header`
   position: sticky;
   z-index: 100;
   top: 0%;
-  @media (max-width: 768px) {
-    flex-direction: column;
-    height: 200px;
-  }
   -ms-user-select: none;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;

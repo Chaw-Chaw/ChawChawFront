@@ -157,6 +157,10 @@ const Container = styled.div<{ width?: string }>`
   align-items: center;
   flex-direction: column;
   margin-bottom: 200px;
+  margin-top: 100px;
+  @media (max-width: 768px) {
+    margin-top: 50px;
+  }
 `;
 
 const Divider = styled.div<{ display: string }>`

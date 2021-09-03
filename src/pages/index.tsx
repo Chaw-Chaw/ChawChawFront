@@ -20,11 +20,13 @@ const Main = styled.div`
   flex-direction: column;
   align-items: center;
   width: 1050px;
+  margin-top: 100px;
   @media (max-width: 1000px) {
     width: 750px;
   }
   @media (max-width: 768px) {
     width: 500px;
+    margin-top: 50px;
   }
   @media (max-width: 500px) {
     width: 320px;

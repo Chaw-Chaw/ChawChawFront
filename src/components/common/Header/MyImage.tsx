@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { prepareProfile } from "selenium-webdriver/firefox";
 
-const MyImage: React.FC<{ profileImage: string }> = ({ profileImage }) => {
+const MyImage: React.FC<{ profileImage: string }> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const { logout } = useContext(AuthContext);
   const router = useRouter();
@@ -16,7 +16,7 @@ const MyImage: React.FC<{ profileImage: string }> = ({ profileImage }) => {
   return (
     <MyImageBox>
       <Image
-        src={profileImage}
+        src={`${props.profileImage}`}
         alt="프로필 이미지"
         width="50px"
         height="50px"
