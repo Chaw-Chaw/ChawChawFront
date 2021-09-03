@@ -22,7 +22,7 @@ const ChatList: React.FC = (props) => {
               return (
                 <ChatBox
                   key={item.roomId}
-                  imageUrl={item.messages[0].imageUrl}
+                  imageUrl={item.imageUrl}
                   regDate={lastMessageInfo.regDate}
                   sender={item.sender}
                   roomId={item.roomId}
@@ -54,6 +54,7 @@ const Outline = styled.div`
   @media (max-width: 1000px) {
     max-width: 100%;
     padding: 0px;
+    height: calc(100vh - 250px);
   }
 `;
 

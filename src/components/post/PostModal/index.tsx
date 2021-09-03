@@ -6,6 +6,7 @@ import { PostModalSocialList } from "./PostModalSocialList";
 import { PostModalHeadProps, PostModalInfo } from "./PostModalInfo";
 import { PostModalImage } from "./PostModalImage";
 import { PostModalActive } from "./PostModalActive";
+import { PostModalContent } from "./PostModalContent";
 
 interface PostModalInfoProps extends PostModalHeadProps {
   content: string;
@@ -69,9 +70,7 @@ const PostModal: React.FC<PostModalProps> = (props) => {
         values={hopeLanguage}
         mainValue={repHopeLanguage}
       />
-      <PostModalContent>
-        <PostModalContentText disabled value={props.content} />
-      </PostModalContent>
+      <PostModalContent content={props.content} />
       <PostModalSocialList
         title="Contact to me"
         faceBookUrl={props.facebookUrl}
@@ -122,33 +121,6 @@ const PostModalBox = styled.div<{ visible?: boolean }>`
   @media (max-width: 500px) {
     width: 320px;
   }
-`;
-const PostModalContent = styled.div`
-  width: 100%;
-  padding: 5px 20px;
-  box-sizing: border-box;
-  min-height: 150px;
-  max-height: 150px;
-  overflow: auto;
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-  ::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera*/
-  }
-  font-weight: 400;
-  font-size: 0.9rem;
-`;
-
-const PostModalContentText = styled.textarea`
-  width: 100%;
-  color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
-  height: 100%;
-  font-size: 1rem;
-  resize: none;
-  box-sizing: border-box;
-  font-family: "Source Sans Pro";
-  border: none;
-  background-color: ${(props) => props.theme.bodyBackgroundColor};
 `;
 
 const PostUserName = styled.h2`

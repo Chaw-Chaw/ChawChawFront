@@ -53,7 +53,6 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
       console.error(response.data, "이미지 업로드 실패");
       return;
     }
-
     return;
   };
   const imageSend: React.ChangeEventHandler<HTMLInputElement> = (e) => {

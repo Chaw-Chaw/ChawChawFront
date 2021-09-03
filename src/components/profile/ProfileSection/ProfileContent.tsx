@@ -14,6 +14,7 @@ interface ProfileContentProps {
   title?: string;
   setValues: Dispatch<SetStateAction<string>>;
   values: string;
+  name?: string;
 }
 
 const ProfileContent: React.FC<ProfileContentProps> = (props) => {
@@ -39,6 +40,7 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
   }, [props.values]);
   return (
     <Container>
+      <h1>{props.name}</h1>
       <Title htmlFor="content">{props.title}</Title>
       <Content
         // type="text"
@@ -92,6 +94,6 @@ const Content = styled(TextArea)<{ isActive?: boolean }>`
   }
   resize: none;
   min-height: 10px;
-  max-height: 230px;
+  max-height: 140px;
   box-sizing: border-box;
 `;

@@ -51,5 +51,5 @@ const MessageContainer = styled.div`
   justify-content: flex-start;
   width: 100%;
   box-sizing: border-box;
-  margin-top: 10px;
+  padding-bottom: 10px;
 `;

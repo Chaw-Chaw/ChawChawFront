@@ -32,7 +32,7 @@ export default function Chat() {
   const [cookies] = useCookies(["accessToken"]);
   const accessToken = cookies.accessToken;
   const client = useRef<any>({});
-  const roomIds = useRef(null);
+  const roomIds = useRef<number[]>([]);
 
   const getUserMessageLog = async (userId: number) => {
     const response = await axios
@@ -122,8 +122,8 @@ export default function Chat() {
 
       onConnect: () => {
         // 모든 subscribe는 여기서 구독이 이루어집니다.
-        totalMessage.forEach((item) => {
-          chatRoomSubscribe(item.roomId);
+        roomIds.current.forEach((item) => {
+          chatRoomSubscribe(item);
         });
         waitChannelSubscribe();
       },
@@ -275,7 +275,6 @@ export default function Chat() {
     if (!isMyMessage) {
       publish(`${user.name}님이 입장하셨습니다.`, "ENTER");
     }
-
     setMainChatMessages([...mainChatLog.messages]);
   }, [mainRoomId]);
 

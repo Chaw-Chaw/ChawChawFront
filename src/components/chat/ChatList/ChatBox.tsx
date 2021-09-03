@@ -69,7 +69,7 @@ const ChatUserName = styled.h2<{ type: string }>`
   font-family: "BMJUA";
   font-size: 1.3rem;
   margin: 0px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   color: ${(props) =>
     props.type === "current" ? "white" : props.theme.colors};
   /* color: rgb(126, 126, 126); */

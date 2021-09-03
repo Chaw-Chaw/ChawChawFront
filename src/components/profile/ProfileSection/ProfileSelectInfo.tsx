@@ -1,4 +1,5 @@
 import { MouseEventHandler } from "react";
+import { useAlert } from "react-alert";
 import styled from "styled-components";
 import { Button, SelectInfoDropDown } from "../../common";
 import { ProfileListItemProps, ProfileListItem } from "../ProfileListItem";
@@ -9,6 +10,7 @@ interface ProfileSelectInfoProps extends ProfileListItemProps {
 
 const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
   const colors = ["#06C074", "#5A65E8", "#4BC6DA"];
+  const message = useAlert();
   const AddButton: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     if (props.setValues && props.values) {
@@ -17,6 +19,8 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
           return [...preState, "Select"];
         });
         // console.log(props.values, "after");
+      } else {
+        message.show("값을 선택 후 추가 할 수 있습니다.");
       }
     }
   };

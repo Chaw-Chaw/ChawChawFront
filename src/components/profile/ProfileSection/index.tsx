@@ -124,6 +124,7 @@ const ProfileSection: React.FC = () => {
           placeholder="당신을 소개할 내용을 입력해주세요."
           setValues={setUserContent}
           values={userContent}
+          name={user.name}
         />
       </ProfileHeader>
       <ProfileInfoBox>

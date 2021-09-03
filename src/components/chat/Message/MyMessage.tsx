@@ -96,7 +96,7 @@ const MessageImageBox = styled.div`
   max-width: 230px;
   max-height: 300px;
   > div {
-    position: unset !important;
+    position: relative !important;
   }
   .chat_image {
     object-fit: contain;
@@ -135,5 +135,5 @@ const MyMessageContainer = styled.div`
 const RegDateMessage = styled.div`
   font-size: 0.5rem;
   color: ${(props) => props.theme.secondaryColor};
-  margin-top: 4px;
+  margin-top: 6px;
 `;

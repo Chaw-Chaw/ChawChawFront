@@ -122,7 +122,6 @@ const Container = styled.div`
   }
   .profile-image {
     border-radius: 20px;
-    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
     border-radius: 20px;
   }
   @media (max-width: 768px) {

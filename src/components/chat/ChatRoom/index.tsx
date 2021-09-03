@@ -97,7 +97,11 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
 
   useEffect(() => {
     scrollToBottom();
-    // console.log(.chatMessage, "chatRoom IN");
+    console.log("되야하지 않나");
+
+    setTimeout(() => {
+      scrollToBottom();
+    }, 1000);
   }, [mainChatMessages]);
 
   useEffect(() => {
@@ -123,7 +127,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
           />
         </Header>
         {/* use Memo 적용할것 */}
-        {isViewChatList && windowSize < 1000 ? (
+        {isViewChatList && windowSize <= 1000 ? (
           <ChatList />
         ) : (
           <>
@@ -198,6 +202,9 @@ const Outline = styled.div`
   /* margin-bottom: 50px; */
   width: 100%;
   max-width: 600px;
+  @media (max-width: 768px) {
+    height: calc(100vh - 70px);
+  }
   @media (max-width: 500px) {
     min-width: 320px;
   }
@@ -227,6 +234,7 @@ const MessageContainer = styled.div`
   width: 100%;
   box-sizing: border-box;
   padding-right: 20px;
+  padding-bottom: 10px;
   overflow: auto;
 `;
 const MessageHeaderButton = styled.button`
