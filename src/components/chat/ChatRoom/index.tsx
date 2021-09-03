@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import {
   Dispatch,
+  MouseEventHandler,
   SetStateAction,
   useContext,
   useEffect,
@@ -19,6 +20,8 @@ import { useCookies } from "react-cookie";
 import { AuthContext } from "../../../store/AuthContext";
 import { ChangeLanguageDropDown } from "../../common";
 import { ChatContext } from "../../../store/ChatContext";
+import { ScreenContext } from "../../../store/ScreenContext";
+import ChatList from "../ChatList";
 
 interface ChatRoomProps {
   publish: (message: string, messageType: string) => void;
@@ -29,12 +32,13 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const { mainRoomId, setMainRoomId, mainChatMessages } =
     useContext(ChatContext);
   const { user, grantRefresh } = useContext(AuthContext);
+  const { windowSize } = useContext(ScreenContext);
   const [cookies] = useCookies(["accessToken"]);
   const [message, setMessage] = useState<string>("");
+  const [isViewChatList, setIsViewChatList] = useState(false);
+  const [selectLanguage, setSelectLanguage] = useState<string[]>(["Korean"]);
   const chatMessageBox = useRef<HTMLDivElement>(null);
   const router = useRouter();
-
-  const [selectLanguage, setSelectLanguage] = useState<string[]>(["Korean"]);
   const accessToken = cookies.accessToken;
 
   const sendMessage = () => {
@@ -43,7 +47,8 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
     setMessage("");
   };
 
-  const leaveChatRoom = async () => {
+  const leaveChatRoom: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    e.preventDefault();
     const response = await axios
       .delete(`/chat/room/${mainRoomId}`, {
         headers: {
@@ -69,9 +74,16 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
     setMainRoomId(-1);
   };
 
-  const backHome = () => {
+  const backHome: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
     props.disconnect();
     router.push("/post");
+  };
+
+  const viewChatList: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    if (windowSize > 1000) return;
+    setIsViewChatList((pre) => !pre);
   };
 
   const scrollToBottom = () => {
@@ -102,7 +114,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
           <MessageHeaderButton onClick={leaveChatRoom}>
             <BsBoxArrowRight />
           </MessageHeaderButton>
-          <MessageHeaderButton>
+          <MessageHeaderButton onClick={viewChatList}>
             <BsChatDots />
           </MessageHeaderButton>
           <ChangeLanguageDropDown
@@ -111,60 +123,66 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
           />
         </Header>
         {/* use Memo 적용할것 */}
-        <MessageContainer>
-          {mainRoomId !== -1 &&
-            mainChatMessages &&
-            mainChatMessages.length > 0 && (
-              <div ref={chatMessageBox}>
-                {mainChatMessages.map((chatMessage, index) => {
-                  // 토크 타입이 아닌 정보는 InfoMessage
-                  if (
-                    chatMessage.messageType === "ENTER" ||
-                    chatMessage.messageType === "EXIT"
-                  )
-                    return <InfoMessage>{chatMessage.message}</InfoMessage>;
+        {isViewChatList && windowSize < 1000 ? (
+          <ChatList />
+        ) : (
+          <>
+            <MessageContainer>
+              {mainRoomId !== -1 &&
+                mainChatMessages &&
+                mainChatMessages.length > 0 && (
+                  <div ref={chatMessageBox}>
+                    {mainChatMessages.map((chatMessage, index) => {
+                      // 토크 타입이 아닌 정보는 InfoMessage
+                      if (
+                        chatMessage.messageType === "ENTER" ||
+                        chatMessage.messageType === "EXIT"
+                      )
+                        return <InfoMessage>{chatMessage.message}</InfoMessage>;
 
-                  // 토크 타입인 일반메세지 분류
-                  return (
-                    <ChatMessage
-                      src={
-                        user.id === chatMessage.senderId
-                          ? undefined
-                          : `${chatMessage.imageUrl}`
-                      }
-                      imageUrl={
-                        chatMessage.messageType === "IMAGE"
-                          ? chatMessage.message
-                          : undefined
-                      }
-                      key={index}
-                      regDate={chatMessage.regDate}
-                      context={chatMessage.message}
-                      selectLanguage={selectLanguage}
-                    />
-                  );
-                })}
-              </div>
-            )}
-        </MessageContainer>
-        <MessageInput
-          onChange={(e) => {
-            // if (e.key === "Enter") return;
-            setMessage(e.target.value);
-          }}
-          onKeyPress={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              sendMessage();
-            }
-          }}
-          value={message}
-          onClick={(e) => {
-            e.preventDefault();
-            sendMessage();
-          }}
-          publish={props.publish}
-        />
+                      // 토크 타입인 일반메세지 분류
+                      return (
+                        <ChatMessage
+                          src={
+                            user.id === chatMessage.senderId
+                              ? undefined
+                              : `${chatMessage.imageUrl}`
+                          }
+                          imageUrl={
+                            chatMessage.messageType === "IMAGE"
+                              ? chatMessage.message
+                              : undefined
+                          }
+                          key={index}
+                          regDate={chatMessage.regDate}
+                          context={chatMessage.message}
+                          selectLanguage={selectLanguage}
+                        />
+                      );
+                    })}
+                  </div>
+                )}
+            </MessageContainer>
+            <MessageInput
+              onChange={(e) => {
+                // if (e.key === "Enter") return;
+                setMessage(e.target.value);
+              }}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  sendMessage();
+                }
+              }}
+              value={message}
+              onClick={(e) => {
+                e.preventDefault();
+                sendMessage();
+              }}
+              publish={props.publish}
+            />
+          </>
+        )}
       </Inner>
     </Outline>
   );

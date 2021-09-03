@@ -50,15 +50,20 @@ const Outline = styled.div`
   /* margin-bottom: 50px; */
   width: 100%;
   max-width: 400px;
-  /* @media (max-width: 1000px) {
-    display: none;
-  } */
   padding: 20px 20px 20px 20px;
+  @media (max-width: 1000px) {
+    max-width: 100%;
+    padding: 0px;
+  }
 `;
 
 const Inner = styled.div`
   overflow: auto;
+
   border-left: 1px solid ${(props) => props.theme.secondaryColor};
+  @media (max-width: 1000px) {
+    border: none;
+  }
   box-sizing: border-box;
   padding: 20px;
   height: 100%;

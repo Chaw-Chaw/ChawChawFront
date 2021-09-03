@@ -14,9 +14,11 @@ import { useAlert } from "react-alert";
 import { DEFAULT_PROFILE_IMAGE, BACKEND_URL } from "../../constants";
 import { useCookies } from "react-cookie";
 import { ChatContext, RoomType, MessageType } from "../../store/ChatContext";
+import { ScreenContext } from "../../store/ScreenContext";
 
 export default function Chat() {
   const { user, grantRefresh } = useContext(AuthContext);
+  const { windowSize } = useContext(ScreenContext);
   const {
     mainRoomId,
     setMainRoomId,
@@ -30,12 +32,6 @@ export default function Chat() {
   const [cookies] = useCookies(["accessToken"]);
   const accessToken = cookies.accessToken;
   const client = useRef<any>({});
-  const [windowSize, setWindowSize] = useState(
-    (() => {
-      if (typeof window === "undefined") return 1000;
-      return window.innerWidth;
-    })()
-  );
   const roomIds = useRef(null);
 
   const getUserMessageLog = async (userId: number) => {
@@ -242,10 +238,6 @@ export default function Chat() {
     }, 500);
   };
 
-  const handleResize = debounce(() => {
-    setWindowSize(window.innerWidth);
-  }, 200);
-
   useEffect(() => {
     if (!accessToken) {
       message.error("로그인 후에 서비스를 이용해주세요.", {
@@ -254,12 +246,6 @@ export default function Chat() {
         },
       });
     }
-
-    // 윈도우 사이즈 계산
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
   }, []);
 
   useEffect(() => {

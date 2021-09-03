@@ -15,6 +15,7 @@ interface RoomType {
   senderId: number;
   sender: string;
   messages: MessageType[];
+  imageUrl: string;
 }
 
 interface ChatContextObj {
