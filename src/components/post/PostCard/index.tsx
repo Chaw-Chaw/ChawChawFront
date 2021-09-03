@@ -34,6 +34,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     repHopeLanguage: "",
     repLanguage: "",
     views: 0,
+    isFollow: false,
   };
   const postCardContentArr = props.content.split("\n");
   const postCardContentTmp =
@@ -134,6 +135,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           repHopeLanguage={postModalInfo.repHopeLanguage}
           repLanguage={postModalInfo.repLanguage}
           views={postModalInfo.views}
+          isFollow={postModalInfo.isFollow}
         >
           {props.children}
         </PostModal>

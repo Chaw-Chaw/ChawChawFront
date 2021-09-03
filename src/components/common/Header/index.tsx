@@ -13,7 +13,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = (props) => {
   const { id, setTheme } = useContext(ThemeContext);
-  const { grantRefresh, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { windowSize } = useContext(ScreenContext);
 
   // useEffect(() => {

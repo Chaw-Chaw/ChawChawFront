@@ -9,11 +9,12 @@ import { AuthContext } from "../../../store/AuthContext";
 
 interface PostModalActive {
   id: number;
+  isFollow: boolean;
 }
 
 const PostModalActive: React.FC<PostModalActive> = (props) => {
   const router = useRouter();
-  const [isFollow, setIsFollow] = useState(false);
+  const [isActiveFollow, setIsActiveFollow] = useState(props.isFollow);
   const { grantRefresh } = useContext(AuthContext);
   const [cookies] = useCookies(["accessToken"]);
   const accessToken = cookies.accessToken;
@@ -25,12 +26,14 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
     const response = await axios
       .post(`/follow/${props.id}`, {
         headers: {
-          "Content-type": "application/json",
           Authorization: accessToken,
-          Accept: "application/json",
+          Accept: "*/*",
         },
       })
-      .catch((err) => err.response);
+      .catch((err) => {
+        console.log(err, "팔로우 에러");
+        return err.response;
+      });
 
     if (response.status === 401) {
       // access token 만료
@@ -44,7 +47,7 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
     }
     alert("follow");
     console.log("follow 성공!");
-    setIsFollow(true);
+    setIsActiveFollow(true);
     return response.data;
   };
 
@@ -67,9 +70,8 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
     if (!response.data.isSuccess) {
       console.error(response.data);
     }
-    alert("unfollow");
     console.log("unfollow 성공!");
-    setIsFollow(false);
+    setIsActiveFollow(false);
     return response.data;
   };
   return (
@@ -79,11 +81,11 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
       </PostChatButton>
       <PostLikeBox
         onClick={() => {
-          if (!isFollow) follow();
+          if (!isActiveFollow) follow();
           else unFollow();
         }}
       >
-        {isFollow ? <AiFillHeart /> : <AiOutlineHeart />}
+        {isActiveFollow ? <AiFillHeart /> : <AiOutlineHeart />}
       </PostLikeBox>
     </PostButtonBox>
   );

@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/router";
 import { universityList } from "../components/common";
-// import { Builder, By, Key, until } from "selenium-webdriver";
 import { useAlert } from "react-alert";
-// import { redirect } from "next/dist/next-server/server/api-utils";
 import { useCookies } from "react-cookie";
 
 interface UserPropertys {

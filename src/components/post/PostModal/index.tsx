@@ -21,6 +21,7 @@ interface PostModalInfoProps extends PostModalHeadProps {
   repCountry: string;
   repHopeLanguage: string;
   repLanguage: string;
+  isFollow: boolean;
 }
 interface PostModalProps extends PostModalInfoProps {
   visible: boolean;
@@ -54,7 +55,7 @@ const PostModal: React.FC<PostModalProps> = (props) => {
     <PostModalBox visible={props.visible}>
       <PostModalImage src={`${props.imageUrl}`} />
       <PostUserName>{props.name}</PostUserName>
-      <PostModalActive id={props.id} />
+      <PostModalActive id={props.id} isFollow={props.isFollow} />
       <PostModalInfoList
         title="I am from"
         values={country}
@@ -99,6 +100,9 @@ const PostModalBox = styled.div<{ visible?: boolean }>`
   flex-direction: column;
   align-items: center;
   height: 750px;
+  @media (max-height: 900px) {
+    height: 550px;
+  }
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   border-radius: 20px;
