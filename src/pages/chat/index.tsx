@@ -112,7 +112,7 @@ export default function Chat() {
   const connect = () => {
     client.current = new StompJs.Client({
       // brokerURL: "ws://localhost:8080/ws-stomp/websocket", // 웹소켓 서버로 직접 접속
-      webSocketFactory: () => new SockJS(BACKEND_URL + "/ws"), // proxy를 통한 접속
+      webSocketFactory: () => new SockJS(BACKEND_URL + "/ws/chat"), // proxy를 통한 접속
       debug: function (str) {
         console.log(str);
       },

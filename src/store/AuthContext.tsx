@@ -120,7 +120,24 @@ const AuthContextProvider: React.FC = (props) => {
     return res;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    const response = await axios
+      .get("/logout", {
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      })
+      .catch((err) => {
+        console.log(err, "로그아웃 에러");
+        return err.response;
+      });
+
+    if (response.status === 401) {
+      // grantRefresh();
+      return;
+    }
+    console.log(response, "로그아웃 성공");
+
     setUser({});
     window.localStorage.clear();
     removeCookie("accessToken", {
