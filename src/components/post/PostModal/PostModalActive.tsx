@@ -23,32 +23,44 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
     router.push({ pathname: "/chat", query: { userId: props.id } });
   };
   const follow = async () => {
-    const response = await axios
-      .post(`/follow/${props.id}`, {
-        headers: {
-          Authorization: accessToken,
-          Accept: "*/*",
-        },
-      })
-      .catch((err) => {
-        console.log(err, "팔로우 에러");
-        return err.response;
-      });
+    const response = await fetch(`/follow/${props.id}`, {
+      method: "POST",
+      headers: {
+        Authorization: accessToken,
+      },
+    }).catch((err) => {
+      console.log(err, "팔로우 실패");
+    });
 
-    if (response.status === 401) {
-      // access token 만료
-      // refresh token 전송
-      grantRefresh();
-      return;
-    }
-    if (!response.data.isSuccess) {
-      console.error(response.data);
-      return;
-    }
-    alert("follow");
-    console.log("follow 성공!");
+    console.log(response, "팔로우 결과");
     setIsActiveFollow(true);
-    return response.data;
+
+    // if()
+    //   const response = await axios
+    //     .post(`/follows/${props.id}`, {
+    //       headers: {
+    //         Authorization: accessToken,
+    //       },
+    //     })
+    //     .catch((err) => {
+    //       console.log(err, "팔로우 에러");
+    //       return err.response;
+    //     });
+    //   if (response.status === 401) {
+    //     // access token 만료
+    //     // refresh token 전송
+    //     grantRefresh();
+    //     return;
+    //   }
+    //   if (!response.data.isSuccess) {
+    //     console.log(response);
+    //     return;
+    //   }
+
+    //   console.log("follow 성공!");
+    //   setIsActiveFollow(true);
+
+    // };
   };
 
   const unFollow = async () => {
@@ -68,11 +80,11 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
       grantRefresh();
     }
     if (!response.data.isSuccess) {
-      console.error(response.data);
+      console.log(response, "언팔로우 실패");
+      return;
     }
     console.log("unfollow 성공!");
     setIsActiveFollow(false);
-    return response.data;
   };
   return (
     <PostButtonBox>
