@@ -167,11 +167,12 @@ const AuthContextProvider: React.FC = (props) => {
   };
 
   const grantRefresh = async () => {
+    console.log(accessToken, "accessToken");
     const response = await axios
       .post("/users/auth/refresh", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + accessToken,
+          Authorization: accessToken,
           Accept: "application/json",
         },
       })
