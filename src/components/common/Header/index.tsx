@@ -9,7 +9,7 @@ import { MobileHeader } from "./MobileHeader";
 import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { BACKEND_URL } from "../../../constants";
-import { MessageType } from "../../../store/ChatContext";
+import { ChatContext, MessageType } from "../../../store/ChatContext";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 
@@ -25,9 +25,10 @@ interface FollowAlarmType {
 const Header: React.FC<HeaderProps> = (props) => {
   const { id, setTheme } = useContext(ThemeContext);
   const { user, grantRefresh } = useContext(AuthContext);
+  const { newMessages, setNewMessages } = useContext(ChatContext);
   const { windowSize } = useContext(ScreenContext);
   const messageAlarmClient = useRef<any>({});
-  const [newMessages, setNewMessages] = useState<any>([]);
+
   const [cookies] = useCookies(["accessToken"]);
   const accessToken = cookies.accessToken;
 
@@ -49,7 +50,8 @@ const Header: React.FC<HeaderProps> = (props) => {
     console.log(response, "새로운 메세지 데이터");
     const followMessages = response.data.follows;
     const newMessages = response.data.messages;
-    setNewMessages((pre: any) => [...pre, ...followMessages, ...newMessages]);
+
+    // setNewMessages([...followMessages, ...newMessages]);
     connect();
     return () => disconnect();
   };
@@ -94,7 +96,7 @@ const Header: React.FC<HeaderProps> = (props) => {
           sender: message.sender,
           senderId: message.senderId,
         };
-        setNewMessages((pre: any) => [...pre, newMessageList]);
+        // setNewMessages((pre: any) => [...pre, newMessageList]);
       }
     );
   };
@@ -108,7 +110,7 @@ const Header: React.FC<HeaderProps> = (props) => {
           followType: String,
           name: String,
         };
-        setNewMessages((pre: any) => [...pre, newMessageList]);
+        // setNewMessages((pre: any) => [...pre, newMessageList]);
       }
     );
   };

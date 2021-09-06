@@ -25,6 +25,8 @@ interface ChatContextObj {
   setMainChatMessages: Dispatch<SetStateAction<MessageType[]>>;
   setMainRoomId: Dispatch<SetStateAction<number>>;
   setTotalMessage: Dispatch<SetStateAction<RoomType[]>>;
+  newMessages: String[];
+  setNewMessages: React.Dispatch<String[]>;
 }
 
 const ChatContext = React.createContext<ChatContextObj>({
@@ -34,12 +36,15 @@ const ChatContext = React.createContext<ChatContextObj>({
   setMainChatMessages: () => {},
   setMainRoomId: () => {},
   setTotalMessage: () => {},
+  newMessages: [],
+  setNewMessages: () => {},
 });
 
 const ChatContextProvider: React.FC = (props) => {
   const [mainChatMessages, setMainChatMessages] = useState<MessageType[]>([]);
   const [totalMessage, setTotalMessage] = useState<RoomType[]>([]);
   const [mainRoomId, setMainRoomId] = useState(-1);
+  const [newMessages, setNewMessages] = useState<String[]>([]);
 
   const contextValue: ChatContextObj = {
     mainChatMessages,
@@ -48,6 +53,8 @@ const ChatContextProvider: React.FC = (props) => {
     setMainChatMessages,
     setMainRoomId,
     setTotalMessage,
+    newMessages,
+    setNewMessages,
   };
 
   return (
