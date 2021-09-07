@@ -17,3 +17,4 @@ export * from "./Divider";
 export * from "./AlertMessage";
 export * from "./UniversityList";
 export * from "./Button/UpdateButton";
+export * from "./AlarmCount";

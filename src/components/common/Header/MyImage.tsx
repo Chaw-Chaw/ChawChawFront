@@ -7,11 +7,14 @@ import { AuthContext } from "../../../store/AuthContext";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { prepareProfile } from "selenium-webdriver/firefox";
+import { AlarmCount } from "../AlarmCount";
+import { ChatContext } from "../../../store/ChatContext";
 
 const MyImage: React.FC<{ profileImage: string }> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const { logout } = useContext(AuthContext);
   const router = useRouter();
+  const { newMessages } = useContext(ChatContext);
 
   return (
     <MyImageBox>
@@ -26,6 +29,11 @@ const MyImage: React.FC<{ profileImage: string }> = (props) => {
         }}
         objectFit="cover"
       />
+      {newMessages.length !== 0 && (
+        <AlarmCount>
+          <span>{newMessages.length > 99 ? 99 : newMessages.length}</span>
+        </AlarmCount>
+      )}
       <SelectMenu isActive={isActive}>
         <Option
           onClick={(e) => {
