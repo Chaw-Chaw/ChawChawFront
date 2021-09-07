@@ -12,9 +12,9 @@ import { BACKEND_URL } from "../constants";
 import { AuthContext } from "./AuthContext";
 
 interface FollowAlarmType {
-  followType: String; // FOLLOW, UNFOLLOW
-  name: String;
-  regDate: String;
+  followType: string; // FOLLOW, UNFOLLOW
+  name: string;
+  regDate: string;
 }
 interface MessageType {
   messageType: string;
@@ -24,6 +24,7 @@ interface MessageType {
   regDate: string;
   message: string;
   imageUrl: string;
+  isRead: boolean;
 }
 
 interface RoomType {
