@@ -51,7 +51,6 @@ export default function Chat() {
     console.log(response, "getUserMessageLog");
     dataProcess(response, userId);
     connect();
-    return () => disconnect();
   };
 
   const getMessageLog = async () => {
@@ -68,7 +67,6 @@ export default function Chat() {
     console.log(response, "getMessageLog");
     dataProcess(response, -1);
     connect();
-    return () => disconnect();
   };
 
   const dataProcess = (res: AxiosResponse, userId: number) => {
@@ -108,7 +106,6 @@ export default function Chat() {
   };
 
   //@stomp/stompjs 는 typescript 지원 안함
-
   const connect = () => {
     client.current = new StompJs.Client({
       // brokerURL: "ws://localhost:8080/ws-stomp/websocket", // 웹소켓 서버로 직접 접속
@@ -129,6 +126,9 @@ export default function Chat() {
       },
       onStompError: (frame) => {
         console.error(frame);
+      },
+      connectHeaders: {
+        Auhthorization: accessToken,
       },
     });
 
@@ -246,6 +246,9 @@ export default function Chat() {
         },
       });
     }
+
+    // 컴포넌트가 unmount 할때 cleanup 함수 : 컴포넌트가 안보이게될때 실행시켜주는 함수
+    return () => disconnect();
   }, []);
 
   useEffect(() => {
