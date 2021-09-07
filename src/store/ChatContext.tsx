@@ -44,6 +44,7 @@ interface ChatContextObj {
   setTotalMessage: Dispatch<SetStateAction<RoomType[]>>;
   newMessages: Object[];
   setNewMessages: Dispatch<React.SetStateAction<Object[]>>;
+  pushMessages: Object[];
 }
 
 const ChatContext = React.createContext<ChatContextObj>({
@@ -55,6 +56,7 @@ const ChatContext = React.createContext<ChatContextObj>({
   setTotalMessage: () => {},
   newMessages: [],
   setNewMessages: () => {},
+  pushMessages: [],
 });
 
 const ChatContextProvider: React.FC = (props) => {
@@ -64,6 +66,7 @@ const ChatContextProvider: React.FC = (props) => {
   const [newMessages, setNewMessages] = useState<Object[]>([]);
   const messageAlarmClient = useRef<any>({});
   const { user, accessToken } = useContext(AuthContext);
+  const [pushMessages, setPushMessages] = useState(newMessages);
 
   const connect = () => {
     messageAlarmClient.current = new StompJs.Client({
@@ -86,6 +89,7 @@ const ChatContextProvider: React.FC = (props) => {
       },
       connectHeaders: {
         Authorization: accessToken,
+        ws_path: "alarm",
       },
     });
 
@@ -119,12 +123,34 @@ const ChatContextProvider: React.FC = (props) => {
     );
   };
 
+  const disappearMessages = () => {
+    if (pushMessages.length <= 0) return;
+    setTimeout(() => {
+      setPushMessages((pre) => {
+        const result = pre;
+        result.shift();
+        return result;
+      });
+    }, 3000);
+  };
+
   useEffect(() => {
+    setTimeout(disappearMessages, 3000);
     if (!accessToken) return;
     connect();
     // useEffect() cleanup 함수
     return () => disconnect();
   }, []);
+
+  useEffect(() => {
+    // 메인 룸 변경 api 전송;
+  }, [mainRoomId]);
+
+  useEffect(() => {
+    console.log(newMessages, "newMessages 업데이트");
+    // 알림은 최대 6개까지 보여주기?
+    setPushMessages(newMessages.slice(-6, newMessages.length - 1).reverse());
+  }, [JSON.stringify(newMessages)]);
 
   const contextValue: ChatContextObj = {
     mainChatMessages,
@@ -135,6 +161,7 @@ const ChatContextProvider: React.FC = (props) => {
     setTotalMessage,
     newMessages,
     setNewMessages,
+    pushMessages,
   };
 
   return (

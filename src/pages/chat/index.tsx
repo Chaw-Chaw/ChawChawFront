@@ -127,7 +127,8 @@ export default function Chat() {
         console.error(frame);
       },
       connectHeaders: {
-        Auhthorization: accessToken,
+        Authorization: accessToken,
+        ws_path: "alarm",
       },
     });
 
@@ -203,10 +204,7 @@ export default function Chat() {
   };
 
   const publish = (message: string, messageType: string) => {
-    if (!client.current.connected) {
-      console.log("있냐");
-      return;
-    }
+    if (!client.current.connected) return;
 
     const timezoneOffset = new Date().getTimezoneOffset() * 60000;
     const now = new Date(Date.now() - timezoneOffset);
@@ -222,6 +220,7 @@ export default function Chat() {
         regDate: now.toISOString().substring(0, 19),
         message,
         imageUrl: user.imageUrl,
+        isRead: true,
       }),
     });
     console.log("메세지 전송 선공");
