@@ -89,7 +89,7 @@ const ChatContextProvider: React.FC = (props) => {
       },
       connectHeaders: {
         Authorization: accessToken,
-        ws_path: "alarm",
+        "ws-path": "alarm",
       },
     });
 

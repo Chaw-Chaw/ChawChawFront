@@ -128,7 +128,7 @@ export default function Chat() {
       },
       connectHeaders: {
         Authorization: accessToken,
-        ws_path: "alarm",
+        "ws-path": "alarm",
       },
     });
 
