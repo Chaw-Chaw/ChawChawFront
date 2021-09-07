@@ -17,7 +17,7 @@ import { ChatContext, RoomType, MessageType } from "../../store/ChatContext";
 import { ScreenContext } from "../../store/ScreenContext";
 
 export default function Chat() {
-  const { user, grantRefresh } = useContext(AuthContext);
+  const { user, grantRefresh, accessToken } = useContext(AuthContext);
   const { windowSize } = useContext(ScreenContext);
   const {
     mainRoomId,
@@ -29,8 +29,7 @@ export default function Chat() {
   } = useContext(ChatContext);
   const router = useRouter();
   const message = useAlert();
-  const [cookies] = useCookies(["accessToken"]);
-  const accessToken = cookies.accessToken;
+
   const client = useRef<any>({});
   const roomIds = useRef<number[]>([]);
 
@@ -145,7 +144,6 @@ export default function Chat() {
       (response: any) => {
         const message: MessageType = JSON.parse(response.body);
         console.log(response, "subscribe");
-
         setMainChatMessages((pre: MessageType[]) => [...pre, message]);
 
         // 채팅방을 삭제해야할 경우

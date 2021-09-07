@@ -40,6 +40,7 @@ interface AuthContextObj {
   updateUser: (Object: UserPropertys) => void;
   webmailVerify: (res: AuthReqProps) => boolean;
   verificationNumber: (res: AuthReqProps) => void;
+  accessToken: string;
 }
 
 interface AuthReqProps {
@@ -96,6 +97,7 @@ const AuthContext = React.createContext<AuthContextObj>({
   webmailVerify: () => false,
   verificationNumber: () => {},
   grantRefresh: () => new Promise(() => {}),
+  accessToken: "",
 });
 
 const AuthContextProvider: React.FC = (props) => {
@@ -506,6 +508,7 @@ const AuthContextProvider: React.FC = (props) => {
     webmailVerify,
     verificationNumber,
     grantRefresh,
+    accessToken,
   };
 
   return (

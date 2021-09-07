@@ -8,7 +8,6 @@ import { PostModalInfoProps } from "../PostModal";
 import { PostCardInfoProps, PostCardInfo } from "../PostCard/PostCardInfo";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import { PostCardImageInfoProps, PostCardImageInfo } from "./PostCardImageInfo";
-import { useCookies } from "react-cookie";
 import { AuthContext } from "../../../store/AuthContext";
 
 interface PostCardProps extends PostCardInfoProps, PostCardImageInfoProps {
@@ -49,9 +48,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const [open, setOpen] = useState(false);
   const [postModalInfo, setPostModalInfo] =
     useState<PostModalInfoProps>(initialPostInfo);
-  const [cookies] = useCookies(["accessToken"]);
-  const accessToken = cookies.accessToken;
-  const { grantRefresh } = useContext(AuthContext);
+  const { grantRefresh, accessToken } = useContext(AuthContext);
 
   const handleModal = async () => {
     const response = await axios

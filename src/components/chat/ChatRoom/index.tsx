@@ -16,7 +16,6 @@ import InfoMessage from "../Message/InfoMessage";
 import { BsBoxArrowRight } from "react-icons/bs";
 import { RiHome2Line } from "react-icons/ri";
 import { BsChatDots } from "react-icons/bs";
-import { useCookies } from "react-cookie";
 import { AuthContext } from "../../../store/AuthContext";
 import { ChangeLanguageDropDown } from "../../common";
 import { ChatContext } from "../../../store/ChatContext";
@@ -31,15 +30,13 @@ interface ChatRoomProps {
 const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const { mainRoomId, setMainRoomId, mainChatMessages } =
     useContext(ChatContext);
-  const { user, grantRefresh } = useContext(AuthContext);
+  const { user, grantRefresh, accessToken } = useContext(AuthContext);
   const { windowSize } = useContext(ScreenContext);
-  const [cookies] = useCookies(["accessToken"]);
   const [message, setMessage] = useState<string>("");
   const [isViewChatList, setIsViewChatList] = useState(false);
   const [selectLanguage, setSelectLanguage] = useState<string[]>(["Korean"]);
   const chatMessageBox = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const accessToken = cookies.accessToken;
 
   const sendMessage = () => {
     if (message === "") return;

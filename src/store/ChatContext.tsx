@@ -62,7 +62,7 @@ const ChatContextProvider: React.FC = (props) => {
   const [mainRoomId, setMainRoomId] = useState(-1);
   const [newMessages, setNewMessages] = useState<Object[]>([]);
   const messageAlarmClient = useRef<any>({});
-  const { user } = useContext(AuthContext);
+  const { user, accessToken } = useContext(AuthContext);
 
   const connect = () => {
     messageAlarmClient.current = new StompJs.Client({
@@ -83,8 +83,11 @@ const ChatContextProvider: React.FC = (props) => {
       onStompError: (frame) => {
         console.error(frame);
       },
+      connectHeaders: {
+        Authorization: accessToken,
+      },
     });
-    disconnect();
+
     messageAlarmClient.current.activate();
   };
 
@@ -116,7 +119,9 @@ const ChatContextProvider: React.FC = (props) => {
   };
 
   useEffect(() => {
+    if (!accessToken) return;
     connect();
+    // useEffect() cleanup 함수
     return () => disconnect();
   }, []);
 

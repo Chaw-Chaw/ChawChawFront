@@ -75,6 +75,11 @@ export default function Post() {
       return;
     }
 
+    if (!response.data.isSuccess) {
+      console.log("조회 실패");
+      return;
+    }
+
     if (isFirst.current === true)
       postIds.current += data.map((item: any) => item.id).join("/");
     else postIds.current += "/" + data.map((item: any) => item.id).join("/");

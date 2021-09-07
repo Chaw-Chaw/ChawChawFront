@@ -22,13 +22,10 @@ const Main = styled.div`
   width: 1050px;
   margin-top: 100px;
   @media (max-width: 1000px) {
-    width: 750px;
+    width: 768px;
   }
   @media (max-width: 768px) {
-    width: 500px;
+    width: 100%;
     margin-top: 50px;
-  }
-  @media (max-width: 500px) {
-    width: 320px;
   }
 `;

@@ -9,7 +9,6 @@ import {
   useState,
 } from "react";
 import axios from "axios";
-import { useCookies } from "react-cookie";
 import { AuthContext } from "../../../store/AuthContext";
 import { useAlert } from "react-alert";
 import { ChatContext } from "../../../store/ChatContext";
@@ -25,9 +24,7 @@ interface MessageInputProps {
 const MessageInput: React.FC<MessageInputProps> = (props) => {
   const { mainRoomId } = useContext(ChatContext);
   const isNotActive = mainRoomId === -1 ? true : false;
-  const [cookies] = useCookies(["accessToken"]);
-  const { grantRefresh } = useContext(AuthContext);
-  const accessToken = cookies.accessToken;
+  const { grantRefresh, accessToken } = useContext(AuthContext);
   const message = useAlert();
 
   const sendImage = async (image: FormData) => {

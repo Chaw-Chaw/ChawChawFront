@@ -8,7 +8,6 @@ import { ScreenContext } from "../../../store/ScreenContext";
 import { MobileHeader } from "./MobileHeader";
 import { ChatContext, MessageType } from "../../../store/ChatContext";
 import axios from "axios";
-import { useCookies } from "react-cookie";
 
 interface HeaderProps {
   type?: string;
@@ -16,12 +15,9 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = (props) => {
   const { id, setTheme } = useContext(ThemeContext);
-  const { user, grantRefresh } = useContext(AuthContext);
+  const { user, grantRefresh, accessToken } = useContext(AuthContext);
   const { newMessages, setNewMessages } = useContext(ChatContext);
   const { windowSize } = useContext(ScreenContext);
-
-  const [cookies] = useCookies(["accessToken"]);
-  const accessToken = cookies.accessToken;
 
   const getNewMessages = async () => {
     const response = await axios
@@ -47,7 +43,6 @@ const Header: React.FC<HeaderProps> = (props) => {
 
   useEffect(() => {
     if (!accessToken) return;
-
     getNewMessages();
     console.log(newMessages, "newMessages, alarm");
   }, []);
