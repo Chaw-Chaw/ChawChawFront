@@ -8,6 +8,7 @@ import { ScreenContext } from "../../../store/ScreenContext";
 import { MobileHeader } from "./MobileHeader";
 import { ChatContext, MessageType } from "../../../store/ChatContext";
 import axios from "axios";
+import { PushAlarm } from "../PushAlarm";
 
 interface HeaderProps {
   type?: string;
@@ -16,7 +17,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = (props) => {
   const { id, setTheme } = useContext(ThemeContext);
   const { user, grantRefresh, accessToken } = useContext(AuthContext);
-  const { newMessages, setNewMessages } = useContext(ChatContext);
+  const { setNewMessages } = useContext(ChatContext);
   const { windowSize } = useContext(ScreenContext);
 
   const getNewMessages = async () => {
@@ -38,18 +39,13 @@ const Header: React.FC<HeaderProps> = (props) => {
     const followMessages = response.data.follows;
     const newMessages = response.data.messages;
 
-    setNewMessages([...followMessages, ...newMessages]);
+    setNewMessages([...newMessages, ...followMessages]);
   };
 
   useEffect(() => {
     if (!accessToken) return;
     getNewMessages();
-    console.log(newMessages, "newMessages, alarm");
   }, []);
-
-  useEffect(() => {
-    console.log(newMessages, "newMessages 업데이트");
-  }, [JSON.stringify(newMessages)]);
 
   return (
     <>
@@ -69,6 +65,7 @@ const Header: React.FC<HeaderProps> = (props) => {
       ) : (
         <MobileHeader />
       )}
+      <PushAlarm />
     </>
   );
 };

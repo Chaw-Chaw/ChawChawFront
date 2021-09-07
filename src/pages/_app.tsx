@@ -97,6 +97,12 @@ function MyApp({ Component, pageProps }: AppProps) {
                       rel: "icon",
                     },
                   ]}
+                  additionalMetaTags={[
+                    {
+                      name: "viewport",
+                      content: "width=device-width, initial-scale=1",
+                    },
+                  ]}
                 />
                 <Component {...pageProps} />
               </ChatContextProvider>

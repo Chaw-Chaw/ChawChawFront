@@ -18,3 +18,4 @@ export * from "./AlertMessage";
 export * from "./UniversityList";
 export * from "./Button/UpdateButton";
 export * from "./AlarmCount";
+export * from "./ChatBox";

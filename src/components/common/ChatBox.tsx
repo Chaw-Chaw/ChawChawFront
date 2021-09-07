@@ -1,13 +1,13 @@
 import React, { MouseEventHandler, useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
-import { ChatContext } from "../../../store/ChatContext";
-import { MessageImage } from "../Message/MessageImage";
+import { DEFAULT_PROFILE_IMAGE } from "../../constants";
+import { ChatContext } from "../../store/ChatContext";
+import { MessageImage } from "../chat/Message/MessageImage";
 
 interface ChatBoxProps {
-  imageUrl: any;
-  regDate: any;
-  sender: any;
+  imageUrl: string;
+  regDate: string;
+  sender: string;
   roomId: number;
   onClick: MouseEventHandler<HTMLDivElement>;
   context: string;
@@ -47,8 +47,7 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
   );
 };
 
-export default ChatBox;
-export {};
+export { ChatBox };
 const ChatContainer = styled.div<{ type: string }>`
   cursor: pointer;
   display: flex;
