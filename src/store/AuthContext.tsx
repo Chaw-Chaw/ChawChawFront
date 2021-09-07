@@ -368,16 +368,6 @@ const AuthContextProvider: React.FC = (props) => {
   };
 
   const signup = async (props: AuthReqProps) => {
-    //provider에 따라 info 달라짐
-    const socialSignupInfo = {
-      email: props.email,
-      name: props.name,
-      web_email: props.web_email,
-      school: props.school,
-      imageUrl: props.imageUrl,
-      provider: props.provider,
-    };
-
     const signupInfo = {
       email: props.email,
       password: props.password,
@@ -388,11 +378,10 @@ const AuthContextProvider: React.FC = (props) => {
       provider: props.provider,
     };
 
-    const info = props.provider ? socialSignupInfo : signupInfo;
-    console.log(info, "회원가입 정보");
+    console.log(signupInfo, "회원가입 정보");
 
     const response = await axios
-      .post("/users/signup", info, {
+      .post("/users/signup", signupInfo, {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",

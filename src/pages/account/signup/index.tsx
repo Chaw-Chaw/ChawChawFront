@@ -70,7 +70,7 @@ export default function SignUp() {
         web_email: user?.web_email,
         school: user.school ? user.school : "",
         imageUrl: user.imageUrl ? user.imageUrl : "",
-        provider: user.provider ? user.provider : "",
+        provider: user.provider ? user.provider : "basic",
       });
     } else {
       message.error("user data가 없습니다."),
