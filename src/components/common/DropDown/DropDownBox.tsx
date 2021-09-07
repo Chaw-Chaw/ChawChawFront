@@ -43,7 +43,7 @@ const DropDownBox: React.FC<DropDownProps> = (props) => {
       value={props.value}
     >
       {props.children}
-      <span>{props.value}</span>
+      <span>{props.value?.substring(0, 22)}</span>
     </InitialBox>
   );
 };
