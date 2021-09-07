@@ -4,10 +4,10 @@ import styled from "styled-components";
 import { Button } from "../../components/common";
 import BannerImage from "../../../public/Main/conversation.jpeg";
 import { useRouter } from "next/router";
-import { useCookies } from "react-cookie";
+import { AuthContext } from "../../store/AuthContext";
 
 const Banner: React.FC = () => {
-  const [cookies] = useCookies(["accessToken"]);
+  const { accessToken } = useContext(AuthContext);
   const router = useRouter();
   return (
     <Container>
@@ -19,7 +19,7 @@ const Banner: React.FC = () => {
           fontSize="2.8rem"
           onClick={(e) => {
             e.preventDefault();
-            if (cookies.accessToken) {
+            if (accessToken) {
               router.push("/post");
             } else {
               router.push("/account/login");

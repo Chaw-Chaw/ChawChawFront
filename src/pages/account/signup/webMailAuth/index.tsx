@@ -8,7 +8,6 @@ import { AuthContext } from "../../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
-import { useCookies } from "react-cookie";
 type Inputs = {
   webmail: string;
   verificationNum: number;
@@ -19,8 +18,14 @@ export default function WebMailAuth() {
   const message = useAlert();
   const webmailRef = useRef<HTMLInputElement>(null);
   const [webmailValidate, setWebmailValidate] = useState(false);
-  const { sendWebmail, signup, webmailVerify, verificationNumber, user } =
-    useContext(AuthContext);
+  const {
+    sendWebmail,
+    signup,
+    webmailVerify,
+    verificationNumber,
+    user,
+    accessToken,
+  } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -30,8 +35,6 @@ export default function WebMailAuth() {
     user?.provider === "facebook" || user?.provider === "kakao" ? true : false;
   const [activeVerificationNumber, setActiveVerificationNumber] =
     useState<boolean>(true);
-  const [cookies] = useCookies(["accessToken"]);
-  const accessToken = cookies.accessToken;
 
   const webmailSubmit: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     if (!webmailRef.current) {

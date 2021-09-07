@@ -14,7 +14,6 @@ import { AuthContext } from "../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
-import { useCookies } from "react-cookie";
 
 interface Inputs {
   email: string;
@@ -27,10 +26,9 @@ export default function SignUp() {
   const [isEmailDupCheck, setIsEmailDupCheck] = useState(false);
   const message = useAlert();
   const router = useRouter();
-  const { signup, emailDuplicationCheck, updateUser } = useContext(AuthContext);
+  const { signup, emailDuplicationCheck, updateUser, accessToken } =
+    useContext(AuthContext);
   const { user } = useContext(AuthContext);
-  const [cookies] = useCookies(["accessToken"]);
-  const accessToken = cookies.accessToken;
 
   const userUniversity = user.school;
   const {

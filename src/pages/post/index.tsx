@@ -6,12 +6,11 @@ import PostSection from "../../components/post/PostSection";
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../store/AuthContext";
-import { useCookies } from "react-cookie";
 import { useRouter } from "next/router";
 import { useAlert } from "react-alert";
 
 export default function Post() {
-  const { grantRefresh } = useContext(AuthContext);
+  const { grantRefresh, accessToken } = useContext(AuthContext);
   const [postInfo, setPostInfo] = useState<any>([]);
   const [sortInfo, setSortInfo] = useState<string[]>([
     "Main Language",
@@ -22,10 +21,8 @@ export default function Post() {
   const isFirst = useRef(true);
   const postIds = useRef("");
   const searchName = useRef("");
-  const [cookies] = useCookies(["accessToken"]);
   const message = useAlert();
   const router = useRouter();
-  const accessToken = cookies.accessToken;
 
   const getPosts = async () => {
     const orderConvert = orderOptions[sortInfo[2]] || sortInfo[2];

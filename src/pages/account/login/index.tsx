@@ -14,7 +14,6 @@ import { AuthContext } from "../../../store/AuthContext";
 import SocialSection from "./SocialSection";
 import Link from "next/link";
 import { useAlert } from "react-alert";
-import { useCookies } from "react-cookie";
 
 interface Inputs {
   email: string;
@@ -22,16 +21,14 @@ interface Inputs {
 }
 
 export default function Login() {
-  const [cookies] = useCookies(["accessToken"]);
   const router = useRouter();
   const message = useAlert();
-  const { login } = useContext(AuthContext);
+  const { login, accessToken } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-  const accessToken = cookies.accessToken;
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     if (data.email === "" || data.password === "") {

@@ -4,7 +4,7 @@ import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { MouseEventHandler, useContext, useState } from "react";
-import { useCookies } from "react-cookie";
+
 import { AuthContext } from "../../../store/AuthContext";
 
 interface PostModalActive {
@@ -15,9 +15,8 @@ interface PostModalActive {
 const PostModalActive: React.FC<PostModalActive> = (props) => {
   const router = useRouter();
   const [isActiveFollow, setIsActiveFollow] = useState(props.isFollow);
-  const { grantRefresh } = useContext(AuthContext);
-  const [cookies] = useCookies(["accessToken"]);
-  const accessToken = cookies.accessToken;
+  const { accessToken, grantRefresh } = useContext(AuthContext);
+
   const tryChat: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     router.push({ pathname: "/chat", query: { userId: props.id } });

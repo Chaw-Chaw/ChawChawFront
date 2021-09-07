@@ -1,6 +1,5 @@
 import { Section } from "../../components/home/Section";
 import { ImageSection } from "../../components/home/ImageSection";
-
 import styled from "styled-components";
 import ProfileSectionImage from "../../../public/Main/profile.png";
 import PostingSectionImage from "../../../public/Main/posting.jpeg";
