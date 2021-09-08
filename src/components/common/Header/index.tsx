@@ -1,17 +1,22 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { Logo, ThemeToggle } from "..";
-import { ChangeLanguageDropDown } from "../DropDown/ChangeLanguageDropDown";
 import { AuthContext } from "../../../store/AuthContext";
 import HeaderCondition from "./HeaderCondition";
 import { ScreenContext } from "../../../store/ScreenContext";
 import { MobileHeader } from "./MobileHeader";
-import { ChatContext, MessageType } from "../../../store/ChatContext";
+import {
+  ChatContext,
+  MessageType,
+  FollowAlarmType,
+} from "../../../store/ChatContext";
 import axios from "axios";
 import { PushAlarm } from "../PushAlarm";
+import { NextRouter, withRouter } from "next/router";
 
 interface HeaderProps {
   type?: string;
+  router: NextRouter;
 }
 
 const Header: React.FC<HeaderProps> = (props) => {
@@ -36,8 +41,15 @@ const Header: React.FC<HeaderProps> = (props) => {
       return;
     }
     console.log(response, "새로운 메세지 데이터");
-    const followMessages = response.data.follows;
-    const newMessages = response.data.messages;
+    const followMessages: FollowAlarmType[] = response.data.follows;
+    // const sortFollowMessages = followMessages.sort((a, b) => {
+    //   const x = a.regDate;
+    //   const y = b.regDate;
+    //   if (x > y) return 1;
+    //   if (x < y) return -1;
+    //   return 0;
+    // });
+    const newMessages: MessageType[] = response.data.messages;
 
     setNewMessages([...newMessages, ...followMessages]);
   };
@@ -65,12 +77,12 @@ const Header: React.FC<HeaderProps> = (props) => {
       ) : (
         <MobileHeader />
       )}
-      <PushAlarm />
+      {props.router.pathname !== "/chat" && <PushAlarm />}
     </>
   );
 };
 
-export default Header;
+export default withRouter(Header);
 export type { HeaderProps };
 
 const ThemeToggleBox = styled.div`

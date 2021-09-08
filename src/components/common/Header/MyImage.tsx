@@ -15,7 +15,6 @@ const MyImage: React.FC<{ profileImage: string }> = (props) => {
   const { logout } = useContext(AuthContext);
   const router = useRouter();
   const { newMessages } = useContext(ChatContext);
-  console.log(newMessages, "뭐지");
 
   return (
     <MyImageBox>

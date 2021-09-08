@@ -7,7 +7,7 @@ import MyImage from "./MyImage";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import styled from "styled-components";
 
-const HeaderCondition: React.FC<HeaderProps> = (props) => {
+const HeaderCondition: React.FC<{ type?: string }> = (props) => {
   const headerType = props.type;
   const { user, accessToken } = useContext(AuthContext);
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
