@@ -149,7 +149,9 @@ const ChatContextProvider: React.FC = (props) => {
   useEffect(() => {
     console.log(newMessages, "newMessages 업데이트");
     // 알림은 최대 6개까지 보여주기?
-    setPushMessages(newMessages.slice(-6, newMessages.length - 1).reverse());
+    console.log(newMessages.slice(-6, newMessages.length).reverse()),
+      "pushMessages";
+    setPushMessages(newMessages.slice(-6, newMessages.length).reverse());
   }, [JSON.stringify(newMessages)]);
 
   const contextValue: ChatContextObj = {
@@ -172,4 +174,4 @@ const ChatContextProvider: React.FC = (props) => {
 };
 
 export { ChatContext, ChatContextProvider };
-export type { RoomType, MessageType };
+export type { RoomType, MessageType, FollowAlarmType };
