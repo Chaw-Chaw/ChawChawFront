@@ -147,6 +147,7 @@ const AuthContextProvider: React.FC = (props) => {
       secure: true,
     });
     // document.cookie = "accessToken=;expires=Thu, 18 Dec 2013 12:00:00 GMT";
+    router.reload();
     router.push("/account/login");
   };
 
@@ -155,7 +156,7 @@ const AuthContextProvider: React.FC = (props) => {
     const tokenInfo = response.data.data.token || response.data.data;
     const accessToken = "Bearer " + tokenInfo.accessToken;
     const accessTokenExpiresIn = tokenInfo.expiresIn;
-
+    // 기존 쿠기를 지우는 방법
     console.log(accessToken, "acessToken");
     setCookie("accessToken", accessToken, {
       path: "/",
