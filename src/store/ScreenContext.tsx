@@ -25,6 +25,8 @@ const ScreenContextProvider: React.FC = (props) => {
   };
 
   useEffect(() => {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
     // 윈도우 사이즈 계산
     window.addEventListener("resize", handleResize);
     return () => {
