@@ -237,7 +237,6 @@ const MessageContainer = styled.div`
 `;
 const MessagesHeaderIcons = styled.div`
   display: flex;
-  margin-right: auto;
 `;
 
 const MessageHeaderButton = styled.button`
