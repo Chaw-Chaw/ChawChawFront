@@ -41,5 +41,4 @@ export { ChangeLanguageDropDown };
 
 const ChangeLanguageDropDownBox = styled.div`
   margin-bottom: 10px;
-  margin-left: auto;
 `;

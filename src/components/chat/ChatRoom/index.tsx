@@ -109,15 +109,17 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
     <Outline>
       <Inner>
         <Header>
-          <MessageHeaderButton onClick={backHome}>
-            <RiHome2Line />
-          </MessageHeaderButton>
-          <MessageHeaderButton onClick={leaveChatRoom}>
-            <BsBoxArrowRight />
-          </MessageHeaderButton>
-          <MessageHeaderButton onClick={viewChatList}>
-            <BsChatDots />
-          </MessageHeaderButton>
+          <MessagesHeaderIcons>
+            <MessageHeaderButton onClick={backHome}>
+              <RiHome2Line />
+            </MessageHeaderButton>
+            <MessageHeaderButton onClick={leaveChatRoom}>
+              <BsBoxArrowRight />
+            </MessageHeaderButton>
+            <MessageHeaderButton onClick={viewChatList}>
+              <BsChatDots />
+            </MessageHeaderButton>
+          </MessagesHeaderIcons>
           <ChangeLanguageDropDown
             selectLanguage={selectLanguage}
             setSelectLanguage={setSelectLanguage}
@@ -215,7 +217,6 @@ const Inner = styled.div`
 `;
 
 const Header = styled.div`
-  gap: 0px 10px;
   align-items: center;
   position: sticky;
   top: 0px;
@@ -234,6 +235,11 @@ const MessageContainer = styled.div`
   padding-bottom: 10px;
   overflow: auto;
 `;
+const MessagesHeaderIcons = styled.div`
+  display: flex;
+  margin-right: auto;
+`;
+
 const MessageHeaderButton = styled.button`
   border: none;
   background-color: ${(props) => props.theme.bodyBackgroundColor};
