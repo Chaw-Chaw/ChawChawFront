@@ -31,6 +31,7 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const vh = window.innerHeight * 0.01;
   const [theme, setTheme] = useState(LightTheme);
   const AlertTemplate: React.FC<AlertComponentPropsWithStyle> = ({
     message,
@@ -45,6 +46,8 @@ function MyApp({ Component, pageProps }: AppProps) {
       </AlertMessage>
     );
   };
+
+  document.documentElement.style.setProperty("--vh", `${vh}px`);
 
   return (
     <CookiesProvider>

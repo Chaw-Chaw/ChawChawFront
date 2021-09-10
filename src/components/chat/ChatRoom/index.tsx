@@ -198,11 +198,13 @@ const Outline = styled.div`
   box-sizing: border-box;
   overflow: auto;
   height: calc(100vh - 150px);
+  height: calc(var(--vh, 1vh) * 100 - 150px);
   /* margin-bottom: 50px; */
   width: 100%;
   max-width: 600px;
   @media (max-width: 768px) {
-    height: calc(100vh - 150px);
+    height: calc(100vh - 70px);
+    height: calc(var(--vh, 1vh) * 100 - 70px);
   }
   @media (max-width: 500px) {
     min-width: 320px;
