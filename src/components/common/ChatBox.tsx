@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE } from "../../constants";
 import { ChatContext } from "../../store/ChatContext";
 import { MessageImage } from "../chat/Message/MessageImage";
+import { AlarmCount } from "./AlarmCount";
 
 interface ChatBoxProps {
   imageUrl: string;
@@ -11,13 +12,19 @@ interface ChatBoxProps {
   roomId: number;
   onClick: () => void;
   context: string;
+  chatList?: boolean;
 }
 
 const ChatBox: React.FC<ChatBoxProps> = (props) => {
-  const { mainRoomId } = useContext(ChatContext);
+  const { mainRoomId, newMessages } = useContext(ChatContext);
   const mainChatList = useRef<HTMLDivElement>(null);
   const regDate = props.regDate.split("T").join(" ");
   const type = props.roomId === mainRoomId ? "current" : "";
+  const matchNewMessages = newMessages.filter((item: any) => {
+    if (item.roomId === props.roomId) return true;
+    return false;
+  });
+
   useEffect(() => {
     if (!mainChatList.current) return;
     mainChatList.current.scrollIntoView({
@@ -26,6 +33,7 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
       inline: "nearest",
     });
   }, [mainRoomId]);
+
   return (
     <ChatContainer
       ref={type ? mainChatList : null}
@@ -38,7 +46,13 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
     >
       <MessageImage
         src={props.imageUrl ? `${props.imageUrl}` : DEFAULT_PROFILE_IMAGE}
-      />
+      >
+        {!props.chatList && matchNewMessages.length !== 0 && (
+          <AlarmCount>
+            <span>{matchNewMessages.length}</span>
+          </AlarmCount>
+        )}
+      </MessageImage>
       <ChatMessageBox type={type}>
         <ChatUserName type={type}>{props.sender}</ChatUserName>
         {props.context}

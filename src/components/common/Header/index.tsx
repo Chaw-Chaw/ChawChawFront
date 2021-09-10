@@ -12,6 +12,7 @@ import {
 } from "../../../store/ChatContext";
 import axios from "axios";
 import { PushAlarm } from "../PushAlarm";
+import { AlarmCount } from "../AlarmCount";
 
 interface HeaderProps {
   type?: string;

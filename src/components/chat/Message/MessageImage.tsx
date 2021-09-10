@@ -12,6 +12,7 @@ const MessageImage: React.FC<{ src: string }> = (props) => {
         objectFit="cover"
         className="message-sender-image"
       />
+      {props.children}
     </ImageBox>
   );
 };
@@ -23,6 +24,7 @@ const ImageBox = styled.div`
   height: 50px;
   border-radius: 100%;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
+  position: relative;
 
   .message-sender-image {
     border-radius: 100%;

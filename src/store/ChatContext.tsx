@@ -162,6 +162,7 @@ const ChatContextProvider: React.FC = (props) => {
     setNewMessages((pre) => {
       const result = pre;
       const filteredNewMessages = result.filter((item: any) => {
+        console.log(item.roomId, mainRoomId, "메세지 필터링");
         if (item.roomId === undefined) return true;
         if (item.roomId !== mainRoomId) return true;
         return false;

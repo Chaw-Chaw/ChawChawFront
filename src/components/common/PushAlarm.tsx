@@ -51,6 +51,7 @@ const PushAlarm: React.FC = () => {
                             ? item.message.substring(0, 20) + "..."
                             : item.message
                         }
+                        chatList
                       />
                     ) : (
                       <ChatBox
@@ -65,6 +66,7 @@ const PushAlarm: React.FC = () => {
                           0,
                           20
                         )}
+                        chatList
                       />
                     )}
                   </AlarmChatBox>
@@ -131,10 +133,13 @@ const PushAlarmTitle = styled.h1`
 
 const PushAlarmBox = styled.div`
   height: calc(100vh - 250px);
-  overflow: auto;
   width: 100%;
-  padding: 0px 15px 0px 5px;
+  padding: 0px 5px 0px 5px;
   box-sizing: border-box;
+  @media (max-height: calc(100vh - 250px)) {
+    padding: 0px 15px 0px 5px;
+    overflow: auto;
+  }
 `;
 
 const AlarmChatBox = styled.div``;
