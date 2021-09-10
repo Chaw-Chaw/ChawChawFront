@@ -202,7 +202,7 @@ const Outline = styled.div`
   width: 100%;
   max-width: 600px;
   @media (max-width: 768px) {
-    height: calc(100vh - 70px);
+    height: calc(100vh - 150px);
   }
   @media (max-width: 500px) {
     min-width: 320px;
@@ -237,6 +237,7 @@ const MessageContainer = styled.div`
 `;
 const MessagesHeaderIcons = styled.div`
   display: flex;
+  margin-right: auto;
 `;
 
 const MessageHeaderButton = styled.button`
@@ -245,4 +246,5 @@ const MessageHeaderButton = styled.button`
   color: ${(props) => props.theme.primaryColor};
   font-size: 2rem;
   cursor: pointer;
+  width: 44px;
 `;
