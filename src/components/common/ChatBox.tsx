@@ -49,7 +49,7 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
       >
         {!props.chatList && matchNewMessages.length !== 0 && (
           <AlarmCount>
-            <span>{matchNewMessages.length}</span>
+            <span>{newMessages.length > 99 ? 99 : newMessages.length}</span>
           </AlarmCount>
         )}
       </MessageImage>
