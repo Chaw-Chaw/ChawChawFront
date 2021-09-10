@@ -7,14 +7,13 @@ import { AuthContext } from "../../../store/AuthContext";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { prepareProfile } from "selenium-webdriver/firefox";
-import { AlarmCount } from "../AlarmCount";
+
 import { ChatContext } from "../../../store/ChatContext";
 
 const MyImage: React.FC<{ profileImage: string }> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const { logout } = useContext(AuthContext);
   const router = useRouter();
-  const { newMessages } = useContext(ChatContext);
 
   return (
     <MyImageBox>
@@ -29,11 +28,7 @@ const MyImage: React.FC<{ profileImage: string }> = (props) => {
         }}
         objectFit="cover"
       />
-      {newMessages.length !== 0 && (
-        <AlarmCount>
-          <span>{newMessages.length > 99 ? 99 : newMessages.length}</span>
-        </AlarmCount>
-      )}
+
       <SelectMenu isActive={isActive}>
         <Option
           onClick={(e) => {
@@ -74,6 +69,7 @@ const MyImage: React.FC<{ profileImage: string }> = (props) => {
 export default MyImage;
 
 const MyImageBox = styled.div`
+  margin-left: 10px;
   border-radius: 100%;
   position: relative;
   display: flex;
@@ -95,16 +91,15 @@ const SelectMenu = styled.div<{ isActive: boolean }>`
   display: ${(props) => (props.isActive ? "flex" : "none")};
   flex-direction: column;
   top: 80px;
-  left: 0px;
+  right: 0px;
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
   animation: growDown 300ms ease-in-out forwards;
   transform-origin: top center;
   overflow: auto;
   z-index: 100;
-  @media (max-width: 500px) {
+  @media (max-width: 768px) {
     width: 125px;
-    left: -20px;
   }
   @keyframes growDown {
     0% {

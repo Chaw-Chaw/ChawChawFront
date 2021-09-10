@@ -11,11 +11,11 @@ const MobileHeader: React.FC = () => {
 
   return (
     <MobileHeaderContainer>
-      <HeaderCondition />
-      <Logo />
       <ThemeToggleBox>
         <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
       </ThemeToggleBox>
+      <Logo />
+      <HeaderCondition />
     </MobileHeaderContainer>
   );
 };
@@ -28,9 +28,12 @@ const ThemeToggleBox = styled.div`
 `;
 
 const MobileHeaderContainer = styled.div`
+  @media (max-width: 768px) {
+    display: flex;
+  }
   background-color: ${(props) => props.theme.primaryColor};
   align-items: center;
-  display: flex;
+  display: none;
   justify-content: space-between;
   width: 100%;
   height: 70px;

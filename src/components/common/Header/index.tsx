@@ -12,11 +12,9 @@ import {
 } from "../../../store/ChatContext";
 import axios from "axios";
 import { PushAlarm } from "../PushAlarm";
-import { NextRouter, withRouter } from "next/router";
 
 interface HeaderProps {
   type?: string;
-  router: NextRouter;
 }
 
 const Header: React.FC<HeaderProps> = (props) => {
@@ -49,7 +47,7 @@ const Header: React.FC<HeaderProps> = (props) => {
     //   if (x < y) return -1;
     //   return 0;
     // });
-    const newMessages: MessageType[] = response.data.messages;
+    const newMessages = response.data.messages;
 
     setNewMessages([...newMessages, ...followMessages]);
   };
@@ -61,34 +59,33 @@ const Header: React.FC<HeaderProps> = (props) => {
 
   return (
     <>
-      {windowSize > 768 ? (
-        <HeaderWrapper>
-          <LogoFragment>
-            <Logo />
-            {props.type === "post" && <SchoolHead>{user.school}</SchoolHead>}
-          </LogoFragment>
-          <HeaderComponentsBox>
-            <ThemeToggleBox>
-              <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
-            </ThemeToggleBox>
-            <HeaderCondition type={props.type} />
-          </HeaderComponentsBox>
-        </HeaderWrapper>
-      ) : (
-        <MobileHeader />
-      )}
-      {props.router.pathname !== "/chat" && <PushAlarm />}
+      <HeaderWrapper>
+        <LogoFragment>
+          <Logo />
+          {props.type === "post" && <SchoolHead>{user.school}</SchoolHead>}
+        </LogoFragment>
+        <HeaderComponentsBox>
+          <ThemeToggleBox>
+            <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
+          </ThemeToggleBox>
+          <HeaderCondition type={props.type} />
+        </HeaderComponentsBox>
+      </HeaderWrapper>
+      <MobileHeader />
     </>
   );
 };
 
-export default withRouter(Header);
+export default Header;
 export type { HeaderProps };
 
 const ThemeToggleBox = styled.div`
   margin: 1rem;
 `;
 const HeaderWrapper = styled.header`
+  @media (max-width: 768px) {
+    display: none;
+  }
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   align-items: center;
   display: flex;
