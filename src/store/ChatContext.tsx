@@ -10,6 +10,7 @@ import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { BACKEND_URL } from "../constants";
 import { AuthContext } from "./AuthContext";
+import axios from "axios";
 
 interface FollowAlarmType {
   followType: string; // FOLLOW, UNFOLLOW
@@ -44,7 +45,6 @@ interface ChatContextObj {
   setTotalMessage: Dispatch<SetStateAction<RoomType[]>>;
   newMessages: Object[];
   setNewMessages: Dispatch<React.SetStateAction<Object[]>>;
-  pushMessages: Object[];
 }
 
 const ChatContext = React.createContext<ChatContextObj>({
@@ -56,7 +56,6 @@ const ChatContext = React.createContext<ChatContextObj>({
   setTotalMessage: () => {},
   newMessages: [],
   setNewMessages: () => {},
-  pushMessages: [],
 });
 
 const ChatContextProvider: React.FC = (props) => {
@@ -65,8 +64,7 @@ const ChatContextProvider: React.FC = (props) => {
   const [mainRoomId, setMainRoomId] = useState(-1);
   const [newMessages, setNewMessages] = useState<Object[]>([]);
   const messageAlarmClient = useRef<any>({});
-  const { user, accessToken } = useContext(AuthContext);
-  const [pushMessages, setPushMessages] = useState(newMessages);
+  const { user, accessToken, grantRefresh } = useContext(AuthContext);
 
   const connect = () => {
     messageAlarmClient.current = new StompJs.Client({
@@ -123,19 +121,34 @@ const ChatContextProvider: React.FC = (props) => {
     );
   };
 
-  const disappearMessages = () => {
-    if (pushMessages.length <= 0) return;
-    setTimeout(() => {
-      setPushMessages((pre) => {
-        const result = pre;
-        result.shift();
-        return result;
+  const detectMainRoom = async () => {
+    const response = await axios
+      .post(
+        "/chat/room/enter",
+        { roomId: mainRoomId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: accessToken,
+            Accept: "application/json",
+          },
+        }
+      )
+      .catch((err) => {
+        console.error(err);
+        return err.response;
       });
-    }, 3000);
+
+    if (response.status === 401) {
+      grantRefresh();
+    }
+
+    if (!response.data.isSuccess) {
+      console.log(response.data, "메인룸 디텍트 api 전송 실패");
+    }
   };
 
   useEffect(() => {
-    setTimeout(disappearMessages, 3000);
     if (!accessToken) return;
     connect();
     // useEffect() cleanup 함수
@@ -144,14 +157,22 @@ const ChatContextProvider: React.FC = (props) => {
 
   useEffect(() => {
     // 메인 룸 변경 api 전송;
+    if (mainRoomId === -1) return;
+    detectMainRoom();
+    setNewMessages((pre) => {
+      const result = pre;
+      const filteredNewMessages = result.filter((item: any) => {
+        if (item.roomId === undefined) return true;
+        if (item.roomId !== mainRoomId) return true;
+        return false;
+      });
+      return filteredNewMessages;
+    });
   }, [mainRoomId]);
 
   useEffect(() => {
     console.log(newMessages, "newMessages 업데이트");
     // 알림은 최대 6개까지 보여주기?
-    console.log(newMessages.slice(-6, newMessages.length).reverse()),
-      "pushMessages";
-    setPushMessages(newMessages.slice(-6, newMessages.length).reverse());
   }, [JSON.stringify(newMessages)]);
 
   const contextValue: ChatContextObj = {
@@ -163,7 +184,6 @@ const ChatContextProvider: React.FC = (props) => {
     setTotalMessage,
     newMessages,
     setNewMessages,
-    pushMessages,
   };
 
   return (
