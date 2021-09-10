@@ -6,14 +6,24 @@ import { HeaderProps } from ".";
 import MyImage from "./MyImage";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import styled from "styled-components";
+import { PushAlarm } from "../PushAlarm";
+import { NextRouter, withRouter } from "next/router";
 
-const HeaderCondition: React.FC<{ type?: string }> = (props) => {
+const HeaderCondition: React.FC<{ type?: string; router: NextRouter }> = (
+  props
+) => {
   const headerType = props.type;
   const { user, accessToken } = useContext(AuthContext);
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
   // token이 없는게 문제다.
   if (accessToken) {
-    return <MyImage profileImage={profileImage} />;
+    return (
+      <HeaderInfoBox>
+        {props.router.pathname !== "/chat" ? <PushAlarm /> : null}
+
+        <MyImage profileImage={profileImage} />
+      </HeaderInfoBox>
+    );
   }
 
   if (headerType === "login") {
@@ -39,7 +49,13 @@ const HeaderCondition: React.FC<{ type?: string }> = (props) => {
   );
 };
 
-export default HeaderCondition;
+export default withRouter(HeaderCondition);
+
+const HeaderInfoBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const ButtonOutline = styled.div`
   border-radius: 20rem;

@@ -9,7 +9,7 @@ interface ChatBoxProps {
   regDate: string;
   sender: string;
   roomId: number;
-  onClick: MouseEventHandler<HTMLDivElement>;
+  onClick: () => void;
   context: string;
 }
 
@@ -31,8 +31,9 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
       ref={type ? mainChatList : null}
       type={type}
       onClick={(e) => {
+        e.preventDefault();
         if (type) return;
-        props.onClick(e);
+        props.onClick();
       }}
     >
       <MessageImage

@@ -26,8 +26,7 @@ const ChatList: React.FC = (props) => {
                   regDate={lastMessageInfo.regDate}
                   sender={item.sender}
                   roomId={item.roomId}
-                  onClick={(e) => {
-                    e.preventDefault();
+                  onClick={() => {
                     setMainRoomId(item.roomId);
                     return;
                   }}
