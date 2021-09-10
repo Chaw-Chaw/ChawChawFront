@@ -203,8 +203,8 @@ const Outline = styled.div`
   width: 100%;
   max-width: 600px;
   @media (max-width: 768px) {
-    height: calc(100vh - 70px);
-    height: calc(var(--vh, 1vh) * 100 - 70px);
+    height: calc(100vh - 10px);
+    height: calc(var(--vh, 1vh) * 100 - 10px);
   }
   @media (max-width: 500px) {
     min-width: 320px;
@@ -236,6 +236,10 @@ const MessageContainer = styled.div`
   padding-right: 20px;
   padding-bottom: 10px;
   overflow: auto;
+  @media (max-width: 768px) {
+    height: 100%;
+    padding-bottom: 0px;
+  }
 `;
 const MessagesHeaderIcons = styled.div`
   display: flex;

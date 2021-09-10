@@ -107,6 +107,12 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
 export default MessageInput;
 
 const InputBox = styled.div`
+  @media (max-width: 768px) {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+  }
   display: flex;
   justify-content: center;
   align-items: center;
