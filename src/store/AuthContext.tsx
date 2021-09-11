@@ -172,13 +172,17 @@ const AuthContextProvider: React.FC = (props) => {
   const grantRefresh = async () => {
     console.log(accessToken, "accessToken");
     const response = await axios
-      .post("/users/auth/refresh", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: accessToken,
-          Accept: "application/json",
-        },
-      })
+      .post(
+        "/users/auth/refresh",
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: accessToken,
+            Accept: "application/json",
+          },
+        }
+      )
       .catch((err) => {
         console.error(err, "grant access Token Fail");
         console.log(err, "grant access Token Fail");
