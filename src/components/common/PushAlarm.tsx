@@ -100,16 +100,14 @@ const PushAlarmContainer = styled.div<{ isActive: boolean }>`
   background-color: white;
   flex-direction: column;
   top: 55px;
-  right: 0%;
-
+  right: 0px;
   border-radius: 20px;
-  @media (max-width: 768px) {
-    right: -20px;
-  }
-  height: calc(100vh - 200px);
   overflow: auto;
   width: 315px;
   z-index: 100;
+  @media (max-width: 768px) {
+    right: -20px;
+  }
   @keyframes growDown {
     0% {
       transform: scaleY(0);
@@ -132,7 +130,6 @@ const PushAlarmTitle = styled.h1`
 `;
 
 const PushAlarmBox = styled.div`
-  height: calc(100vh - 250px);
   width: 100%;
   padding: 0px 5px 0px 5px;
   box-sizing: border-box;
