@@ -28,6 +28,8 @@ const ThemeToggleBox = styled.div`
 `;
 
 const MobileHeaderContainer = styled.div`
+  position: fixed;
+  top: 0px;
   background-color: ${(props) => props.theme.primaryColor};
   align-items: center;
   display: none;
@@ -36,9 +38,7 @@ const MobileHeaderContainer = styled.div`
   height: 70px;
   box-sizing: border-box;
   padding: 5px 16px;
-  position: sticky;
   z-index: 100;
-  top: 0%;
   -ms-user-select: none;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
@@ -46,7 +46,5 @@ const MobileHeaderContainer = styled.div`
   user-select: none;
   @media (max-width: 768px) {
     display: flex;
-    position: fixed;
-    top: 0px;
   }
 `;

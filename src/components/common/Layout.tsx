@@ -25,7 +25,8 @@ const Inner = styled.main`
   flex-direction: column;
   align-items: center;
   @media (max-width: 768px) {
-    margin: 70px auto 0px auto;
+    box-sizing: border-box;
+    padding-top: 70px;
   }
 `;
 

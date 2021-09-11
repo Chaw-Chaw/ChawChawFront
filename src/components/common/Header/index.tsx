@@ -97,7 +97,7 @@ const HeaderWrapper = styled.header`
   padding: 10px 16px;
   position: sticky;
   z-index: 100;
-  top: 0%;
+  top: 0px;
   -ms-user-select: none;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
