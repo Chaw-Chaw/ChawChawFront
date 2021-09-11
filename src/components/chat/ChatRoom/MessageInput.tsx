@@ -112,6 +112,7 @@ const InputBox = styled.div`
     bottom: 0px;
     left: 0px;
     width: 100%;
+    margin: 0px auto;
   }
   display: flex;
   justify-content: center;
@@ -130,6 +131,8 @@ const InputBox = styled.div`
 
 const InputBoxInner = styled.div`
   width: 100%;
+
+  max-width: 580px;
   /* max-width: 450px; */
   position: relative;
   display: flex;

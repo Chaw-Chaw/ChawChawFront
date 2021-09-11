@@ -196,20 +196,25 @@ export default ChatRoom;
 const Outline = styled.div`
   border: none;
   box-sizing: border-box;
-  overflow: auto;
   height: calc(100vh - 150px);
   height: calc(var(--vh, 1vh) * 100 - 150px);
   /* margin-bottom: 50px; */
   width: 100%;
   max-width: 600px;
   @media (max-width: 768px) {
-    height: calc(100vh - 10px);
-    height: calc(var(--vh, 1vh) * 100 - 10px);
+    /* height: calc(100vh - 100px);
+    height: calc(var(--vh, 1vh) * 100 - 100px);
+    margin-top: 50px;
+    margin-bottom: 50px; */
+    /* height: calc(100%); */
+    position: fixed;
+    top: 120px;
+    height: calc(100% - 170px);
   }
   @media (max-width: 500px) {
     min-width: 320px;
   }
-  padding: 20px 20px 20px 20px;
+  padding: 0px 20px;
 `;
 
 const Inner = styled.div`
@@ -228,6 +233,11 @@ const Header = styled.div`
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   height: 50px;
   z-index: 50;
+  @media (max-width: 768px) {
+    top: 70px;
+    position: fixed;
+    left: 0px;
+  }
 `;
 const MessageContainer = styled.div`
   height: calc(100% - 102px);
@@ -238,7 +248,6 @@ const MessageContainer = styled.div`
   overflow: auto;
   @media (max-width: 768px) {
     height: 100%;
-    padding-bottom: 0px;
   }
 `;
 const MessagesHeaderIcons = styled.div`

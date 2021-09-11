@@ -19,13 +19,13 @@ const Layout: React.FC<{ type?: string }> = (props) => {
 };
 
 const Inner = styled.main`
-  margin: 0px auto 0 auto;
+  margin: 0px auto 0px auto;
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   @media (max-width: 768px) {
-    margin: 0px auto 0 auto;
+    margin: 0px auto 0px auto;
   }
 `;
 
