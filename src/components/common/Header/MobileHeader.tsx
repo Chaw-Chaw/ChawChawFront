@@ -28,9 +28,6 @@ const ThemeToggleBox = styled.div`
 `;
 
 const MobileHeaderContainer = styled.div`
-  @media (max-width: 768px) {
-    display: flex;
-  }
   background-color: ${(props) => props.theme.primaryColor};
   align-items: center;
   display: none;
@@ -47,4 +44,9 @@ const MobileHeaderContainer = styled.div`
   -khtml-user-select: none;
   -webkit-user-select: none;
   user-select: none;
+  @media (max-width: 768px) {
+    display: flex;
+    position: fixed;
+    top: 0px;
+  }
 `;

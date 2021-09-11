@@ -26,6 +26,6 @@ const Main = styled.div`
   }
   @media (max-width: 768px) {
     width: 100%;
-    margin-top: 50px;
+    margin-top: 0px;
   }
 `;
