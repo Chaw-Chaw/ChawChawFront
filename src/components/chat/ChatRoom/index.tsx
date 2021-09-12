@@ -229,7 +229,7 @@ const Header = styled.div`
   top: 0px;
   width: 100%;
   display: flex;
-  border: ${(props) =>
+  border-bottom: ${(props) =>
     props.theme.id === "light"
       ? "1px solid rgb(0, 0, 0, 0.2)"
       : "1px solid rgb(255, 255, 255, 0.2)"};
