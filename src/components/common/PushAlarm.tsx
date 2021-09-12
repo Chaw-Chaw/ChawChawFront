@@ -107,7 +107,6 @@ const PushAlarmContainer = styled.div<{ isActive: boolean }>`
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   flex-direction: column;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
-
   top: 55px;
   right: 0px;
   border-radius: 20px;
@@ -140,7 +139,7 @@ const PushAlarmTitle = styled.h1`
 
 const PushAlarmBox = styled.div`
   width: 100%;
-  padding: 0px 5px 0px 5px;
+  padding: 0px 5px 5px 5px;
   box-sizing: border-box;
   @media (max-height: calc(100vh - 250px)) {
     padding: 0px 15px 0px 5px;
