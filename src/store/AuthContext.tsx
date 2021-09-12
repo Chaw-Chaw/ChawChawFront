@@ -147,8 +147,9 @@ const AuthContextProvider: React.FC = (props) => {
       secure: true,
     });
     // document.cookie = "accessToken=;expires=Thu, 18 Dec 2013 12:00:00 GMT";
-    router.reload();
-    router.push("/account/login");
+    // router.reload();
+    // router.push("/account/login");
+    window.location.href = "/account/login";
   };
 
   const loginSuccess = (response: AxiosResponse) => {

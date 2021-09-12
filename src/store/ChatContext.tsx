@@ -149,11 +149,11 @@ const ChatContextProvider: React.FC = (props) => {
   };
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!accessToken || !user) return;
     connect();
     // useEffect() cleanup 함수
     return () => disconnect();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     // 메인 룸 변경 api 전송;
