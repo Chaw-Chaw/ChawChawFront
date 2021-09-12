@@ -155,14 +155,15 @@ const AuthContextProvider: React.FC = (props) => {
     // 일반 로그인 || 리프레시 로그인
     const tokenInfo = response.data.data.token || response.data.data;
     const accessToken = "Bearer " + tokenInfo.accessToken;
-    const accessTokenExpiresIn = tokenInfo.expiresIn;
+    const accessTokenExpiresIn = new Date(Date.now() + tokenInfo.expiresIn);
     // 기존 쿠기를 지우는 방법
     console.log(accessToken, "acessToken");
     setCookie("accessToken", accessToken, {
       path: "/",
       secure: true,
+      expires: accessTokenExpiresIn,
     });
-    setTimeout(grantRefresh, accessTokenExpiresIn - 60000);
+    setTimeout(grantRefresh, tokenInfo.expiresIn - 60000);
     if (response.data.data.profile) {
       const newData = { ...response.data.data.profile };
       saveUser(newData);
@@ -403,8 +404,13 @@ const AuthContextProvider: React.FC = (props) => {
       window.localStorage.removeItem("user");
       return;
     }
-    message.success("회원가입에 성공하셨습니다.");
-    logout();
+    setUser({});
+    window.localStorage.clear();
+    message.success("회원가입에 성공하셨습니다.", {
+      onClose: () => {
+        router.push("/account/login");
+      },
+    });
   };
 
   const emailDuplicationCheck = async ({ email }: AuthReqProps) => {
