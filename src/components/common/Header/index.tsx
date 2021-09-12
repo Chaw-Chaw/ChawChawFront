@@ -41,13 +41,6 @@ const Header: React.FC<HeaderProps> = (props) => {
     }
     console.log(response, "새로운 메세지 데이터");
     const followMessages: FollowAlarmType[] = response.data.follows;
-    // const sortFollowMessages = followMessages.sort((a, b) => {
-    //   const x = a.regDate;
-    //   const y = b.regDate;
-    //   if (x > y) return 1;
-    //   if (x < y) return -1;
-    //   return 0;
-    // });
     const newMessages = response.data.messages;
 
     setNewMessages([...newMessages, ...followMessages]);
@@ -56,7 +49,7 @@ const Header: React.FC<HeaderProps> = (props) => {
   useEffect(() => {
     if (!accessToken) return;
     getNewMessages();
-  }, []);
+  }, [accessToken]);
 
   return (
     <>
