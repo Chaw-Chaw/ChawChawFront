@@ -28,12 +28,17 @@ interface ChatRoomProps {
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = (props) => {
-  const { mainRoomId, setMainRoomId, mainChatMessages } =
-    useContext(ChatContext);
+  const {
+    mainRoomId,
+    setMainRoomId,
+    mainChatMessages,
+    isViewChatList,
+    setIsViewChatList,
+  } = useContext(ChatContext);
   const { user, grantRefresh, accessToken } = useContext(AuthContext);
   const { windowSize } = useContext(ScreenContext);
   const [message, setMessage] = useState<string>("");
-  const [isViewChatList, setIsViewChatList] = useState(false);
+  // const [isViewChatList, setIsViewChatList] = useState(false);
   const [selectLanguage, setSelectLanguage] = useState<string[]>(["Korean"]);
   const chatMessageBox = useRef<HTMLDivElement>(null);
   const router = useRouter();

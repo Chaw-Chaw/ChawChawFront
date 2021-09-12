@@ -45,6 +45,8 @@ interface ChatContextObj {
   setTotalMessage: Dispatch<SetStateAction<RoomType[]>>;
   newMessages: Object[];
   setNewMessages: Dispatch<React.SetStateAction<Object[]>>;
+  isViewChatList: boolean;
+  setIsViewChatList: Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ChatContext = React.createContext<ChatContextObj>({
@@ -56,6 +58,8 @@ const ChatContext = React.createContext<ChatContextObj>({
   setTotalMessage: () => {},
   newMessages: [],
   setNewMessages: () => {},
+  isViewChatList: false,
+  setIsViewChatList: () => {},
 });
 
 const ChatContextProvider: React.FC = (props) => {
@@ -65,6 +69,7 @@ const ChatContextProvider: React.FC = (props) => {
   const [newMessages, setNewMessages] = useState<Object[]>([]);
   const messageAlarmClient = useRef<any>({});
   const { user, accessToken, grantRefresh } = useContext(AuthContext);
+  const [isViewChatList, setIsViewChatList] = useState(false);
 
   const connect = () => {
     messageAlarmClient.current = new StompJs.Client({
@@ -185,6 +190,8 @@ const ChatContextProvider: React.FC = (props) => {
     setTotalMessage,
     newMessages,
     setNewMessages,
+    isViewChatList,
+    setIsViewChatList,
   };
 
   return (

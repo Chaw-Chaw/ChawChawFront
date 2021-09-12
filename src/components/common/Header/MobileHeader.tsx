@@ -21,11 +21,6 @@ const MobileHeader: React.FC = () => {
 };
 
 export { MobileHeader };
-const ThemeToggleBox = styled.div`
-  margin: 1rem;
-  border: 1px solid white;
-  border-radius: 25px;
-`;
 
 const MobileHeaderContainer = styled.div`
   position: fixed;
@@ -47,4 +42,9 @@ const MobileHeaderContainer = styled.div`
   @media (max-width: 768px) {
     display: flex;
   }
+`;
+const ThemeToggleBox = styled.div`
+  margin: 1rem;
+  border: 1px solid white;
+  border-radius: 25px;
 `;

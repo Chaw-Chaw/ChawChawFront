@@ -4,7 +4,8 @@ import { ChatBox } from "../../common";
 import { ChatContext } from "../../../store/ChatContext";
 
 const ChatList: React.FC = (props) => {
-  const { totalMessage, setMainRoomId } = useContext(ChatContext);
+  const { totalMessage, setMainRoomId, setIsViewChatList } =
+    useContext(ChatContext);
 
   return (
     <Outline>
@@ -27,6 +28,7 @@ const ChatList: React.FC = (props) => {
                   sender={item.sender}
                   roomId={item.roomId}
                   onClick={() => {
+                    setIsViewChatList(false);
                     setMainRoomId(item.roomId);
                     return;
                   }}
@@ -46,6 +48,7 @@ const Outline = styled.div`
   box-sizing: border-box;
   overflow: auto;
   height: calc(100vh - 150px);
+  height: calc(var(--vh, 1vh) * 100 - 150px);
   /* margin-bottom: 50px; */
   width: 100%;
   max-width: 400px;
@@ -54,6 +57,11 @@ const Outline = styled.div`
     max-width: 100%;
     padding: 0px;
     height: calc(100vh - 250px);
+    height: calc(var(--vh, 1vh) * 100 - 250px);
+  }
+  @media (max-width: 768px) {
+    height: calc(100vh - 180px);
+    height: calc(var(--vh, 1vh) * 100 - 180px);
   }
 `;
 
