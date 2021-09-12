@@ -41,5 +41,5 @@ const MessageContextSelect = styled.div<{ isActive: boolean; type: string }>`
     background-color: ${(props) => props.theme.primaryColor};
     color: white;
   }
-  color: black;
+  color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
 `;
