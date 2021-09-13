@@ -56,7 +56,7 @@ const ChatRoom: React.FC = (props) => {
       })
       .catch((err) => err.response);
 
-    console.log(response.data, "leaveChatRoom");
+    
 
     if (response.status === 401) {
       //acessToken 만료
@@ -104,10 +104,6 @@ const ChatRoom: React.FC = (props) => {
     }, 1000);
   }, [mainChatMessages]);
 
-  useEffect(() => {
-    console.log(selectLanguage[0], "change lang");
-  }, [JSON.stringify(selectLanguage)]);
-
   return (
     <Outline>
       <Inner>
@@ -144,11 +140,16 @@ const ChatRoom: React.FC = (props) => {
                         chatMessage.messageType === "ENTER" ||
                         chatMessage.messageType === "EXIT"
                       )
-                        return <InfoMessage>{chatMessage.message}</InfoMessage>;
+                        return (
+                          <InfoMessage key={index}>
+                            {chatMessage.message}
+                          </InfoMessage>
+                        );
 
                       // 토크 타입인 일반메세지 분류
                       return (
                         <ChatMessage
+                          key={index}
                           src={
                             user.id === chatMessage.senderId
                               ? undefined
@@ -159,7 +160,6 @@ const ChatRoom: React.FC = (props) => {
                               ? chatMessage.message
                               : undefined
                           }
-                          key={index}
                           regDate={chatMessage.regDate}
                           context={chatMessage.message}
                           selectLanguage={selectLanguage}

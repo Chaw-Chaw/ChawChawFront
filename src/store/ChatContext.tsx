@@ -88,7 +88,7 @@ const ChatContextProvider: React.FC = (props) => {
       // brokerURL: "ws://localhost:8080/ws-stomp/websocket", // 웹소켓 서버로 직접 접속
       webSocketFactory: () => new SockJS(BACKEND_URL + "/ws"), // proxy를 통한 접속
       debug: function (str) {
-        console.log(str);
+        // console.log(str);
       },
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
@@ -100,7 +100,7 @@ const ChatContextProvider: React.FC = (props) => {
         followChannelSubscribe();
       },
       onStompError: (frame) => {
-        console.error(frame);
+        // console.error(frame);
       },
       connectHeaders: {
         Authorization: accessToken,
@@ -117,7 +117,7 @@ const ChatContextProvider: React.FC = (props) => {
   const alarmChannelSubscribe = () => {
     chatClient.current.subscribe(`/queue/chat/${user.id}`, (response: any) => {
       const message: MessageType = JSON.parse(response.body);
-      console.log(message, "새로운 메세지 내용");
+      // console.log(message, "새로운 메세지 내용");
 
       const newRoomId = totalMessage.find(
         (item) => item.roomId === message.roomId
@@ -186,7 +186,7 @@ const ChatContextProvider: React.FC = (props) => {
       `/queue/follow/${user.id}`,
       (response: any) => {
         const message: FollowAlarmType = JSON.parse(response.body);
-        console.log(message, "새로운 팔로우 내용");
+        // console.log(message, "새로운 팔로우 내용");
         setNewAlarms((pre) => [...pre, message]);
       }
     );
@@ -238,7 +238,6 @@ const ChatContextProvider: React.FC = (props) => {
         isRead: true,
       }),
     });
-    console.log("메세지 전송 선공");
   };
 
   const publishEnterChat = () => {
@@ -246,11 +245,7 @@ const ChatContextProvider: React.FC = (props) => {
       const isInMyMessage = mainChatMessages.find(
         (item: any) => item.senderId === user.id
       );
-      // console.log(
-      //   mainChatMessages,
-      //   isInMyMessage,
-      //   "내가 들어간 입장메세지 타이밍"
-      // );
+      console.log(mainChatMessages, "채팅 입장 발동시 메인 채팅 메세지?");
       if (!isInMyMessage) publish(`${user.name}님이 입장하셨습니다.`, "ENTER");
     }, 500);
   };
@@ -270,7 +265,6 @@ const ChatContextProvider: React.FC = (props) => {
       grantRefresh();
       return;
     }
-    console.log(response, "새로운 메세지 데이터");
     const followMessages: FollowAlarmType[] = response.data.follows;
     const newAlarms = response.data.messages;
     setNewAlarms([...newAlarms, ...followMessages]);
@@ -286,13 +280,13 @@ const ChatContextProvider: React.FC = (props) => {
 
   useEffect(() => {
     // 메인 룸 변경 api 전송;
+    console.log(mainRoomId, "메인룸변경");
     mainRoomIdRef.current = mainRoomId;
     if (mainRoomId === -1) return;
     detectMainRoom();
     setNewAlarms((pre) => {
       const result = pre;
       const filteredNewAlarms = result.filter((item: any) => {
-        console.log(item.roomId, mainRoomId, "메세지 필터링");
         if (item.roomId === undefined) return true;
         if (item.roomId !== mainRoomId) return true;
         return false;
@@ -300,11 +294,6 @@ const ChatContextProvider: React.FC = (props) => {
       return filteredNewAlarms;
     });
   }, [mainRoomId]);
-
-  useEffect(() => {
-    console.log(newAlarms, "newAlarms 업데이트");
-    // 알림은 최대 6개까지 보여주기?
-  }, [JSON.stringify(newAlarms)]);
 
   const contextValue: ChatContextObj = {
     mainChatMessages,

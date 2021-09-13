@@ -12,7 +12,7 @@ import { ChatContext, RoomType } from "../../store/ChatContext";
 import { ScreenContext } from "../../store/ScreenContext";
 
 export default function Chat() {
-  const { grantRefresh, accessToken } = useContext(AuthContext);
+  const { grantRefresh, accessToken, user } = useContext(AuthContext);
   const { windowSize } = useContext(ScreenContext);
   const {
     mainRoomId,
@@ -20,8 +20,8 @@ export default function Chat() {
     setMainChatMessages,
     totalMessage,
     setTotalMessage,
-    publishEnterChat,
     mainChatMessages,
+    publish,
   } = useContext(ChatContext);
   const router = useRouter();
   const message = useAlert();
@@ -40,9 +40,13 @@ export default function Chat() {
         }
       )
       .catch((err) => err.response);
-    console.log(response, "getUserMessageLog");
-    const mainRoomId = response.data.mainRoomId;
+
+    console.log(response, "getMainRoomId");
+    const roomInfo = response.data.data[0];
+    const mainRoomId = roomInfo.roomId;
     setMainRoomId(mainRoomId);
+    // 채팅방을 만들고 전체 메세지들을 받기
+    getMessageLog();
   };
 
   const getMessageLog = async () => {
@@ -61,7 +65,6 @@ export default function Chat() {
   };
 
   const dataProcess = (res: AxiosResponse, userId: number) => {
-    // console.log(res.status, "statuscode");
     if (res.status === 403) {
       message.error("프로필을 작성해주세요.", {
         onClose: () => {
@@ -81,24 +84,24 @@ export default function Chat() {
       return;
     }
 
-    const tmpTotalMessage: RoomType[] = res.data.data;
-
-    // // 메인 채팅방 입장시
-    // if (userId !== -1) {
-    //   const mainMessageLog = tmpTotalMessage.find(
-    //     (item) => item.participantIds[0] === userId
-    //   );
-    //   // 메인 룸 아이디는 메인 메시지가 있다면 메인메세지 룸 id 아니면 -1
-    //   const tmpMainRoomId = mainMessageLog ? mainMessageLog.roomId : -1;
-    //   // 메인 메세지가 있다면 메인메세지 세팅
-    //   if (mainMessageLog) {
-    //     setMainChatMessages(mainMessageLog.messages);
-    //   }
-    //   setMainRoomId(tmpMainRoomId);
-    // }
-
     // 토탈 메세지 저장
     setTotalMessage(res.data.data);
+    setMainChat(res.data.data);
+  };
+
+  const setMainChat = (totalMessage: RoomType[]) => {
+    const mainChatLog = totalMessage.find((item) => item.roomId === mainRoomId);
+    if (!mainChatLog) return;
+
+    // 메인 채팅 메세지에 내가 처음 들어갈때 입장 메세지 발송
+    const isInMyMessage = mainChatLog.messages.find(
+      (item: any) => item.senderId === user.id
+    );
+    console.log(mainChatMessages, "채팅 입장 발동시 메인 채팅 메세지?");
+    if (!isInMyMessage) publish(`${user.name}님이 입장하셨습니다.`, "ENTER");
+
+    // 메인 채팅메세지 set
+    setMainChatMessages([...mainChatLog.messages]);
   };
 
   useEffect(() => {
@@ -123,12 +126,12 @@ export default function Chat() {
     // 라우터 쿼리에 userId가 없으면 무시
     if (userId === undefined) return;
 
-    getMessageLog();
     if (userId !== -1) {
       // 채팅룸 입장인경우
       getMainRoomId(userId);
     } else {
       // 채팅 페이지만 입장한 경우
+      getMessageLog();
       setMainRoomId(-1);
       setMainChatMessages([]);
     }
@@ -136,11 +139,7 @@ export default function Chat() {
 
   // 채팅페이지에서 메인룸 변경
   useEffect(() => {
-    console.log(mainRoomId, "메인 룸 변경");
-    const mainChatLog = totalMessage.find((item) => item.roomId === mainRoomId);
-    if (!mainChatLog) return;
-    publishEnterChat();
-    setMainChatMessages([...mainChatLog.messages]);
+    setMainChat(totalMessage);
   }, [mainRoomId]);
 
   return (
@@ -156,9 +155,5 @@ export default function Chat() {
 const Container = styled.div`
   display: flex;
   width: 100%;
-  /* max-width: 500px;
-  @media (max-width: 500px) {
-    max-width: 320px;
-  } */
   justify-content: center;
 `;
