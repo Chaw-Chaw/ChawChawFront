@@ -22,7 +22,7 @@ interface UserPropertys {
   repCountry?: string;
   repLanguage?: string;
   repHopeLanguage?: string;
-  token?: string;
+  // token?: string;
   id?: number;
 }
 
@@ -80,7 +80,7 @@ const AuthContext = React.createContext<AuthContextObj>({
     repCountry: "",
     repLanguage: "",
     repHopeLanguage: "",
-    token: "",
+    // token: "",
   },
   login: () => {},
   logout: () => {},

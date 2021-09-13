@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { BACKEND_URL } from "../constants";
+import { BACKEND_URL, DEFAULT_PROFILE_IMAGE } from "../constants";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
 
@@ -30,10 +30,10 @@ interface MessageType {
 
 interface RoomType {
   roomId: number;
-  senderId: number;
-  sender: string;
+  participantIds: number[];
+  participantNames: string[];
   messages: MessageType[];
-  imageUrl: string;
+  participantImageUrls: string[];
 }
 
 interface ChatContextObj {
@@ -77,6 +77,7 @@ const ChatContextProvider: React.FC = (props) => {
   const [newAlarms, setNewAlarms] = useState<Object[]>([]);
   const [isViewChatList, setIsViewChatList] = useState(false);
   const [roomIds, setRoomIds] = useState<number[]>([]);
+  const mainRoomIdRef = useRef(-1);
 
   const chatClient = useRef<any>({});
 
@@ -85,7 +86,7 @@ const ChatContextProvider: React.FC = (props) => {
   const connect = () => {
     chatClient.current = new StompJs.Client({
       // brokerURL: "ws://localhost:8080/ws-stomp/websocket", // 웹소켓 서버로 직접 접속
-      webSocketFactory: () => new SockJS(BACKEND_URL + "/ws/alarm"), // proxy를 통한 접속
+      webSocketFactory: () => new SockJS(BACKEND_URL + "/ws"), // proxy를 통한 접속
       debug: function (str) {
         console.log(str);
       },
@@ -103,7 +104,6 @@ const ChatContextProvider: React.FC = (props) => {
       },
       connectHeaders: {
         Authorization: accessToken,
-        "ws-path": "alarm",
       },
     });
 
@@ -115,75 +115,76 @@ const ChatContextProvider: React.FC = (props) => {
   };
 
   const alarmChannelSubscribe = () => {
-    chatClient.current.subscribe(
-      `/queue/alarm/chat/${user.id}`,
-      (response: any) => {
-        const message: MessageType = JSON.parse(response.body);
-        console.log(message, "새로운 메세지 내용");
-        const newRoomId = totalMessage.find(
-          (item) => item.roomId === message.roomId
-        );
+    chatClient.current.subscribe(`/queue/chat/${user.id}`, (response: any) => {
+      const message: MessageType = JSON.parse(response.body);
+      console.log(message, "새로운 메세지 내용");
+      const newRoomId = totalMessage.find(
+        (item) => item.roomId === message.roomId
+      );
 
-        // 메인 채팅룸 메세지 누적 : 메세지 룸 넘버가 메인 룸넘버인 경우
-        if (message.roomId === mainRoomId) {
-          setMainChatMessages((pre: MessageType[]) => [...pre, message]);
-        }
+      // 메인 채팅룸 메세지 누적 : 메세지 룸 넘버가 메인 룸넘버인 경우
 
-        // 내가 보낸 메세지가 아닌경우에만 알람 메세지 누적
-        if (message.senderId !== user.id) {
-          setNewAlarms((pre) => [...pre, message]);
-        }
-
-        // 채팅룸 개설 : 메시지의 룸 넘버가 기존에 없던 룸넘버라면
-        if (newRoomId !== undefined) {
-          const newChatList: RoomType = {
-            imageUrl: message.imageUrl,
-            messages: [message],
-            roomId: message.roomId,
-            sender: message.sender,
-            senderId: message.senderId,
-          };
-          setTotalMessage((pre) => [...pre, newChatList]);
-          return;
-        }
-
-        // 채팅방을 삭제해야할 경우
-        if (message.messageType === "EXIT") {
-          setTotalMessage((pre) => {
-            const result = [...pre];
-            const removeChatRoomIndex = result.findIndex(
-              (item) => message.roomId === item.roomId
-            );
-            if (result.length === 1) return [];
-            if (removeChatRoomIndex) {
-              result.splice(removeChatRoomIndex, 1);
-            }
-            return [...result];
-          });
-          return;
-        }
-
-        // 기존 채팅방에 들어오는 메세지일 경우
-        setTotalMessage((pre: any) => {
-          const result: any = [];
-          pre.forEach((item: any) => {
-            if (message.roomId === item.roomId) {
-              result.push({ ...item, messages: [...item.messages, message] });
-              return;
-            }
-            result.push(item);
-            return;
-          });
-          console.log(result, "after");
-          return result;
-        });
+      if (message.roomId === mainRoomIdRef.current) {
+        setMainChatMessages((pre: MessageType[]) => [...pre, message]);
+        return;
       }
-    );
+
+      // 내가 보낸 메세지가 아닌경우에만 알람 메세지 누적
+      if (message.senderId !== user.id) {
+        setNewAlarms((pre) => [...pre, message]);
+      }
+
+      // 채팅룸 개설 : 메시지의 룸 넘버가 기존에 없던 룸넘버라면
+      if (newRoomId !== undefined) {
+        const myImage = user.imageUrl || DEFAULT_PROFILE_IMAGE;
+        const myName = user.name || "";
+        const myId = user.id || -1;
+        const newChatList: RoomType = {
+          participantImageUrls: [message.imageUrl, myImage],
+          messages: [message],
+          roomId: message.roomId,
+          participantNames: [message.sender, myName],
+          participantIds: [message.senderId, myId],
+        };
+        setTotalMessage((pre) => [...pre, newChatList]);
+        return;
+      }
+
+      // 채팅방을 삭제해야할 경우
+      if (message.messageType === "EXIT") {
+        setTotalMessage((pre) => {
+          const result = [...pre];
+          const removeChatRoomIndex = result.findIndex(
+            (item) => message.roomId === item.roomId
+          );
+          if (result.length === 1) return [];
+          if (removeChatRoomIndex) {
+            result.splice(removeChatRoomIndex, 1);
+          }
+          return [...result];
+        });
+        return;
+      }
+
+      // 기존 채팅방에 들어오는 메세지일 경우
+      setTotalMessage((pre: any) => {
+        const result: any = [];
+        pre.forEach((item: any) => {
+          if (message.roomId === item.roomId) {
+            result.push({ ...item, messages: [...item.messages, message] });
+            return;
+          }
+          result.push(item);
+          return;
+        });
+        return result;
+      });
+    });
   };
 
   const followChannelSubscribe = () => {
     chatClient.current.subscribe(
-      `/queue/alarm/follow/${user.id}`,
+      `/queue/follow/${user.id}`,
       (response: any) => {
         const message: FollowAlarmType = JSON.parse(response.body);
         console.log(message, "새로운 팔로우 내용");
@@ -286,6 +287,7 @@ const ChatContextProvider: React.FC = (props) => {
 
   useEffect(() => {
     // 메인 룸 변경 api 전송;
+    mainRoomIdRef.current = mainRoomId;
     if (mainRoomId === -1) return;
     detectMainRoom();
     setNewAlarms((pre) => {

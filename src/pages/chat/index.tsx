@@ -25,7 +25,7 @@ export default function Chat() {
   const router = useRouter();
   const message = useAlert();
 
-  const getUserMessageLog = async (userId: number) => {
+  const getMainRoomId = async (userId: number) => {
     const response = await axios
       .post(
         "/chat/room",
@@ -40,7 +40,8 @@ export default function Chat() {
       )
       .catch((err) => err.response);
     console.log(response, "getUserMessageLog");
-    dataProcess(response, userId);
+    const mainRoomId = response.data.mainRoomId;
+    setMainRoomId(mainRoomId);
   };
 
   const getMessageLog = async () => {
@@ -81,19 +82,20 @@ export default function Chat() {
 
     const tmpTotalMessage: RoomType[] = res.data.data;
 
-    // 메인 채팅방 입장시
-    if (userId !== -1) {
-      const mainMessageLog = tmpTotalMessage.find(
-        (item) => item.senderId === userId
-      );
-      // 메인 룸 아이디는 메인 메시지가 있다면 메인메세지 룸 id 아니면 -1
-      const tmpMainRoomId = mainMessageLog ? mainMessageLog.roomId : -1;
-      // 메인 메세지가 있다면 메인메세지 세팅
-      if (mainMessageLog) {
-        setMainChatMessages(mainMessageLog.messages);
-      }
-      setMainRoomId(tmpMainRoomId);
-    }
+    // // 메인 채팅방 입장시
+    // if (userId !== -1) {
+    //   const mainMessageLog = tmpTotalMessage.find(
+    //     (item) => item.participantIds[0] === userId
+    //   );
+    //   // 메인 룸 아이디는 메인 메시지가 있다면 메인메세지 룸 id 아니면 -1
+    //   const tmpMainRoomId = mainMessageLog ? mainMessageLog.roomId : -1;
+    //   // 메인 메세지가 있다면 메인메세지 세팅
+    //   if (mainMessageLog) {
+    //     setMainChatMessages(mainMessageLog.messages);
+    //   }
+    //   setMainRoomId(tmpMainRoomId);
+    // }
+
     // 토탈 메세지 저장
     setTotalMessage(res.data.data);
   };
@@ -106,6 +108,8 @@ export default function Chat() {
         },
       });
     }
+    // 채팅 페이지에서 나가면 메인 룸 넘버는 -1
+    () => setMainRoomId(-1);
   }, []);
 
   useEffect(() => {
@@ -118,18 +122,19 @@ export default function Chat() {
     // 라우터 쿼리에 userId가 없으면 무시
     if (userId === undefined) return;
 
+    getMessageLog();
     if (userId !== -1) {
       // 채팅룸 입장인경우
-      getUserMessageLog(userId);
+      getMainRoomId(userId);
       publishEnterChat();
     } else {
       // 채팅 페이지만 입장한 경우
-      getMessageLog();
+      setMainRoomId(-1);
       setMainChatMessages([]);
     }
   }, [JSON.stringify(router.query)]);
 
-  // 메인룸 변경
+  // 채팅페이지에서 메인룸 변경
   useEffect(() => {
     console.log(mainRoomId, "메인 룸 변경");
     const mainChatLog = totalMessage.find((item) => item.roomId === mainRoomId);

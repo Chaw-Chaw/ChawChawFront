@@ -2,10 +2,13 @@ import { useContext } from "react";
 import styled from "styled-components";
 import { ChatBox } from "../../common";
 import { ChatContext } from "../../../store/ChatContext";
+import { AuthContext } from "../../../store/AuthContext";
+import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 
 const ChatList: React.FC = (props) => {
   const { totalMessage, setMainRoomId, setIsViewChatList } =
     useContext(ChatContext);
+  const { user } = useContext(AuthContext);
 
   return (
     <Outline>
@@ -20,12 +23,18 @@ const ChatList: React.FC = (props) => {
                 lastMessage.length > limitMessageWord
                   ? lastMessage.substring(0, limitMessageWord) + "..."
                   : lastMessage;
+              const chatRoomImageUrl =
+                item.participantImageUrls.find(
+                  (item) => item !== user.imageUrl
+                ) || DEFAULT_PROFILE_IMAGE;
+              const sender =
+                item.participantNames.find((item) => item !== user.name) || "";
               return (
                 <ChatBox
                   key={item.roomId}
-                  imageUrl={item.imageUrl}
+                  imageUrl={chatRoomImageUrl}
                   regDate={lastMessageInfo.regDate}
-                  sender={item.sender}
+                  sender={sender}
                   roomId={item.roomId}
                   onClick={() => {
                     setIsViewChatList(false);

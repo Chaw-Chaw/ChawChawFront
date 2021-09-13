@@ -92,8 +92,6 @@ const ChatRoom: React.FC = (props) => {
 
   useEffect(() => {
     scrollToBottom();
-    console.log("되야하지 않나");
-
     setTimeout(() => {
       scrollToBottom();
     }, 1000);
