@@ -1,10 +1,4 @@
-import axios, { AxiosResponse } from "axios";
-import { MouseEventHandler, useEffect, useState } from "react";
 import styled from "styled-components";
-import { GOOGLE_TRANSLATE_API_KEY } from "../../../constants";
-import { LanguageLocale } from "../../common";
-import { MessageContext } from "./MessageContext";
-import { MessageImage } from "./MessageImage";
 import { MyMessage } from "./MyMessage";
 import { YourMessage } from "./YourMessage";
 

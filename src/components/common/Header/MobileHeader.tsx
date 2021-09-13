@@ -1,10 +1,8 @@
 import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
-import { AuthContext } from "../../../store/AuthContext";
 import { Logo } from "../Logo";
 import { ThemeToggle } from "../ThemeToggle";
 import HeaderCondition from "./HeaderCondition";
-import MyImage from "./MyImage";
 
 const MobileHeader: React.FC = () => {
   const { id, setTheme } = useContext(ThemeContext);

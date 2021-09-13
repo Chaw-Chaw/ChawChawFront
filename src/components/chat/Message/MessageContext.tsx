@@ -1,6 +1,5 @@
-import React, { Dispatch, SetStateAction, useEffect } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
-import { ModalLayout } from "../../common/ModalLayout";
 
 interface MessageContextProps {
   isActive: boolean;

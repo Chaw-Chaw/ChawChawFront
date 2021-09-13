@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import React from "react";
 import { LocaleLanguage } from "../../common";
 import { PostModalInfoList } from "./PostModalInfoList";
 import { PostModalSocialList } from "./PostModalSocialList";

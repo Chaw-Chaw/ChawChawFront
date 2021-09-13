@@ -1,9 +1,4 @@
-import {
-  AiFillEye,
-  AiOutlineHeart,
-  AiFillHeart,
-  AiFillInstagram,
-} from "react-icons/ai";
+import { AiFillEye, AiFillHeart } from "react-icons/ai";
 import styled from "styled-components";
 
 interface PostModalHeadProps {

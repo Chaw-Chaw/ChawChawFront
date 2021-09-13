@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Input, Button } from "../common";
 import { IoIosSearch } from "react-icons/io";
-import React, { useRef } from "react";
+import { useRef } from "react";
 interface PostSearchProps {
   searchHandler: (inputs: string) => void;
 }

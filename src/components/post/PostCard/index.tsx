@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import Image from "next/image";
 import PostModal from "../PostModal";
 import { ModalLayout } from "../../common";

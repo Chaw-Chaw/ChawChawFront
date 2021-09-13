@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import { AuthContext } from "../../../store/AuthContext";
 

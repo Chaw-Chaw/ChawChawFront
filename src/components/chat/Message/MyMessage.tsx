@@ -1,10 +1,9 @@
 import axios from "axios";
 import Image from "next/image";
-import { Dispatch, MouseEventHandler, SetStateAction, useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import styled from "styled-components";
 import { GOOGLE_TRANSLATE_API_KEY } from "../../../constants";
 import { LanguageLocale } from "../../common";
-import { ChatMessageProps } from "./ChatMessage";
 import { MessageContext } from "./MessageContext";
 
 interface MyMessageProps {

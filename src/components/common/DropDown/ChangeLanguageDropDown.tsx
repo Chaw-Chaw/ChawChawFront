@@ -1,8 +1,7 @@
 import { LanguageLocale, LocaleLanguage } from "../LocaleList";
 import { DropDown } from "./DropDown";
 import { ImEarth } from "react-icons/im";
-import { AuthContext } from "../../../store/AuthContext";
-import { Dispatch, SetStateAction, useContext } from "react";
+import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 
 interface ChangeLanguageDropDownProps {

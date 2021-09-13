@@ -1,9 +1,9 @@
 import type { AppProps } from "next/app";
-import React, { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import LightTheme from "../theme/light";
 import DarkTheme from "../theme/dark";
-import { AuthContext, AuthContextProvider } from "../store/AuthContext";
+import { AuthContextProvider } from "../store/AuthContext";
 import { ScreenContextProvider } from "../store/ScreenContext";
 import { CookiesProvider } from "react-cookie";
 import {

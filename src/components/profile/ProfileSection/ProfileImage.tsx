@@ -1,9 +1,4 @@
-import React, {
-  ChangeEvent,
-  MouseEventHandler,
-  useContext,
-  useState,
-} from "react";
+import { MouseEventHandler, useContext } from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import { AuthContext } from "../../../store/AuthContext";

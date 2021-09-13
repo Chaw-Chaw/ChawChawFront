@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { Button } from "../Button/Button";
-import { HeaderProps } from ".";
 import MyImage from "./MyImage";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import styled from "styled-components";

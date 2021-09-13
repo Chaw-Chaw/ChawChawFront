@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext } from "react";
 import Image from "next/image";
 import styled from "styled-components";
 import { Button } from "../../components/common";

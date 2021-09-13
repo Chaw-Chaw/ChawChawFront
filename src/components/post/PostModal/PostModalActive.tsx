@@ -4,7 +4,6 @@ import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { MouseEventHandler, useContext, useState } from "react";
-
 import { AuthContext } from "../../../store/AuthContext";
 
 interface PostModalActive {

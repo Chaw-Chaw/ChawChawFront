@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import { Divider } from "../common";
 
@@ -7,6 +6,23 @@ interface AccountContainerProps {
   subtitle?: string;
   width?: string;
 }
+
+const AccountContainer: React.FC<AccountContainerProps> = (props) => {
+  return (
+    <Container width={props.width}>
+      <Section>
+        {props.title?.split("`").map((line, index) => {
+          return <h3 key={index}>{line}</h3>;
+        })}
+        <Divider />
+        {props.subtitle?.split("`").map((line, index) => {
+          return <h4 key={index}>{line}</h4>;
+        })}
+      </Section>
+      {props.children}
+    </Container>
+  );
+};
 
 const Container = styled.div<{ width?: string }>`
   width: ${(props) => (props.width ? props.width : "500px")};
@@ -43,22 +59,4 @@ const Section = styled.div`
   margin-top: 50px;
   margin-bottom: 50px;
 `;
-
-const AccountContainer: React.FC<AccountContainerProps> = (props) => {
-  return (
-    <Container width={props.width}>
-      <Section>
-        {props.title?.split("`").map((line, index) => {
-          return <h3 key={index}>{line}</h3>;
-        })}
-        <Divider />
-        {props.subtitle?.split("`").map((line, index) => {
-          return <h4 key={index}>{line}</h4>;
-        })}
-      </Section>
-      {props.children}
-    </Container>
-  );
-};
-
 export default AccountContainer;

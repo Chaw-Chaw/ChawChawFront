@@ -1,7 +1,6 @@
-import { Dispatch, MouseEventHandler, SetStateAction, useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import styled from "styled-components";
 import { MessageContext } from "./MessageContext";
-import { ChatMessageProps } from "./ChatMessage";
 import { MessageImage } from "./MessageImage";
 import {
   DEFAULT_PROFILE_IMAGE,

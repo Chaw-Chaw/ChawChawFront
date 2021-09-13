@@ -3,7 +3,6 @@ import {
   DEFAULT_FACEBOOK_URL,
   DEFAULT_INSTAGRAM_URL,
 } from "../../../constants";
-import { ProfileListItem, ProfileListItemProps } from "../ProfileListItem";
 import { FaFacebook } from "react-icons/fa";
 import { AiFillInstagram } from "react-icons/ai";
 import styled from "styled-components";

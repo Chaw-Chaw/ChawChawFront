@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE } from "../../constants";
 import { ChatContext } from "../../store/ChatContext";

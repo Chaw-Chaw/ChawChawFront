@@ -1,12 +1,9 @@
-import { MouseEventHandler, useContext, useEffect, useState } from "react";
-import { useController } from "react-hook-form";
+import { MouseEventHandler, useContext, useState } from "react";
 import styled from "styled-components";
 import { ChatContext } from "../../store/ChatContext";
 import { ChatBox } from "./ChatBox";
-import HeartImage from "../../../public/Layout/heart.png";
 import { AiFillBell } from "react-icons/ai";
 import { AlarmCount } from "./AlarmCount";
-import { ScreenContext } from "../../store/ScreenContext";
 import { useRouter } from "next/router";
 import { BiMessageRoundedX } from "react-icons/bi";
 const PushAlarm: React.FC = () => {

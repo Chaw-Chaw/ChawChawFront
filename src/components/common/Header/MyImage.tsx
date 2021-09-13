@@ -1,14 +1,11 @@
 import styled from "styled-components";
 import { CgProfile } from "react-icons/cg";
 import { BsChat } from "react-icons/bs";
-import { AiOutlineSetting, AiOutlineLogout } from "react-icons/ai";
+import { AiOutlineLogout } from "react-icons/ai";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { prepareProfile } from "selenium-webdriver/firefox";
-
-import { ChatContext } from "../../../store/ChatContext";
 
 const MyImage: React.FC<{ profileImage: string }> = (props) => {
   const [isActive, setIsActive] = useState(false);
