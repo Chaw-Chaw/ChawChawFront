@@ -227,7 +227,6 @@ const ChatContextProvider: React.FC = (props) => {
 
     chatClient.current.publish({
       destination: "/message",
-      headers: { authorization: accessToken },
       body: JSON.stringify({
         messageType,
         roomId: mainRoomId,
