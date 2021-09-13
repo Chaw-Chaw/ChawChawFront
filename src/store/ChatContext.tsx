@@ -118,15 +118,14 @@ const ChatContextProvider: React.FC = (props) => {
     chatClient.current.subscribe(`/queue/chat/${user.id}`, (response: any) => {
       const message: MessageType = JSON.parse(response.body);
       console.log(message, "새로운 메세지 내용");
+
       const newRoomId = totalMessage.find(
         (item) => item.roomId === message.roomId
       );
 
       // 메인 채팅룸 메세지 누적 : 메세지 룸 넘버가 메인 룸넘버인 경우
-
       if (message.roomId === mainRoomIdRef.current) {
         setMainChatMessages((pre: MessageType[]) => [...pre, message]);
-        return;
       }
 
       // 내가 보낸 메세지가 아닌경우에만 알람 메세지 누적

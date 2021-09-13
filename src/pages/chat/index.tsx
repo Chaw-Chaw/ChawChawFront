@@ -21,6 +21,7 @@ export default function Chat() {
     totalMessage,
     setTotalMessage,
     publishEnterChat,
+    mainChatMessages,
   } = useContext(ChatContext);
   const router = useRouter();
   const message = useAlert();
@@ -126,7 +127,6 @@ export default function Chat() {
     if (userId !== -1) {
       // 채팅룸 입장인경우
       getMainRoomId(userId);
-      publishEnterChat();
     } else {
       // 채팅 페이지만 입장한 경우
       setMainRoomId(-1);
