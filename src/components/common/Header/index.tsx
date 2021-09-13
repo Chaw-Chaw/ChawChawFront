@@ -1,18 +1,9 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { Logo, ThemeToggle } from "..";
 import { AuthContext } from "../../../store/AuthContext";
 import HeaderCondition from "./HeaderCondition";
-import { ScreenContext } from "../../../store/ScreenContext";
 import { MobileHeader } from "./MobileHeader";
-import {
-  ChatContext,
-  MessageType,
-  FollowAlarmType,
-} from "../../../store/ChatContext";
-import axios from "axios";
-import { PushAlarm } from "../PushAlarm";
-import { AlarmCount } from "../AlarmCount";
 
 interface HeaderProps {
   type?: string;
@@ -20,37 +11,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = (props) => {
   const { id, setTheme } = useContext(ThemeContext);
-  const { user, grantRefresh, accessToken } = useContext(AuthContext);
-  const { setNewMessages } = useContext(ChatContext);
-  const { windowSize } = useContext(ScreenContext);
-
-  const getNewMessages = async () => {
-    const response = await axios
-      .get("/users/alarm", {
-        headers: {
-          Authorization: "Bearer " + accessToken,
-        },
-      })
-      .catch((err) => {
-        console.log(err, "새로운 메세지 받아오기 실패");
-        return err.response;
-      });
-    if (response.status === 401) {
-      grantRefresh();
-      return;
-    }
-    console.log(response, "새로운 메세지 데이터");
-    const followMessages: FollowAlarmType[] = response.data.follows;
-    const newMessages = response.data.messages;
-
-    setNewMessages([...newMessages, ...followMessages]);
-  };
-
-  useEffect(() => {
-    if (!accessToken) return;
-    getNewMessages();
-  }, [accessToken]);
-
+  const { user } = useContext(AuthContext);
   return (
     <>
       <HeaderWrapper>

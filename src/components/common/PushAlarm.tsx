@@ -10,7 +10,7 @@ import { ScreenContext } from "../../store/ScreenContext";
 import { useRouter } from "next/router";
 import { BiMessageRoundedX } from "react-icons/bi";
 const PushAlarm: React.FC = () => {
-  const { newMessages, setMainRoomId } = useContext(ChatContext);
+  const { newAlarms, setMainRoomId } = useContext(ChatContext);
   const [isActive, setIsActive] = useState(false);
   const router = useRouter();
 
@@ -26,16 +26,16 @@ const PushAlarm: React.FC = () => {
   return (
     <AlarmBell onClick={controlPushAlarm}>
       <AiFillBell />
-      {newMessages.length !== 0 && (
+      {newAlarms.length !== 0 && (
         <AlarmCount>
-          <span>{newMessages.length > 99 ? 99 : newMessages.length}</span>
+          <span>{newAlarms.length > 99 ? 99 : newAlarms.length}</span>
         </AlarmCount>
       )}
       <PushAlarmContainer isActive={isActive}>
         <PushAlarmTitle>New messages</PushAlarmTitle>
         <PushAlarmBox>
-          {newMessages.length > 0 ? (
-            newMessages.map((item: any, index) => {
+          {newAlarms.length > 0 ? (
+            newAlarms.map((item: any, index) => {
               return (
                 <AlarmChatBox key={index}>
                   {item.imageUrl ? (
@@ -143,7 +143,7 @@ const PushAlarmBox = styled.div`
   padding: 0px 5px 5px 5px;
   box-sizing: border-box;
   overflow: auto;
-  height: calc(100vh - 250px);
+  max-height: calc(100vh - 250px);
 `;
 
 const AlarmChatBox = styled.div``;

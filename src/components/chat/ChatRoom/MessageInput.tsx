@@ -18,11 +18,10 @@ interface MessageInputProps {
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
   onKeyPress: (e: KeyboardEvent) => void;
   onClick: MouseEventHandler<HTMLDivElement>;
-  publish: (message: string, messageType: string) => void;
 }
 
 const MessageInput: React.FC<MessageInputProps> = (props) => {
-  const { mainRoomId } = useContext(ChatContext);
+  const { mainRoomId, publish } = useContext(ChatContext);
   const isNotActive = mainRoomId === -1 ? true : false;
   const { grantRefresh, accessToken } = useContext(AuthContext);
   const message = useAlert();
@@ -45,7 +44,7 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
     if (response.data.isSuccess) {
       console.log(response.data.data, "image Upload");
       const imageUrl = response.data.data;
-      props.publish(imageUrl, "IMAGE");
+      publish(imageUrl, "IMAGE");
     } else {
       console.error(response.data, "이미지 업로드 실패");
       return;

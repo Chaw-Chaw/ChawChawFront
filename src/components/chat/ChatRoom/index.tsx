@@ -22,18 +22,14 @@ import { ChatContext } from "../../../store/ChatContext";
 import { ScreenContext } from "../../../store/ScreenContext";
 import ChatList from "../ChatList";
 
-interface ChatRoomProps {
-  publish: (message: string, messageType: string) => void;
-  disconnect: () => void;
-}
-
-const ChatRoom: React.FC<ChatRoomProps> = (props) => {
+const ChatRoom: React.FC = (props) => {
   const {
     mainRoomId,
     setMainRoomId,
     mainChatMessages,
     isViewChatList,
     setIsViewChatList,
+    publish,
   } = useContext(ChatContext);
   const { user, grantRefresh, accessToken } = useContext(AuthContext);
   const { windowSize } = useContext(ScreenContext);
@@ -45,7 +41,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
 
   const sendMessage = () => {
     if (message === "") return;
-    props.publish(message, "TALK");
+    publish(message, "TALK");
     setMessage("");
   };
 
@@ -78,7 +74,6 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
 
   const backHome: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    props.disconnect();
     router.push("/post");
   };
 
@@ -187,7 +182,6 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
                 e.preventDefault();
                 sendMessage();
               }}
-              publish={props.publish}
             />
           </>
         )}
