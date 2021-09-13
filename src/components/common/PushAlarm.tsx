@@ -10,7 +10,7 @@ import { ScreenContext } from "../../store/ScreenContext";
 import { useRouter } from "next/router";
 import { BiMessageRoundedX } from "react-icons/bi";
 const PushAlarm: React.FC = () => {
-  const { newMessages } = useContext(ChatContext);
+  const { newMessages, setMainRoomId } = useContext(ChatContext);
   const [isActive, setIsActive] = useState(false);
   const router = useRouter();
 
@@ -45,6 +45,7 @@ const PushAlarm: React.FC = () => {
                       sender={item.sender}
                       roomId={-2}
                       onClick={() => {
+                        setMainRoomId(item.roomId);
                         moveChat(item.senderId);
                       }}
                       context={
@@ -141,10 +142,8 @@ const PushAlarmBox = styled.div`
   width: 100%;
   padding: 0px 5px 5px 5px;
   box-sizing: border-box;
-  @media (max-height: calc(100vh - 250px)) {
-    padding: 0px 15px 0px 5px;
-    overflow: auto;
-  }
+  overflow: auto;
+  height: calc(100vh - 250px);
 `;
 
 const AlarmChatBox = styled.div``;

@@ -57,7 +57,9 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
       </MessageImage>
       <ChatMessageBox type={type}>
         <ChatUserName type={type}>{props.sender}</ChatUserName>
-        {props.context}
+        {props.context.length > 20
+          ? props.context.substring(18) + "..."
+          : props.context}
         <RegDateMessage>{regDate}</RegDateMessage>
       </ChatMessageBox>
     </ChatContainer>

@@ -231,6 +231,11 @@ export default function Chat() {
       const isInMyMessage = mainChatMessages.find(
         (item: any) => item.senderId === user.id
       );
+      console.log(
+        mainChatMessages,
+        isInMyMessage,
+        "내가 들어간 입장메세지 타이밍"
+      );
       if (!isInMyMessage) publish(`${user.name}님이 입장하셨습니다.`, "ENTER");
     }, 500);
   };
