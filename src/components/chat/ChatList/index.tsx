@@ -26,6 +26,7 @@ const ChatList: React.FC = (props) => {
                 lastMessage.length > limitMessageWord
                   ? lastMessage.substring(0, limitMessageWord) + "..."
                   : lastMessage;
+              // const limitMessage = lastMessage;
               const chatRoomImageUrl =
                 item.participantImageUrls.length === 1
                   ? "/Layout/prohibition_icon.png"

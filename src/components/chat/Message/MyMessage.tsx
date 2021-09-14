@@ -1,6 +1,6 @@
 import axios from "axios";
 import Image from "next/image";
-import { MouseEventHandler, useState } from "react";
+import { MouseEventHandler, useRef, useState } from "react";
 import styled from "styled-components";
 import { GOOGLE_TRANSLATE_API_KEY } from "../../../constants";
 import { LanguageLocale } from "../../common";
@@ -17,6 +17,7 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [context, setContext] = useState(props.context);
   const selectLanguage = LanguageLocale[props.selectLanguage[0]];
+
   const onClick: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     if (props.imageUrl) return;
@@ -78,8 +79,7 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
               type="me"
               onClick={translateContext}
             />
-
-            <div>{context}</div>
+            <MessageText>{context}</MessageText>
           </MyMessageBox>
         </>
       )}
@@ -88,8 +88,16 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
   );
 };
 
-export { MyMessage, MessageImageBox, RegDateMessage };
+export { MyMessage, MessageImageBox, RegDateMessage, MessageText };
 export type { MyMessageProps };
+
+const MessageText = styled.div`
+  /* width: 100%; */
+  display: inline-block;
+  white-space: pre-line;
+  word-break: break-all;
+  max-width: 300px;
+`;
 
 const MessageImageBox = styled.div`
   max-width: 230px;
@@ -113,7 +121,8 @@ const MyMessageBox = styled.div`
   box-sizing: border-box;
   display: flex;
   max-width: 300px;
-  min-width: 70px;
+
+  min-width: 50px;
   min-height: 50px;
   /* border: 1px solid ${(props) => props.theme.primaryColor}; */
   background-color: ${(props) => props.theme.primaryColor};

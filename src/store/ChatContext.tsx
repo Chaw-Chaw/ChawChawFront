@@ -148,11 +148,13 @@ const ChatContextProvider: React.FC = (props) => {
           );
           if (removeChatRoomIndex) {
             const removeChatRoom = result[removeChatRoomIndex];
-            const tmpParticpantIds = removeChatRoom.participantIds.slice(1);
+            const removeIndex = removeChatRoom.participantIds.findIndex(
+              (item) => item === message.senderId
+            );
 
-            // removeChatRoom.participantIds.shift();
-            // removeChatRoom.participantImageUrls.shift();
-            // removeChatRoom.participantNames.shift();
+            removeChatRoom.participantIds.splice(removeIndex);
+            removeChatRoom.participantImageUrls.splice(removeIndex);
+            removeChatRoom.participantNames.splice(removeIndex);
             result[removeChatRoomIndex] = removeChatRoom;
           }
           console.log(result);
@@ -270,12 +272,7 @@ const ChatContextProvider: React.FC = (props) => {
     if (mainRoomId === -1) return;
     // 메인 룸 변경 api 전송;
     detectMainRoom();
-    // totalMessage에 들어있는 룸id 추출
-    if (totalMessage.length > 0) {
-      const roomIds: number[] = [];
-      totalMessage.forEach((item) => roomIds.push(item.roomId));
-      roomIdsRef.current = roomIds;
-    }
+
     // 메인룸에 해당하는 새로운 메시지 거르기
     setNewAlarms((pre) => {
       const result = pre;
@@ -287,6 +284,15 @@ const ChatContextProvider: React.FC = (props) => {
       return filteredNewAlarms;
     });
   }, [mainRoomId]);
+
+  useEffect(() => {
+    // totalMessage에 들어있는 룸id 추출
+    if (totalMessage.length > 0) {
+      const roomIds: number[] = [];
+      totalMessage.forEach((item) => roomIds.push(item.roomId));
+      roomIdsRef.current = roomIds;
+    }
+  }, [totalMessage]);
 
   const contextValue: ChatContextObj = {
     mainChatMessages,

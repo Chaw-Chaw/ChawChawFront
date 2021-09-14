@@ -6,7 +6,12 @@ import {
   DEFAULT_PROFILE_IMAGE,
   GOOGLE_TRANSLATE_API_KEY,
 } from "../../../constants";
-import { MyMessageProps, MessageImageBox, RegDateMessage } from "./MyMessage";
+import {
+  MyMessageProps,
+  MessageImageBox,
+  RegDateMessage,
+  MessageText,
+} from "./MyMessage";
 import { LanguageLocale } from "../../common";
 import axios from "axios";
 import Image from "next/image";
@@ -81,7 +86,7 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
               type="you"
               onClick={translateContext}
             />
-            {context}
+            <MessageText>{context}</MessageText>
           </YourMessageBox>
         </YourMessageInfo>
       )}

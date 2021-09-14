@@ -56,8 +56,6 @@ const ChatRoom: React.FC = (props) => {
       })
       .catch((err) => err.response);
 
-    
-
     if (response.status === 401) {
       //acessToken 만료
       grantRefresh();
@@ -248,8 +246,7 @@ const MessageContainer = styled.div`
   height: calc(100% - 102px);
   width: 100%;
   box-sizing: border-box;
-  padding-right: 20px;
-  padding-bottom: 10px;
+  padding: 10px 20px;
   overflow: auto;
   @media (max-width: 768px) {
     height: 100%;
