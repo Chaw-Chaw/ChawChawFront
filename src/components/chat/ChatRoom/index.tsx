@@ -12,8 +12,9 @@ import MessageInput from "./MessageInput";
 import ChatMessage from "../Message/ChatMessage";
 import InfoMessage from "../Message/InfoMessage";
 import { BsBoxArrowRight } from "react-icons/bs";
-import { RiHome2Line } from "react-icons/ri";
+import { RiHome2Line, RiWechat2Line } from "react-icons/ri";
 import { BsChatDots } from "react-icons/bs";
+
 import { AuthContext } from "../../../store/AuthContext";
 import { ChangeLanguageDropDown } from "../../common";
 import { ChatContext } from "../../../store/ChatContext";
@@ -130,44 +131,59 @@ const ChatRoom: React.FC = (props) => {
         ) : (
           <>
             <MessageContainer>
-              {mainRoomId !== -1 &&
-                mainChatMessages &&
-                mainChatMessages.length > 0 && (
-                  <div ref={chatMessageBox}>
-                    {mainChatMessages.map((chatMessage, index) => {
-                      // 토크 타입이 아닌 정보는 InfoMessage
-                      if (
-                        chatMessage.messageType === "ENTER" ||
-                        chatMessage.messageType === "EXIT"
-                      )
-                        return (
-                          <InfoMessage key={index}>
-                            {chatMessage.message}
-                          </InfoMessage>
-                        );
+              {(() => {
+                if (mainRoomId !== -1) {
+                  if (mainChatMessages && setMainChatMessages.length > 0) {
+                    return (
+                      <div ref={chatMessageBox}>
+                        {mainChatMessages.map((chatMessage, index) => {
+                          // 토크 타입이 아닌 정보는 InfoMessage
+                          if (
+                            chatMessage.messageType === "ENTER" ||
+                            chatMessage.messageType === "EXIT"
+                          )
+                            return (
+                              <InfoMessage key={index}>
+                                {chatMessage.message}
+                              </InfoMessage>
+                            );
 
-                      // 토크 타입인 일반메세지 분류
-                      return (
-                        <ChatMessage
-                          key={index}
-                          src={
-                            user.id === chatMessage.senderId
-                              ? undefined
-                              : `${chatMessage.imageUrl}`
-                          }
-                          imageUrl={
-                            chatMessage.messageType === "IMAGE"
-                              ? chatMessage.message
-                              : undefined
-                          }
-                          regDate={chatMessage.regDate}
-                          context={chatMessage.message}
-                          selectLanguage={selectLanguage}
-                        />
-                      );
-                    })}
-                  </div>
-                )}
+                          // 토크 타입인 일반메세지 분류
+                          return (
+                            <ChatMessage
+                              key={index}
+                              src={
+                                user.id === chatMessage.senderId
+                                  ? undefined
+                                  : `${chatMessage.imageUrl}`
+                              }
+                              imageUrl={
+                                chatMessage.messageType === "IMAGE"
+                                  ? chatMessage.message
+                                  : undefined
+                              }
+                              regDate={chatMessage.regDate}
+                              context={chatMessage.message}
+                              selectLanguage={selectLanguage}
+                            />
+                          );
+                        })}
+                      </div>
+                    );
+                  }
+                } else {
+                  return (
+                    <EmptyChatRoom>
+                      <EmptyChatRoomBox>
+                        <RiWechat2Line />
+                        <EmptyChatRoomTitle>
+                          채팅방에 입장해주세요
+                        </EmptyChatRoomTitle>
+                      </EmptyChatRoomBox>
+                    </EmptyChatRoom>
+                  );
+                }
+              })()}
             </MessageContainer>
             <MessageInput
               onChange={(e) => {
@@ -266,4 +282,26 @@ const MessageHeaderButton = styled.button`
   font-size: 2rem;
   cursor: pointer;
   width: 44px;
+`;
+
+const EmptyChatRoom = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+`;
+
+const EmptyChatRoomBox = styled.div`
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: ${(props) => props.theme.secondaryColor};
+  svg {
+    font-size: 10rem;
+  }
+`;
+
+const EmptyChatRoomTitle = styled.h1`
+  margin: auto;
 `;
