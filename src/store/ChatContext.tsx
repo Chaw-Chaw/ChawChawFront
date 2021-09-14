@@ -48,9 +48,6 @@ interface ChatContextObj {
   isViewChatList: boolean;
   setIsViewChatList: Dispatch<React.SetStateAction<boolean>>;
   publish: (message: string, messageType: string) => void;
-  publishEnterChat: () => void;
-  roomIds: number[];
-  setRoomIds: Dispatch<React.SetStateAction<number[]>>;
 }
 
 const ChatContext = React.createContext<ChatContextObj>({
@@ -65,9 +62,6 @@ const ChatContext = React.createContext<ChatContextObj>({
   isViewChatList: false,
   setIsViewChatList: () => {},
   publish: (message: string, messageType: string) => {},
-  publishEnterChat: () => {},
-  roomIds: [],
-  setRoomIds: () => {},
 });
 
 const ChatContextProvider: React.FC = (props) => {
@@ -76,10 +70,10 @@ const ChatContextProvider: React.FC = (props) => {
   const [mainRoomId, setMainRoomId] = useState(-1);
   const [newAlarms, setNewAlarms] = useState<Object[]>([]);
   const [isViewChatList, setIsViewChatList] = useState(false);
-  const [roomIds, setRoomIds] = useState<number[]>([]);
   const mainRoomIdRef = useRef(-1);
 
   const chatClient = useRef<any>({});
+  const roomIdsRef = useRef<number[]>([]);
 
   const { user, accessToken, grantRefresh } = useContext(AuthContext);
 
@@ -88,7 +82,7 @@ const ChatContextProvider: React.FC = (props) => {
       // brokerURL: "ws://localhost:8080/ws-stomp/websocket", // 웹소켓 서버로 직접 접속
       webSocketFactory: () => new SockJS(BACKEND_URL + "/ws"), // proxy를 통한 접속
       debug: function (str) {
-        // console.log(str);
+        console.log(str);
       },
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
@@ -100,7 +94,7 @@ const ChatContextProvider: React.FC = (props) => {
         followChannelSubscribe();
       },
       onStompError: (frame) => {
-        // console.error(frame);
+        console.error(frame);
       },
       connectHeaders: {
         Authorization: accessToken,
@@ -117,11 +111,7 @@ const ChatContextProvider: React.FC = (props) => {
   const alarmChannelSubscribe = () => {
     chatClient.current.subscribe(`/queue/chat/${user.id}`, (response: any) => {
       const message: MessageType = JSON.parse(response.body);
-      // console.log(message, "새로운 메세지 내용");
-
-      const newRoomId = totalMessage.find(
-        (item) => item.roomId === message.roomId
-      );
+      console.log(message, "새로운 메세지 내용");
 
       // 메인 채팅룸 메세지 누적 : 메세지 룸 넘버가 메인 룸넘버인 경우
       if (message.roomId === mainRoomIdRef.current) {
@@ -134,7 +124,7 @@ const ChatContextProvider: React.FC = (props) => {
       }
 
       // 채팅룸 개설 : 메시지의 룸 넘버가 기존에 없던 룸넘버라면
-      if (newRoomId !== undefined) {
+      if (!roomIdsRef.current.includes(message.roomId)) {
         const myImage = user.imageUrl || DEFAULT_PROFILE_IMAGE;
         const myName = user.name || "";
         const myId = user.id || -1;
@@ -152,17 +142,22 @@ const ChatContextProvider: React.FC = (props) => {
       // 채팅방을 삭제해야할 경우
       if (message.messageType === "EXIT") {
         setTotalMessage((pre) => {
-          const result = [...pre];
+          const result = pre;
           const removeChatRoomIndex = result.findIndex(
             (item) => message.roomId === item.roomId
           );
-          if (result.length === 1) return [];
           if (removeChatRoomIndex) {
-            result.splice(removeChatRoomIndex, 1);
+            const removeChatRoom = result[removeChatRoomIndex];
+            const tmpParticpantIds = removeChatRoom.participantIds.slice(1);
+
+            // removeChatRoom.participantIds.shift();
+            // removeChatRoom.participantImageUrls.shift();
+            // removeChatRoom.participantNames.shift();
+            result[removeChatRoomIndex] = removeChatRoom;
           }
+          console.log(result);
           return [...result];
         });
-        return;
       }
 
       // 기존 채팅방에 들어오는 메세지일 경우
@@ -240,16 +235,6 @@ const ChatContextProvider: React.FC = (props) => {
     });
   };
 
-  const publishEnterChat = () => {
-    setTimeout(() => {
-      const isInMyMessage = mainChatMessages.find(
-        (item: any) => item.senderId === user.id
-      );
-      console.log(mainChatMessages, "채팅 입장 발동시 메인 채팅 메세지?");
-      if (!isInMyMessage) publish(`${user.name}님이 입장하셨습니다.`, "ENTER");
-    }, 500);
-  };
-
   const getNewAlarms = async () => {
     const response = await axios
       .get("/users/alarm", {
@@ -279,11 +264,19 @@ const ChatContextProvider: React.FC = (props) => {
   }, [user]);
 
   useEffect(() => {
-    // 메인 룸 변경 api 전송;
     console.log(mainRoomId, "메인룸변경");
     mainRoomIdRef.current = mainRoomId;
+
     if (mainRoomId === -1) return;
+    // 메인 룸 변경 api 전송;
     detectMainRoom();
+    // totalMessage에 들어있는 룸id 추출
+    if (totalMessage.length > 0) {
+      const roomIds: number[] = [];
+      totalMessage.forEach((item) => roomIds.push(item.roomId));
+      roomIdsRef.current = roomIds;
+    }
+    // 메인룸에 해당하는 새로운 메시지 거르기
     setNewAlarms((pre) => {
       const result = pre;
       const filteredNewAlarms = result.filter((item: any) => {
@@ -307,9 +300,6 @@ const ChatContextProvider: React.FC = (props) => {
     isViewChatList,
     setIsViewChatList,
     publish,
-    publishEnterChat,
-    roomIds,
-    setRoomIds,
   };
 
   return (

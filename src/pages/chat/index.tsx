@@ -42,8 +42,7 @@ export default function Chat() {
       .catch((err) => err.response);
 
     console.log(response, "getMainRoomId");
-    const roomInfo = response.data.data[0];
-    const mainRoomId = roomInfo.roomId;
+    const mainRoomId = response.data.data.roomId;
     setMainRoomId(mainRoomId);
     // 채팅방을 만들고 전체 메세지들을 받기
     getMessageLog();
@@ -92,13 +91,6 @@ export default function Chat() {
   const setMainChat = (totalMessage: RoomType[]) => {
     const mainChatLog = totalMessage.find((item) => item.roomId === mainRoomId);
     if (!mainChatLog) return;
-
-    // 메인 채팅 메세지에 내가 처음 들어갈때 입장 메세지 발송
-    const isInMyMessage = mainChatLog.messages.find(
-      (item: any) => item.senderId === user.id
-    );
-    console.log(mainChatMessages, "채팅 입장 발동시 메인 채팅 메세지?");
-    if (!isInMyMessage) publish(`${user.name}님이 입장하셨습니다.`, "ENTER");
 
     // 메인 채팅메세지 set
     setMainChatMessages([...mainChatLog.messages]);

@@ -17,23 +17,30 @@ const ChatList: React.FC = (props) => {
           ? null
           : totalMessage.map((item) => {
               const limitMessageWord = 20;
+              const isNewChatRoom = item.messages.length <= 0;
               const lastMessageInfo = item.messages[item.messages.length - 1];
-              const lastMessage = lastMessageInfo.message;
+              const lastMessage = isNewChatRoom
+                ? "새로운 채팅방이 생성되었습니다."
+                : lastMessageInfo.message;
               const limitMessage =
                 lastMessage.length > limitMessageWord
                   ? lastMessage.substring(0, limitMessageWord) + "..."
                   : lastMessage;
               const chatRoomImageUrl =
-                item.participantImageUrls.find(
-                  (item) => item !== user.imageUrl
-                ) || DEFAULT_PROFILE_IMAGE;
+                item.participantImageUrls.length === 1
+                  ? "/Layout/prohibition_icon.png"
+                  : item.participantImageUrls[0];
               const sender =
-                item.participantNames.find((item) => item !== user.name) || "";
+                item.participantNames.find((item) => item !== user.name) ||
+                "빈방";
+
+              const regDate = isNewChatRoom ? "" : lastMessageInfo.regDate;
+
               return (
                 <ChatBox
                   key={item.roomId}
                   imageUrl={chatRoomImageUrl}
-                  regDate={lastMessageInfo.regDate}
+                  regDate={regDate}
                   sender={sender}
                   roomId={item.roomId}
                   onClick={() => {
