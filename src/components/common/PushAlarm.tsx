@@ -22,7 +22,8 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
 
   return (
     <AlarmBell onClick={controlPushAlarm}>
-      {props.router.pathname !== "/chat" ? <AiFillBell /> : <AiFillHeart />}
+      {/* {props.router.pathname !== "/chat" ? <AiFillBell /> : <AiFillHeart />} */}
+      <AiFillBell />
       {(() => {
         const newAlarms =
           props.router.pathname !== "/chat"
