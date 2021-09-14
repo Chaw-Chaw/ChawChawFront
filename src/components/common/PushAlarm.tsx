@@ -99,7 +99,7 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
             })
           ) : (
             <EmptyNewMessageMark>
-              <span>No new Follows</span>
+              <span>No new follow alarms</span>
             </EmptyNewMessageMark>
           )}
         </PushAlarmBox>
