@@ -21,7 +21,7 @@ const PostModalInfoList: React.FC<{
                 <DropDownMainText>main</DropDownMainText>
                 <DropDownBox
                   fontWeight="900"
-                  fontSize="0.7rem"
+                  fontSize="0.5rem"
                   width="80px"
                   height="30px"
                   color="white"
@@ -35,7 +35,7 @@ const PostModalInfoList: React.FC<{
               <DropDownOutline key={index}>
                 <DropDownBox
                   fontWeight="900"
-                  fontSize="0.7rem"
+                  fontSize="0.5rem"
                   width="80px"
                   height="30px"
                   color="white"

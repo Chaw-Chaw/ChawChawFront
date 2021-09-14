@@ -54,6 +54,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
                     initialValue={item}
                     setValues={props.setValues}
                     value={item}
+                    fontSize="0.5rem"
                   />
                 </DropDownMainBox>
               );
@@ -67,6 +68,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
                   initialValue={item}
                   setValues={props.setValues}
                   value={item}
+                  fontSize="0.5rem"
                 />
               </DropDownBox>
             );
