@@ -2,12 +2,12 @@ import { MouseEventHandler, useContext, useState } from "react";
 import styled from "styled-components";
 import { ChatContext } from "../../store/ChatContext";
 import { ChatBox } from "./ChatBox";
-import { AiFillBell } from "react-icons/ai";
+import { AiFillBell, AiFillHeart } from "react-icons/ai";
 import { AlarmCount } from "./AlarmCount";
-import { useRouter } from "next/router";
-import { BiMessageRoundedX } from "react-icons/bi";
-const PushAlarm: React.FC = () => {
-  const { newAlarms, setMainRoomId } = useContext(ChatContext);
+import { NextRouter, useRouter, withRouter } from "next/router";
+
+const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
+  const { newMessages, setMainRoomId, newFollows } = useContext(ChatContext);
   const [isActive, setIsActive] = useState(false);
   const router = useRouter();
 
@@ -22,59 +22,84 @@ const PushAlarm: React.FC = () => {
 
   return (
     <AlarmBell onClick={controlPushAlarm}>
-      <AiFillBell />
-      {newAlarms.length !== 0 && (
-        <AlarmCount>
-          <span>{newAlarms.length > 99 ? 99 : newAlarms.length}</span>
-        </AlarmCount>
-      )}
+      {props.router.pathname !== "/chat" ? <AiFillBell /> : <AiFillHeart />}
+      {(() => {
+        const newAlarms =
+          props.router.pathname !== "/chat"
+            ? newMessages.length + newFollows.length
+            : newFollows.length;
+
+        if (newAlarms !== 0) {
+          return (
+            <AlarmCount>
+              <span>{newAlarms > 99 ? 99 : newAlarms}</span>
+            </AlarmCount>
+          );
+        } else null;
+      })()}
       <PushAlarmContainer isActive={isActive}>
-        <PushAlarmTitle>New messages</PushAlarmTitle>
+        <PushAlarmTitle>New Alarms</PushAlarmTitle>
+        {props.router.pathname !== "/chat" ? (
+          <>
+            <PushAlarmBox>
+              {newMessages.length > 0 ? (
+                newMessages.map((item: any, index) => {
+                  return (
+                    <AlarmChatBox key={index}>
+                      <ChatBox
+                        imageUrl={item.imageUrl}
+                        regDate={item.regDate.split("T").join(" ")}
+                        sender={item.sender}
+                        roomId={-2}
+                        onClick={() => {
+                          setMainRoomId(item.roomId);
+                          moveChat(item.senderId);
+                        }}
+                        context={
+                          item.message.lenght > 20
+                            ? item.message.substring(0, 20) + "..."
+                            : item.message
+                        }
+                        chatList
+                      />
+                    </AlarmChatBox>
+                  );
+                })
+              ) : (
+                <EmptyNewMessageMark>
+                  <span>No new messages</span>
+                </EmptyNewMessageMark>
+              )}
+            </PushAlarmBox>
+            <Divider />
+          </>
+        ) : null}
+
         <PushAlarmBox>
-          {newAlarms.length > 0 ? (
-            newAlarms.map((item: any, index) => {
+          {newFollows.length > 0 ? (
+            newFollows.map((item: any, index) => {
               return (
                 <AlarmChatBox key={index}>
-                  {item.imageUrl ? (
-                    <ChatBox
-                      imageUrl={item.imageUrl}
-                      regDate={item.regDate.split("T").join(" ")}
-                      sender={item.sender}
-                      roomId={-2}
-                      onClick={() => {
-                        setMainRoomId(item.roomId);
-                        moveChat(item.senderId);
-                      }}
-                      context={
-                        item.message.lenght > 20
-                          ? item.message.substring(0, 20) + "..."
-                          : item.message
-                      }
-                      chatList
-                    />
-                  ) : (
-                    <ChatBox
-                      imageUrl={`/Layout/heart.png`}
-                      regDate={item.regDate}
-                      sender={item.followType}
-                      roomId={-2}
-                      onClick={() => {
-                        moveChat(-2);
-                      }}
-                      context={`${item.name}님이 ${item.followType} 하셨습니다.`.substring(
-                        0,
-                        20
-                      )}
-                      chatList
-                    />
-                  )}
+                  <ChatBox
+                    imageUrl={`/Layout/heart.png`}
+                    regDate={item.regDate}
+                    sender={item.followType}
+                    roomId={-2}
+                    onClick={() => {
+                      moveChat(-2);
+                    }}
+                    context={`${item.name}님이 ${item.followType} 하셨습니다.`.substring(
+                      0,
+                      20
+                    )}
+                    chatList
+                  />
                 </AlarmChatBox>
               );
             })
           ) : (
             <EmptyNewMessageMark>
-              <BiMessageRoundedX />
-              <span>No new messages</span>
+              <span>No new Follows</span>
             </EmptyNewMessageMark>
           )}
         </PushAlarmBox>
@@ -83,7 +108,7 @@ const PushAlarm: React.FC = () => {
   );
 };
 
-export { PushAlarm };
+export default withRouter(PushAlarm);
 
 const AlarmBell = styled.div`
   display: flex;
@@ -160,4 +185,11 @@ const EmptyNewMessageMark = styled.div`
   span {
     font-size: 1.5rem;
   }
+`;
+
+const Divider = styled.div`
+  width: calc(100% - 10px);
+  margin: 5px auto;
+  box-sizing: border-box;
+  border-top: 0.1px solid ${(props) => props.theme.secondaryColor};
 `;

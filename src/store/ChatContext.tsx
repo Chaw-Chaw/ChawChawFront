@@ -43,8 +43,10 @@ interface ChatContextObj {
   setMainChatMessages: Dispatch<SetStateAction<MessageType[]>>;
   setMainRoomId: Dispatch<SetStateAction<number>>;
   setTotalMessage: Dispatch<SetStateAction<RoomType[]>>;
-  newAlarms: Object[];
-  setNewAlarms: Dispatch<React.SetStateAction<Object[]>>;
+  newMessages: Object[];
+  setNewMessages: Dispatch<React.SetStateAction<Object[]>>;
+  newFollows: Object[];
+  setNewFollows: Dispatch<React.SetStateAction<Object[]>>;
   isViewChatList: boolean;
   setIsViewChatList: Dispatch<React.SetStateAction<boolean>>;
   publish: (message: string, messageType: string) => void;
@@ -57,8 +59,10 @@ const ChatContext = React.createContext<ChatContextObj>({
   setMainChatMessages: () => {},
   setMainRoomId: () => {},
   setTotalMessage: () => {},
-  newAlarms: [],
-  setNewAlarms: () => {},
+  newMessages: [],
+  setNewMessages: () => {},
+  newFollows: [],
+  setNewFollows: () => {},
   isViewChatList: false,
   setIsViewChatList: () => {},
   publish: (message: string, messageType: string) => {},
@@ -68,7 +72,8 @@ const ChatContextProvider: React.FC = (props) => {
   const [mainChatMessages, setMainChatMessages] = useState<MessageType[]>([]);
   const [totalMessage, setTotalMessage] = useState<RoomType[]>([]);
   const [mainRoomId, setMainRoomId] = useState(-1);
-  const [newAlarms, setNewAlarms] = useState<Object[]>([]);
+  const [newMessages, setNewMessages] = useState<Object[]>([]);
+  const [newFollows, setNewFollows] = useState<Object[]>([]);
   const [isViewChatList, setIsViewChatList] = useState(false);
   const mainRoomIdRef = useRef(-1);
 
@@ -120,7 +125,7 @@ const ChatContextProvider: React.FC = (props) => {
 
       // 내가 보낸 메세지가 아닌경우에만 알람 메세지 누적
       if (message.senderId !== user.id) {
-        setNewAlarms((pre) => [...pre, message]);
+        setNewMessages((pre) => [...pre, message]);
       }
 
       // 채팅룸 개설 : 메시지의 룸 넘버가 기존에 없던 룸넘버라면
@@ -184,7 +189,7 @@ const ChatContextProvider: React.FC = (props) => {
       (response: any) => {
         const message: FollowAlarmType = JSON.parse(response.body);
         // console.log(message, "새로운 팔로우 내용");
-        setNewAlarms((pre) => [...pre, message]);
+        setNewFollows((pre) => [...pre, message]);
       }
     );
   };
@@ -253,8 +258,9 @@ const ChatContextProvider: React.FC = (props) => {
       return;
     }
     const followMessages: FollowAlarmType[] = response.data.follows;
-    const newAlarms = response.data.messages;
-    setNewAlarms([...newAlarms, ...followMessages]);
+    const newMessages = response.data.messages;
+    setNewFollows([...followMessages]);
+    setNewMessages([...newMessages]);
   };
 
   useEffect(() => {
@@ -274,14 +280,14 @@ const ChatContextProvider: React.FC = (props) => {
     detectMainRoom();
 
     // 메인룸에 해당하는 새로운 메시지 거르기
-    setNewAlarms((pre) => {
+    setNewMessages((pre) => {
       const result = pre;
-      const filteredNewAlarms = result.filter((item: any) => {
+      const filteredNewMessages = result.filter((item: any) => {
         if (item.roomId === undefined) return true;
         if (item.roomId !== mainRoomId) return true;
         return false;
       });
-      return filteredNewAlarms;
+      return filteredNewMessages;
     });
   }, [mainRoomId]);
 
@@ -301,11 +307,13 @@ const ChatContextProvider: React.FC = (props) => {
     setMainChatMessages,
     setMainRoomId,
     setTotalMessage,
-    newAlarms,
-    setNewAlarms,
+    newMessages,
+    setNewMessages,
     isViewChatList,
     setIsViewChatList,
     publish,
+    newFollows,
+    setNewFollows,
   };
 
   return (

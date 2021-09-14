@@ -29,6 +29,7 @@ const ChatRoom: React.FC = (props) => {
     setIsViewChatList,
     publish,
     setTotalMessage,
+    setMainChatMessages,
   } = useContext(ChatContext);
   const { user, grantRefresh, accessToken } = useContext(AuthContext);
   const { windowSize } = useContext(ScreenContext);
@@ -72,6 +73,7 @@ const ChatRoom: React.FC = (props) => {
       const resultFilter = result.filter((item) => item.roomId !== mainRoomId);
       return resultFilter;
     });
+    setMainChatMessages([]);
     setMainRoomId(-1);
   };
 

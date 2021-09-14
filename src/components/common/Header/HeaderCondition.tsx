@@ -5,12 +5,9 @@ import { Button } from "../Button/Button";
 import MyImage from "./MyImage";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import styled from "styled-components";
-import { PushAlarm } from "../PushAlarm";
-import { NextRouter, withRouter } from "next/router";
+import PushAlarm from "../PushAlarm";
 
-const HeaderCondition: React.FC<{ type?: string; router: NextRouter }> = (
-  props
-) => {
+const HeaderCondition: React.FC<{ type?: string }> = (props) => {
   const headerType = props.type;
   const { user, accessToken } = useContext(AuthContext);
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
@@ -18,8 +15,8 @@ const HeaderCondition: React.FC<{ type?: string; router: NextRouter }> = (
   if (accessToken) {
     return (
       <HeaderInfoBox>
-        {props.router.pathname !== "/chat" ? <PushAlarm /> : null}
-
+        {/* {props.router.pathname !== "/chat" ? <PushAlarm /> : null} */}
+        <PushAlarm />
         <MyImage profileImage={profileImage} />
       </HeaderInfoBox>
     );
@@ -48,7 +45,7 @@ const HeaderCondition: React.FC<{ type?: string; router: NextRouter }> = (
   );
 };
 
-export default withRouter(HeaderCondition);
+export default HeaderCondition;
 
 const HeaderInfoBox = styled.div`
   display: flex;

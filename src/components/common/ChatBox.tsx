@@ -16,11 +16,11 @@ interface ChatBoxProps {
 }
 
 const ChatBox: React.FC<ChatBoxProps> = (props) => {
-  const { mainRoomId, newAlarms } = useContext(ChatContext);
+  const { mainRoomId, newMessages } = useContext(ChatContext);
   const mainChatList = useRef<HTMLDivElement>(null);
   const regDate = props.regDate.split("T").join(" ");
   const type = props.roomId === mainRoomId ? "current" : "";
-  const matchNewAlarms = newAlarms.filter((item: any) => {
+  const matchnewMessages = newMessages.filter((item: any) => {
     if (item.roomId === props.roomId) return true;
     return false;
   });
@@ -47,10 +47,10 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
       <MessageImage
         src={props.imageUrl ? `${props.imageUrl}` : DEFAULT_PROFILE_IMAGE}
       >
-        {!props.chatList && matchNewAlarms.length !== 0 && (
+        {!props.chatList && matchnewMessages.length !== 0 && (
           <AlarmCount>
             <span>
-              {matchNewAlarms.length > 99 ? 99 : matchNewAlarms.length}
+              {matchnewMessages.length > 99 ? 99 : matchnewMessages.length}
             </span>
           </AlarmCount>
         )}

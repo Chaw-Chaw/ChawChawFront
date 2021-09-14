@@ -32,33 +32,6 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
 
     console.log(response, "팔로우 결과");
     setIsActiveFollow(true);
-
-    // if()
-    //   const response = await axios
-    //     .post(`/follows/${props.id}`, {
-    //       headers: {
-    //         Authorization: accessToken,
-    //       },
-    //     })
-    //     .catch((err) => {
-    //       console.log(err, "팔로우 에러");
-    //       return err.response;
-    //     });
-    //   if (response.status === 401) {
-    //     // access token 만료
-    //     // refresh token 전송
-    //     grantRefresh();
-    //     return;
-    //   }
-    //   if (!response.data.isSuccess) {
-    //     console.log(response);
-    //     return;
-    //   }
-
-    //   console.log("follow 성공!");
-    //   setIsActiveFollow(true);
-
-    // };
   };
 
   const unFollow = async () => {
