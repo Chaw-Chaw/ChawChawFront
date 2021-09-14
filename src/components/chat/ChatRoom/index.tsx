@@ -165,6 +165,7 @@ const ChatRoom: React.FC = (props) => {
                               regDate={chatMessage.regDate}
                               context={chatMessage.message}
                               selectLanguage={selectLanguage}
+                              userName={chatMessage.sender}
                             />
                           );
                         })}

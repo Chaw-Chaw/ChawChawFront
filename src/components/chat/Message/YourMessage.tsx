@@ -1,4 +1,4 @@
-import { MouseEventHandler, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import styled from "styled-components";
 import { MessageContext } from "./MessageContext";
 import { MessageImage } from "./MessageImage";
@@ -61,6 +61,10 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
     return;
   };
 
+  // useEffect(() => {
+  //   console.log(props.userName, "유저네임");
+  // }, []);
+
   return (
     <YourMessageContainer>
       {props.imageUrl ? (
@@ -70,24 +74,23 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
             src={`${props.imageUrl}`}
             alt="채팅 이미지"
             layout="fill"
-            // width="230"
-            // height="230"
-            // objectFit="cover"
           />
         </MessageImageBox>
       ) : (
         <YourMessageInfo>
           <MessageImage src={props.src || DEFAULT_PROFILE_IMAGE} />
-          {/* <MessageUserName>{props.userName}</MessageUserName> */}
-          <YourMessageBox onClick={onClick}>
-            <MessageContext
-              isActive={isActive}
-              setIsActive={setIsActive}
-              type="you"
-              onClick={translateContext}
-            />
-            <MessageText>{context}</MessageText>
-          </YourMessageBox>
+          <YourMessageContent>
+            <MessageUserName>{props.userName}</MessageUserName>
+            <YourMessageBox onClick={onClick}>
+              <MessageContext
+                isActive={isActive}
+                setIsActive={setIsActive}
+                type="you"
+                onClick={translateContext}
+              />
+              <MessageText>{context}</MessageText>
+            </YourMessageBox>
+          </YourMessageContent>
         </YourMessageInfo>
       )}
       <RegDateMessage>{props.regDate}</RegDateMessage>
@@ -96,6 +99,12 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
 };
 
 export { YourMessage };
+
+const YourMessageContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+`;
 
 const YourMessageInfo = styled.div`
   display: flex;
@@ -114,7 +123,8 @@ const YourMessageBox = styled.div`
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   border-radius: 20px;
   border-top-left-radius: 0px;
-  margin-left: 10px;
+  margin-top: 10px;
+
   font-family: "Source Sans Pro";
 `;
 
@@ -122,7 +132,10 @@ const MessageUserName = styled.h2`
   font-size: 1rem;
   margin: 0px;
   margin-bottom: 2px;
-  color: rgb(126, 126, 126);
+  color: ${(props) =>
+    props.theme.id === "light"
+      ? "rgb(126, 126, 126)"
+      : props.theme.secondaryColor};
 `;
 const YourMessageContainer = styled.div`
   display: flex;
