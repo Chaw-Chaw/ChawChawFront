@@ -69,11 +69,9 @@ export default function Post() {
     if (response.data.responseMessage === "조회 결과가 존재하지 않음") {
       setIsEnd(true);
       console.error(response.data.responseMessage);
-      return;
-    }
-
-    if (!response.data.isSuccess) {
-      console.log("조회 실패");
+      if (isFirst.current) {
+        message.error("조회 결과가 없습니다.");
+      }
       return;
     }
 
@@ -90,6 +88,7 @@ export default function Post() {
   };
 
   const searchHandler = (inputs: string) => {
+    setIsEnd(false);
     isFirst.current = true;
     postIds.current = "";
     searchName.current = inputs;
