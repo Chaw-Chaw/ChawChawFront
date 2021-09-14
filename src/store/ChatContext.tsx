@@ -76,10 +76,8 @@ const ChatContextProvider: React.FC = (props) => {
   const [newFollows, setNewFollows] = useState<Object[]>([]);
   const [isViewChatList, setIsViewChatList] = useState(false);
   const mainRoomIdRef = useRef(-1);
-
   const chatClient = useRef<any>({});
   const roomIdsRef = useRef<number[]>([]);
-
   const { user, accessToken, grantRefresh } = useContext(AuthContext);
 
   const connect = () => {
@@ -123,8 +121,8 @@ const ChatContextProvider: React.FC = (props) => {
         setMainChatMessages((pre: MessageType[]) => [...pre, message]);
       }
 
-      // 내가 보낸 메세지가 아닌경우에만 알람 메세지 누적
-      if (message.senderId !== user.id) {
+      // 메인채팅방의 메세지가 아닐시 에만 알람 메세지 누적
+      if (message.roomId !== mainRoomIdRef.current) {
         setNewMessages((pre) => [...pre, message]);
       }
 
@@ -278,6 +276,12 @@ const ChatContextProvider: React.FC = (props) => {
     if (mainRoomId === -1) return;
     // 메인 룸 변경 api 전송;
     detectMainRoom();
+
+    // // 메인룸 진입시 메인룸에 해당하는 새로운 메세지들 삭제
+    // setNewMessages((pre) => {
+    //   const result = pre;
+    //   const filteredNewMessages =
+    // });
 
     // 메인룸에 해당하는 새로운 메시지 거르기
     setNewMessages((pre) => {
