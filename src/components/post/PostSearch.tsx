@@ -13,7 +13,17 @@ const PostSearch: React.FC<PostSearchProps> = (props) => {
       <SearchIconBox>
         <IoIosSearch />
       </SearchIconBox>
-      <SearchInput ref={searchInputRef} />
+      <SearchInput
+        onKeyPress={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            const searchInput = searchInputRef.current;
+            if (!searchInput) return;
+            props.searchHandler(searchInput.value);
+          }
+        }}
+        ref={searchInputRef}
+      />
       <SearchButton
         secondary
         onClick={(e) => {
