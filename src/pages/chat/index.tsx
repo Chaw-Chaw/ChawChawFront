@@ -41,6 +41,10 @@ export default function Chat() {
       )
       .catch((err) => err.response);
 
+    if (!response.data.isSuccess) {
+      console.error(response.data);
+      return;
+    }
     console.log(response, "getMainRoomId");
     const mainRoomId = response.data.data.roomId;
     setMainRoomId(mainRoomId);

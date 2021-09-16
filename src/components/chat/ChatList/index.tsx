@@ -33,14 +33,8 @@ const ChatList: React.FC = (props) => {
                   ? lastMessage.substring(0, limitMessageWord) + "..."
                   : lastMessage;
               // const limitMessage = lastMessage;
-              const chatRoomImageUrl =
-                item.participantImageUrls.length === 1
-                  ? "/Layout/prohibition_icon.png"
-                  : item.participantImageUrls[0];
-              const sender =
-                item.participantNames.find((item) => item !== user.name) ||
-                "빈방";
-
+              const chatRoomImageUrl = item.participantImageUrls[0];
+              const sender = item.participantNames[0];
               const regDate = isNewChatRoom ? "" : lastMessageInfo.regDate;
 
               return (

@@ -143,26 +143,26 @@ const ChatContextProvider: React.FC = (props) => {
       }
 
       // 채팅방을 삭제해야할 경우
-      if (message.messageType === "EXIT") {
-        setTotalMessage((pre) => {
-          const result = pre;
-          const removeChatRoomIndex = result.findIndex(
-            (item) => message.roomId === item.roomId
-          );
-          if (removeChatRoomIndex) {
-            const removeChatRoom = result[removeChatRoomIndex];
-            const removeIndex = removeChatRoom.participantIds.findIndex(
-              (item) => item === message.senderId
-            );
-            removeChatRoom.participantIds.splice(removeIndex);
-            removeChatRoom.participantImageUrls.splice(removeIndex);
-            removeChatRoom.participantNames.splice(removeIndex);
-            result[removeChatRoomIndex] = removeChatRoom;
-          }
-          console.log(result);
-          return [...result];
-        });
-      }
+      // if (message.messageType === "EXIT") {
+      //   setTotalMessage((pre) => {
+      //     const result = pre;
+      //     const removeChatRoomIndex = result.findIndex(
+      //       (item) => message.roomId === item.roomId
+      //     );
+      //     if (removeChatRoomIndex) {
+      //       const removeChatRoom = result[removeChatRoomIndex];
+      //       const removeIndex = removeChatRoom.participantIds.findIndex(
+      //         (item) => item === message.senderId
+      //       );
+      //       removeChatRoom.participantIds.splice(removeIndex);
+      //       removeChatRoom.participantImageUrls.splice(removeIndex);
+      //       removeChatRoom.participantNames.splice(removeIndex);
+      //       result[removeChatRoomIndex] = removeChatRoom;
+      //     }
+      //     console.log(result);
+      //     return [...result];
+      //   });
+      // }
 
       // 기존 채팅방에 들어오는 메세지일 경우
       setTotalMessage((pre: any) => {
