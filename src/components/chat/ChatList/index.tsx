@@ -19,9 +19,15 @@ const ChatList: React.FC = (props) => {
               const limitMessageWord = 20;
               const isNewChatRoom = item.messages.length <= 0;
               const lastMessageInfo = item.messages[item.messages.length - 1];
-              const lastMessage = isNewChatRoom
-                ? "새로운 채팅방이 생성되었습니다."
-                : lastMessageInfo.message;
+              const lastMessage = (() => {
+                if (isNewChatRoom) {
+                  return "새로운 채팅방이 생성되었습니다.";
+                }
+                if (lastMessageInfo.messageType === "IMAGE") {
+                  return "🏞 사진";
+                }
+                return lastMessageInfo.message;
+              })();
               const limitMessage =
                 lastMessage.length > limitMessageWord
                   ? lastMessage.substring(0, limitMessageWord) + "..."

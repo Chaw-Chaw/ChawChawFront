@@ -154,7 +154,6 @@ const ChatContextProvider: React.FC = (props) => {
             const removeIndex = removeChatRoom.participantIds.findIndex(
               (item) => item === message.senderId
             );
-
             removeChatRoom.participantIds.splice(removeIndex);
             removeChatRoom.participantImageUrls.splice(removeIndex);
             removeChatRoom.participantNames.splice(removeIndex);

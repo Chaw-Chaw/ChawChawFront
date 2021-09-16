@@ -103,7 +103,7 @@ export { YourMessage };
 const YourMessageContent = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: 10px;
+  margin-left: 5px;
 `;
 
 const YourMessageInfo = styled.div`
@@ -123,8 +123,7 @@ const YourMessageBox = styled.div`
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   border-radius: 20px;
   border-top-left-radius: 0px;
-  margin-top: 10px;
-
+  margin-top: 2px;
   font-family: "Source Sans Pro";
 `;
 

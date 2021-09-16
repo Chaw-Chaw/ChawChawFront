@@ -25,7 +25,6 @@ const ImageBox = styled.div`
   border-radius: 100%;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
   position: relative;
-
   .message-sender-image {
     border-radius: 100%;
   }
