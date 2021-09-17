@@ -12,9 +12,10 @@ import {
   RegDateMessage,
   MessageText,
 } from "./MyMessage";
-import { LanguageLocale } from "../../common";
+import { LanguageLocale, ModalLayout } from "../../common";
 import axios from "axios";
 import Image from "next/image";
+import ChatProfile from "../ChatProfile";
 
 interface YourMessageProps extends MyMessageProps {
   src: string;
@@ -22,6 +23,7 @@ interface YourMessageProps extends MyMessageProps {
 }
 
 const YourMessage: React.FC<YourMessageProps> = (props) => {
+  const [open, setOpen] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [context, setContext] = useState(props.context);
   const selectLanguage = LanguageLocale[props.selectLanguage[0]];
@@ -30,6 +32,11 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
     if (props.imageUrl) return;
     setIsActive((pre) => !pre);
     return;
+  };
+
+  const profileOpenHandler: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    setOpen((pre) => !pre);
   };
 
   const translateContext: React.MouseEventHandler<HTMLDivElement> = async (
@@ -57,48 +64,55 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
     }
     const convertContext = response.data.data.translations[0].translatedText;
     setContext(convertContext);
-    console.log(convertContext, "드디어 나오는거냐");
     return;
   };
 
-  // useEffect(() => {
-  //   console.log(props.userName, "유저네임");
-  // }, []);
-
   return (
-    <YourMessageContainer>
-      {props.imageUrl ? (
-        <MessageImageBox>
-          <Image
-            className="chat_image"
-            src={`${props.imageUrl}`}
-            alt="채팅 이미지"
-            layout="fill"
-          />
-        </MessageImageBox>
-      ) : (
-        <YourMessageInfo>
-          <MessageImage src={props.src || DEFAULT_PROFILE_IMAGE} />
-          <YourMessageContent>
-            <MessageUserName>{props.userName}</MessageUserName>
-            <YourMessageBox onClick={onClick}>
-              <MessageContext
-                isActive={isActive}
-                setIsActive={setIsActive}
-                type="you"
-                onClick={translateContext}
-              />
-              <MessageText>{context}</MessageText>
-            </YourMessageBox>
-          </YourMessageContent>
-        </YourMessageInfo>
-      )}
-      <RegDateMessage>{props.regDate}</RegDateMessage>
-    </YourMessageContainer>
+    <>
+      <YourMessageContainer>
+        {props.imageUrl ? (
+          <MessageImageBox>
+            <Image
+              className="chat_image"
+              src={`${props.imageUrl}`}
+              alt="채팅 이미지"
+              layout="fill"
+            />
+          </MessageImageBox>
+        ) : (
+          <YourMessageInfo>
+            <ChatProfileWrap onClick={profileOpenHandler}>
+              <MessageImage src={props.src} />
+            </ChatProfileWrap>
+            <YourMessageContent>
+              <MessageUserName>{props.userName}</MessageUserName>
+              <YourMessageBox onClick={onClick}>
+                <MessageContext
+                  isActive={isActive}
+                  setIsActive={setIsActive}
+                  type="you"
+                  onClick={translateContext}
+                />
+                <MessageText>{context}</MessageText>
+              </YourMessageBox>
+            </YourMessageContent>
+          </YourMessageInfo>
+        )}
+        <RegDateMessage>{props.regDate}</RegDateMessage>
+      </YourMessageContainer>
+      <ModalLayout visible={open}></ModalLayout>
+      <ChatProfile
+        visible={open}
+        name={props.userName || ""}
+        imageUrl={props.src}
+      />
+    </>
   );
 };
 
 export { YourMessage };
+
+const ChatProfileWrap = styled.div``;
 
 const YourMessageContent = styled.div`
   display: flex;

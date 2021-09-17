@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const ModalLayout = styled.div<{ visible?: boolean }>`
+const ModalLayout = styled.div<{ visible: boolean }>`
   display: ${(props) =>
     props.visible ? "flex" : "none"}; /* Hidden by default */
   justify-content: center;

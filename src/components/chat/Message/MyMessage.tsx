@@ -1,6 +1,6 @@
 import axios from "axios";
 import Image from "next/image";
-import { MouseEventHandler, useRef, useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import styled from "styled-components";
 import { GOOGLE_TRANSLATE_API_KEY } from "../../../constants";
 import { LanguageLocale } from "../../common";
@@ -65,9 +65,6 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
             src={`${props.imageUrl}`}
             alt="채팅 이미지"
             layout="fill"
-            // width="230"
-            // height="230"
-            // objectFit="cover"
           />
         </MessageImageBox>
       ) : (
