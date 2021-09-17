@@ -113,7 +113,9 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
 
 export { YourMessage };
 
-const ChatProfileWrap = styled.div``;
+const ChatProfileWrap = styled.div`
+  cursor: pointer;
+`;
 
 const YourMessageContent = styled.div`
   display: flex;
