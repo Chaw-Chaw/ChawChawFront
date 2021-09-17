@@ -1,10 +1,12 @@
 import styled from "styled-components";
 import { Button } from "../../common";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { BiBlock } from "react-icons/bi";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { MouseEventHandler, useContext, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
+import { useAlert } from "react-alert";
 
 interface PostModalActive {
   id: number;
@@ -15,7 +17,14 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
   const router = useRouter();
   const [isActiveFollow, setIsActiveFollow] = useState(props.isFollow);
   const { accessToken, grantRefresh } = useContext(AuthContext);
+  const message = useAlert();
 
+  const confirmBlock: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    message.info(
+      "차단하면 영구히 차단되며 차단을 해제할 수 없습니다. 신중하게 차단해주세요."
+    );
+  };
   const tryChat: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     router.push({ pathname: "/chat", query: { userId: props.id } });
@@ -59,6 +68,9 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
   };
   return (
     <PostButtonBox>
+      <PostBlockBox onClick={confirmBlock}>
+        <BiBlock />
+      </PostBlockBox>
       <PostChatButton onClick={tryChat} secondary width="250px" height="45px">
         Try Chat
       </PostChatButton>
@@ -94,10 +106,18 @@ const PostButtonBox = styled.div`
 
 const PostLikeBox = styled.div`
   position: absolute;
+  width: 45px;
   right: 35px;
   cursor: pointer;
   svg {
     color: red;
     font-size: 45px;
+  }
+`;
+
+const PostBlockBox = styled(PostLikeBox)`
+  left: 35px;
+  svg {
+    color: black;
   }
 `;

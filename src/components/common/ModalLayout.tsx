@@ -6,7 +6,7 @@ const ModalLayout = styled.div<{ visible: boolean }>`
   justify-content: center;
   align-items: center;
   position: fixed; /* Stay in place */
-  z-index: 200; /* Sit on top */
+  z-index: 20; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */

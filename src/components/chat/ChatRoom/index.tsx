@@ -254,7 +254,7 @@ const Header = styled.div`
       : "1px solid rgb(255, 255, 255, 0.2)"};
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   height: 50px;
-  z-index: 50;
+  z-index: 20;
   @media (max-width: 768px) {
     top: 70px;
     position: fixed;

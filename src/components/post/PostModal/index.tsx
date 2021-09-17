@@ -93,7 +93,7 @@ const PostModalBox = styled.div<{ visible?: boolean }>`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 200;
+  z-index: 30;
   width: 500px;
   display: ${(props) => (props.visible ? "flex" : "none")};
   flex-direction: column;

@@ -34,7 +34,7 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
     return;
   };
 
-  const profileOpenHandler: MouseEventHandler<HTMLDivElement> = (e) => {
+  const profileHandler: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     setOpen((pre) => !pre);
   };
@@ -81,7 +81,7 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
           </MessageImageBox>
         ) : (
           <YourMessageInfo>
-            <ChatProfileWrap onClick={profileOpenHandler}>
+            <ChatProfileWrap onClick={profileHandler}>
               <MessageImage src={props.src} />
             </ChatProfileWrap>
             <YourMessageContent>
@@ -100,11 +100,12 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
         )}
         <RegDateMessage>{props.regDate}</RegDateMessage>
       </YourMessageContainer>
-      <ModalLayout visible={open}></ModalLayout>
+      <ModalLayout visible={open} onClick={profileHandler}></ModalLayout>
       <ChatProfile
         visible={open}
         name={props.userName || ""}
         imageUrl={props.src}
+        setOpen={setOpen}
       />
     </>
   );

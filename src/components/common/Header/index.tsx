@@ -50,7 +50,7 @@ const HeaderWrapper = styled.header`
   box-sizing: border-box;
   padding: 10px 16px;
   position: sticky;
-  z-index: 100;
+  z-index: 10;
   top: 0px;
   -ms-user-select: none;
   -moz-user-select: -moz-none;

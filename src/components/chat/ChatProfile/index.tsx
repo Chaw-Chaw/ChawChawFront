@@ -1,13 +1,25 @@
 import Image from "next/image";
 import styled from "styled-components";
+import { BiBlock } from "react-icons/bi";
+import { Dispatch, MouseEventHandler, SetStateAction } from "react";
+import { useAlert } from "react-alert";
 
 interface ChatProfileProps {
   visible: boolean;
   name: string;
   imageUrl: string;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const ChatProfile: React.FC<ChatProfileProps> = (props) => {
+  const message = useAlert();
+  const confirmBlock: MouseEventHandler<SVGElement> = (e) => {
+    e.preventDefault();
+    props.setOpen((pre) => !pre);
+    message.info(
+      "차단하면 영구히 차단되며 차단을 해제할 수 없습니다. 신중하게 차단해주세요."
+    );
+  };
   return (
     <ChatProfileBox visible={props.visible}>
       <ChatProfileImageSection>
@@ -24,6 +36,10 @@ const ChatProfile: React.FC<ChatProfileProps> = (props) => {
         </ChatProfileImageBox>
       </ChatProfileImageSection>
       <ChatUserName>{props.name}</ChatUserName>
+      <ChatBlockBox>
+        <BiBlock onClick={confirmBlock} />
+        <span>차단하기</span>
+      </ChatBlockBox>
     </ChatProfileBox>
   );
 };
@@ -57,8 +73,7 @@ const ChatProfileBox = styled.div<{ visible?: boolean }>`
   -webkit-user-select: none;
   user-select: none;
   .chat-profile-image {
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
+    border-radius: 50%;
   }
 `;
 
@@ -94,5 +109,22 @@ const ChatProfileImageBox = styled.div`
   border: 10px solid ${(props) => props.theme.primaryColor};
   .post-modal-image {
     border-radius: 50%;
+  }
+`;
+
+const ChatBlockBox = styled.div`
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  svg {
+    font-size: 3.5rem;
+    color: red;
+    cursor: pointer;
+  }
+  span {
+    font-weight: 300;
   }
 `;
