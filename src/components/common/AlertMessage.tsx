@@ -46,6 +46,9 @@ const AlertMessageBox = styled.div`
   align-items: center;
   position: relative;
   font-weight: 700;
+  box-sizing: border-box;
+  padding: 20px;
+  word-wrap: break-word;
   @media (max-width: 500px) {
     width: 200px;
   }
