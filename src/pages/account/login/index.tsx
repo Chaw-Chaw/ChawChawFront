@@ -36,7 +36,7 @@ export default function Login() {
       return;
     }
 
-    login(data);
+    login({ email: data.email, password: data.password, provider: "basic" });
   };
 
   useEffect(() => {

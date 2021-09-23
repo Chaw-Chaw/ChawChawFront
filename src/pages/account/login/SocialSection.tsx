@@ -16,7 +16,7 @@ import {
 
 const SocialSection: React.FC = () => {
   const router = useRouter();
-  const { facebookLogin } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const redirectUrl =
     process.env.NODE_ENV === "development"
       ? DEVELOPMENT_OAUTH_URL
@@ -53,9 +53,8 @@ const SocialSection: React.FC = () => {
             const facebookToken = response?.accessToken;
             const facebookId = response?.userID;
             if (facebookToken && facebookId) {
-              facebookLogin({ facebookToken, facebookId });
+              login({ facebookToken, facebookId, provider: "facebook" });
             }
-            //console.log("id: ", response.id);
           }}
           onFail={(error) => {
             console.log("Login Failed!");

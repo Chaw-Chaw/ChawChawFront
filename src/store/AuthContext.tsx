@@ -24,14 +24,13 @@ interface UserPropertys {
   repHopeLanguage?: string;
   // token?: string;
   id?: number;
+  blockIds?: number[];
 }
 
 interface AuthContextObj {
   user: UserPropertys;
   grantRefresh: () => Promise<void>;
   login: (res: AuthReqProps) => void;
-  kakaoLogin: (res: AuthReqProps) => void;
-  facebookLogin: (res: AuthReqProps) => void;
   saveUser: (res: AuthResProps<AxiosResponse>) => void;
   sendWebmail: (res: AuthReqProps) => void;
   logout: () => void;
@@ -81,13 +80,12 @@ const AuthContext = React.createContext<AuthContextObj>({
     repLanguage: "",
     repHopeLanguage: "",
     // token: "",
+    blockIds: [],
   },
   login: () => {},
   logout: () => {},
-  kakaoLogin: () => {},
   saveUser: () => {},
   sendWebmail: () => {},
-  facebookLogin: () => {},
   signup: () => {},
   emailDuplicationCheck: () =>
     new Promise(() => {
@@ -211,15 +209,25 @@ const AuthContextProvider: React.FC = (props) => {
     return;
   };
 
-  const login = async ({ email, password }: AuthReqProps) => {
+  const login = async ({
+    provider,
+    email,
+    password,
+    kakaoToken,
+    facebookId,
+    facebookToken,
+  }: AuthReqProps) => {
     console.log("로그인 함수 실행");
     const response = await axios
       .post(
         "/login",
         {
-          provider: "",
+          provider: provider,
           email: email,
           password: password,
+          kakaoToken: kakaoToken,
+          facebookId: facebookId,
+          facebookToken: facebookToken,
         },
         {
           headers: {
@@ -232,42 +240,6 @@ const AuthContextProvider: React.FC = (props) => {
 
     console.log(response);
     if (!response.data.isSuccess) {
-      message.error("로그인에 실패하셨습니다.");
-      console.error(response.data.responseMessage);
-      return;
-    }
-    loginSuccess(response);
-    router.push("/post");
-  };
-
-  const kakaoLogin = async ({ kakaoToken }: AuthReqProps) => {
-    console.log("카카오 로그인 함수 실행");
-    const response = await axios
-      .post(
-        "/login",
-        {
-          provider: "kakao",
-          kakaoToken: kakaoToken,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        }
-      )
-      .catch((err) => {
-        message.error("인가코드가 잘못되었습니다.", {
-          onClose: () => {
-            history.back();
-          },
-        });
-        console.error(err);
-        return err.response;
-      });
-
-    if (!response.data.isSuccess) {
-      console.log(response.data, "로그인 실패");
       if (response.data.responseMessage === "회원가입 필요") {
         updateUser(response.data.data);
         message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
@@ -278,57 +250,94 @@ const AuthContextProvider: React.FC = (props) => {
         });
         return;
       }
-      console.error(response.data);
+      message.error("로그인에 실패하셨습니다.");
+      console.error(response.data.responseMessage);
       return;
     }
     loginSuccess(response);
     router.push("/post");
   };
 
-  const facebookLogin = async ({ facebookToken, facebookId }: AuthReqProps) => {
-    console.log(facebookToken, facebookId, "페이스북 로그인 함수 실행");
-    const response = await axios
-      .post(
-        "/login",
-        {
-          provider: "facebook",
-          facebookId: facebookId,
-          facebookToken: facebookToken,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        }
-      )
-      .catch((err) => {
-        message.error("인가코드가 잘못되었습니다.", {
-          onClose: () => {
-            history.back();
-          },
-        });
-        console.error(err);
-        return err.response;
-      });
+  // const kakaoLogin = async ({ kakaoToken }: AuthReqProps) => {
+  //   console.log("카카오 로그인 함수 실행");
+  //   const response = await axios
+  //     .post(
+  //       "/login",
+  //       {
+  //         provider: "kakao",
+  //         kakaoToken: kakaoToken,
+  //       },
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Accept: "application/json",
+  //         },
+  //       }
+  //     )
+  //     .catch((err) => {
+  //       message.error("인가코드가 잘못되었습니다.", {
+  //         onClose: () => {
+  //           history.back();
+  //         },
+  //       });
+  //       console.error(err);
+  //       return err.response;
+  //     });
 
-    console.log(response, "facebookLogin");
-    if (!response.data.isSuccess) {
-      if (response.data.responseMessage === "회원가입 필요") {
-        message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
-          onClose: () => {
-            saveUser(response.data.data);
-            router.push("/account/signup/webMailAuth");
-          },
-        });
-        return;
-      }
-      console.error(response.data);
-      return;
-    }
-    loginSuccess(response);
-    router.push("/post");
-  };
+  //   if (!response.data.isSuccess) {
+  //     console.log(response.data, "로그인 실패");
+
+  //     console.error(response.data);
+  //     return;
+  //   }
+  //   loginSuccess(response);
+  //   router.push("/post");
+  // };
+
+  // const facebookLogin = async ({ facebookToken, facebookId }: AuthReqProps) => {
+  //   console.log(facebookToken, facebookId, "페이스북 로그인 함수 실행");
+  //   const response = await axios
+  //     .post(
+  //       "/login",
+  //       {
+  //         provider: "facebook",
+  //         facebookId: facebookId,
+  //         facebookToken: facebookToken,
+  //       },
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Accept: "application/json",
+  //         },
+  //       }
+  //     )
+  //     .catch((err) => {
+  //       message.error("인가코드가 잘못되었습니다.", {
+  //         onClose: () => {
+  //           history.back();
+  //         },
+  //       });
+  //       console.error(err);
+  //       return err.response;
+  //     });
+
+  //   console.log(response, "facebookLogin");
+  //   if (!response.data.isSuccess) {
+  //     if (response.data.responseMessage === "회원가입 필요") {
+  //       message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
+  //         onClose: () => {
+  //           saveUser(response.data.data);
+  //           router.push("/account/signup/webMailAuth");
+  //         },
+  //       });
+  //       return;
+  //     }
+  //     console.error(response.data);
+  //     return;
+  //   }
+  //   loginSuccess(response);
+  //   router.push("/post");
+  // };
 
   const webmailVerify = ({ web_email }: AuthReqProps) => {
     const domain = web_email?.split("@")[1];
@@ -434,7 +443,6 @@ const AuthContextProvider: React.FC = (props) => {
   const verificationNumber = async ({
     web_email,
     verificationNum,
-    provider,
   }: AuthReqProps) => {
     const response = await axios
       .post(
@@ -442,7 +450,6 @@ const AuthContextProvider: React.FC = (props) => {
         {
           email: web_email,
           verificationNumber: verificationNum,
-          provider: provider,
         },
         {
           headers: {
@@ -500,8 +507,6 @@ const AuthContextProvider: React.FC = (props) => {
     login,
     logout,
     saveUser,
-    kakaoLogin,
-    facebookLogin,
     sendWebmail,
     signup,
     emailDuplicationCheck,

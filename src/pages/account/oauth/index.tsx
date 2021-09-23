@@ -8,7 +8,7 @@ interface OauthProps {
 export default function Oauth(props: OauthProps) {
   const router = useRouter();
   // 카카오에서 준 인증코드
-  const { kakaoLogin } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
 
   useEffect(() => {
     if (JSON.stringify(router.query) === JSON.stringify({})) return;
@@ -21,7 +21,7 @@ export default function Oauth(props: OauthProps) {
   }, [JSON.stringify(router.query)]);
 
   const main = (kakaoToken: string) => {
-    kakaoLogin({ kakaoToken });
+    login({ kakaoToken, provider: "kakao" });
   };
 
   return <div></div>;
