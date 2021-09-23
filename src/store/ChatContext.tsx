@@ -50,6 +50,8 @@ interface ChatContextObj {
   isViewChatList: boolean;
   setIsViewChatList: Dispatch<React.SetStateAction<boolean>>;
   publish: (message: string, messageType: string) => void;
+  blockUser: (userId: number) => void;
+  unBlockUser: (userId: number) => void;
 }
 
 const ChatContext = React.createContext<ChatContextObj>({
@@ -66,6 +68,8 @@ const ChatContext = React.createContext<ChatContextObj>({
   isViewChatList: false,
   setIsViewChatList: () => {},
   publish: (message: string, messageType: string) => {},
+  blockUser: (userId: number) => {},
+  unBlockUser: (userId: number) => {},
 });
 
 const ChatContextProvider: React.FC = (props) => {
@@ -78,7 +82,8 @@ const ChatContextProvider: React.FC = (props) => {
   const mainRoomIdRef = useRef(-1);
   const chatClient = useRef<any>({});
   const roomIdsRef = useRef<number[]>([]);
-  const { user, accessToken, grantRefresh } = useContext(AuthContext);
+  const { user, accessToken, grantRefresh, updateUser } =
+    useContext(AuthContext);
 
   const connect = () => {
     chatClient.current = new StompJs.Client({
@@ -291,6 +296,64 @@ const ChatContextProvider: React.FC = (props) => {
     });
   }, [mainRoomId]);
 
+  const blockUser = async (userId: number) => {
+    const response = await axios
+      .post(
+        `/users/block`,
+        { userId },
+        {
+          headers: {
+            Authorization: accessToken,
+          },
+        }
+      )
+      .catch((err) => err.response);
+
+    if (response.status === 401) {
+      grantRefresh();
+      return;
+    }
+
+    console.log(response, "유저 차단 결과");
+    if (!response.data.isSuccess) {
+      alert("유저 차단 실패");
+      return;
+    }
+
+    const newBlockIds = user.blockIds || [];
+    newBlockIds.push(userId);
+    updateUser({ blockIds: newBlockIds });
+  };
+
+  const unBlockUser = async (userId: number) => {
+    const response = await axios
+      .delete(`/users/block/${userId}`, {
+        headers: {
+          Authorization: accessToken,
+        },
+      })
+      .catch((err) => err.response);
+
+    if (response.status === 401) {
+      grantRefresh();
+      return;
+    }
+
+    console.log(response, "유저 차단해제 결과");
+
+    if (!response.data.isSuccess) {
+      alert("유저 차단해제 실패");
+      return;
+    }
+
+    const newBlockIds = user.blockIds || [];
+    const removeIdsIndex = newBlockIds.find((item) => item === userId);
+    if (removeIdsIndex) {
+      newBlockIds.splice(removeIdsIndex, 1);
+    }
+    updateUser({ blockIds: newBlockIds });
+  };
+
   useEffect(() => {
     // totalMessage에 들어있는 룸id 추출
     if (totalMessage.length > 0) {
@@ -314,6 +377,8 @@ const ChatContextProvider: React.FC = (props) => {
     publish,
     newLikes,
     setNewLikes,
+    blockUser,
+    unBlockUser,
   };
 
   return (

@@ -55,6 +55,7 @@ interface AuthReqProps {
   kakaoToken?: string;
   facebookId?: string;
   facebookToken?: string;
+  blockIds?: number[];
 }
 interface AuthResProps<AxiosResponse> {
   responseMessage?: string;
@@ -164,8 +165,12 @@ const AuthContextProvider: React.FC = (props) => {
     });
     setTimeout(grantRefresh, tokenInfo.expiresIn - 60000);
     if (response.data.data.profile) {
-      const newData = { ...response.data.data.profile };
-      saveUser(newData);
+      const newData: UserPropertys = {
+        ...response.data.data.profile,
+        blockIds: response.data.data.blockIds,
+      };
+      // saveUser(newData);
+      updateUser(newData);
     }
   };
 
@@ -516,6 +521,10 @@ const AuthContextProvider: React.FC = (props) => {
     grantRefresh,
     accessToken,
   };
+
+  useEffect(() => {
+    console.log(user, "user 변경");
+  }, [user]);
 
   return (
     <AuthContext.Provider value={contextValue}>

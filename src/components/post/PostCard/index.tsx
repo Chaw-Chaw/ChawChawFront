@@ -77,7 +77,6 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       return { ...pre, ...response.data.data };
     });
     setOpen((open) => !open);
-    return response.data.data;
   };
 
   return (
