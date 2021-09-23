@@ -7,7 +7,7 @@ import { AlarmCount } from "./AlarmCount";
 import { NextRouter, useRouter, withRouter } from "next/router";
 
 const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
-  const { newMessages, setMainRoomId, newFollows } = useContext(ChatContext);
+  const { newMessages, setMainRoomId, newLikes } = useContext(ChatContext);
   const [isActive, setIsActive] = useState(false);
   const router = useRouter();
 
@@ -27,8 +27,8 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
       {(() => {
         const newAlarms =
           props.router.pathname !== "/chat"
-            ? newMessages.length + newFollows.length
-            : newFollows.length;
+            ? newMessages.length + newLikes.length
+            : newLikes.length;
 
         if (newAlarms !== 0) {
           return (
@@ -77,8 +77,8 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
         ) : null}
 
         <PushAlarmBox>
-          {newFollows.length > 0 ? (
-            newFollows.map((item: any, index) => {
+          {newLikes.length > 0 ? (
+            newLikes.map((item: any, index) => {
               return (
                 <AlarmChatBox key={index}>
                   <ChatBox

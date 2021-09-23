@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { CgProfile } from "react-icons/cg";
 import { BsChat } from "react-icons/bs";
-import { AiOutlineLogout } from "react-icons/ai";
+import { AiOutlineLogout, AiOutlineSetting } from "react-icons/ai";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useRouter } from "next/router";
@@ -34,7 +34,7 @@ const MyImage: React.FC<{ profileImage: string }> = (props) => {
           }}
         >
           <CgProfile />
-          <span>프로필 | 설정</span>
+          <span>프로필</span>
         </Option>
         <Option
           onClick={(e) => {
@@ -45,7 +45,7 @@ const MyImage: React.FC<{ profileImage: string }> = (props) => {
           <BsChat />
           <span>채팅창</span>
         </Option>
-        {/* <Option
+        <Option
           onClick={(e) => {
             e.preventDefault();
             router.push("/account/setting");
@@ -53,7 +53,7 @@ const MyImage: React.FC<{ profileImage: string }> = (props) => {
         >
           <AiOutlineSetting />
           <span>설정</span>
-        </Option> */}
+        </Option>
         <Option onClick={logout}>
           <AiOutlineLogout />
           <span>로그아웃</span>
