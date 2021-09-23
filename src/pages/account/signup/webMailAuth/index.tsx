@@ -68,7 +68,6 @@ export default function WebMailAuth() {
     verificationNumber({
       web_email: webmailRef.current.value,
       verificationNum: data.verificationNum?.toString(),
-      provider: user?.provider,
     });
 
     signup({
