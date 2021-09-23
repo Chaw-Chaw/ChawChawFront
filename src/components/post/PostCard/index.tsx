@@ -22,7 +22,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     country: [],
     days: "",
     facebookUrl: "",
-    follows: 0,
+    likes: 0,
     hopeLanguage: [],
     id: 0,
     imageUrl: DEFAULT_PROFILE_IMAGE,
@@ -33,7 +33,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     repHopeLanguage: "",
     repLanguage: "",
     views: 0,
-    isFollow: false,
+    isLike: false,
   };
   const postCardContentArr = props.content.split("\n");
   const postCardContentTmp =
@@ -121,7 +121,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           country={postModalInfo.country}
           days={postModalInfo.days}
           facebookUrl={postModalInfo.facebookUrl}
-          follows={postModalInfo.follows}
+          likes={postModalInfo.likes}
           hopeLanguage={postModalInfo.hopeLanguage}
           id={postModalInfo.id}
           imageUrl={postModalInfo.imageUrl}
@@ -132,7 +132,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           repHopeLanguage={postModalInfo.repHopeLanguage}
           repLanguage={postModalInfo.repLanguage}
           views={postModalInfo.views}
-          isFollow={postModalInfo.isFollow}
+          isLike={postModalInfo.isLike}
         >
           {props.children}
         </PostModal>

@@ -10,12 +10,12 @@ import { useAlert } from "react-alert";
 
 interface PostModalActive {
   id: number;
-  isFollow: boolean;
+  isLike: boolean;
 }
 
 const PostModalActive: React.FC<PostModalActive> = (props) => {
   const router = useRouter();
-  const [isActiveFollow, setIsActiveFollow] = useState(props.isFollow);
+  const [isActiveLike, setIsActiveLike] = useState(props.isLike);
   const { accessToken, grantRefresh } = useContext(AuthContext);
   const message = useAlert();
 
@@ -29,23 +29,23 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
     e.preventDefault();
     router.push({ pathname: "/chat", query: { userId: props.id } });
   };
-  const follow = async () => {
-    const response = await fetch(`/follow/${props.id}`, {
+  const like = async () => {
+    const response = await fetch(`/like/${props.id}`, {
       method: "POST",
       headers: {
         Authorization: accessToken,
       },
     }).catch((err) => {
-      console.log(err, "팔로우 실패");
+      console.log(err, "좋아요 실패");
     });
 
-    console.log(response, "팔로우 결과");
-    setIsActiveFollow(true);
+    console.log(response, "종아요 결과");
+    setIsActiveLike(true);
   };
 
-  const unFollow = async () => {
+  const unLike = async () => {
     const response = await axios
-      .delete(`/follow/${props.id}`, {
+      .delete(`/like/${props.id}`, {
         headers: {
           "Content-type": "application/json",
           Authorization: accessToken,
@@ -60,11 +60,11 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
       grantRefresh();
     }
     if (!response.data.isSuccess) {
-      console.log(response, "언팔로우 실패");
+      console.log(response, "좋아요 취소 실패");
       return;
     }
-    console.log("unfollow 성공!");
-    setIsActiveFollow(false);
+    console.log("좋아요 취소 성공!");
+    setIsActiveLike(false);
   };
   return (
     <PostButtonBox>
@@ -76,11 +76,11 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
       </PostChatButton>
       <PostLikeBox
         onClick={() => {
-          if (!isActiveFollow) follow();
-          else unFollow();
+          if (!isActiveLike) like();
+          else unLike();
         }}
       >
-        {isActiveFollow ? <AiFillHeart /> : <AiOutlineHeart />}
+        {isActiveLike ? <AiFillHeart /> : <AiOutlineHeart />}
       </PostLikeBox>
     </PostButtonBox>
   );

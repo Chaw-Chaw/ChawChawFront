@@ -20,7 +20,7 @@ interface PostModalInfoProps extends PostModalHeadProps {
   repCountry: string;
   repHopeLanguage: string;
   repLanguage: string;
-  isFollow: boolean;
+  isLike: boolean;
 }
 interface PostModalProps extends PostModalInfoProps {
   visible: boolean;
@@ -54,7 +54,7 @@ const PostModal: React.FC<PostModalProps> = (props) => {
     <PostModalBox visible={props.visible}>
       <PostModalImage src={`${props.imageUrl}`} />
       <PostUserName>{props.name}</PostUserName>
-      <PostModalActive id={props.id} isFollow={props.isFollow} />
+      <PostModalActive id={props.id} isLike={props.isLike} />
       <PostModalInfoList
         title="I am from"
         values={country}
@@ -79,7 +79,7 @@ const PostModal: React.FC<PostModalProps> = (props) => {
       <PostModalInfo
         days={String(pastDays)}
         views={props.views}
-        follows={props.follows}
+        likes={props.likes}
       />
     </PostModalBox>
   );

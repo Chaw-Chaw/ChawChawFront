@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 interface PostModalHeadProps {
   days: string;
-  follows: number;
+  likes: number;
   views: number;
 }
 
@@ -19,7 +19,7 @@ const PostModalInfo: React.FC<PostModalHeadProps> = (props) => {
       </PostModalDateViewBox>
       <PostModalLikeBox>
         <AiFillHeart />
-        {props.follows}
+        {props.likes}
       </PostModalLikeBox>
     </PostModalInfoBox>
   );

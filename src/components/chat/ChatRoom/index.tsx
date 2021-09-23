@@ -116,9 +116,11 @@ const ChatRoom: React.FC = (props) => {
             <MessageHeaderButton onClick={leaveChatRoom}>
               <BsBoxArrowRight />
             </MessageHeaderButton>
-            <MessageHeaderButton onClick={viewChatList}>
-              <BsChatDots />
-            </MessageHeaderButton>
+            <ChatListViewButtonBox>
+              <MessageHeaderButton onClick={viewChatList}>
+                <BsChatDots />
+              </MessageHeaderButton>
+            </ChatListViewButtonBox>
           </MessagesHeaderIcons>
           <ChangeLanguageDropDown
             selectLanguage={selectLanguage}
@@ -240,6 +242,8 @@ const Inner = styled.div`
   overflow: auto;
   box-sizing: border-box;
   height: 100%;
+  position: relative;
+  z-index: 0;
 `;
 
 const Header = styled.div`
@@ -305,4 +309,11 @@ const EmptyChatRoomBox = styled.div`
 
 const EmptyChatRoomTitle = styled.h1`
   margin: auto;
+`;
+
+const ChatListViewButtonBox = styled.div`
+  display: none;
+  @media (max-width: 768px) {
+    display: flex;
+  }
 `;
