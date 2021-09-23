@@ -2,8 +2,9 @@ import { MouseEventHandler } from "react";
 import { useAlert } from "react-alert";
 import styled from "styled-components";
 import { Button, SelectInfoDropDown } from "../../common";
-import { ProfileListItemProps, ProfileListItem } from "../ProfileListItem";
-interface ProfileSelectInfoProps extends ProfileListItemProps {
+import { ListItemProps } from "../../common/ListItem";
+import { ListItem } from "../../common/ListItem";
+interface ProfileSelectInfoProps extends ListItemProps {
   type: string;
   count: number;
 }
@@ -39,7 +40,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
   };
 
   return (
-    <ProfileListItem title={props.title} description={props.description}>
+    <ListItem title={props.title} description={props.description}>
       <ButtonsBox>
         {props.values &&
           Object.values(props.values).map((item, index) => {
@@ -99,7 +100,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
           }
         })()}
       </ButtonsBox>
-    </ProfileListItem>
+    </ListItem>
   );
 };
 

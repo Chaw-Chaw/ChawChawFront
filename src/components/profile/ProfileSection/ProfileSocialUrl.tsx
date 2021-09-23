@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { ProfileListItem } from "../ProfileListItem";
+import { ListItem } from "../../common/ListItem";
 import ProfileSocialUrlFragment from "./ProfileSocialUrlFragment";
 
 interface ProfileSocialUrlProps {
@@ -11,10 +11,7 @@ interface ProfileSocialUrlProps {
 
 const ProfileSocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
   return (
-    <ProfileListItem
-      title="Social Network"
-      description="당신의 SNS를 공유해주세요."
-    >
+    <ListItem title="Social Network" description="당신의 SNS를 공유해주세요.">
       <div
         style={{ display: "flex", flexDirection: "column", marginTop: "20px" }}
       >
@@ -29,7 +26,7 @@ const ProfileSocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
           url={props.instagramUrl}
         />
       </div>
-    </ProfileListItem>
+    </ListItem>
   );
 };
 
