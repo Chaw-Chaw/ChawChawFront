@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import { useAlert } from "react-alert";
 
 export default function Post() {
-  const { grantRefresh, accessToken } = useContext(AuthContext);
+  const { grantRefresh, accessToken, user } = useContext(AuthContext);
   const [postInfo, setPostInfo] = useState<any>([]);
   const [sortInfo, setSortInfo] = useState<string[]>([
     "Main Language",
@@ -65,7 +65,6 @@ export default function Post() {
       return;
     }
 
-    console.log(response, "res");
     if (response.data.responseMessage === "조회 결과가 존재하지 않음") {
       setIsEnd(true);
       console.error(response.data.responseMessage);
@@ -75,16 +74,18 @@ export default function Post() {
       return;
     }
 
-    if (isFirst.current === true)
+    if (isFirst.current === true) {
       postIds.current += data.map((item: any) => item.id).join("/");
-    else postIds.current += "/" + data.map((item: any) => item.id).join("/");
+    } else {
+      postIds.current += "/" + data.map((item: any) => item.id).join("/");
+    }
+
     console.log(postIds.current, "postids");
     setPostInfo((item: any) => {
       if (isFirst.current === true) return [...data];
       return [...item, ...data];
     });
     isFirst.current = false;
-    console.log(searchName.current, "getPost()");
   };
 
   const searchHandler = (inputs: string) => {
@@ -106,7 +107,9 @@ export default function Post() {
 
       // 쿠키 설정이 비동기 식인가? 아니다. Path 설정을 안해두면 두번쨰 exclude 를 만들어버린다.
 
-      document.cookie = "exclude=" + postIds.current + ";path=/;";
+      // exclude에는 차단된 아이디들이 초기값으로 들어가야한다.
+      const blockIds = user.blockIds ? user.blockIds.join("/") : "";
+      document.cookie = "exclude=" + postIds.current + blockIds + ";path=/;";
       await getPosts();
       document.cookie = "exclude=;path=/;expires=Thu, 18 Dec 2013 12:00:00 GMT";
       observer.observe(entry.target);
@@ -143,7 +146,7 @@ export default function Post() {
             width: "100%",
             height: "300px",
           }}
-        ></div>
+        />
         <Divider display={isEnd ? "flex" : "none"} />
       </Container>
     </Layout>

@@ -12,8 +12,8 @@ import { BACKEND_URL, DEFAULT_PROFILE_IMAGE } from "../constants";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
 
-interface FollowAlarmType {
-  followType: string; // FOLLOW, UNFOLLOW
+interface LikeAlarmType {
+  likeType: string; // LIKE, UNLIKE
   name: string;
   regDate: string;
 }
@@ -45,8 +45,8 @@ interface ChatContextObj {
   setTotalMessage: Dispatch<SetStateAction<RoomType[]>>;
   newMessages: Object[];
   setNewMessages: Dispatch<React.SetStateAction<Object[]>>;
-  newFollows: Object[];
-  setNewFollows: Dispatch<React.SetStateAction<Object[]>>;
+  newLikes: Object[];
+  setNewLikes: Dispatch<React.SetStateAction<Object[]>>;
   isViewChatList: boolean;
   setIsViewChatList: Dispatch<React.SetStateAction<boolean>>;
   publish: (message: string, messageType: string) => void;
@@ -61,8 +61,8 @@ const ChatContext = React.createContext<ChatContextObj>({
   setTotalMessage: () => {},
   newMessages: [],
   setNewMessages: () => {},
-  newFollows: [],
-  setNewFollows: () => {},
+  newLikes: [],
+  setNewLikes: () => {},
   isViewChatList: false,
   setIsViewChatList: () => {},
   publish: (message: string, messageType: string) => {},
@@ -73,7 +73,7 @@ const ChatContextProvider: React.FC = (props) => {
   const [totalMessage, setTotalMessage] = useState<RoomType[]>([]);
   const [mainRoomId, setMainRoomId] = useState(-1);
   const [newMessages, setNewMessages] = useState<Object[]>([]);
-  const [newFollows, setNewFollows] = useState<Object[]>([]);
+  const [newLikes, setNewLikes] = useState<Object[]>([]);
   const [isViewChatList, setIsViewChatList] = useState(false);
   const mainRoomIdRef = useRef(-1);
   const chatClient = useRef<any>({});
@@ -94,7 +94,7 @@ const ChatContextProvider: React.FC = (props) => {
       onConnect: () => {
         // 모든 subscribe는 여기서 구독이 이루어집니다.
         alarmChannelSubscribe();
-        followChannelSubscribe();
+        likeChannelSubscribe();
       },
       onStompError: (frame) => {
         console.error(frame);
@@ -180,15 +180,12 @@ const ChatContextProvider: React.FC = (props) => {
     });
   };
 
-  const followChannelSubscribe = () => {
-    chatClient.current.subscribe(
-      `/queue/follow/${user.id}`,
-      (response: any) => {
-        const message: FollowAlarmType = JSON.parse(response.body);
-        // console.log(message, "새로운 팔로우 내용");
-        setNewFollows((pre) => [...pre, message]);
-      }
-    );
+  const likeChannelSubscribe = () => {
+    chatClient.current.subscribe(`/queue/like/${user.id}`, (response: any) => {
+      const message: LikeAlarmType = JSON.parse(response.body);
+      // console.log(message, "새로운 팔로우 내용");
+      setNewLikes((pre) => [...pre, message]);
+    });
   };
 
   const detectMainRoom = async () => {
@@ -254,9 +251,9 @@ const ChatContextProvider: React.FC = (props) => {
       grantRefresh();
       return;
     }
-    const followMessages: FollowAlarmType[] = response.data.follows;
+    const likeMessages: LikeAlarmType[] = response.data.likes;
     const newMessages = response.data.messages;
-    setNewFollows([...followMessages]);
+    setNewLikes([...likeMessages]);
     setNewMessages([...newMessages]);
   };
 
@@ -315,8 +312,8 @@ const ChatContextProvider: React.FC = (props) => {
     isViewChatList,
     setIsViewChatList,
     publish,
-    newFollows,
-    setNewFollows,
+    newLikes,
+    setNewLikes,
   };
 
   return (
@@ -327,4 +324,4 @@ const ChatContextProvider: React.FC = (props) => {
 };
 
 export { ChatContext, ChatContextProvider };
-export type { RoomType, MessageType, FollowAlarmType };
+export type { RoomType, MessageType, LikeAlarmType };
