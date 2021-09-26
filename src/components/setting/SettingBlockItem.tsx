@@ -9,7 +9,7 @@ import { BlockItem } from "./SettingBlockList";
 interface BlockItemProps extends BlockItem {}
 
 const SettingBlockItem: React.FC<BlockItemProps> = (props) => {
-  const { unBlockUser, blockUser } = useContext(ChatContext);
+  const { unblockUser, blockUser } = useContext(ChatContext);
   const { user } = useContext(AuthContext);
   const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.userId));
 
@@ -17,7 +17,7 @@ const SettingBlockItem: React.FC<BlockItemProps> = (props) => {
     e
   ) => {
     e.preventDefault();
-    unBlockUser(props.userId);
+    unblockUser(props.userId);
     setIsBlock(false);
   };
 
@@ -44,9 +44,9 @@ const SettingBlockItem: React.FC<BlockItemProps> = (props) => {
         <BlockItemDescription>메세지 차단, 알림 차단</BlockItemDescription>
       </BlockItemInfo>
       {isBlock ? (
-        <UnBlockButton onClick={UnblockUserButtonHandler}>
+        <UnblockButton onClick={UnblockUserButtonHandler}>
           차단 해제
-        </UnBlockButton>
+        </UnblockButton>
       ) : (
         <BlockButton onClick={blockUserButtonHandler}>차단</BlockButton>
       )}
@@ -91,7 +91,7 @@ const BlockImageBox = styled.div`
   }
 `;
 
-const UnBlockButton = styled(Button)`
+const UnblockButton = styled(Button)`
   background-color: #1ec997;
   border-radius: 10px;
   border: none;
@@ -102,7 +102,7 @@ const BlockItemDescription = styled.span`
     props.theme.id === "light" ? "rgb(0, 0, 0, 0.5)" : "white"};
 `;
 
-const BlockButton = styled(UnBlockButton)`
+const BlockButton = styled(UnblockButton)`
   background-color: rgba(255, 107, 107, 1);
   /* animation: slide-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 

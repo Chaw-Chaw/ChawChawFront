@@ -112,29 +112,34 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           likeCount={props.likeCount}
         />
       </PostCardBox>
-      <ModalLayout visible={open} onClick={handleModal} />
       {open ? (
-        <PostModal
-          visible={open}
-          content={postModalInfo.content}
-          country={postModalInfo.country}
-          days={postModalInfo.days}
-          facebookUrl={postModalInfo.facebookUrl}
-          likes={postModalInfo.likes}
-          hopeLanguage={postModalInfo.hopeLanguage}
-          id={postModalInfo.id}
-          imageUrl={postModalInfo.imageUrl}
-          instagramUrl={postModalInfo.instagramUrl}
-          language={postModalInfo.language}
-          name={postModalInfo.name}
-          repCountry={postModalInfo.repCountry}
-          repHopeLanguage={postModalInfo.repHopeLanguage}
-          repLanguage={postModalInfo.repLanguage}
-          views={postModalInfo.views}
-          isLike={postModalInfo.isLike}
-        >
-          {props.children}
-        </PostModal>
+        <>
+          <ModalLayout
+            onClick={() => {
+              setOpen(false);
+            }}
+          />
+          <PostModal
+            content={postModalInfo.content}
+            country={postModalInfo.country}
+            days={postModalInfo.days}
+            facebookUrl={postModalInfo.facebookUrl}
+            likes={postModalInfo.likes}
+            hopeLanguage={postModalInfo.hopeLanguage}
+            id={postModalInfo.id}
+            imageUrl={postModalInfo.imageUrl}
+            instagramUrl={postModalInfo.instagramUrl}
+            language={postModalInfo.language}
+            name={postModalInfo.name}
+            repCountry={postModalInfo.repCountry}
+            repHopeLanguage={postModalInfo.repHopeLanguage}
+            repLanguage={postModalInfo.repLanguage}
+            views={postModalInfo.views}
+            isLike={postModalInfo.isLike}
+          >
+            {props.children}
+          </PostModal>
+        </>
       ) : null}
     </div>
   );

@@ -22,9 +22,7 @@ interface PostModalInfoProps extends PostModalHeadProps {
   repLanguage: string;
   isLike: boolean;
 }
-interface PostModalProps extends PostModalInfoProps {
-  visible: boolean;
-}
+interface PostModalProps extends PostModalInfoProps {}
 
 const PostModal: React.FC<PostModalProps> = (props) => {
   const now = new Date();
@@ -51,7 +49,7 @@ const PostModal: React.FC<PostModalProps> = (props) => {
   );
 
   return (
-    <PostModalBox visible={props.visible}>
+    <PostModalBox>
       <PostModalImage src={`${props.imageUrl}`} />
       <PostUserName>{props.name}</PostUserName>
       <PostModalActive id={props.id} isLike={props.isLike} />
@@ -88,14 +86,14 @@ const PostModal: React.FC<PostModalProps> = (props) => {
 export default PostModal;
 export type { PostModalInfoProps };
 
-const PostModalBox = styled.div<{ visible?: boolean }>`
+const PostModalBox = styled.div`
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 30;
   width: 500px;
-  display: ${(props) => (props.visible ? "flex" : "none")};
+  display: flex;
   flex-direction: column;
   align-items: center;
   height: 750px;

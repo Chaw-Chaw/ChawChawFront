@@ -17,13 +17,17 @@ interface PostModalActive {
 const PostModalActive: React.FC<PostModalActive> = (props) => {
   const router = useRouter();
   const { accessToken, grantRefresh, user } = useContext(AuthContext);
-  const { blockUser, unBlockUser } = useContext(ChatContext);
+  const { blockUser, unblockUser } = useContext(ChatContext);
   const [isActiveLike, setIsActiveLike] = useState(props.isLike);
-  const message = useAlert();
   const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.id));
+  const message = useAlert();
 
   const tryChat: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
+    if (user.blockIds?.includes(props.id)) {
+      message.info("차단된 유저 입니다.");
+      return;
+    }
     router.push({ pathname: "/chat", query: { userId: props.id } });
   };
 
@@ -84,9 +88,9 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
     return true;
   };
 
-  const unBlockButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const unblockButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    const result = unBlockUser(props.id);
+    const result = unblockUser(props.id);
     if (result) setIsBlock(false);
   };
   const blockButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -141,7 +145,7 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
         </PostLikeBox>
         <PostBlockBox>
           {isBlock ? (
-            <UnActionButton onClick={unBlockButtonHandler}>
+            <UnActionButton onClick={unblockButtonHandler}>
               <CgUnblock />
               차단해제
             </UnActionButton>
