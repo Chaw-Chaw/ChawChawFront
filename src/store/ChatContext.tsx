@@ -11,6 +11,7 @@ import SockJS from "sockjs-client";
 import { BACKEND_URL, DEFAULT_PROFILE_IMAGE } from "../constants";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
+import { arrayRemovedItem } from "../utils";
 
 interface LikeAlarmType {
   likeType: string; // LIKE, UNLIKE
@@ -122,9 +123,9 @@ const ChatContextProvider: React.FC = (props) => {
       console.log(message, "새로운 메세지 내용");
 
       // 블록 리스트에 추가된 메세지는 알람 받지 않음
-      if (user.blockIds?.includes(message.senderId)) {
-        return;
-      }
+      // if (user.blockIds?.includes(message.senderId)) {
+      //   return;
+      // }
 
       // 메인 채팅룸 메세지 누적 : 메세지 룸 넘버가 메인 룸넘버인 경우
       if (message.roomId === mainRoomIdRef.current) {
@@ -335,11 +336,7 @@ const ChatContextProvider: React.FC = (props) => {
       return;
     }
 
-    const newBlockIds = user.blockIds || [];
-    const removeIdsIndex = newBlockIds.findIndex((item) => item === userId);
-    if (removeIdsIndex) {
-      newBlockIds.splice(removeIdsIndex, 1);
-    }
+    const newBlockIds = arrayRemovedItem(userId, user.blockIds || []);
     updateUser({ blockIds: newBlockIds });
     return true;
   };

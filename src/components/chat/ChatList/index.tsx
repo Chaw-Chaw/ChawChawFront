@@ -4,6 +4,7 @@ import { ChatBox } from "../../common";
 import { ChatContext } from "../../../store/ChatContext";
 import { AuthContext } from "../../../store/AuthContext";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
+import { arrayRemovedItem } from "../../../utils";
 
 const ChatList: React.FC = (props) => {
   const { totalMessage, setMainRoomId, setIsViewChatList } =
@@ -32,9 +33,14 @@ const ChatList: React.FC = (props) => {
                 lastMessage.length > limitMessageWord
                   ? lastMessage.substring(0, limitMessageWord) + "..."
                   : lastMessage;
-              // const limitMessage = lastMessage;
-              const chatRoomImageUrl = item.participantImageUrls[1];
-              const sender = item.participantNames[1];
+              const chatRoomImageUrl = arrayRemovedItem(
+                user.imageUrl,
+                item.participantImageUrls
+              )[0];
+              const sender = arrayRemovedItem(
+                user.name,
+                item.participantNames
+              )[0];
               const regDate = isNewChatRoom ? "" : lastMessageInfo.regDate;
 
               return (
