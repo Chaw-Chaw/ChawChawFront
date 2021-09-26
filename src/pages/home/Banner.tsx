@@ -30,7 +30,7 @@ const Banner: React.FC = () => {
         </Button>
       </BannerButton>
       <BannerText>ExChange languages</BannerText>
-      <ScrollingText>{"Scrolling ⬇️"}</ScrollingText>
+      <ScrollingText>{"SpaceBar"}</ScrollingText>
     </Container>
   );
 };

@@ -45,6 +45,8 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
             <PushAlarmBox>
               {newMessages.length > 0 ? (
                 newMessages.map((item: any, index) => {
+                  const context =
+                    item.messageType === "IMAGE" ? "🏞 사진" : item.message;
                   return (
                     <AlarmChatBox key={index}>
                       <ChatBox
@@ -57,9 +59,9 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
                           moveChat(item.senderId);
                         }}
                         context={
-                          item.message.lenght > 20
-                            ? item.message.substring(0, 20) + "..."
-                            : item.message
+                          context.lenght > 20
+                            ? context.substring(0, 20) + "..."
+                            : context
                         }
                         chatList
                       />

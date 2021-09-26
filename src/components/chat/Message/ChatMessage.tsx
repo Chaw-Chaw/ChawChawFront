@@ -9,6 +9,7 @@ interface ChatMessageProps {
   context: string;
   selectLanguage: string[];
   imageUrl?: string;
+  userId: number;
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = (props) => {
@@ -24,6 +25,7 @@ const ChatMessage: React.FC<ChatMessageProps> = (props) => {
           context={props.context}
           selectLanguage={props.selectLanguage}
           imageUrl={props.imageUrl}
+          userId={props.userId}
         />
       ) : (
         <MyMessage

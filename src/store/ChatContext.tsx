@@ -52,7 +52,7 @@ interface ChatContextObj {
   setIsViewChatList: Dispatch<React.SetStateAction<boolean>>;
   publish: (message: string, messageType: string) => void;
   blockUser: (userId: number) => Promise<true | undefined>;
-  unBlockUser: (userId: number) => Promise<true | undefined>;
+  unblockUser: (userId: number) => Promise<true | undefined>;
 }
 
 const ChatContext = React.createContext<ChatContextObj>({
@@ -70,7 +70,7 @@ const ChatContext = React.createContext<ChatContextObj>({
   setIsViewChatList: () => {},
   publish: (message: string, messageType: string) => {},
   blockUser: (userId: number) => new Promise(() => {}),
-  unBlockUser: (userId: number) => new Promise(() => {}),
+  unblockUser: (userId: number) => new Promise(() => {}),
 });
 
 const ChatContextProvider: React.FC = (props) => {
@@ -134,7 +134,7 @@ const ChatContextProvider: React.FC = (props) => {
 
       // 메인채팅방의 메세지가 아닐시 에만 알람 메세지 누적
       if (message.roomId !== mainRoomIdRef.current) {
-        setNewMessages((pre) => [...pre, message]);
+        setNewMessages((pre) => [message, ...pre]);
       }
 
       // 채팅룸 개설 : 메시지의 룸 넘버가 기존에 없던 룸넘버라면
@@ -315,7 +315,7 @@ const ChatContextProvider: React.FC = (props) => {
     return true;
   };
 
-  const unBlockUser = async (userId: number) => {
+  const unblockUser = async (userId: number) => {
     const response = await axios
       .delete(`/users/block/${userId}`, {
         headers: {
@@ -365,7 +365,7 @@ const ChatContextProvider: React.FC = (props) => {
     newLikes,
     setNewLikes,
     blockUser,
-    unBlockUser,
+    unblockUser,
   };
 
   return (

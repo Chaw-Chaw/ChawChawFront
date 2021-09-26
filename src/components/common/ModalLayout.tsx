@@ -1,12 +1,11 @@
 import styled from "styled-components";
 
-const ModalLayout = styled.div<{ visible: boolean }>`
-  display: ${(props) =>
-    props.visible ? "flex" : "none"}; /* Hidden by default */
+const ModalLayout = styled.div`
+  display: flex;
   justify-content: center;
   align-items: center;
   position: fixed; /* Stay in place */
-  z-index: 20; /* Sit on top */
+  z-index: 30; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */

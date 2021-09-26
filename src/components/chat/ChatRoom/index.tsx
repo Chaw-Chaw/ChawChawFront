@@ -153,6 +153,7 @@ const ChatRoom: React.FC = (props) => {
                           // 토크 타입인 일반메세지 분류
                           return (
                             <ChatMessage
+                              userId={chatMessage.senderId}
                               key={index}
                               src={
                                 user.id === chatMessage.senderId
@@ -235,15 +236,12 @@ const Outline = styled.div`
   @media (max-width: 500px) {
     min-width: 320px;
   }
-  padding: 0px 20px;
 `;
 
 const Inner = styled.div`
   overflow: auto;
   box-sizing: border-box;
   height: 100%;
-  position: relative;
-  z-index: 0;
 `;
 
 const Header = styled.div`

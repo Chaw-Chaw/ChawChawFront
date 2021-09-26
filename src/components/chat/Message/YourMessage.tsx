@@ -1,11 +1,8 @@
-import { MouseEventHandler, useEffect, useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import styled from "styled-components";
 import { MessageContext } from "./MessageContext";
 import { MessageImage } from "./MessageImage";
-import {
-  DEFAULT_PROFILE_IMAGE,
-  GOOGLE_TRANSLATE_API_KEY,
-} from "../../../constants";
+import { GOOGLE_TRANSLATE_API_KEY } from "../../../constants";
 import {
   MyMessageProps,
   MessageImageBox,
@@ -20,6 +17,7 @@ import ChatProfile from "../ChatProfile";
 interface YourMessageProps extends MyMessageProps {
   src: string;
   userName?: string;
+  userId: number;
 }
 
 const YourMessage: React.FC<YourMessageProps> = (props) => {
@@ -100,13 +98,17 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
         )}
         <RegDateMessage>{props.regDate}</RegDateMessage>
       </YourMessageContainer>
-      <ModalLayout visible={open} onClick={profileHandler}></ModalLayout>
-      <ChatProfile
-        visible={open}
-        name={props.userName || ""}
-        imageUrl={props.src}
-        setOpen={setOpen}
-      />
+      {open ? (
+        <>
+          <ModalLayout onClick={profileHandler} />
+          <ChatProfile
+            name={props.userName || ""}
+            imageUrl={props.src}
+            setOpen={setOpen}
+            userId={props.userId}
+          />
+        </>
+      ) : null}
     </>
   );
 };
