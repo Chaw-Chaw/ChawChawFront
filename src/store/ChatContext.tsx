@@ -50,8 +50,8 @@ interface ChatContextObj {
   isViewChatList: boolean;
   setIsViewChatList: Dispatch<React.SetStateAction<boolean>>;
   publish: (message: string, messageType: string) => void;
-  blockUser: (userId: number) => void;
-  unBlockUser: (userId: number) => void;
+  blockUser: (userId: number) => Promise<true | undefined>;
+  unBlockUser: (userId: number) => Promise<true | undefined>;
 }
 
 const ChatContext = React.createContext<ChatContextObj>({
@@ -68,8 +68,8 @@ const ChatContext = React.createContext<ChatContextObj>({
   isViewChatList: false,
   setIsViewChatList: () => {},
   publish: (message: string, messageType: string) => {},
-  blockUser: (userId: number) => {},
-  unBlockUser: (userId: number) => {},
+  blockUser: (userId: number) => new Promise(() => {}),
+  unBlockUser: (userId: number) => new Promise(() => {}),
 });
 
 const ChatContextProvider: React.FC = (props) => {
@@ -120,6 +120,11 @@ const ChatContextProvider: React.FC = (props) => {
     chatClient.current.subscribe(`/queue/chat/${user.id}`, (response: any) => {
       const message: MessageType = JSON.parse(response.body);
       console.log(message, "새로운 메세지 내용");
+
+      // 블록 리스트에 추가된 메세지는 알람 받지 않음
+      if (user.blockIds?.includes(message.senderId)) {
+        return;
+      }
 
       // 메인 채팅룸 메세지 누적 : 메세지 룸 넘버가 메인 룸넘버인 경우
       if (message.roomId === mainRoomIdRef.current) {
@@ -323,6 +328,7 @@ const ChatContextProvider: React.FC = (props) => {
     const newBlockIds = user.blockIds || [];
     newBlockIds.push(userId);
     updateUser({ blockIds: newBlockIds });
+    return true;
   };
 
   const unBlockUser = async (userId: number) => {
@@ -347,11 +353,12 @@ const ChatContextProvider: React.FC = (props) => {
     }
 
     const newBlockIds = user.blockIds || [];
-    const removeIdsIndex = newBlockIds.find((item) => item === userId);
+    const removeIdsIndex = newBlockIds.findIndex((item) => item === userId);
     if (removeIdsIndex) {
       newBlockIds.splice(removeIdsIndex, 1);
     }
     updateUser({ blockIds: newBlockIds });
+    return true;
   };
 
   useEffect(() => {

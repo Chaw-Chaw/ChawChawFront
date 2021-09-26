@@ -44,7 +44,7 @@ const PostSection: React.FC<PostSectionProps> = (props) => {
                   name={item.name}
                   key={index}
                   viewCount={item.views}
-                  likeCount={item.follows}
+                  likeCount={item.likes}
                   pastDate={pastDays}
                   imageUrl={item.imageUrl}
                   repCountry={repCountry}

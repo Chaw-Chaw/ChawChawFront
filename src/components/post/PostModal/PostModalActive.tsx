@@ -20,7 +20,7 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
   const { blockUser, unBlockUser } = useContext(ChatContext);
   const [isActiveLike, setIsActiveLike] = useState(props.isLike);
   const message = useAlert();
-  const [isBlock, setIsBlock] = useState(false);
+  const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.id));
 
   const tryChat: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
@@ -28,17 +28,35 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
   };
 
   const like = async () => {
-    const response = await fetch(`/like/${props.id}`, {
-      method: "POST",
-      headers: {
-        Authorization: accessToken,
-      },
-    }).catch((err) => {
-      console.log(err, "좋아요 실패");
-    });
+    const response = await axios
+      .post(
+        "/like",
+        { userId: props.id },
+        {
+          headers: {
+            Authorization: accessToken,
+          },
+        }
+      )
+      .catch((err) => {
+        console.log(err, "좋아요 실패");
+        return err.response;
+      });
 
     console.log(response, "종아요 결과");
-    setIsActiveLike(true);
+    if (response.status === 401) {
+      // access token 만료
+      // refresh token 전송
+      grantRefresh();
+      return;
+    }
+
+    if (!response.data.isSuccess) {
+      console.log(response, "좋아요 실패");
+      return;
+    }
+
+    return true;
   };
 
   const unLike = async () => {
@@ -56,27 +74,40 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
       // access token 만료
       // refresh token 전송
       grantRefresh();
+      return;
     }
     if (!response.data.isSuccess) {
       console.log(response, "좋아요 취소 실패");
       return;
     }
     console.log("좋아요 취소 성공!");
-    setIsActiveLike(false);
+    return true;
   };
 
   const unBlockButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    unBlockUser(props.id);
-    setIsBlock(false);
+    const result = unBlockUser(props.id);
+    if (result) setIsBlock(false);
   };
   const blockButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     // message.info(
     //   "차단하면 더이상 차단한 상대방의 메세지와 알람을 받을 수 없습니다. 차단하시겠습니까?"
     // );
-    blockUser(props.id);
-    setIsBlock(true);
+    const result = blockUser(props.id);
+    if (result) setIsBlock(true);
+  };
+
+  const unLikeButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    const result = unLike();
+    if (result) setIsActiveLike(false);
+  };
+
+  const likeButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    const result = like();
+    if (result) setIsActiveLike(true);
   };
 
   useEffect(() => {
@@ -85,31 +116,40 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
     setIsBlock(Boolean(blockConfirm));
   }, [user]);
 
+  useEffect(() => {
+    console.log(isBlock, "IsBlock"), [isBlock];
+  });
+
   return (
     <PostButtonBox>
       <PostChatButton onClick={tryChat} secondary width="250px" height="45px">
         Try Chat
       </PostChatButton>
       <PostActionBox>
-        <PostLikeBox
-          onClick={() => {
-            if (!isActiveLike) like();
-            else unLike();
-          }}
-        >
-          {isActiveLike ? <AiFillHeart /> : <AiOutlineHeart />}
+        <PostLikeBox>
+          {isActiveLike ? (
+            <UnActionButton onClick={unLikeButtonHandler}>
+              <AiFillHeart />
+              취소
+            </UnActionButton>
+          ) : (
+            <ActionButton onClick={likeButtonHandler}>
+              <AiOutlineHeart />
+              좋아요
+            </ActionButton>
+          )}
         </PostLikeBox>
         <PostBlockBox>
           {isBlock ? (
-            <UnBlockButton onClick={unBlockButtonHandler}>
+            <UnActionButton onClick={unBlockButtonHandler}>
               <CgUnblock />
               차단해제
-            </UnBlockButton>
+            </UnActionButton>
           ) : (
-            <BlockButton onClick={blockButtonHandler}>
+            <ActionButton onClick={blockButtonHandler}>
               <CgBlock />
               차단
-            </BlockButton>
+            </ActionButton>
           )}
         </PostBlockBox>
       </PostActionBox>
@@ -137,6 +177,7 @@ const PostButtonBox = styled.div`
 `;
 
 const PostLikeBox = styled.div`
+  margin-right: 10px;
   @keyframes kenburns-top {
     0% {
       -webkit-transform: scale(1) translateY(0);
@@ -154,21 +195,27 @@ const PostLikeBox = styled.div`
   :hover {
     animation: kenburns-top 0.2s ease-out both;
   }
+  @media (max-width: 500px) {
+  }
 `;
 
-const PostBlockBox = styled(PostLikeBox)``;
+const PostBlockBox = styled(PostLikeBox)`
+  margin: 0px;
+`;
 
 const PostActionBox = styled.div`
   display: flex;
   justify-content: flex-end;
   width: 100%;
   border-top: 1px solid ${(props) => props.theme.secondaryColor};
-
   padding: 10px 20px;
   box-sizing: border-box;
+  @media (max-width: 500px) {
+    justify-content: center;
+  }
 `;
 
-const UnBlockButton = styled(Button)`
+const UnActionButton = styled(Button)`
   border-radius: 10px;
   border: none;
   display: flex;
@@ -179,12 +226,8 @@ const UnBlockButton = styled(Button)`
   }
 `;
 
-const BlockButton = styled(UnBlockButton)`
+const ActionButton = styled(UnActionButton)`
   background-color: white;
   border: 1px solid ${(props) => props.theme.primaryColor};
   color: ${(props) => props.theme.primaryColor};
-`;
-
-const LikeButton = styled(UnBlockButton)`
-  /* background-color: ; */
 `;

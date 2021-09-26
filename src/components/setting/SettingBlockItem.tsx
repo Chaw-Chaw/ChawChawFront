@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { MouseEventHandler, useContext, useState } from "react";
 import styled from "styled-components";
+import { AuthContext } from "../../store/AuthContext";
 import { ChatContext } from "../../store/ChatContext";
 import { Button } from "../common";
 import { BlockItem } from "./SettingBlockList";
@@ -9,21 +10,21 @@ interface BlockItemProps extends BlockItem {}
 
 const SettingBlockItem: React.FC<BlockItemProps> = (props) => {
   const { unBlockUser, blockUser } = useContext(ChatContext);
-  const [isUnBlock, setIsUnBlock] = useState(false);
+  const { user } = useContext(AuthContext);
+  const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.userId));
 
   const UnblockUserButtonHandler: MouseEventHandler<HTMLButtonElement> = (
     e
   ) => {
     e.preventDefault();
-
     unBlockUser(props.userId);
-    setIsUnBlock(true);
+    setIsBlock(false);
   };
 
   const blockUserButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     blockUser(props.userId);
-    setIsUnBlock(true);
+    setIsBlock(true);
   };
 
   return (
@@ -42,12 +43,12 @@ const SettingBlockItem: React.FC<BlockItemProps> = (props) => {
         <BlockItemName>{props.name}</BlockItemName>
         <BlockItemDescription>메세지 차단, 알림 차단</BlockItemDescription>
       </BlockItemInfo>
-      {isUnBlock ? (
-        <BlockButton onClick={blockUserButtonHandler}>차단</BlockButton>
-      ) : (
+      {isBlock ? (
         <UnBlockButton onClick={UnblockUserButtonHandler}>
           차단 해제
         </UnBlockButton>
+      ) : (
+        <BlockButton onClick={blockUserButtonHandler}>차단</BlockButton>
       )}
     </BlockBox>
   );
@@ -103,7 +104,7 @@ const BlockItemDescription = styled.span`
 
 const BlockButton = styled(UnBlockButton)`
   background-color: rgba(255, 107, 107, 1);
-  animation: slide-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  /* animation: slide-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 
   @keyframes slide-left {
     0% {
@@ -111,8 +112,8 @@ const BlockButton = styled(UnBlockButton)`
       transform: translateX(0);
     }
     100% {
-      -webkit-transform: translateX(-100px);
-      transform: translateX(-100px);
+      -webkit-transform: translateX(100px);
+      transform: translateX(100px);
     }
-  }
+  } */
 `;
