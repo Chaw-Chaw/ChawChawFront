@@ -38,7 +38,7 @@ const SettingUserDelete: React.FC = () => {
   };
   return (
     <ListItem
-      title="회원 탈퇴"
+      title="회원탈퇴"
       description="탈퇴 시 작성하신 포스트 및 댓글이 모두 삭제되며 복구되지 않습니다."
     >
       <UserDeleteButton onClick={deleteUserButtonHandler}>

@@ -152,28 +152,6 @@ const ChatContextProvider: React.FC = (props) => {
         return;
       }
 
-      // 채팅방을 삭제해야할 경우
-      // if (message.messageType === "EXIT") {
-      //   setTotalMessage((pre) => {
-      //     const result = pre;
-      //     const removeChatRoomIndex = result.findIndex(
-      //       (item) => message.roomId === item.roomId
-      //     );
-      //     if (removeChatRoomIndex) {
-      //       const removeChatRoom = result[removeChatRoomIndex];
-      //       const removeIndex = removeChatRoom.participantIds.findIndex(
-      //         (item) => item === message.senderId
-      //       );
-      //       removeChatRoom.participantIds.splice(removeIndex);
-      //       removeChatRoom.participantImageUrls.splice(removeIndex);
-      //       removeChatRoom.participantNames.splice(removeIndex);
-      //       result[removeChatRoomIndex] = removeChatRoom;
-      //     }
-      //     console.log(result);
-      //     return [...result];
-      //   });
-      // }
-
       // 기존 채팅방에 들어오는 메세지일 경우
       setTotalMessage((pre: any) => {
         const result: any = [];
@@ -193,7 +171,6 @@ const ChatContextProvider: React.FC = (props) => {
   const likeChannelSubscribe = () => {
     chatClient.current.subscribe(`/queue/like/${user.id}`, (response: any) => {
       const message: LikeAlarmType = JSON.parse(response.body);
-      // console.log(message, "새로운 팔로우 내용");
       setNewLikes((pre) => [...pre, message]);
     });
   };
@@ -261,8 +238,14 @@ const ChatContextProvider: React.FC = (props) => {
       grantRefresh();
       return;
     }
-    const likeMessages: LikeAlarmType[] = response.data.likes;
-    const newMessages = response.data.messages;
+
+    // 알림 목록은 차단된 아이디를 제외하고 받습니다.
+    const likeMessages: LikeAlarmType[] = response.data.likes.filter(
+      (item: any) => !user.blockIds?.includes(item.senderId)
+    );
+    const newMessages = response.data.messages.filter(
+      (item: any) => !user.blockIds?.includes(item.senderId)
+    );
     setNewLikes([...likeMessages]);
     setNewMessages([...newMessages]);
   };

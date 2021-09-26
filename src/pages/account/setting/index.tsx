@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Layout } from "../../../components/common";
 import { SettingBlockList } from "../../../components/setting/SettingBlockList";
 import { SettingUserDelete } from "../../../components/setting/SettingUserDelete";
+import { SettingUserUniversity } from "../../../components/setting/SettingUserUniversity";
 import { AuthContext } from "../../../store/AuthContext";
 
 export default function Setting() {
@@ -26,8 +27,9 @@ export default function Setting() {
     <Layout>
       <Container>
         <SettingInfoBox>
-          <SettingUserDelete />
           <SettingBlockList />
+          <SettingUserUniversity />
+          <SettingUserDelete />
         </SettingInfoBox>
       </Container>
     </Layout>
