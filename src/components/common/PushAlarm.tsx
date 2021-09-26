@@ -84,12 +84,12 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
                   <ChatBox
                     imageUrl={`/Layout/heart.png`}
                     regDate={item.regDate}
-                    sender={item.followType}
+                    sender={item.likeType}
                     roomId={-2}
                     onClick={() => {
                       moveChat(-2);
                     }}
-                    context={`${item.name}님이 ${item.followType} 하셨습니다.`.substring(
+                    context={`${item.name}님이 ${item.likeType} 하셨습니다.`.substring(
                       0,
                       20
                     )}
