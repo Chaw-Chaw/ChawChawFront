@@ -17,7 +17,7 @@ const PostModalInfoList: React.FC<{
         {Array.from(valueLists).map((item, index) => {
           if (index === 0) {
             return (
-              <DropDownMainBox>
+              <DropDownMainBox key={index}>
                 <DropDownMainText>main</DropDownMainText>
                 <DropDownBox
                   fontWeight="900"
