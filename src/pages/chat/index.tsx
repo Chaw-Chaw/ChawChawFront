@@ -38,6 +38,7 @@ export default function Chat() {
         }
       )
       .catch((err) => err.response);
+
     if (response.data.responseMessage === "차단한 또는 차단된 유저") {
       message.error("유저로 부터 차단되어 채팅방을 들어갈 수 업습니다.", {
         onClose: () => {
@@ -45,9 +46,9 @@ export default function Chat() {
         },
       });
     }
+
     if (!response.data.isSuccess) {
       console.error(response.data);
-
       return;
     }
     console.log(response, "getMainRoomId");

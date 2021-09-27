@@ -88,6 +88,7 @@ const ScrollingText = styled.span`
     }
   }
   animation: slide-top 2s infinite;
+
   @media (max-width: 1000px) {
     font-size: 2rem;
     top: 60%;

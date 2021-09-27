@@ -156,8 +156,8 @@ const AuthContextProvider: React.FC = (props) => {
     const tokenInfo = response.data.data.token || response.data.data;
     const accessToken = "Bearer " + tokenInfo.accessToken;
     const accessTokenExpiresIn = new Date(Date.now() + tokenInfo.expiresIn);
+
     // 기존 쿠기를 지우는 방법
-    console.log(accessToken, "acessToken");
     setCookie("accessToken", accessToken, {
       path: "/",
       secure: true,
@@ -169,13 +169,11 @@ const AuthContextProvider: React.FC = (props) => {
         ...response.data.data.profile,
         blockIds: response.data.data.blockIds,
       };
-      // saveUser(newData);
       updateUser(newData);
     }
   };
 
   const grantRefresh = async () => {
-    console.log(accessToken, "accessToken");
     const response = await axios
       .post(
         "/users/auth/refresh",
@@ -262,87 +260,6 @@ const AuthContextProvider: React.FC = (props) => {
     loginSuccess(response);
     router.push("/post");
   };
-
-  // const kakaoLogin = async ({ kakaoToken }: AuthReqProps) => {
-  //   console.log("카카오 로그인 함수 실행");
-  //   const response = await axios
-  //     .post(
-  //       "/login",
-  //       {
-  //         provider: "kakao",
-  //         kakaoToken: kakaoToken,
-  //       },
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Accept: "application/json",
-  //         },
-  //       }
-  //     )
-  //     .catch((err) => {
-  //       message.error("인가코드가 잘못되었습니다.", {
-  //         onClose: () => {
-  //           history.back();
-  //         },
-  //       });
-  //       console.error(err);
-  //       return err.response;
-  //     });
-
-  //   if (!response.data.isSuccess) {
-  //     console.log(response.data, "로그인 실패");
-
-  //     console.error(response.data);
-  //     return;
-  //   }
-  //   loginSuccess(response);
-  //   router.push("/post");
-  // };
-
-  // const facebookLogin = async ({ facebookToken, facebookId }: AuthReqProps) => {
-  //   console.log(facebookToken, facebookId, "페이스북 로그인 함수 실행");
-  //   const response = await axios
-  //     .post(
-  //       "/login",
-  //       {
-  //         provider: "facebook",
-  //         facebookId: facebookId,
-  //         facebookToken: facebookToken,
-  //       },
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Accept: "application/json",
-  //         },
-  //       }
-  //     )
-  //     .catch((err) => {
-  //       message.error("인가코드가 잘못되었습니다.", {
-  //         onClose: () => {
-  //           history.back();
-  //         },
-  //       });
-  //       console.error(err);
-  //       return err.response;
-  //     });
-
-  //   console.log(response, "facebookLogin");
-  //   if (!response.data.isSuccess) {
-  //     if (response.data.responseMessage === "회원가입 필요") {
-  //       message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
-  //         onClose: () => {
-  //           saveUser(response.data.data);
-  //           router.push("/account/signup/webMailAuth");
-  //         },
-  //       });
-  //       return;
-  //     }
-  //     console.error(response.data);
-  //     return;
-  //   }
-  //   loginSuccess(response);
-  //   router.push("/post");
-  // };
 
   const webmailVerify = ({ web_email }: AuthReqProps) => {
     const domain = web_email?.split("@")[1];
@@ -506,6 +423,11 @@ const AuthContextProvider: React.FC = (props) => {
     });
     console.log("update userInfo");
   };
+
+  useEffect(() => {
+    if (!accessToken) return;
+    grantRefresh();
+  }, []);
 
   const contextValue: AuthContextObj = {
     user,
