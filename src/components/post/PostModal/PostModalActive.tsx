@@ -121,14 +121,9 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
   };
 
   useEffect(() => {
-    console.log(user, "user");
     const blockConfirm = user.blockIds?.includes(props.id);
     setIsBlock(Boolean(blockConfirm));
   }, [user]);
-
-  useEffect(() => {
-    console.log(isBlock, "IsBlock"), [isBlock];
-  });
 
   return (
     <PostButtonBox>
@@ -215,6 +210,7 @@ const PostBlockBox = styled(PostLikeBox)`
 
 const PostActionBox = styled.div`
   display: flex;
+  justify-content: flex-end;
   width: 100%;
   border-top: 1px solid ${(props) => props.theme.secondaryColor};
   padding: 10px 20px;

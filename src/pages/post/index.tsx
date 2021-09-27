@@ -23,15 +23,12 @@ export default function Post() {
   const searchName = useRef("");
   const message = useAlert();
   const router = useRouter();
+  const blockIds = user.blockIds ? user.blockIds.join("/") : "";
 
   const getPosts = async () => {
-    const orderConvert = orderOptions[sortInfo[2]] || sortInfo[2];
-    const languageConvert = LanguageLocale[sortInfo[0]]
-      ? LanguageLocale[sortInfo[0]]
-      : "";
-    const hopeLanguageConvert = LanguageLocale[sortInfo[1]]
-      ? LanguageLocale[sortInfo[1]]
-      : "";
+    const languageConvert = LanguageLocale[sortInfo[0]] || "";
+    const hopeLanguageConvert = LanguageLocale[sortInfo[1]] || "";
+    const orderConvert = orderOptions[sortInfo[2]] || "";
     console.log(
       {
         name: searchName.current,
@@ -40,6 +37,7 @@ export default function Post() {
         order: orderConvert,
         isFirst: isFirst.current,
       },
+      document.cookie,
       "Params"
     );
     const response = await axios
@@ -93,7 +91,10 @@ export default function Post() {
     isFirst.current = true;
     postIds.current = "";
     searchName.current = inputs;
+
+    document.cookie = "exclude=" + blockIds + ";path=/;";
     getPosts();
+    document.cookie = "exclude=;path=/;expires=Thu, 18 Dec 2013 12:00:00 GMT";
   };
 
   const target = useRef<any>(null);
@@ -102,19 +103,21 @@ export default function Post() {
     observer: IntersectionObserver
   ) => {
     if (entry.isIntersecting) {
-      console.log(entry.isIntersecting, "보인다.");
       observer.unobserve(entry.target);
 
       // 쿠키 설정이 비동기 식인가? 아니다. Path 설정을 안해두면 두번쨰 exclude 를 만들어버린다.
-
       // exclude에는 차단된 아이디들이 초기값으로 들어가야한다.
-      const blockIds = user.blockIds ? user.blockIds.join("/") : "";
-      document.cookie = "exclude=" + postIds.current + blockIds + ";path=/;";
+      if (postIds.current === "") {
+        document.cookie = "exclude=" + blockIds + ";path=/;";
+      } else {
+        document.cookie =
+          "exclude=" + postIds.current + "/" + blockIds + ";path=/;";
+      }
+
       await getPosts();
       document.cookie = "exclude=;path=/;expires=Thu, 18 Dec 2013 12:00:00 GMT";
       observer.observe(entry.target);
     } else {
-      console.log(entry.isIntersecting, "안보인다.");
     }
   };
 

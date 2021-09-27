@@ -12,7 +12,7 @@ import { ChatContext, RoomType } from "../../store/ChatContext";
 import { ScreenContext } from "../../store/ScreenContext";
 
 export default function Chat() {
-  const { grantRefresh, accessToken, user } = useContext(AuthContext);
+  const { grantRefresh, accessToken } = useContext(AuthContext);
   const { windowSize } = useContext(ScreenContext);
   const {
     mainRoomId,
@@ -20,8 +20,6 @@ export default function Chat() {
     setMainChatMessages,
     totalMessage,
     setTotalMessage,
-    mainChatMessages,
-    publish,
   } = useContext(ChatContext);
   const router = useRouter();
   const message = useAlert();
@@ -40,9 +38,16 @@ export default function Chat() {
         }
       )
       .catch((err) => err.response);
-
+    if (response.data.responseMessage === "차단한 또는 차단된 유저") {
+      message.error("유저로 부터 차단되어 채팅방을 들어갈 수 업습니다.", {
+        onClose: () => {
+          router.back();
+        },
+      });
+    }
     if (!response.data.isSuccess) {
       console.error(response.data);
+
       return;
     }
     console.log(response, "getMainRoomId");

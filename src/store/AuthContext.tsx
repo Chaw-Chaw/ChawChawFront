@@ -522,10 +522,6 @@ const AuthContextProvider: React.FC = (props) => {
     accessToken,
   };
 
-  useEffect(() => {
-    console.log(user, "user 변경");
-  }, [user]);
-
   return (
     <AuthContext.Provider value={contextValue}>
       {props.children}
