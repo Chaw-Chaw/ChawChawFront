@@ -88,29 +88,35 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
     return true;
   };
 
-  const unblockButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const unblockButtonHandler: MouseEventHandler<HTMLButtonElement> = async (
+    e
+  ) => {
     e.preventDefault();
-    const result = unblockUser(props.id);
+    const result = await unblockUser(props.id);
     if (result) setIsBlock(false);
   };
-  const blockButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const blockButtonHandler: MouseEventHandler<HTMLButtonElement> = async (
+    e
+  ) => {
     e.preventDefault();
     // message.info(
     //   "차단하면 더이상 차단한 상대방의 메세지와 알람을 받을 수 없습니다. 차단하시겠습니까?"
     // );
-    const result = blockUser(props.id);
+    const result = await blockUser(props.id);
     if (result) setIsBlock(true);
   };
 
-  const unLikeButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const unLikeButtonHandler: MouseEventHandler<HTMLButtonElement> = async (
+    e
+  ) => {
     e.preventDefault();
-    const result = unLike();
+    const result = await unLike();
     if (result) setIsActiveLike(false);
   };
 
-  const likeButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const likeButtonHandler: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
-    const result = like();
+    const result = await like();
     if (result) setIsActiveLike(true);
   };
 
