@@ -215,7 +215,6 @@ const PostBlockBox = styled(PostLikeBox)`
 
 const PostActionBox = styled.div`
   display: flex;
-  justify-content: flex-end;
   width: 100%;
   border-top: 1px solid ${(props) => props.theme.secondaryColor};
   padding: 10px 20px;
@@ -231,6 +230,7 @@ const UnActionButton = styled(Button)`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: initial;
   svg {
     margin-right: 5px;
   }
