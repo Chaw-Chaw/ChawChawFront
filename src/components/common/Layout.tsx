@@ -1,11 +1,23 @@
+import { useContext, useEffect } from "react";
 import styled from "styled-components";
+import { AuthContext } from "../../store/AuthContext";
 import Header from "./Header";
 
 const Layout: React.FC<{ type?: string }> = (props) => {
-  // useEffect(() => {
-  //   connect(client.current);
-  //   return () => disconnect(client.current);
-  // }, []);
+  const { grantRefresh, accessToken } = useContext(AuthContext);
+  const loginTime = (() => {
+    if (typeof window === "undefined") return {};
+    const localStorageLoginTime = window.localStorage.getItem("loginTime");
+    if (!localStorageLoginTime) return 0;
+    return JSON.parse(localStorageLoginTime);
+  })();
+
+  useEffect(() => {
+    if (!accessToken) return;
+    console.log(loginTime, "loginTime");
+    setTimeout(grantRefresh, loginTime + 180000 - 60000);
+  }, []);
+
   return (
     <>
       <Header type={props.type} />

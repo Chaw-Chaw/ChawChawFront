@@ -111,6 +111,7 @@ const AuthContextProvider: React.FC = (props) => {
   );
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
   const accessToken = cookies.accessToken;
+
   const router = useRouter();
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
     setUser((preUser: UserPropertys) => {
@@ -157,12 +158,17 @@ const AuthContextProvider: React.FC = (props) => {
     const accessToken = "Bearer " + tokenInfo.accessToken;
     const accessTokenExpiresIn = new Date(Date.now() + tokenInfo.expiresIn);
 
-    // 기존 쿠기를 지우는 방법
+    // 현재 로그인 시각 브라우저에 저장
+    window.localStorage.setItem("loginTime", JSON.stringify(Date.now()));
+
+    // 쿠키가 만료시간이 되면 지워지게 해서 자동으로 로그아웃을 유도
+    // 또한 브라우저를 끄고 켜도 로그인 유지
     setCookie("accessToken", accessToken, {
       path: "/",
       secure: true,
       expires: accessTokenExpiresIn,
     });
+
     setTimeout(grantRefresh, tokenInfo.expiresIn - 60000);
     if (response.data.data.profile) {
       const newData: UserPropertys = {
@@ -316,8 +322,6 @@ const AuthContextProvider: React.FC = (props) => {
       provider: props.provider,
     };
 
-    console.log(signupInfo, "회원가입 정보");
-
     const response = await axios
       .post("/users/signup", signupInfo, {
         headers: {
@@ -329,11 +333,11 @@ const AuthContextProvider: React.FC = (props) => {
         console.error(err);
         return err.response;
       });
+    console.log(response, "signup");
 
     if (!response.data.isSuccess) {
+      window.localStorage.clear();
       message.error("회원가입에 실패하였습니다.");
-      console.error("회원가입에 실패하였습니다.");
-      window.localStorage.removeItem("user");
       return;
     }
     setUser({});
@@ -424,10 +428,10 @@ const AuthContextProvider: React.FC = (props) => {
     console.log("update userInfo");
   };
 
-  useEffect(() => {
-    if (!accessToken) return;
-    grantRefresh();
-  }, []);
+  // useEffect(() => {
+  //   if (!accessToken) return;
+  //   grantRefresh();
+  // }, []);
 
   const contextValue: AuthContextObj = {
     user,
