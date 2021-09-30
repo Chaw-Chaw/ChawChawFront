@@ -75,6 +75,10 @@ export default function Post() {
       return;
     }
 
+    if (!response.data.isSuccess) {
+      return;
+    }
+
     if (isFirst.current === true) {
       postIds.current += data.map((item: any) => item.id).join("/");
     } else {
@@ -82,8 +86,9 @@ export default function Post() {
     }
 
     setPostInfo((item: any) => {
-      if (isFirst.current === true) return [...data];
-      return [...item, ...data];
+      const result = item;
+      if (isFirst.current === true) return data;
+      return result.concat(data);
     });
     isFirst.current = false;
   };
