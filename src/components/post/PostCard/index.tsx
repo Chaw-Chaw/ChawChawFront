@@ -9,6 +9,7 @@ import { PostCardInfoProps, PostCardInfo } from "../PostCard/PostCardInfo";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import { PostCardImageInfoProps, PostCardImageInfo } from "./PostCardImageInfo";
 import { AuthContext } from "../../../store/AuthContext";
+import { useCookies } from "react-cookie";
 
 interface PostCardProps extends PostCardInfoProps, PostCardImageInfoProps {
   imageUrl: string;
@@ -48,14 +49,15 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const [open, setOpen] = useState(false);
   const [postModalInfo, setPostModalInfo] =
     useState<PostModalInfoProps>(initialPostInfo);
-  const { grantRefresh, accessToken } = useContext(AuthContext);
+  const { grantRefresh } = useContext(AuthContext);
+  const [cookies] = useCookies(["accessToken"]);
 
   const handleModal = async () => {
     const response = await axios
       .get(`/users/${props.id}`, {
         headers: {
           "Content-type": "application/json",
-          Authorization: accessToken,
+          Authorization: cookies.accessToken,
           Accept: "application/json",
         },
       })

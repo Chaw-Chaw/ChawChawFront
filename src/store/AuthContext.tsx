@@ -39,7 +39,7 @@ interface AuthContextObj {
   updateUser: (Object: UserPropertys) => void;
   webmailVerify: (res: AuthReqProps) => boolean;
   verificationNumber: (res: AuthReqProps) => void;
-  accessToken: string;
+  isLogin: boolean;
 }
 
 interface AuthReqProps {
@@ -96,7 +96,7 @@ const AuthContext = React.createContext<AuthContextObj>({
   webmailVerify: () => false,
   verificationNumber: () => {},
   grantRefresh: () => new Promise(() => {}),
-  accessToken: "",
+  isLogin: false,
 });
 
 const AuthContextProvider: React.FC = (props) => {
@@ -110,7 +110,7 @@ const AuthContextProvider: React.FC = (props) => {
     })()
   );
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
-  const accessToken = cookies.accessToken;
+  const [isLogin, setIsLogin] = useState(Boolean(cookies.accessToken));
 
   const router = useRouter();
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
@@ -126,7 +126,7 @@ const AuthContextProvider: React.FC = (props) => {
     const response = await axios
       .get("/logout", {
         headers: {
-          Authorization: "Bearer " + accessToken,
+          Authorization: "Bearer " + cookies.accessToken,
         },
       })
       .catch((err) => {
@@ -139,7 +139,7 @@ const AuthContextProvider: React.FC = (props) => {
       return;
     }
     console.log(response, "로그아웃 성공");
-
+    setIsLogin(false);
     setUser({});
     window.localStorage.clear();
     removeCookie("accessToken", {
@@ -169,6 +169,8 @@ const AuthContextProvider: React.FC = (props) => {
       expires: accessTokenExpiresIn,
     });
 
+    setIsLogin(true);
+
     setTimeout(grantRefresh, tokenInfo.expiresIn - 60000);
     if (response.data.data.profile) {
       const newData: UserPropertys = {
@@ -187,7 +189,7 @@ const AuthContextProvider: React.FC = (props) => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: accessToken,
+            Authorization: cookies.accessToken,
             Accept: "application/json",
           },
         }
@@ -204,6 +206,7 @@ const AuthContextProvider: React.FC = (props) => {
           router.push("/account/login");
         },
       });
+      setIsLogin(false);
       return;
     }
 
@@ -445,7 +448,7 @@ const AuthContextProvider: React.FC = (props) => {
     webmailVerify,
     verificationNumber,
     grantRefresh,
-    accessToken,
+    isLogin,
   };
 
   return (

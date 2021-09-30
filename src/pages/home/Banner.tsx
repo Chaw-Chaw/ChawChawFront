@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { AuthContext } from "../../store/AuthContext";
 
 const Banner: React.FC = () => {
-  const { accessToken } = useContext(AuthContext);
+  const { isLogin } = useContext(AuthContext);
   const router = useRouter();
   return (
     <Container>
@@ -19,7 +19,7 @@ const Banner: React.FC = () => {
           fontSize="2.8rem"
           onClick={(e) => {
             e.preventDefault();
-            if (accessToken) {
+            if (isLogin) {
               router.push("/post");
             } else {
               router.push("/account/login");

@@ -26,7 +26,7 @@ export default function SignUp() {
   const [isEmailDupCheck, setIsEmailDupCheck] = useState(false);
   const message = useAlert();
   const router = useRouter();
-  const { signup, emailDuplicationCheck, updateUser, accessToken } =
+  const { signup, emailDuplicationCheck, updateUser, isLogin } =
     useContext(AuthContext);
   const { user } = useContext(AuthContext);
 
@@ -80,7 +80,7 @@ export default function SignUp() {
 
   useEffect(() => {
     const userSchool = user.school;
-    if (accessToken) {
+    if (isLogin) {
       message.error("로그아웃 후 회원가입을 진행해주세요.", {
         onClose: () => {
           router.push("/post");

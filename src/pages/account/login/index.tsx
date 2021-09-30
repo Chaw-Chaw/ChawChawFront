@@ -23,7 +23,7 @@ interface Inputs {
 export default function Login() {
   const router = useRouter();
   const message = useAlert();
-  const { login, accessToken } = useContext(AuthContext);
+  const { login, isLogin } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -40,7 +40,7 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (accessToken) {
+    if (isLogin) {
       message.error("로그아웃 후 로그인 해주세요.", {
         onClose: () => {
           router.push("/post");

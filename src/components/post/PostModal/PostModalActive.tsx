@@ -8,6 +8,7 @@ import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useAlert } from "react-alert";
 import { ChatContext } from "../../../store/ChatContext";
+import { useCookies } from "react-cookie";
 
 interface PostModalActive {
   id: number;
@@ -16,7 +17,8 @@ interface PostModalActive {
 
 const PostModalActive: React.FC<PostModalActive> = (props) => {
   const router = useRouter();
-  const { accessToken, grantRefresh, user } = useContext(AuthContext);
+  const [cookies] = useCookies(["accessToken"]);
+  const { grantRefresh, user } = useContext(AuthContext);
   const { blockUser, unblockUser } = useContext(ChatContext);
   const [isActiveLike, setIsActiveLike] = useState(props.isLike);
   const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.id));
@@ -38,7 +40,7 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
         { userId: props.id },
         {
           headers: {
-            Authorization: accessToken,
+            Authorization: cookies.accessToken,
           },
         }
       )
@@ -68,7 +70,7 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
       .delete(`/like/${props.id}`, {
         headers: {
           "Content-type": "application/json",
-          Authorization: accessToken,
+          Authorization: cookies.accessToken,
           Accept: "application/json",
         },
       })

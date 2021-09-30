@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 import styled from "styled-components";
 import { AuthContext } from "../../store/AuthContext";
 import { ListItem } from "../common";
@@ -12,14 +13,15 @@ interface BlockItem {
 }
 
 const SettingBlockList: React.FC = () => {
-  const { accessToken, grantRefresh } = useContext(AuthContext);
+  const { isLogin, grantRefresh } = useContext(AuthContext);
+  const [cookies] = useCookies(["accessToken"]);
   const [blockList, setBlockList] = useState<BlockItem[]>([]);
 
   const getBlockList = async () => {
     const response = await axios
       .get("/users/block", {
         headers: {
-          Authorization: accessToken,
+          Authorization: cookies.accessToken,
         },
       })
       .catch((err) => err.response);
@@ -39,7 +41,7 @@ const SettingBlockList: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!isLogin) return;
     getBlockList();
   }, []);
 

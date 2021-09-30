@@ -8,9 +8,11 @@ import axios from "axios";
 import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import { useAlert } from "react-alert";
+import { useCookies } from "react-cookie";
 
 export default function Post() {
-  const { grantRefresh, accessToken, user } = useContext(AuthContext);
+  const { grantRefresh, user, isLogin } = useContext(AuthContext);
+  const [cookies] = useCookies(["accessToken"]);
   const [postInfo, setPostInfo] = useState<any>([]);
   const [sortInfo, setSortInfo] = useState<string[]>([
     "Main Language",
@@ -50,11 +52,12 @@ export default function Post() {
           isFirst: isFirst.current,
         },
         headers: {
-          Authorization: accessToken,
+          Authorization: cookies.accessToken,
         },
       })
       .catch((err) => err.response);
 
+    console.log(response, "post Data");
     const data = response.data.data;
     if (response.status === 401) {
       // access token 만료
@@ -78,7 +81,6 @@ export default function Post() {
       postIds.current += "/" + data.map((item: any) => item.id).join("/");
     }
 
-    console.log(postIds.current, "postids");
     setPostInfo((item: any) => {
       if (isFirst.current === true) return [...data];
       return [...item, ...data];
@@ -122,7 +124,7 @@ export default function Post() {
   };
 
   useEffect(() => {
-    if (!accessToken) {
+    if (!isLogin) {
       message.error("로그인 후에 서비스를 이용해주세요.", {
         onClose: () => {
           router.push("/account/login");

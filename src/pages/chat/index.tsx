@@ -10,10 +10,12 @@ import { useAlert } from "react-alert";
 import { BACKEND_URL } from "../../constants";
 import { ChatContext, RoomType } from "../../store/ChatContext";
 import { ScreenContext } from "../../store/ScreenContext";
+import { useCookies } from "react-cookie";
 
 export default function Chat() {
-  const { grantRefresh, accessToken } = useContext(AuthContext);
+  const { grantRefresh, isLogin } = useContext(AuthContext);
   const { windowSize } = useContext(ScreenContext);
+  const [cookies] = useCookies(["accessToken"]);
   const {
     mainRoomId,
     setMainRoomId,
@@ -32,7 +34,7 @@ export default function Chat() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: accessToken,
+            Authorization: cookies.accessToken,
             Accept: "application/json",
           },
         }
@@ -63,7 +65,7 @@ export default function Chat() {
       .get(BACKEND_URL + "/chat/", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: accessToken,
+          Authorization: cookies.accessToken,
           Accept: "application/json",
         },
       })
@@ -107,7 +109,7 @@ export default function Chat() {
   };
 
   useEffect(() => {
-    if (!accessToken) {
+    if (!isLogin) {
       message.error("로그인 후에 서비스를 이용해주세요.", {
         onClose: () => {
           router.push("/account/login");

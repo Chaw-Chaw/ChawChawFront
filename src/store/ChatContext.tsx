@@ -12,6 +12,7 @@ import { BACKEND_URL, DEFAULT_PROFILE_IMAGE } from "../constants";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
 import { arrayRemovedItem } from "../utils";
+import { useCookies } from "react-cookie";
 
 interface LikeAlarmType {
   likeType: string; // LIKE, UNLIKE
@@ -83,8 +84,8 @@ const ChatContextProvider: React.FC = (props) => {
   const mainRoomIdRef = useRef(-1);
   const chatClient = useRef<any>({});
   const roomIdsRef = useRef<number[]>([]);
-  const { user, accessToken, grantRefresh, updateUser } =
-    useContext(AuthContext);
+  const { user, grantRefresh, updateUser, isLogin } = useContext(AuthContext);
+  const [cookies] = useCookies(["accessToken"]);
 
   const connect = () => {
     chatClient.current = new StompJs.Client({
@@ -106,7 +107,7 @@ const ChatContextProvider: React.FC = (props) => {
         console.error(frame);
       },
       connectHeaders: {
-        Authorization: accessToken,
+        Authorization: cookies.accessToken,
       },
     });
 
@@ -184,7 +185,7 @@ const ChatContextProvider: React.FC = (props) => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: accessToken,
+            Authorization: cookies.accessToken,
             Accept: "application/json",
           },
         }
@@ -228,7 +229,7 @@ const ChatContextProvider: React.FC = (props) => {
     const response = await axios
       .get("/users/alarm", {
         headers: {
-          Authorization: "Bearer " + accessToken,
+          Authorization: cookies.accessToken,
         },
       })
       .catch((err) => {
@@ -252,7 +253,7 @@ const ChatContextProvider: React.FC = (props) => {
   };
 
   useEffect(() => {
-    if (!accessToken || !user) return;
+    if (!isLogin || !user) return;
     getNewAlarms();
     connect();
     // useEffect() cleanup 함수
@@ -292,7 +293,7 @@ const ChatContextProvider: React.FC = (props) => {
         { userId },
         {
           headers: {
-            Authorization: accessToken,
+            Authorization: cookies.accessToken,
           },
         }
       )
@@ -319,7 +320,7 @@ const ChatContextProvider: React.FC = (props) => {
     const response = await axios
       .delete(`/users/block/${userId}`, {
         headers: {
-          Authorization: accessToken,
+          Authorization: cookies.accessToken,
         },
       })
       .catch((err) => err.response);

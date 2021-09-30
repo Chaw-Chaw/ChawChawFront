@@ -9,13 +9,12 @@ import PushAlarm from "../PushAlarm";
 
 const HeaderCondition: React.FC<{ type?: string }> = (props) => {
   const headerType = props.type;
-  const { user, accessToken } = useContext(AuthContext);
+  const { user, isLogin } = useContext(AuthContext);
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
-  // token이 없는게 문제다.
-  if (accessToken) {
+
+  if (isLogin) {
     return (
       <HeaderInfoBox>
-        {/* {props.router.pathname !== "/chat" ? <PushAlarm /> : null} */}
         <PushAlarm />
         <MyImage profileImage={profileImage} />
       </HeaderInfoBox>

@@ -1,10 +1,12 @@
 import { useContext, useEffect } from "react";
+import { useCookies } from "react-cookie";
 import styled from "styled-components";
 import { AuthContext } from "../../store/AuthContext";
 import Header from "./Header";
 
 const Layout: React.FC<{ type?: string }> = (props) => {
-  const { grantRefresh, accessToken } = useContext(AuthContext);
+  const { grantRefresh, isLogin } = useContext(AuthContext);
+
   const loginTime = (() => {
     if (typeof window === "undefined") return {};
     const localStorageLoginTime = window.localStorage.getItem("loginTime");
@@ -13,7 +15,7 @@ const Layout: React.FC<{ type?: string }> = (props) => {
   })();
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!isLogin) return;
     console.log(loginTime, "loginTime");
     setTimeout(grantRefresh, loginTime + 180000 - 60000);
   }, []);

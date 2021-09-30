@@ -24,7 +24,7 @@ export default function WebMailAuth() {
     webmailVerify,
     verificationNumber,
     user,
-    accessToken,
+    isLogin,
   } = useContext(AuthContext);
   const {
     register,
@@ -85,7 +85,7 @@ export default function WebMailAuth() {
   };
 
   useEffect(() => {
-    if (accessToken) {
+    if (isLogin) {
       message.error("로그아웃 후 회원가입을 진행해주세요.", {
         onClose: () => {
           router.push("/post");
