@@ -19,6 +19,7 @@ export default function Post() {
     "Hope Language",
     "order",
   ]);
+  const pastSearchCondition = useRef({});
   const [isEnd, setIsEnd] = useState(false);
   const isFirst = useRef(true);
   const postIds = useRef("");
@@ -94,11 +95,26 @@ export default function Post() {
   };
 
   const searchHandler = async (inputs: string) => {
+    // 검색조건 초기화
     setIsEnd(false);
     isFirst.current = true;
     postIds.current = "";
     searchName.current = inputs;
 
+    // 같은 검색 조건일 경우 중복검색을 하지 않음
+    const searchCondition = {
+      name: searchName.current,
+      sortInfo: sortInfo,
+    };
+    if (
+      JSON.stringify(pastSearchCondition.current) ===
+      JSON.stringify(searchCondition)
+    ) {
+      return;
+    }
+    pastSearchCondition.current = searchCondition;
+
+    //
     document.cookie = "exclude=" + blockIds + ";path=/;";
     await getPosts();
     document.cookie = "exclude=;path=/;expires=Thu, 18 Dec 2013 12:00:00 GMT";
@@ -121,7 +137,7 @@ export default function Post() {
         document.cookie =
           "exclude=" + postIds.current + "/" + blockIds + ";path=/;";
       }
-
+      console.log("observer");
       await getPosts();
       document.cookie = "exclude=;path=/;expires=Thu, 18 Dec 2013 12:00:00 GMT";
       observer.observe(entry.target);
@@ -137,6 +153,7 @@ export default function Post() {
         },
       });
     }
+
     const observer = new IntersectionObserver(onIntersect, {
       threshold: 0.5,
     });

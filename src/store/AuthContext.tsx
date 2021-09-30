@@ -156,7 +156,7 @@ const AuthContextProvider: React.FC = (props) => {
     // 일반 로그인 || 리프레시 로그인
     const tokenInfo = response.data.data.token || response.data.data;
     const accessToken = "Bearer " + tokenInfo.accessToken;
-    const accessTokenExpiresIn = new Date(Date.now() + tokenInfo.expiresIn);
+    const accessTokenExpiresIn = new Date(Date.now() + 30 * 24 * 60 * 60000);
 
     // 현재 로그인 시각 브라우저에 저장
     window.localStorage.setItem("loginTime", JSON.stringify(Date.now()));
