@@ -88,14 +88,14 @@ export default function Post() {
     isFirst.current = false;
   };
 
-  const searchHandler = (inputs: string) => {
+  const searchHandler = async (inputs: string) => {
     setIsEnd(false);
     isFirst.current = true;
     postIds.current = "";
     searchName.current = inputs;
 
     document.cookie = "exclude=" + blockIds + ";path=/;";
-    getPosts();
+    await getPosts();
     document.cookie = "exclude=;path=/;expires=Thu, 18 Dec 2013 12:00:00 GMT";
   };
 
