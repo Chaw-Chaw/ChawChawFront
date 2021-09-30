@@ -201,12 +201,14 @@ const AuthContextProvider: React.FC = (props) => {
       });
 
     if (response.status === 401) {
-      message.error("재로그인에 실패하셨습니다.", {
-        onClose: () => {
-          router.push("/account/login");
-        },
-      });
       setIsLogin(false);
+      message.error("재로그인에 실패하셨습니다.", {
+        // onClose: () => {
+        //   router.push("/account/login");
+        // },
+      });
+
+      router.push("/account/login");
       return;
     }
 
