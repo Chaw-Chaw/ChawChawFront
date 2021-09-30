@@ -11,6 +11,7 @@ import axios from "axios";
 import { AuthContext } from "../../../store/AuthContext";
 import { useAlert } from "react-alert";
 import { ChatContext } from "../../../store/ChatContext";
+import { useCookies } from "react-cookie";
 
 interface MessageInputProps {
   value: string;
@@ -22,15 +23,16 @@ interface MessageInputProps {
 const MessageInput: React.FC<MessageInputProps> = (props) => {
   const { mainRoomId, publish } = useContext(ChatContext);
   const isNotActive = mainRoomId === -1 ? true : false;
-  const { grantRefresh, accessToken } = useContext(AuthContext);
+  const { grantRefresh } = useContext(AuthContext);
   const message = useAlert();
+  const [cookies] = useCookies(["accessToken"]);
 
   const sendImage = async (image: FormData) => {
     const response = await axios
       .post("/chat/image", image, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: accessToken,
+          Authorization: cookies.accessToken,
         },
       })
       .catch((err) => err.response);

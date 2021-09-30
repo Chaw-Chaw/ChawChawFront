@@ -100,6 +100,7 @@ export default function Post() {
   };
 
   const target = useRef<any>(null);
+
   const onIntersect = async (
     [entry]: IntersectionObserverEntry[],
     observer: IntersectionObserver

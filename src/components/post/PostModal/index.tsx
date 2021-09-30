@@ -88,9 +88,15 @@ export type { PostModalInfoProps };
 
 const PostModalBox = styled.div`
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  /* top: center;
+  left: 0; */
+  /* transform: translate(-50%, -50%); */
   z-index: 30;
   width: 500px;
   display: flex;
@@ -105,11 +111,28 @@ const PostModalBox = styled.div`
   border-radius: 20px;
   box-sizing: border-box;
   overflow: auto;
+
+  @keyframes slide-in-bottom {
+    0% {
+      -webkit-transform: translateY(1000px);
+      transform: translateY(1000px);
+      opacity: 0;
+    }
+    100% {
+      -webkit-transform: translateY(0);
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  animation: slide-in-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
   ::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/
   }
+
   -ms-user-select: none;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;

@@ -83,37 +83,39 @@ const PostCard: React.FC<PostCardProps> = (props) => {
 
   return (
     <div>
-      <PostCardBox
-        onClick={(e) => {
-          e.preventDefault();
-          handleModal();
-        }}
-      >
-        <PostImageBox>
-          <Image
-            src={`${props.imageUrl}`}
-            alt="포스팅 프로필 이미지"
-            width="100px"
-            height="100px"
-            className="post-image"
-            objectFit="cover"
+      <PostCardContainer>
+        <PostCardBox
+          onClick={(e) => {
+            e.preventDefault();
+            handleModal();
+          }}
+        >
+          <PostImageBox>
+            <Image
+              src={`${props.imageUrl}`}
+              alt="포스팅 프로필 이미지"
+              width="100px"
+              height="100px"
+              className="post-image"
+              objectFit="cover"
+            />
+            <PostCardImageInfo
+              name={props.name}
+              repCountry={props.repCountry}
+              repLanguage={props.repLanguage}
+              repHopeLanguage={props.repHopeLanguage}
+            />
+          </PostImageBox>
+          <PostCardContent>
+            <PostCardContentText disabled value={postCardContent} />
+          </PostCardContent>
+          <PostCardInfo
+            pastDate={props.pastDate}
+            viewCount={props.viewCount}
+            likeCount={props.likeCount}
           />
-          <PostCardImageInfo
-            name={props.name}
-            repCountry={props.repCountry}
-            repLanguage={props.repLanguage}
-            repHopeLanguage={props.repHopeLanguage}
-          />
-        </PostImageBox>
-        <PostCardContent>
-          <PostCardContentText disabled value={postCardContent} />
-        </PostCardContent>
-        <PostCardInfo
-          pastDate={props.pastDate}
-          viewCount={props.viewCount}
-          likeCount={props.likeCount}
-        />
-      </PostCardBox>
+        </PostCardBox>
+      </PostCardContainer>
       {open ? (
         <>
           <ModalLayout
@@ -162,6 +164,7 @@ const PostCardBox = styled.div`
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
   border-radius: 20px;
   box-sizing: border-box;
+
   @keyframes kenburns-top {
     0% {
       -webkit-transform: scale(1) translateY(0);
@@ -176,6 +179,7 @@ const PostCardBox = styled.div`
       transform-origin: top;
     }
   }
+
   :hover {
     animation: kenburns-top 0.2s ease-out both;
   }
@@ -227,4 +231,20 @@ const PostImageBox = styled.div`
   .post-image {
     border-radius: 50%;
   }
+`;
+
+const PostCardContainer = styled.div`
+  @keyframes slide-in-bottom {
+    0% {
+      -webkit-transform: translateY(1000px);
+      transform: translateY(1000px);
+      opacity: 0;
+    }
+    100% {
+      -webkit-transform: translateY(0);
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  animation: slide-in-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 `;

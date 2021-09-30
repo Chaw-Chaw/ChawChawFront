@@ -431,11 +431,6 @@ const AuthContextProvider: React.FC = (props) => {
     console.log("update userInfo");
   };
 
-  // useEffect(() => {
-  //   if (!accessToken) return;
-  //   grantRefresh();
-  // }, []);
-
   const contextValue: AuthContextObj = {
     user,
     login,

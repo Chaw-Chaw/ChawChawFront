@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { ChatBox } from "../../common";
 import { ChatContext } from "../../../store/ChatContext";
 import { AuthContext } from "../../../store/AuthContext";
-import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import { arrayRemovedItem } from "../../../utils";
 
 const ChatList: React.FC = (props) => {
@@ -76,6 +75,7 @@ const Outline = styled.div`
   width: 100%;
   max-width: 400px;
   padding: 20px 20px 20px 20px;
+
   @media (max-width: 1000px) {
     max-width: 100%;
     padding: 0px;
@@ -90,12 +90,45 @@ const Outline = styled.div`
 
 const Inner = styled.div`
   overflow: auto;
-
   border-left: 1px solid ${(props) => props.theme.secondaryColor};
-  @media (max-width: 1000px) {
-    border: none;
-  }
   box-sizing: border-box;
   padding: 20px;
   height: 100%;
+
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  ::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
+
+  @keyframes slide-in-right {
+    0% {
+      -webkit-transform: translateX(1000px);
+      transform: translateX(1000px);
+      opacity: 0;
+    }
+    100% {
+      -webkit-transform: translateX(0);
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  @media (max-width: 1000px) {
+    border: none;
+    @keyframes slide-in-bottom {
+      0% {
+        -webkit-transform: translateY(1000px);
+        transform: translateY(1000px);
+        opacity: 0;
+      }
+      100% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    animation: slide-in-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  }
 `;

@@ -20,6 +20,7 @@ import { ChangeLanguageDropDown } from "../../common";
 import { ChatContext } from "../../../store/ChatContext";
 import { ScreenContext } from "../../../store/ScreenContext";
 import ChatList from "../ChatList";
+import { useCookies } from "react-cookie";
 
 const ChatRoom: React.FC = (props) => {
   const {
@@ -32,8 +33,9 @@ const ChatRoom: React.FC = (props) => {
     setTotalMessage,
     setMainChatMessages,
   } = useContext(ChatContext);
-  const { user, grantRefresh, accessToken } = useContext(AuthContext);
+  const { user, grantRefresh } = useContext(AuthContext);
   const { windowSize } = useContext(ScreenContext);
+  const [cookies] = useCookies(["accessToken"]);
   const [message, setMessage] = useState<string>("");
   // const [isViewChatList, setIsViewChatList] = useState(false);
   const [selectLanguage, setSelectLanguage] = useState<string[]>(["Korean"]);
@@ -52,7 +54,7 @@ const ChatRoom: React.FC = (props) => {
       .delete(`/chat/room/${mainRoomId}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: accessToken,
+          Authorization: cookies.accessToken,
           Accept: "application/json",
         },
       })
@@ -311,7 +313,7 @@ const EmptyChatRoomTitle = styled.h1`
 
 const ChatListViewButtonBox = styled.div`
   display: none;
-  @media (max-width: 768px) {
+  @media (max-width: 1000px) {
     display: flex;
   }
 `;
