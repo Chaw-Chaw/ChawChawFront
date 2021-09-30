@@ -17,6 +17,7 @@ import ProfileContent from "./ProfileContent";
 import ProfileImage from "./ProfileImage";
 import ProfileSocialUrl from "./ProfileSocialUrl";
 import ProfileSelectInfo from "./ProfileSelectInfo";
+import { useCookies } from "react-cookie";
 
 interface ProfileSection {
   title?: string;
@@ -25,7 +26,8 @@ interface ProfileSection {
 
 const ProfileSection: React.FC = () => {
   const message = useAlert();
-  const { accessToken, grantRefresh } = useContext(AuthContext);
+  const { grantRefresh } = useContext(AuthContext);
+  const [cookies] = useCookies(["accessToken"]);
   const { user, updateUser } = useContext(AuthContext);
   const [userCountries, setUserCountries] = useState<string[]>(
     user.country || ["Select"]
@@ -91,7 +93,7 @@ const ProfileSection: React.FC = () => {
       .post("/users/profile", userProfile, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: accessToken,
+          Authorization: cookies.accessToken,
           Accept: "application/json",
         },
       })

@@ -6,19 +6,20 @@ import { Button } from "../../common";
 import axios from "axios";
 import { useAlert } from "react-alert";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
+import { useCookies } from "react-cookie";
 
 const ProfileImage: React.FC = () => {
-  const { user, updateUser, grantRefresh, accessToken } =
-    useContext(AuthContext);
+  const { user, updateUser, grantRefresh } = useContext(AuthContext);
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
   const message = useAlert();
+  const [cookies] = useCookies(["accessToken"]);
 
   const sendImage = async (image: FormData) => {
     const response = await axios
       .post("/users/image", image, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: accessToken,
+          Authorization: cookies.accessToken,
         },
       })
       .catch((err) => err.response);
@@ -58,7 +59,7 @@ const ProfileImage: React.FC = () => {
       .delete("/users/image", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: accessToken,
+          Authorization: cookies.accessToken,
           Accept: "*/*",
         },
       })
