@@ -161,7 +161,7 @@ const AuthContextProvider: React.FC = (props) => {
     // 현재 로그인 시각 브라우저에 저장
     window.localStorage.setItem("loginTime", JSON.stringify(Date.now()));
 
-    // 쿠키가 만료시간이 되면 지워지게 해서 자동으로 로그아웃을 유도
+    // 쿠키가 만료시간이 되면 지워지게 해서 자동으로 로그아웃을 유지
     // 또한 브라우저를 끄고 켜도 로그인 유지
     setCookie("accessToken", accessToken, {
       path: "/",
@@ -170,7 +170,6 @@ const AuthContextProvider: React.FC = (props) => {
     });
 
     setIsLogin(true);
-
     setTimeout(grantRefresh, tokenInfo.expiresIn - 60000);
     if (response.data.data.profile) {
       const newData: UserPropertys = {
@@ -189,7 +188,6 @@ const AuthContextProvider: React.FC = (props) => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: cookies.accessToken,
             Accept: "application/json",
           },
         }

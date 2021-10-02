@@ -60,7 +60,7 @@ export default function Post() {
 
     if (response.data.responseMessage === "조회 결과가 존재하지 않음") {
       setIsEnd(true);
-      if (isFirst) {
+      if (isFirst && searchType.current === "SEARCH") {
         message.error("조회 결과가 없습니다.");
       }
       return;
@@ -104,7 +104,6 @@ export default function Post() {
     observer: IntersectionObserver
   ) => {
     if (entry.isIntersecting) {
-      if (searchType.current === "SEARCH") return;
       observer.unobserve(entry.target);
 
       // 쿠키 설정이 비동기 식인가? 아니다. Path 설정을 안해두면 두번쨰 exclude 를 만들어버린다.
