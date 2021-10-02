@@ -19,30 +19,22 @@ export default function Post() {
     "Hope Language",
     "order",
   ]);
-  const pastSearchCondition = useRef({});
   const [isEnd, setIsEnd] = useState(false);
-  const isFirst = useRef(true);
   const postIds = useRef("");
   const searchName = useRef("");
   const message = useAlert();
   const router = useRouter();
   const blockIds = user.blockIds ? user.blockIds.join("/") : "";
+  const searchType = useRef("BASIC");
 
   const getPosts = async () => {
     const languageConvert = LanguageLocale[sortInfo[0]] || "";
     const hopeLanguageConvert = LanguageLocale[sortInfo[1]] || "";
     const orderConvert = orderOptions[sortInfo[2]] || "";
-    console.log(
-      {
-        name: searchName.current,
-        language: languageConvert,
-        hopeLanguage: hopeLanguageConvert,
-        order: orderConvert,
-        isFirst: isFirst.current,
-      },
-      document.cookie,
-      "Params"
-    );
+    const isFirst = postIds.current === "";
+
+    // console.log(document.cookie, "cookie");
+    console.log(postIds.current, "postIds");
     const response = await axios
       .get(`/users`, {
         params: {
@@ -50,7 +42,7 @@ export default function Post() {
           language: languageConvert,
           hopeLanguage: hopeLanguageConvert,
           order: orderConvert,
-          isFirst: isFirst.current,
+          isFirst: isFirst,
         },
         headers: {
           Authorization: cookies.accessToken,
@@ -58,7 +50,6 @@ export default function Post() {
       })
       .catch((err) => err.response);
 
-    console.log(response, "post Data");
     const data = response.data.data;
     if (response.status === 401) {
       // access token 만료
@@ -69,8 +60,7 @@ export default function Post() {
 
     if (response.data.responseMessage === "조회 결과가 존재하지 않음") {
       setIsEnd(true);
-      console.error(response.data.responseMessage);
-      if (isFirst.current) {
+      if (isFirst) {
         message.error("조회 결과가 없습니다.");
       }
       return;
@@ -80,7 +70,7 @@ export default function Post() {
       return;
     }
 
-    if (isFirst.current === true) {
+    if (postIds.current === "") {
       postIds.current += data.map((item: any) => item.id).join("/");
     } else {
       postIds.current += "/" + data.map((item: any) => item.id).join("/");
@@ -88,36 +78,23 @@ export default function Post() {
 
     setPostInfo((item: any) => {
       const result = item;
-      if (isFirst.current === true) return data;
+      if (isFirst === true) return data;
       return result.concat(data);
     });
-    isFirst.current = false;
   };
 
   const searchHandler = async (inputs: string) => {
     // 검색조건 초기화
     setIsEnd(false);
-    isFirst.current = true;
     postIds.current = "";
     searchName.current = inputs;
 
-    // 같은 검색 조건일 경우 중복검색을 하지 않음
-    const searchCondition = {
-      name: searchName.current,
-      sortInfo: sortInfo,
-    };
-    if (
-      JSON.stringify(pastSearchCondition.current) ===
-      JSON.stringify(searchCondition)
-    ) {
-      return;
-    }
-    pastSearchCondition.current = searchCondition;
-
-    //
+    // 검색 직후 바로 observer로 인한 중복검색 방지
+    searchType.current = "SEARCH";
     document.cookie = "exclude=" + blockIds + ";path=/;";
     await getPosts();
     document.cookie = "exclude=;path=/;expires=Thu, 18 Dec 2013 12:00:00 GMT";
+    searchType.current = "BASIC";
   };
 
   const target = useRef<any>(null);
@@ -127,21 +104,23 @@ export default function Post() {
     observer: IntersectionObserver
   ) => {
     if (entry.isIntersecting) {
+      if (searchType.current === "SEARCH") return;
       observer.unobserve(entry.target);
 
       // 쿠키 설정이 비동기 식인가? 아니다. Path 설정을 안해두면 두번쨰 exclude 를 만들어버린다.
       // exclude에는 차단된 아이디들이 초기값으로 들어가야한다.
-      if (postIds.current === "") {
+      if (blockIds === "") {
+        document.cookie = "exclude=" + postIds.current + ";path=/;";
+      } else if (postIds.current === "") {
         document.cookie = "exclude=" + blockIds + ";path=/;";
       } else {
         document.cookie =
-          "exclude=" + postIds.current + "/" + blockIds + ";path=/;";
+          "exclude=" + blockIds + "/" + postIds.current + ";path=/;";
       }
-      console.log("observer");
+
       await getPosts();
       document.cookie = "exclude=;path=/;expires=Thu, 18 Dec 2013 12:00:00 GMT";
       observer.observe(entry.target);
-    } else {
     }
   };
 
