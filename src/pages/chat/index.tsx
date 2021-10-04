@@ -22,6 +22,7 @@ export default function Chat() {
     setMainChatMessages,
     totalMessage,
     setTotalMessage,
+    setMainRoomUserId,
   } = useContext(ChatContext);
   const router = useRouter();
   const message = useAlert();
@@ -56,6 +57,7 @@ export default function Chat() {
     console.log(response, "getMainRoomId");
     const mainRoomId = response.data.data.roomId;
     setMainRoomId(mainRoomId);
+    setMainRoomUserId(userId);
     // 채팅방을 만들고 전체 메세지들을 받기
     getMessageLog();
   };

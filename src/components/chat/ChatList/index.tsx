@@ -6,7 +6,7 @@ import { AuthContext } from "../../../store/AuthContext";
 import { arrayRemovedItem } from "../../../utils";
 
 const ChatList: React.FC = (props) => {
-  const { totalMessage, setMainRoomId, setIsViewChatList } =
+  const { totalMessage, setMainRoomId, setIsViewChatList, setMainRoomUserId } =
     useContext(ChatContext);
   const { user } = useContext(AuthContext);
 
@@ -40,6 +40,10 @@ const ChatList: React.FC = (props) => {
                 user.name,
                 item.participantNames
               )[0];
+              const senderId = arrayRemovedItem(
+                user.id,
+                item.participantIds
+              )[0];
               const regDate = isNewChatRoom ? "" : lastMessageInfo.regDate;
 
               return (
@@ -52,6 +56,7 @@ const ChatList: React.FC = (props) => {
                   onClick={() => {
                     setIsViewChatList(false);
                     setMainRoomId(item.roomId);
+                    setMainRoomUserId(senderId);
                     return;
                   }}
                   context={limitMessage}

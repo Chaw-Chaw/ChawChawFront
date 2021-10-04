@@ -40,17 +40,19 @@ interface RoomType {
 
 interface ChatContextObj {
   mainChatMessages: MessageType[];
-  totalMessage: RoomType[];
-  mainRoomId: number;
   setMainChatMessages: Dispatch<SetStateAction<MessageType[]>>;
-  setMainRoomId: Dispatch<SetStateAction<number>>;
+  totalMessage: RoomType[];
   setTotalMessage: Dispatch<SetStateAction<RoomType[]>>;
+  mainRoomId: number;
+  setMainRoomId: Dispatch<SetStateAction<number>>;
   newMessages: Object[];
   setNewMessages: Dispatch<React.SetStateAction<Object[]>>;
   newLikes: Object[];
   setNewLikes: Dispatch<React.SetStateAction<Object[]>>;
   isViewChatList: boolean;
   setIsViewChatList: Dispatch<React.SetStateAction<boolean>>;
+  mainRoomUserId: number;
+  setMainRoomUserId: Dispatch<SetStateAction<number>>;
   publish: (message: string, messageType: string) => void;
   blockUser: (userId: number) => Promise<true | undefined>;
   unblockUser: (userId: number) => Promise<true | undefined>;
@@ -69,6 +71,8 @@ const ChatContext = React.createContext<ChatContextObj>({
   setNewLikes: () => {},
   isViewChatList: false,
   setIsViewChatList: () => {},
+  mainRoomUserId: -1,
+  setMainRoomUserId: () => {},
   publish: (message: string, messageType: string) => {},
   blockUser: (userId: number) => new Promise(() => {}),
   unblockUser: (userId: number) => new Promise(() => {}),
@@ -86,6 +90,7 @@ const ChatContextProvider: React.FC = (props) => {
   const roomIdsRef = useRef<number[]>([]);
   const { user, grantRefresh, updateUser, isLogin } = useContext(AuthContext);
   const [cookies] = useCookies(["accessToken"]);
+  const [mainRoomUserId, setMainRoomUserId] = useState(-1);
 
   const connect = () => {
     chatClient.current = new StompJs.Client({
@@ -353,15 +358,17 @@ const ChatContextProvider: React.FC = (props) => {
 
   const contextValue: ChatContextObj = {
     mainChatMessages,
-    totalMessage,
-    mainRoomId,
     setMainChatMessages,
-    setMainRoomId,
+    totalMessage,
     setTotalMessage,
+    mainRoomId,
+    setMainRoomId,
     newMessages,
     setNewMessages,
     isViewChatList,
     setIsViewChatList,
+    mainRoomUserId,
+    setMainRoomUserId,
     publish,
     newLikes,
     setNewLikes,

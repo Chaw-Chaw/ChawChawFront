@@ -21,7 +21,8 @@ interface MessageInputProps {
 }
 
 const MessageInput: React.FC<MessageInputProps> = (props) => {
-  const { mainRoomId, publish } = useContext(ChatContext);
+  const { mainRoomId, publish, mainRoomUserId } = useContext(ChatContext);
+  const { user } = useContext(AuthContext);
   const isNotActive = mainRoomId === -1 ? true : false;
   const { grantRefresh } = useContext(AuthContext);
   const message = useAlert();
@@ -54,6 +55,9 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
   };
   const imageSend: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     e.preventDefault();
+    if (user.blockIds?.includes(mainRoomUserId)) {
+      return;
+    }
     const target = e.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];
     if (file === undefined) return;

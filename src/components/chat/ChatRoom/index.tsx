@@ -32,6 +32,7 @@ const ChatRoom: React.FC = (props) => {
     publish,
     setTotalMessage,
     setMainChatMessages,
+    mainRoomUserId,
   } = useContext(ChatContext);
   const { user, grantRefresh } = useContext(AuthContext);
   const { windowSize } = useContext(ScreenContext);
@@ -199,6 +200,10 @@ const ChatRoom: React.FC = (props) => {
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
+                  if (user.blockIds?.includes(mainRoomUserId)) {
+                    console.log(user.blockIds, mainRoomUserId, "뭐야 왜안돼?");
+                    return;
+                  }
                   sendMessage();
                 }
               }}
