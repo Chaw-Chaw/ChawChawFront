@@ -315,15 +315,24 @@ const AuthContextProvider: React.FC = (props) => {
   };
 
   const signup = async (props: AuthReqProps) => {
-    const signupInfo = {
-      email: props.email,
-      password: props.password,
-      name: props.name,
-      web_email: props.web_email,
-      school: props.school,
-      imageUrl: props.imageUrl,
-      provider: props.provider,
-    };
+    const signupInfo = props.password
+      ? {
+          email: props.email,
+          password: props.password,
+          name: props.name,
+          web_email: props.web_email,
+          school: props.school,
+          imageUrl: props.imageUrl,
+          provider: props.provider,
+        }
+      : {
+          email: props.email,
+          name: props.name,
+          web_email: props.web_email,
+          school: props.school,
+          imageUrl: props.imageUrl,
+          provider: props.provider,
+        };
 
     const response = await axios
       .post("/users/signup", signupInfo, {
