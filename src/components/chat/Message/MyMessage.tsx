@@ -1,6 +1,6 @@
 import axios from "axios";
 import Image from "next/image";
-import { MouseEventHandler, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import styled from "styled-components";
 import { GOOGLE_TRANSLATE_API_KEY } from "../../../constants";
 import { LanguageLocale } from "../../common";
@@ -11,6 +11,8 @@ interface MyMessageProps {
   context: string;
   selectLanguage: string[];
   imageUrl?: string;
+  messageType: string;
+  scrollToBottom: () => void;
 }
 
 const MyMessage: React.FC<MyMessageProps> = (props) => {
@@ -56,15 +58,21 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
     return;
   };
 
+  // 새로운 메세지 가 props 로 들어오면 context 재설정
+  useEffect(() => {
+    setContext(props.context);
+  }, [props.context]);
+
   return (
     <MyMessageContainer>
-      {props.imageUrl ? (
+      {props.messageType === "IMAGE" ? (
         <MessageImageBox>
           <Image
             className="chat_image"
             src={`${props.imageUrl}`}
             alt="채팅 이미지"
             layout="fill"
+            onLoad={props.scrollToBottom}
           />
         </MessageImageBox>
       ) : (

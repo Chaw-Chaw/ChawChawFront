@@ -68,22 +68,22 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
   return (
     <>
       <YourMessageContainer>
-        {props.imageUrl ? (
-          <MessageImageBox>
-            <Image
-              className="chat_image"
-              src={`${props.imageUrl}`}
-              alt="채팅 이미지"
-              layout="fill"
-            />
-          </MessageImageBox>
-        ) : (
-          <YourMessageInfo>
-            <ChatProfileWrap onClick={profileHandler}>
-              <MessageImage src={props.src} />
-            </ChatProfileWrap>
-            <YourMessageContent>
-              <MessageUserName>{props.userName}</MessageUserName>
+        <YourMessageInfo>
+          <ChatProfileWrap onClick={profileHandler}>
+            <MessageImage src={props.src} />
+          </ChatProfileWrap>
+          <YourMessageContent>
+            <MessageUserName>{props.userName}</MessageUserName>
+            {props.messageType === "IMAGE" ? (
+              <MessageImageBox>
+                <Image
+                  className="chat_image"
+                  src={`${props.imageUrl}`}
+                  alt="채팅 이미지"
+                  layout="fill"
+                />
+              </MessageImageBox>
+            ) : (
               <YourMessageBox onClick={onClick}>
                 <MessageContext
                   isActive={isActive}
@@ -93,9 +93,9 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
                 />
                 <MessageText>{context}</MessageText>
               </YourMessageBox>
-            </YourMessageContent>
-          </YourMessageInfo>
-        )}
+            )}
+          </YourMessageContent>
+        </YourMessageInfo>
         <RegDateMessage>{props.regDate}</RegDateMessage>
       </YourMessageContainer>
       {open ? (

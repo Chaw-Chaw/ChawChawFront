@@ -10,6 +10,8 @@ interface ChatMessageProps {
   selectLanguage: string[];
   imageUrl?: string;
   userId: number;
+  messageType: string;
+  scrollToBottom: () => void;
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = (props) => {
@@ -26,6 +28,8 @@ const ChatMessage: React.FC<ChatMessageProps> = (props) => {
           selectLanguage={props.selectLanguage}
           imageUrl={props.imageUrl}
           userId={props.userId}
+          messageType={props.messageType}
+          scrollToBottom={props.scrollToBottom}
         />
       ) : (
         <MyMessage
@@ -33,6 +37,8 @@ const ChatMessage: React.FC<ChatMessageProps> = (props) => {
           regDate={regDate}
           selectLanguage={props.selectLanguage}
           imageUrl={props.imageUrl}
+          messageType={props.messageType}
+          scrollToBottom={props.scrollToBottom}
         />
       )}
     </MessageContainer>
