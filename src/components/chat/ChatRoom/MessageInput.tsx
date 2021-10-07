@@ -1,29 +1,24 @@
 import styled from "styled-components";
 import { TextArea } from "../../common/Input";
 import { AiOutlinePicture, AiOutlineSend } from "react-icons/ai";
-import {
-  ChangeEventHandler,
-  KeyboardEvent,
-  MouseEventHandler,
-  useContext,
-} from "react";
+import { ChangeEventHandler, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../store/AuthContext";
 import { useAlert } from "react-alert";
 import { ChatContext } from "../../../store/ChatContext";
 import { useCookies } from "react-cookie";
+import { INITIAL_ROOMID } from "../../../constants";
 
 interface MessageInputProps {
   value: string;
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
-  onKeyPress: (e: KeyboardEvent) => void;
-  onClick: MouseEventHandler<HTMLDivElement>;
+  sendMessage: () => void;
 }
 
 const MessageInput: React.FC<MessageInputProps> = (props) => {
-  const { mainRoomId, publish, mainRoomUserId } = useContext(ChatContext);
+  const { mainRoom, publish } = useContext(ChatContext);
   const { user } = useContext(AuthContext);
-  const isNotActive = mainRoomId === -1 ? true : false;
+  const isNotActive = mainRoom.id === INITIAL_ROOMID ? true : false;
   const { grantRefresh } = useContext(AuthContext);
   const message = useAlert();
   const [cookies] = useCookies(["accessToken"]);
@@ -43,21 +38,18 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
       return;
     }
 
-    if (response.data.isSuccess) {
-      console.log(response.data.data, "image Upload");
-      const imageUrl = response.data.data;
-      publish(imageUrl, "IMAGE");
-    } else {
+    if (!response.data.isSuccess) {
       console.error(response.data, "이미지 업로드 실패");
       return;
     }
-    return;
+
+    const imageUrl = response.data.data;
+    return imageUrl;
   };
-  const imageSend: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    e.preventDefault();
-    if (user.blockIds?.includes(mainRoomUserId)) {
-      return;
-    }
+
+  const imageMessageSend: React.ChangeEventHandler<HTMLInputElement> = async (
+    e
+  ) => {
     const target = e.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];
     if (file === undefined) return;
@@ -67,7 +59,8 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
     }
     const image = new FormData();
     image.append("file", file);
-    sendImage(image);
+    const imageUrl = await sendImage(image);
+    publish(imageUrl, "IMAGE");
   };
 
   return (
@@ -79,7 +72,14 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
           onChange={props.onChange}
           onKeyPress={(e) => {
             if (isNotActive) return;
-            props.onKeyPress(e);
+            if (e.key === "Enter") {
+              e.preventDefault();
+              if (user.blockIds?.includes(mainRoom.userId)) {
+                message.error("차단한 사용자 입니다.");
+                return;
+              }
+              props.sendMessage();
+            }
           }}
           placeholder="메세지를 입력해주세요."
           autoFocus
@@ -90,7 +90,16 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
             type="file"
             style={{ display: "none" }}
             accept="image/png, image/jpeg"
-            onChange={imageSend}
+            onChange={(e) => {
+              e.preventDefault();
+              if (user.blockIds?.includes(mainRoom.userId)) {
+                message.error("차단한 사용자 입니다.");
+                return;
+              }
+              imageMessageSend(e);
+              // 같은 이미지 한번더 보낼수 있도록 이벤트 타겟 값 초기화
+              e.target.value = "";
+            }}
           />
           <AiOutlinePicture />
         </PictureIconBox>
@@ -98,7 +107,11 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
           onClick={(e) => {
             e.preventDefault();
             if (isNotActive) return;
-            props.onClick(e);
+            if (user.blockIds?.includes(mainRoom.userId)) {
+              message.error("차단한 사용자 입니다.");
+              return;
+            }
+            props.sendMessage();
           }}
         >
           <AiOutlineSend />
@@ -122,29 +135,16 @@ const InputBox = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  /* min-width: 500px; */
   box-sizing: border-box;
-  /* position: sticky;
-  bottom: 0px; */
-  /* left: 50%; */
-  /* @media (max-width: 768px) {
-    min-width: 320px;
-  } */
   background-color: ${(props) => props.theme.bodyBackgroundColor};
 `;
 
 const InputBoxInner = styled.div`
   width: 100%;
-
   max-width: 580px;
-  /* max-width: 450px; */
   position: relative;
   display: flex;
   justify-content: center;
-  /* margin: 0px 20px; */
-  /* @media (max-width: 768px) {
-    min-width: 290px;
-  } */
 `;
 
 const TextInput = styled(TextArea)`
