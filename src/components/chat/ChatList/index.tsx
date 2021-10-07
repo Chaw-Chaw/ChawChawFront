@@ -56,12 +56,12 @@ const ChatList: React.FC = (props) => {
                   sender={sender}
                   roomId={item.roomId}
                   onClick={() => {
-                    setIsViewChatList(false);
-                    setMainRoom({ id: item.roomId, userId: senderId });
-                    // router.push({
-                    //   pathname: "/chat",
-                    //   query: { userId: senderId },
-                    // });
+                    // setIsViewChatList(false);
+                    // setMainRoom({ id: item.roomId, userId: senderId });
+                    router.push({
+                      pathname: "/chat",
+                      query: { userId: senderId },
+                    });
                     // location.href = `/chat?userId=${senderId}`;
                     return;
                   }}

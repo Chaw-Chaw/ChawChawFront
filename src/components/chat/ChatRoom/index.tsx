@@ -10,35 +10,35 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import MessageInput from "./MessageInput";
 import ChatMessage from "../Message/ChatMessage";
-import InfoMessage from "../Message/InfoMessage";
 import { BsBoxArrowRight } from "react-icons/bs";
 import { RiHome2Line, RiWechat2Line } from "react-icons/ri";
 import { BsChatDots } from "react-icons/bs";
-
 import { AuthContext } from "../../../store/AuthContext";
-import { ChangeLanguageDropDown } from "../../common";
+import { AlarmCount, ChangeLanguageDropDown } from "../../common";
 import { ChatContext } from "../../../store/ChatContext";
-import { ScreenContext } from "../../../store/ScreenContext";
 import ChatList from "../ChatList";
 import { useCookies } from "react-cookie";
+import {
+  INITIAL_ID,
+  INITIAL_ROOMID,
+  LIMIT_NEWALARM_SIZE,
+} from "../../../constants";
 
 const ChatRoom: React.FC = (props) => {
   const {
-    mainRoomId,
-    setMainRoomId,
+    mainRoom,
+    setMainRoom,
     mainChatMessages,
     isViewChatList,
     setIsViewChatList,
     publish,
     setTotalMessage,
     setMainChatMessages,
-    mainRoomUserId,
+    newMessages,
   } = useContext(ChatContext);
   const { user, grantRefresh } = useContext(AuthContext);
-  const { windowSize } = useContext(ScreenContext);
   const [cookies] = useCookies(["accessToken"]);
   const [message, setMessage] = useState<string>("");
-  // const [isViewChatList, setIsViewChatList] = useState(false);
   const [selectLanguage, setSelectLanguage] = useState<string[]>(["Korean"]);
   const chatMessageBox = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -52,7 +52,10 @@ const ChatRoom: React.FC = (props) => {
   const leaveChatRoom: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
     const response = await axios
-      .delete(`/chat/room/${mainRoomId}`, {
+      .delete("/chat/room", {
+        data: {
+          roomId: mainRoom.id,
+        },
         headers: {
           "Content-Type": "application/json",
           Authorization: cookies.accessToken,
@@ -60,6 +63,8 @@ const ChatRoom: React.FC = (props) => {
         },
       })
       .catch((err) => err.response);
+
+    console.log(response, "leaveChatRoom");
 
     if (response.status === 401) {
       //acessToken 만료
@@ -74,11 +79,15 @@ const ChatRoom: React.FC = (props) => {
 
     setTotalMessage((pre) => {
       const result = pre;
-      const resultFilter = result.filter((item) => item.roomId !== mainRoomId);
+      const resultFilter = result.filter((item) => item.roomId !== mainRoom.id);
       return resultFilter;
     });
-    setMainChatMessages([]);
-    setMainRoomId(-1);
+    // setMainChatMessages([]);
+    // setMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID });
+    router.push({
+      pathname: "/chat",
+      query: { userId: INITIAL_ID },
+    });
   };
 
   const backHome: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -88,7 +97,6 @@ const ChatRoom: React.FC = (props) => {
 
   const viewChatList: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    if (windowSize > 1000) return;
     setIsViewChatList((pre) => !pre);
   };
 
@@ -103,10 +111,7 @@ const ChatRoom: React.FC = (props) => {
 
   useEffect(() => {
     scrollToBottom();
-    setTimeout(() => {
-      scrollToBottom();
-    }, 1000);
-  }, [mainChatMessages]);
+  }, [JSON.stringify(mainChatMessages)]);
 
   return (
     <Outline>
@@ -122,6 +127,15 @@ const ChatRoom: React.FC = (props) => {
             <ChatListViewButtonBox>
               <MessageHeaderButton onClick={viewChatList}>
                 <BsChatDots />
+                {newMessages.length !== 0 && (
+                  <AlarmCount>
+                    <span>
+                      {newMessages.length > LIMIT_NEWALARM_SIZE
+                        ? LIMIT_NEWALARM_SIZE
+                        : newMessages.length}
+                    </span>
+                  </AlarmCount>
+                )}
               </MessageHeaderButton>
             </ChatListViewButtonBox>
           </MessagesHeaderIcons>
@@ -131,28 +145,19 @@ const ChatRoom: React.FC = (props) => {
           />
         </Header>
         {/* use Memo 적용할것 */}
-        {isViewChatList && windowSize <= 1000 ? (
-          <ChatList />
+        {isViewChatList ? (
+          <ChatListWrapper>
+            <ChatList />
+          </ChatListWrapper>
         ) : (
           <>
             <MessageContainer>
               {(() => {
-                if (mainRoomId !== -1) {
-                  if (mainChatMessages && setMainChatMessages.length > 0) {
+                if (mainRoom.id !== INITIAL_ROOMID) {
+                  if (mainChatMessages.length > 0) {
                     return (
                       <div ref={chatMessageBox}>
                         {mainChatMessages.map((chatMessage, index) => {
-                          // 토크 타입이 아닌 정보는 InfoMessage
-                          if (
-                            chatMessage.messageType === "ENTER" ||
-                            chatMessage.messageType === "EXIT"
-                          )
-                            return (
-                              <InfoMessage key={index}>
-                                {chatMessage.message}
-                              </InfoMessage>
-                            );
-
                           // 토크 타입인 일반메세지 분류
                           return (
                             <ChatMessage
@@ -172,6 +177,8 @@ const ChatRoom: React.FC = (props) => {
                               context={chatMessage.message}
                               selectLanguage={selectLanguage}
                               userName={chatMessage.sender}
+                              messageType={chatMessage.messageType}
+                              scrollToBottom={scrollToBottom}
                             />
                           );
                         })}
@@ -193,25 +200,9 @@ const ChatRoom: React.FC = (props) => {
               })()}
             </MessageContainer>
             <MessageInput
-              onChange={(e) => {
-                // if (e.key === "Enter") return;
-                setMessage(e.target.value);
-              }}
-              onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  if (user.blockIds?.includes(mainRoomUserId)) {
-                    console.log(user.blockIds, mainRoomUserId, "뭐야 왜안돼?");
-                    return;
-                  }
-                  sendMessage();
-                }
-              }}
+              onChange={(e) => setMessage(e.target.value)}
+              sendMessage={sendMessage}
               value={message}
-              onClick={(e) => {
-                e.preventDefault();
-                sendMessage();
-              }}
             />
           </>
         )}
@@ -230,6 +221,7 @@ const Outline = styled.div`
   /* margin-bottom: 50px; */
   width: 100%;
   max-width: 600px;
+
   @media (max-width: 768px) {
     /* height: calc(100vh - 100px);
     height: calc(var(--vh, 1vh) * 100 - 100px);
@@ -286,6 +278,8 @@ const MessagesHeaderIcons = styled.div`
 `;
 
 const MessageHeaderButton = styled.button`
+  display: flex;
+  position: relative;
   border: none;
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   color: ${(props) => props.theme.primaryColor};
@@ -318,7 +312,14 @@ const EmptyChatRoomTitle = styled.h1`
 
 const ChatListViewButtonBox = styled.div`
   display: none;
-  @media (max-width: 1000px) {
+  @media (max-width: 1024px) {
     display: flex;
+  }
+`;
+
+const ChatListWrapper = styled.div`
+  display: none;
+  @media (max-width: 1024px) {
+    display: initial;
   }
 `;
