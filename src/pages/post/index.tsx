@@ -49,7 +49,7 @@ export default function Post() {
         },
       })
       .catch((err) => err.response);
-
+    console.log(response, "postInfo");
     const data = response.data.data;
     if (response.status === 401) {
       // access token 만료
@@ -141,26 +141,19 @@ export default function Post() {
 
   return (
     <Layout type="post">
-      <Container width="90%">
+      <Container>
         <PostSearch searchHandler={searchHandler} />
         <PostOrder setSortInfo={setSortInfo} sortInfo={sortInfo} />
         <PostSection postInfo={postInfo} />
-        <div
-          ref={target}
-          style={{
-            display: isEnd ? "none" : "flex",
-            width: "100%",
-            height: "300px",
-          }}
-        />
+        <BlankBox ref={target} display={isEnd ? "none" : "flex"} />
         <Divider display={isEnd ? "flex" : "none"} />
       </Container>
     </Layout>
   );
 }
 
-const Container = styled.div<{ width?: string }>`
-  width: ${(props) => (props.width ? props.width : "500px")};
+const Container = styled.div`
+  width: 90%;
   max-width: 1000px;
   display: flex;
   justify-content: center;
@@ -178,4 +171,10 @@ const Divider = styled.div<{ display: string }>`
   width: 100%;
   height: 100px;
   border-bottom: 1px solid ${(props) => props.theme.secondaryColor};
+`;
+
+const BlankBox = styled.div<{ display: string }>`
+  display: ${(props) => props.display};
+  width: 100%;
+  height: 300px;
 `;
