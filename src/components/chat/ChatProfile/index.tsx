@@ -6,6 +6,7 @@ import {
   MouseEventHandler,
   SetStateAction,
   useContext,
+  useEffect,
   useState,
 } from "react";
 
@@ -20,7 +21,8 @@ interface ChatProfileProps {
 }
 
 const ChatProfile: React.FC<ChatProfileProps> = (props) => {
-  const { blockUser, unblockUser } = useContext(ChatContext);
+  const { blockUser, unblockUser, organizeChatMessages, mainRoom } =
+    useContext(ChatContext);
   const { user } = useContext(AuthContext);
   const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.userId));
 
@@ -29,11 +31,19 @@ const ChatProfile: React.FC<ChatProfileProps> = (props) => {
     blockUser(props.userId);
     setIsBlock(true);
   };
-  const ChatUnblockHandler: MouseEventHandler<HTMLDivElement> = (e) => {
+  const ChatUnblockHandler: MouseEventHandler<HTMLDivElement> = async (e) => {
     e.preventDefault();
-    unblockUser(props.userId);
+    await unblockUser(props.userId);
     setIsBlock(false);
+    organizeChatMessages(mainRoom.id);
+    // 새로고침
+    // 원래라면 해당방에 해당하는 Messages만 따로 불러와서 setMainMessage를 다시해야합니다.
   };
+
+  useEffect(() => {
+    setIsBlock(user.blockIds?.includes(props.userId));
+  }, [JSON.stringify(user.blockIds)]);
+
   return (
     <ChatProfileBox>
       <ChatProfileImageSection>

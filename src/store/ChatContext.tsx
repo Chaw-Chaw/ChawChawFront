@@ -13,6 +13,8 @@ import { AuthContext } from "./AuthContext";
 import axios from "axios";
 import { arrayRemovedItem } from "../utils";
 import { useCookies } from "react-cookie";
+import { useAlert } from "react-alert";
+import { useRouter } from "next/router";
 
 interface LikeAlarmType {
   likeType: string; // LIKE, UNLIKE
@@ -54,6 +56,9 @@ interface ChatContextObj {
   publish: (message: string, messageType: string) => void;
   blockUser: (userId: number) => Promise<true | undefined>;
   unblockUser: (userId: number) => Promise<true | undefined>;
+  getMessageLog: () => Promise<any>;
+  organizeMainChat: (totalMessage: RoomType[], mainRoomId: number) => void;
+  organizeChatMessages: (mainRoomId: number) => Promise<void>;
 }
 
 const ChatContext = React.createContext<ChatContextObj>({
@@ -72,6 +77,9 @@ const ChatContext = React.createContext<ChatContextObj>({
   publish: (message: string, messageType: string) => {},
   blockUser: (userId: number) => new Promise(() => {}),
   unblockUser: (userId: number) => new Promise(() => {}),
+  getMessageLog: () => new Promise(() => {}),
+  organizeMainChat: (totalMessage: RoomType[], mainRoomId: number) => {},
+  organizeChatMessages: (mainRoomId: number) => new Promise(() => {}),
 });
 
 const ChatContextProvider: React.FC = (props) => {
@@ -86,6 +94,8 @@ const ChatContextProvider: React.FC = (props) => {
   const roomIdsRef = useRef<number[]>([]);
   const { user, grantRefresh, updateUser, isLogin } = useContext(AuthContext);
   const [cookies] = useCookies(["accessToken"]);
+  const message = useAlert();
+  const router = useRouter();
 
   const connect = () => {
     chatClient.current = new StompJs.Client({
@@ -343,6 +353,57 @@ const ChatContextProvider: React.FC = (props) => {
     return true;
   };
 
+  // totalMessage 가져오기
+  const getMessageLog = async () => {
+    const response = await axios
+      .get(BACKEND_URL + "/chat/", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: cookies.accessToken,
+          Accept: "application/json",
+        },
+      })
+      .catch((err) => err.response);
+
+    console.log(response, "getMessageLog");
+    if (response.status === 403) {
+      message.error("프로필을 작성해주세요.", {
+        onClose: () => {
+          router.push("/account/profile");
+        },
+      });
+    }
+    if (response.status === 401) {
+      // access token 만료
+      // refresh token 전송
+      grantRefresh();
+      return;
+    }
+    if (!response.data.isSuccess) {
+      console.log(response.data, "chatError");
+      console.error(response.data);
+      return;
+    }
+    return response.data.data;
+  };
+
+  // 메인 채팅 내용 분류해서 넣기
+  const organizeMainChat = (totalMessage: RoomType[], mainRoomId: number) => {
+    const mainChatLog = totalMessage.find((item) => item.roomId === mainRoomId);
+    if (!mainChatLog) return;
+    // 메인 채팅메세지 set
+    setMainChatMessages([...mainChatLog.messages]);
+  };
+
+  // 모든 채팅 메세지들 분류해서 넣기
+  const organizeChatMessages = async (mainRoomId: number) => {
+    const totalMessage = await getMessageLog();
+    // 토탈 메세지 저장
+    setTotalMessage(totalMessage);
+    // 메인 채팅내용 저장
+    organizeMainChat(totalMessage, mainRoomId);
+  };
+
   //새로운 방이 생기면
   useEffect(() => {
     // totalMessage에 들어있는 룸id 추출
@@ -369,6 +430,9 @@ const ChatContextProvider: React.FC = (props) => {
     setNewLikes,
     blockUser,
     unblockUser,
+    getMessageLog,
+    organizeMainChat,
+    organizeChatMessages,
   };
 
   return (

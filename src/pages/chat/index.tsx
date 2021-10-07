@@ -2,7 +2,7 @@ import { Layout } from "../../components/common";
 import ChatRoom from "../../components/chat/ChatRoom";
 import ChatList from "../../components/chat/ChatList";
 import styled from "styled-components";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
@@ -17,10 +17,10 @@ export default function Chat() {
   const {
     mainRoom,
     setMainRoom,
-    setMainChatMessages,
     totalMessage,
-    setTotalMessage,
     setNewMessages,
+    organizeChatMessages,
+    organizeMainChat,
   } = useContext(ChatContext);
   const router = useRouter();
   const message = useAlert();
@@ -59,54 +59,6 @@ export default function Chat() {
     return response.data.data.roomId;
   };
 
-  const getMessageLog = async () => {
-    const response = await axios
-      .get(BACKEND_URL + "/chat/", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: cookies.accessToken,
-          Accept: "application/json",
-        },
-      })
-      .catch((err) => err.response);
-
-    console.log(response, "getMessageLog");
-    if (response.status === 403) {
-      message.error("프로필을 작성해주세요.", {
-        onClose: () => {
-          router.push("/account/profile");
-        },
-      });
-    }
-    if (response.status === 401) {
-      // access token 만료
-      // refresh token 전송
-      grantRefresh();
-      return;
-    }
-    if (!response.data.isSuccess) {
-      console.log(response.data, "chatError");
-      console.error(response.data);
-      return;
-    }
-    return response.data.data;
-  };
-
-  const setMainChat = (totalMessage: RoomType[], mainRoomId: number) => {
-    const mainChatLog = totalMessage.find((item) => item.roomId === mainRoomId);
-    if (!mainChatLog) return;
-    // 메인 채팅메세지 set
-    setMainChatMessages([...mainChatLog.messages]);
-  };
-
-  const organizeChatMessages = async (mainRoomId: number) => {
-    const totalMessage = await getMessageLog();
-    // 토탈 메세지 저장
-    setTotalMessage(totalMessage);
-    // 메인 채팅내용 저장
-    setMainChat(totalMessage, mainRoomId);
-  };
-
   useEffect(() => {
     if (!isLogin) {
       message.error("로그인 후에 서비스를 이용해주세요.", {
@@ -121,7 +73,7 @@ export default function Chat() {
 
   // 채팅페이지에서 메인룸 변경시 메인채팅창 내용 수정
   useEffect(() => {
-    setMainChat(totalMessage, mainRoom.id);
+    organizeMainChat(totalMessage, mainRoom.id);
   }, [JSON.stringify(mainRoom.id)]);
 
   useEffect(() => {
