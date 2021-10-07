@@ -49,7 +49,6 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
         return err.response;
       });
 
-    console.log(response, "종아요 결과");
     if (response.status === 401) {
       // access token 만료
       // refresh token 전송
@@ -57,6 +56,9 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
       return;
     }
 
+    if (response.data.responseMessage === "차단한 또는 차단된 유저") {
+      message.error("유저로 부터 차단되어 좋아요를 할 수 없습니다.");
+    }
     if (!response.data.isSuccess) {
       console.log(response, "좋아요 실패");
       return;
@@ -67,7 +69,10 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
 
   const unLike = async () => {
     const response = await axios
-      .delete(`/like/${props.id}`, {
+      .delete("/like", {
+        data: {
+          userId: props.id,
+        },
         headers: {
           "Content-type": "application/json",
           Authorization: cookies.accessToken,
