@@ -8,11 +8,9 @@ import { AuthContext } from "../../store/AuthContext";
 import { Button, ListItem } from "../common";
 
 const SettingUserDelete: React.FC = () => {
-  const { grantRefresh, isLogin } = useContext(AuthContext);
+  const { grantRefresh, logout, isLogin } = useContext(AuthContext);
   const [cookies] = useCookies(["accessToken"]);
   // 유저 삭제시 확인 메세지 alert 생성
-  const message = useAlert();
-  const router = useRouter();
   const deleteUser = async () => {
     const response = await axios
       .delete("/users", {
@@ -32,7 +30,7 @@ const SettingUserDelete: React.FC = () => {
       alert(`유저 삭제 실패`);
       return;
     }
-    router.push("/account/login");
+    logout();
   };
 
   const deleteUserButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
