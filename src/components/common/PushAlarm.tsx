@@ -5,11 +5,16 @@ import { ChatBox } from "./ChatBox";
 import { AiFillBell, AiFillHeart } from "react-icons/ai";
 import { AlarmCount } from "./AlarmCount";
 import { NextRouter, useRouter, withRouter } from "next/router";
+import { INITIAL_ID, LIMIT_NEWALARM_SIZE } from "../../constants";
+import { AuthContext } from "../../store/AuthContext";
+import { useAlert } from "react-alert";
 
 const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
-  const { newMessages, setMainRoomId, newLikes } = useContext(ChatContext);
+  const { newMessages, setMainRoom, newLikes } = useContext(ChatContext);
+  const { user } = useContext(AuthContext);
   const [isActive, setIsActive] = useState(false);
   const router = useRouter();
+  const message = useAlert();
 
   const controlPushAlarm: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
@@ -22,18 +27,21 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
 
   return (
     <AlarmBell onClick={controlPushAlarm}>
-      {/* {props.router.pathname !== "/chat" ? <AiFillBell /> : <AiFillHeart />} */}
       <AiFillBell />
       {(() => {
-        const newAlarms =
+        const newAlarmNumber =
           props.router.pathname !== "/chat"
             ? newMessages.length + newLikes.length
             : newLikes.length;
 
-        if (newAlarms !== 0) {
+        if (newAlarmNumber !== 0) {
           return (
             <AlarmCount>
-              <span>{newAlarms > 99 ? 99 : newAlarms}</span>
+              <span>
+                {newAlarmNumber > LIMIT_NEWALARM_SIZE
+                  ? LIMIT_NEWALARM_SIZE
+                  : newAlarmNumber}
+              </span>
             </AlarmCount>
           );
         } else null;
@@ -50,12 +58,15 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
                   return (
                     <AlarmChatBox key={index}>
                       <ChatBox
+                        // type={}
                         imageUrl={item.imageUrl}
                         regDate={item.regDate.split("T").join(" ")}
                         sender={item.sender}
-                        roomId={-2}
                         onClick={() => {
-                          setMainRoomId(item.roomId);
+                          setMainRoom({
+                            id: item.roomId,
+                            userId: item.senderId,
+                          });
                           moveChat(item.senderId);
                         }}
                         context={
@@ -87,9 +98,8 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
                     imageUrl={`/Layout/heart.png`}
                     regDate={item.regDate}
                     sender={item.likeType}
-                    roomId={-2}
                     onClick={() => {
-                      moveChat(-2);
+                      return;
                     }}
                     context={`${item.name}님이 ${item.likeType} 하셨습니다.`.substring(
                       0,

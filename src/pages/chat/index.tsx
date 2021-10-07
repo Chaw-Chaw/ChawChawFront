@@ -7,27 +7,25 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import { useAlert } from "react-alert";
-import { BACKEND_URL } from "../../constants";
+import { BACKEND_URL, INITIAL_ID, INITIAL_ROOMID } from "../../constants";
 import { ChatContext, RoomType } from "../../store/ChatContext";
-import { ScreenContext } from "../../store/ScreenContext";
 import { useCookies } from "react-cookie";
 
 export default function Chat() {
-  const { grantRefresh, isLogin } = useContext(AuthContext);
-  const { windowSize } = useContext(ScreenContext);
+  const { grantRefresh, isLogin, user } = useContext(AuthContext);
   const [cookies] = useCookies(["accessToken"]);
   const {
-    mainRoomId,
-    setMainRoomId,
+    mainRoom,
+    setMainRoom,
     setMainChatMessages,
     totalMessage,
     setTotalMessage,
-    setMainRoomUserId,
+    setNewMessages,
   } = useContext(ChatContext);
   const router = useRouter();
   const message = useAlert();
 
-  const getMainRoomId = async (userId: number) => {
+  const makeChatRoom = async (userId: number) => {
     const response = await axios
       .post(
         "/chat/room",
@@ -43,23 +41,22 @@ export default function Chat() {
       .catch((err) => err.response);
 
     if (response.data.responseMessage === "차단한 또는 차단된 유저") {
-      message.error("유저로 부터 차단되어 채팅방을 들어갈 수 업습니다.", {
-        onClose: () => {
-          router.back();
-        },
-      });
+      message.error(
+        "상대방을 차단 했거나 차단되어 채팅방을 생성할 수 없습니다.",
+        {
+          onClose: () => {
+            router.back();
+          },
+        }
+      );
     }
 
     if (!response.data.isSuccess) {
       console.error(response.data);
       return;
     }
-    console.log(response, "getMainRoomId");
-    const mainRoomId = response.data.data.roomId;
-    setMainRoomId(mainRoomId);
-    setMainRoomUserId(userId);
-    // 채팅방을 만들고 전체 메세지들을 받기
-    getMessageLog();
+    console.log(response, "makeChatRoom");
+    return response.data.data.roomId;
   };
 
   const getMessageLog = async () => {
@@ -74,40 +71,40 @@ export default function Chat() {
       .catch((err) => err.response);
 
     console.log(response, "getMessageLog");
-    dataProcess(response, -1);
-  };
-
-  const dataProcess = (res: AxiosResponse, userId: number) => {
-    if (res.status === 403) {
+    if (response.status === 403) {
       message.error("프로필을 작성해주세요.", {
         onClose: () => {
           router.push("/account/profile");
         },
       });
     }
-    if (res.status === 401) {
+    if (response.status === 401) {
       // access token 만료
       // refresh token 전송
       grantRefresh();
       return;
     }
-    if (!res.data.isSuccess) {
-      console.log(res.data, "chatError");
-      console.error(res.data);
+    if (!response.data.isSuccess) {
+      console.log(response.data, "chatError");
+      console.error(response.data);
       return;
     }
-
-    // 토탈 메세지 저장
-    setTotalMessage(res.data.data);
-    setMainChat(res.data.data);
+    return response.data.data;
   };
 
-  const setMainChat = (totalMessage: RoomType[]) => {
+  const setMainChat = (totalMessage: RoomType[], mainRoomId: number) => {
     const mainChatLog = totalMessage.find((item) => item.roomId === mainRoomId);
     if (!mainChatLog) return;
-
     // 메인 채팅메세지 set
     setMainChatMessages([...mainChatLog.messages]);
+  };
+
+  const organizeChatMessages = async (mainRoomId: number) => {
+    const totalMessage = await getMessageLog();
+    // 토탈 메세지 저장
+    setTotalMessage(totalMessage);
+    // 메인 채팅내용 저장
+    setMainChat(totalMessage, mainRoomId);
   };
 
   useEffect(() => {
@@ -119,8 +116,13 @@ export default function Chat() {
       });
     }
     // 채팅 페이지에서 나가면 메인 룸 넘버는 -1
-    () => setMainRoomId(-1);
+    setMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID });
   }, []);
+
+  // 채팅페이지에서 메인룸 변경시 메인채팅창 내용 수정
+  useEffect(() => {
+    setMainChat(totalMessage, mainRoom.id);
+  }, [JSON.stringify(mainRoom.id)]);
 
   useEffect(() => {
     // 라우터가 빈 라우터일 경우 무시
@@ -132,27 +134,51 @@ export default function Chat() {
     // 라우터 쿼리에 userId가 없으면 무시
     if (userId === undefined) return;
 
-    if (userId !== -1) {
-      // 채팅룸 입장인경우
-      getMainRoomId(userId);
-    } else {
-      // 채팅 페이지만 입장한 경우
-      getMessageLog();
-      setMainRoomId(-1);
-      setMainChatMessages([]);
-    }
-  }, [JSON.stringify(router.query)]);
+    // 차단한 유저라면
+    if (user.blockIds?.includes(userId)) {
+      const blockedRoom = totalMessage.find((item) =>
+        item.participantIds.includes(userId)
+      );
+      if (!blockedRoom) return;
+      setMainRoom({ id: blockedRoom.roomId, userId: userId });
+      organizeChatMessages(blockedRoom.roomId);
 
-  // 채팅페이지에서 메인룸 변경
-  useEffect(() => {
-    setMainChat(totalMessage);
-  }, [mainRoomId]);
+      return;
+    }
+
+    if (userId !== INITIAL_ID) {
+      (async () => {
+        // 채팅룸 입장인경우
+        const mainRoomId = await makeChatRoom(userId);
+        // 채팅방을 만들고 전체 메세지들을 받기
+        setMainRoom({ id: mainRoomId, userId: userId });
+        organizeChatMessages(mainRoomId);
+
+        // 메인룸에 해당하는 알림 메시지 거르기
+        setNewMessages((pre) => {
+          const result = pre;
+          const filteredNewMessages = result.filter((item: any) => {
+            if (item.roomId === undefined) return true;
+            if (item.roomId !== mainRoomId) return true;
+            return false;
+          });
+          return filteredNewMessages;
+        });
+      })();
+    }
+
+    // 채팅 페이지만 입장한 경우
+    setMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID });
+    organizeChatMessages(INITIAL_ROOMID);
+  }, [JSON.stringify(router.query)]);
 
   return (
     <Layout>
       <Container>
         <ChatRoom />
-        {windowSize > 1000 ? <ChatList /> : null}
+        <ChatListWrapper>
+          <ChatList />
+        </ChatListWrapper>
       </Container>
     </Layout>
   );
@@ -162,4 +188,18 @@ const Container = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
+  /* @media (max-width: 1024px) {
+    margin: 122px;
+  } */
+`;
+
+const ChatListWrapper = styled.div`
+  display: initial;
+  width: 400px;
+  @media (max-width: 768px) {
+    display: none;
+  }
+  @media (max-width: 1024px) {
+    display: none;
+  }
 `;

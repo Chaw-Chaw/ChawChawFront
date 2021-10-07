@@ -4,11 +4,13 @@ import { ChatBox } from "../../common";
 import { ChatContext } from "../../../store/ChatContext";
 import { AuthContext } from "../../../store/AuthContext";
 import { arrayRemovedItem } from "../../../utils";
+import { useRouter } from "next/router";
 
 const ChatList: React.FC = (props) => {
-  const { totalMessage, setMainRoomId, setIsViewChatList, setMainRoomUserId } =
+  const { totalMessage, setMainRoom, setIsViewChatList } =
     useContext(ChatContext);
   const { user } = useContext(AuthContext);
+  const router = useRouter();
 
   return (
     <Outline>
@@ -55,8 +57,12 @@ const ChatList: React.FC = (props) => {
                   roomId={item.roomId}
                   onClick={() => {
                     setIsViewChatList(false);
-                    setMainRoomId(item.roomId);
-                    setMainRoomUserId(senderId);
+                    setMainRoom({ id: item.roomId, userId: senderId });
+                    // router.push({
+                    //   pathname: "/chat",
+                    //   query: { userId: senderId },
+                    // });
+                    // location.href = `/chat?userId=${senderId}`;
                     return;
                   }}
                   context={limitMessage}
@@ -81,15 +87,16 @@ const Outline = styled.div`
   max-width: 400px;
   padding: 20px 20px 20px 20px;
 
-  @media (max-width: 1000px) {
+  @media (max-width: 1024px) {
     max-width: 100%;
-    padding: 0px;
-    height: calc(100vh - 250px);
-    height: calc(var(--vh, 1vh) * 100 - 250px);
+    height: calc(100vh - 210px);
+    height: calc(var(--vh, 1vh) * 100 - 210px);
   }
+
   @media (max-width: 768px) {
-    height: calc(100vh - 180px);
-    height: calc(var(--vh, 1vh) * 100 - 180px);
+    max-width: 100%;
+    height: calc(100vh - 130px);
+    height: calc(var(--vh, 1vh) * 100 - 130px);
   }
 `;
 
@@ -108,8 +115,8 @@ const Inner = styled.div`
 
   @keyframes slide-in-right {
     0% {
-      -webkit-transform: translateX(1000px);
-      transform: translateX(1000px);
+      -webkit-transform: translateX(1024px);
+      transform: translateX(1024px);
       opacity: 0;
     }
     100% {
@@ -120,12 +127,12 @@ const Inner = styled.div`
   }
 
   animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-  @media (max-width: 1000px) {
+  @media (max-width: 1024px) {
     border: none;
     @keyframes slide-in-bottom {
       0% {
-        -webkit-transform: translateY(1000px);
-        transform: translateY(1000px);
+        -webkit-transform: translateY(1024px);
+        transform: translateY(1024px);
         opacity: 0;
       }
       100% {
