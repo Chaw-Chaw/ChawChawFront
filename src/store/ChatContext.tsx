@@ -43,16 +43,14 @@ interface ChatContextObj {
   setMainChatMessages: Dispatch<SetStateAction<MessageType[]>>;
   totalMessage: RoomType[];
   setTotalMessage: Dispatch<SetStateAction<RoomType[]>>;
-  mainRoomId: number;
-  setMainRoomId: Dispatch<SetStateAction<number>>;
+  mainRoom: { id: number; userId: number };
+  setMainRoom: Dispatch<SetStateAction<{ id: number; userId: number }>>;
   newMessages: Object[];
   setNewMessages: Dispatch<React.SetStateAction<Object[]>>;
   newLikes: Object[];
   setNewLikes: Dispatch<React.SetStateAction<Object[]>>;
   isViewChatList: boolean;
   setIsViewChatList: Dispatch<React.SetStateAction<boolean>>;
-  mainRoomUserId: number;
-  setMainRoomUserId: Dispatch<SetStateAction<number>>;
   publish: (message: string, messageType: string) => void;
   blockUser: (userId: number) => Promise<true | undefined>;
   unblockUser: (userId: number) => Promise<true | undefined>;
@@ -61,9 +59,9 @@ interface ChatContextObj {
 const ChatContext = React.createContext<ChatContextObj>({
   mainChatMessages: [],
   totalMessage: [],
-  mainRoomId: -1,
+  mainRoom: { id: -1, userId: -1 },
   setMainChatMessages: () => {},
-  setMainRoomId: () => {},
+  setMainRoom: () => {},
   setTotalMessage: () => {},
   newMessages: [],
   setNewMessages: () => {},
@@ -71,8 +69,6 @@ const ChatContext = React.createContext<ChatContextObj>({
   setNewLikes: () => {},
   isViewChatList: false,
   setIsViewChatList: () => {},
-  mainRoomUserId: -1,
-  setMainRoomUserId: () => {},
   publish: (message: string, messageType: string) => {},
   blockUser: (userId: number) => new Promise(() => {}),
   unblockUser: (userId: number) => new Promise(() => {}),
@@ -81,16 +77,15 @@ const ChatContext = React.createContext<ChatContextObj>({
 const ChatContextProvider: React.FC = (props) => {
   const [mainChatMessages, setMainChatMessages] = useState<MessageType[]>([]);
   const [totalMessage, setTotalMessage] = useState<RoomType[]>([]);
-  const [mainRoomId, setMainRoomId] = useState(-1);
+  const [mainRoom, setMainRoom] = useState({ id: -1, userId: -1 });
   const [newMessages, setNewMessages] = useState<Object[]>([]);
   const [newLikes, setNewLikes] = useState<Object[]>([]);
   const [isViewChatList, setIsViewChatList] = useState(false);
-  const mainRoomIdRef = useRef(-1);
+  const mainRoomRef = useRef({ id: -1, userId: -1 });
   const chatClient = useRef<any>({});
   const roomIdsRef = useRef<number[]>([]);
   const { user, grantRefresh, updateUser, isLogin } = useContext(AuthContext);
   const [cookies] = useCookies(["accessToken"]);
-  const [mainRoomUserId, setMainRoomUserId] = useState(-1);
 
   const connect = () => {
     chatClient.current = new StompJs.Client({
@@ -129,17 +124,17 @@ const ChatContextProvider: React.FC = (props) => {
       console.log(message, "새로운 메세지 내용");
 
       // 블록 리스트에 추가된 메세지는 알람 받지 않음
-      // if (user.blockIds?.includes(message.senderId)) {
-      //   return;
-      // }
+      if (user.blockIds?.includes(message.senderId)) {
+        return;
+      }
 
       // 메인 채팅룸 메세지 누적 : 메세지 룸 넘버가 메인 룸넘버인 경우
-      if (message.roomId === mainRoomIdRef.current) {
+      if (message.roomId === mainRoomRef.current.id) {
         setMainChatMessages((pre: MessageType[]) => [...pre, message]);
       }
 
       // 메인채팅방의 메세지가 아닐시 에만 알람 메세지 누적
-      if (message.roomId !== mainRoomIdRef.current) {
+      if (message.roomId !== mainRoomRef.current.id) {
         setNewMessages((pre) => [message, ...pre]);
       }
 
@@ -186,7 +181,7 @@ const ChatContextProvider: React.FC = (props) => {
     const response = await axios
       .post(
         "/chat/room/enter",
-        { roomId: mainRoomId },
+        { roomId: mainRoom.id },
         {
           headers: {
             "Content-Type": "application/json",
@@ -206,7 +201,9 @@ const ChatContextProvider: React.FC = (props) => {
 
     if (!response.data.isSuccess) {
       console.log(response.data, "메인룸 디텍트 api 전송 실패");
+      return false;
     }
+    return true;
   };
 
   const publish = (message: string, messageType: string) => {
@@ -219,7 +216,7 @@ const ChatContextProvider: React.FC = (props) => {
       destination: "/message",
       body: JSON.stringify({
         messageType,
-        roomId: mainRoomId,
+        roomId: mainRoom.id,
         senderId: user.id,
         sender: user.name,
         regDate: now.toISOString().substring(0, 19),
@@ -258,38 +255,36 @@ const ChatContextProvider: React.FC = (props) => {
   };
 
   useEffect(() => {
-    if (!isLogin || !user) return;
+    // user.id 가 있으면 연결
+    if (!isLogin || !user.id) return;
     getNewAlarms();
     connect();
-    // useEffect() cleanup 함수
     return () => disconnect();
-  }, [user]);
+  }, [JSON.stringify(user.id)]);
 
   useEffect(() => {
-    console.log(mainRoomId, "메인룸변경");
-    mainRoomIdRef.current = mainRoomId;
+    console.log(mainRoom.id, "메인룸변경");
+    mainRoomRef.current.id = mainRoom.id;
 
-    if (mainRoomId === -1) return;
+    if (mainRoom.id === -1) return;
+
     // 메인 룸 변경 api 전송;
-    detectMainRoom();
-
-    // // 메인룸 진입시 메인룸에 해당하는 새로운 메세지들 삭제
-    // setNewMessages((pre) => {
-    //   const result = pre;
-    //   const filteredNewMessages =
-    // });
+    (async () => {
+      const result = await detectMainRoom();
+      if (!result) return;
+    })();
 
     // 메인룸에 해당하는 새로운 메시지 거르기
     setNewMessages((pre) => {
       const result = pre;
       const filteredNewMessages = result.filter((item: any) => {
         if (item.roomId === undefined) return true;
-        if (item.roomId !== mainRoomId) return true;
+        if (item.roomId !== mainRoom.id) return true;
         return false;
       });
       return filteredNewMessages;
     });
-  }, [mainRoomId]);
+  }, [JSON.stringify(mainRoom.id)]);
 
   const blockUser = async (userId: number) => {
     const response = await axios
@@ -323,7 +318,8 @@ const ChatContextProvider: React.FC = (props) => {
 
   const unblockUser = async (userId: number) => {
     const response = await axios
-      .delete(`/users/block/${userId}`, {
+      .delete("/users/block", {
+        data: { userId: userId },
         headers: {
           Authorization: cookies.accessToken,
         },
@@ -347,6 +343,7 @@ const ChatContextProvider: React.FC = (props) => {
     return true;
   };
 
+  //새로운 방이 생기면
   useEffect(() => {
     // totalMessage에 들어있는 룸id 추출
     if (totalMessage.length > 0) {
@@ -354,21 +351,19 @@ const ChatContextProvider: React.FC = (props) => {
       totalMessage.forEach((item) => roomIds.push(item.roomId));
       roomIdsRef.current = roomIds;
     }
-  }, [totalMessage]);
+  }, [totalMessage.length]);
 
   const contextValue: ChatContextObj = {
     mainChatMessages,
     setMainChatMessages,
     totalMessage,
     setTotalMessage,
-    mainRoomId,
-    setMainRoomId,
+    mainRoom,
+    setMainRoom,
     newMessages,
     setNewMessages,
     isViewChatList,
     setIsViewChatList,
-    mainRoomUserId,
-    setMainRoomUserId,
     publish,
     newLikes,
     setNewLikes,
