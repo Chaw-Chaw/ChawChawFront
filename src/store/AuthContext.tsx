@@ -25,6 +25,7 @@ interface UserPropertys {
   // token?: string;
   id?: number;
   blockIds?: number[];
+  role?: string;
 }
 
 interface AuthContextObj {
@@ -82,6 +83,7 @@ const AuthContext = React.createContext<AuthContextObj>({
     repHopeLanguage: "",
     // token: "",
     blockIds: [],
+    role: "",
   },
   login: () => {},
   logout: () => {},
@@ -309,7 +311,7 @@ const AuthContextProvider: React.FC = (props) => {
       return;
     }
     console.log(response.data, "웹메일 전송 확인 데이터");
-    message.show(
+    message.info(
       "이메일 발송을 완료하였습니다. 인증번호의 만료시간은 3분입니다."
     );
   };
@@ -371,7 +373,7 @@ const AuthContextProvider: React.FC = (props) => {
 
     console.log(response.data, "emailDuplication Response");
     if (!response.data.isSuccess) {
-      message.show("사용가능한 아이디 입니다.");
+      message.info("사용가능한 아이디 입니다.");
       return false;
     }
     message.error("중복된 이메일이 있습니다.");
