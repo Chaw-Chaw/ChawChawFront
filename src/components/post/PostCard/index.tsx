@@ -21,7 +21,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const initialPostInfo = {
     content: "",
     country: [],
-    days: "",
+    regDate: "",
     facebookUrl: "",
     likes: 0,
     hopeLanguage: [],
@@ -126,7 +126,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           <PostModal
             content={postModalInfo.content}
             country={postModalInfo.country}
-            days={postModalInfo.days}
+            regDate={postModalInfo.regDate}
             facebookUrl={postModalInfo.facebookUrl}
             likes={postModalInfo.likes}
             hopeLanguage={postModalInfo.hopeLanguage}
@@ -236,8 +236,8 @@ const PostImageBox = styled.div`
 const PostCardContainer = styled.div`
   @keyframes slide-in-bottom {
     0% {
-      -webkit-transform: translateY(1000px);
-      transform: translateY(1000px);
+      -webkit-transform: translateY(1024px);
+      transform: translateY(1024px);
       opacity: 0;
     }
     100% {

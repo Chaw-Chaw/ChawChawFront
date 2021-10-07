@@ -26,7 +26,7 @@ interface PostModalProps extends PostModalInfoProps {}
 
 const PostModal: React.FC<PostModalProps> = (props) => {
   const now = new Date();
-  const dateArr = props.days.substring(0, 10).split("-");
+  const dateArr = props.regDate.substring(0, 10).split("-");
   const stDate = new Date(
     Number(dateArr[0]),
     Number(dateArr[1]),
@@ -75,7 +75,7 @@ const PostModal: React.FC<PostModalProps> = (props) => {
         instagramUrl={props.instagramUrl}
       />
       <PostModalInfo
-        days={String(pastDays)}
+        regDate={String(pastDays)}
         views={props.views}
         likes={props.likes}
       />

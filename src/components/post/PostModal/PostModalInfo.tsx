@@ -2,7 +2,7 @@ import { AiFillEye, AiFillHeart } from "react-icons/ai";
 import styled from "styled-components";
 
 interface PostModalHeadProps {
-  days: string;
+  regDate: string;
   likes: number;
   views: number;
 }
@@ -11,7 +11,7 @@ const PostModalInfo: React.FC<PostModalHeadProps> = (props) => {
   return (
     <PostModalInfoBox>
       <PostModalDateViewBox>
-        <PostModalPastDateBox>{props.days} days ago</PostModalPastDateBox>
+        <PostModalPastDateBox>{props.regDate} days ago</PostModalPastDateBox>
         <PostModalViewCountBox>
           {props.views}
           <AiFillEye />
