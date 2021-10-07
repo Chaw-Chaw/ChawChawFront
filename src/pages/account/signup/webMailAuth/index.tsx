@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Layout, Input, Label, Button } from "../../../../components/common/";
 import AccountContainer from "../../../../components/account/AccountContainer";
-import LoginOrder from "../../../../components/account/LoginOrder";
+import SignupOrder from "../../../../components/account/SignupOrder";
 import styled from "styled-components";
 import Link from "next/link";
 import { AuthContext } from "../../../../store/AuthContext";
@@ -98,7 +98,7 @@ export default function WebMailAuth() {
         title="ChawChaw에`오신 것을 환영 해요."
         subtitle="현재 재학중인 대학교의 웹메일을 입력해주세요.`웹 메일로 인증번호가 발송됩니다."
       >
-        <LoginOrder activeType="1" />
+        <SignupOrder activeType="1" />
         <InputSection>
           <Label htmlFor="webmail" tag="필수">
             웹 메일

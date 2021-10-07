@@ -7,7 +7,7 @@ import {
   PasswordInput,
 } from "../../../components/common/";
 import AccountContainer from "../../../components/account/AccountContainer";
-import LoginOrder from "../../../components/account/LoginOrder";
+import SignupOrder from "../../../components/account/SignupOrder";
 import styled from "styled-components";
 import Link from "next/link";
 import { AuthContext } from "../../../store/AuthContext";
@@ -113,7 +113,7 @@ export default function SignUp() {
         title="회원 정보 입력"
         subtitle="ChawChaw에서 사용할 정보를 입력해주세요.` 이메일 / 비밀번호"
       >
-        <LoginOrder activeType="2" />
+        <SignupOrder activeType="2" />
         <Form onSubmit={handleSubmit(onSubmit)}>
           <InputSection>
             <Label htmlFor="email">이메일</Label>
