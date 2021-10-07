@@ -16,15 +16,17 @@ const AlertMessage: React.FC<AlertMessageProps> = (props) => {
           <span>{props.type}</span>
         </AlertMessageTitleBox>
         {props.message}
-        <AlertMessageConfirmButton onClick={props.onClick}>
-          확인
-        </AlertMessageConfirmButton>
+        <AlertMessageButtonBox>
+          <AlertMessageConfirmButton onClick={props.onClick}>
+            확인
+          </AlertMessageConfirmButton>
+        </AlertMessageButtonBox>
       </AlertMessageBox>
     </AlertMessageContainer>
   );
 };
 
-export { AlertMessage, AlertMessageConfirmButton, AlertMessageBox };
+export { AlertMessage };
 
 const AlertMessageContainer = styled.div`
   width: 100vw;
@@ -73,8 +75,13 @@ const AlertMessageTitleBox = styled.div`
   box-sizing: border-box;
 `;
 
-const AlertMessageConfirmButton = styled(Button)`
-  border-radius: 10px;
+const AlertMessageButtonBox = styled.div`
+  display: flex;
+  justify-content: center;
   position: absolute;
   bottom: 40px;
+`;
+
+const AlertMessageConfirmButton = styled(Button)`
+  border-radius: 10px;
 `;
