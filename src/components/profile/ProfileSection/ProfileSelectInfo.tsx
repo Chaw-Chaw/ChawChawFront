@@ -21,7 +21,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
         });
         // console.log(props.values, "after");
       } else {
-        message.show("값을 선택 후 추가 할 수 있습니다.");
+        message.info("값을 선택 후 추가 할 수 있습니다.");
       }
     }
   };
