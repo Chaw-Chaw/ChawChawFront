@@ -106,9 +106,23 @@ const AuthContext = React.createContext<AuthContextObj>({
 
 const AuthContextProvider: React.FC = (props) => {
   const message = useAlert();
-  const [user, setUser] = useState(avoidLocalStorageUndefined("user", {}));
+  const [user, setUser] = useState(
+    (() => {
+      if (typeof window === "undefined") return {};
+      const localStorageData = getSecureLocalStorage("user");
+      if (!localStorageData) return {};
+      return localStorageData;
+      // avoidLocalStorageUndefined("user", {});
+    })()
+  );
   const [isLogin, setIsLogin] = useState(
-    Boolean(avoidLocalStorageUndefined("accessToken", false))
+    (() => {
+      if (typeof window === "undefined") return false;
+      const localStorageData = getSecureLocalStorage("accessToken");
+      if (!localStorageData) return false;
+      return Boolean(localStorageData);
+      // Boolean(avoidLocalStorageUndefined("accessToken", false))
+    })()
   );
   const router = useRouter();
 
