@@ -1,4 +1,4 @@
-import crypto from "crypto-js";
+import CryptoJS from "crypto-js";
 import { SECRET_KEY } from "../constants";
 
 const arrayRemovedItem = (item: any, array: any[]) => {
@@ -12,13 +12,31 @@ const arrayRemovedItem = (item: any, array: any[]) => {
 };
 
 const saveSecureLocalStorage = (itemName: string, item: any) => {
-  const cipherData = JSON.stringify(CryptoJS.AES.encrypt(item, SECRET_KEY));
+  const cipherData = CryptoJS.AES.encrypt(
+    JSON.stringify(item),
+    SECRET_KEY
+  ).toString();
   window.localStorage.setItem(itemName, cipherData);
 };
+
 const getSecureLocalStorage = (itemName: string) => {
-  const originalData = window.localStorage.getItem(itemName);
-  if (!originalData) return undefined;
-  return JSON.parse(originalData);
+  const cipherData = window.localStorage.getItem(itemName);
+  if (!cipherData) return undefined;
+  const bytes = CryptoJS.AES.decrypt(cipherData, SECRET_KEY).toString(
+    CryptoJS.enc.Utf8
+  );
+  return JSON.parse(bytes);
 };
 
-export { arrayRemovedItem, saveSecureLocalStorage, getSecureLocalStorage };
+const avoidLocalStorageUndefined = (itemName: string, initialData: any) => {
+  if (typeof window === "undefined") return initialData;
+  const localStorageData = getSecureLocalStorage(itemName);
+  if (!localStorageData) return initialData;
+  return localStorageData;
+};
+export {
+  arrayRemovedItem,
+  saveSecureLocalStorage,
+  getSecureLocalStorage,
+  avoidLocalStorageUndefined,
+};

@@ -4,7 +4,11 @@ import { useRouter } from "next/router";
 import { universityList } from "../components/common";
 import { useAlert } from "react-alert";
 import { useCookies } from "react-cookie";
-import { getSecureLocalStorage, saveSecureLocalStorage } from "../utils";
+import {
+  getSecureLocalStorage,
+  saveSecureLocalStorage,
+  avoidLocalStorageUndefined,
+} from "../utils";
 
 interface UserPropertys {
   provider?: string;
@@ -114,9 +118,8 @@ const AuthContextProvider: React.FC = (props) => {
   );
   // const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
   const [isLogin, setIsLogin] = useState(
-    Boolean(getSecureLocalStorage("accessToken"))
+    avoidLocalStorageUndefined("accessToken", "")
   );
-
   const router = useRouter();
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
     setUser((preUser: UserPropertys) => {
