@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/router";
 import { universityList } from "../components/common";
 import { useAlert } from "react-alert";
-import { useCookies } from "react-cookie";
 import {
   getSecureLocalStorage,
   saveSecureLocalStorage,
   avoidLocalStorageUndefined,
 } from "../utils";
+import { MIN_1, MIN_30 } from "../constants";
 
 interface UserPropertys {
   provider?: string;
@@ -27,7 +27,6 @@ interface UserPropertys {
   repCountry?: string;
   repLanguage?: string;
   repHopeLanguage?: string;
-  // token?: string;
   id?: number;
   blockIds?: number[];
   role?: string;
@@ -37,7 +36,7 @@ interface AuthContextObj {
   user: UserPropertys;
   grantRefresh: () => Promise<void>;
   login: (res: AuthReqProps) => void;
-  saveUser: (res: AuthResProps<AxiosResponse>) => void;
+
   sendWebmail: (res: AuthReqProps) => void;
   logout: () => void;
   signup: (res: AuthReqProps) => void;
@@ -92,7 +91,6 @@ const AuthContext = React.createContext<AuthContextObj>({
   },
   login: () => {},
   logout: () => {},
-  saveUser: () => {},
   sendWebmail: () => {},
   signup: () => {},
   emailDuplicationCheck: () =>
@@ -108,28 +106,11 @@ const AuthContext = React.createContext<AuthContextObj>({
 
 const AuthContextProvider: React.FC = (props) => {
   const message = useAlert();
-  const [user, setUser] = useState(
-    (() => {
-      if (typeof window === "undefined") return {};
-      const localStorageUser = getSecureLocalStorage("user");
-      if (!localStorageUser) return {};
-      return JSON.parse(localStorageUser);
-    })()
-  );
-  // const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
+  const [user, setUser] = useState(avoidLocalStorageUndefined("user", {}));
   const [isLogin, setIsLogin] = useState(
-    avoidLocalStorageUndefined("accessToken", "")
+    avoidLocalStorageUndefined("accessToken", undefined)
   );
   const router = useRouter();
-  const saveUser = (res: AuthResProps<AxiosResponse>) => {
-    setUser((preUser: UserPropertys) => {
-      const newUser = { ...preUser, ...res };
-      saveSecureLocalStorage("user", newUser);
-      // window.localStorage.setItem("user", JSON.stringify(newUser));
-      return newUser;
-    });
-    return res;
-  };
 
   const logout = async () => {
     const response = await axios
@@ -148,13 +129,7 @@ const AuthContextProvider: React.FC = (props) => {
       return;
     }
     console.log(response, "로그아웃 성공");
-    setIsLogin(false);
-    setUser({});
     window.localStorage.clear();
-    // removeCookie("accessToken", {
-    //   path: "/",
-    //   secure: true,
-    // });
     window.location.href = "/account/login";
   };
 
@@ -162,25 +137,12 @@ const AuthContextProvider: React.FC = (props) => {
     // 일반 로그인 || 리프레시 로그인
     const tokenInfo = response.data.data.token || response.data.data;
     const accessToken = "Bearer " + tokenInfo.accessToken;
-    const accessTokenExpiresIn = new Date(Date.now() + 30 * 24 * 60 * 60000);
-
-    // 현재 로그인 시각 브라우저에 저장
-    // window.localStorage.setItem("loginTime", JSON.stringify(Date.now()));
-    saveSecureLocalStorage("loginTime", Date.now());
-
-    // window.localStorage.setItem("accessToken", JSON.stringify);
+    // const accessTokenExpiresIn = new Date(Date.now() +  MIN_30);
+    saveSecureLocalStorage("grantRefreshTime", Date.now() + MIN_30 - MIN_1);
     saveSecureLocalStorage("accessToken", accessToken);
-
-    // // 쿠키가 만료시간이 되면 지워지게 해서 자동으로 로그아웃을 유지
-    // // 또한 브라우저를 끄고 켜도 로그인 유지
-    // setCookie("accessToken", accessToken, {
-    //   path: "/",
-    //   secure: true,
-    //   expires: accessTokenExpiresIn,
-    // });
-
     setIsLogin(true);
-    setTimeout(grantRefresh, tokenInfo.expiresIn - 60000);
+    setTimeout(grantRefresh, tokenInfo.expiresIn - MIN_1);
+
     if (response.data.data.profile) {
       const newData: UserPropertys = {
         ...response.data.data.profile,
@@ -209,9 +171,13 @@ const AuthContextProvider: React.FC = (props) => {
       });
 
     if (response.status === 401) {
+      window.localStorage.clear();
       setIsLogin(false);
-      message.error("재로그인에 실패하셨습니다.");
-      router.push("/account/login");
+      message.error("다시 로그인 해주세요.", {
+        onClose: () => {
+          router.push("/account/login");
+        },
+      });
       return;
     }
 
@@ -222,7 +188,6 @@ const AuthContextProvider: React.FC = (props) => {
     console.log(response, "Success get accessToken");
     // 성공할경우
     loginSuccess(response);
-    // location.reload();
     return;
   };
 
@@ -234,7 +199,6 @@ const AuthContextProvider: React.FC = (props) => {
     facebookId,
     facebookToken,
   }: AuthReqProps) => {
-    console.log("로그인 함수 실행");
     const response = await axios
       .post(
         "/login",
@@ -255,7 +219,6 @@ const AuthContextProvider: React.FC = (props) => {
       )
       .catch((err) => err.response);
 
-    console.log(response);
     if (!response.data.isSuccess) {
       if (response.data.responseMessage === "회원가입 필요") {
         updateUser(response.data.data);
@@ -438,19 +401,25 @@ const AuthContextProvider: React.FC = (props) => {
   const updateUser = (newUserInfo: UserPropertys) => {
     setUser((preUser: UserPropertys) => {
       const newUser = { ...preUser, ...newUserInfo };
-      console.log(preUser, newUser, "updateUser");
       saveSecureLocalStorage("user", newUser);
-      // window.localStorage.setItem("user", JSON.stringify(newUser));
       return newUser;
     });
     console.log("update userInfo");
+  };
+
+  const saveUser = (res: AuthResProps<AxiosResponse>) => {
+    setUser((preUser: UserPropertys) => {
+      const newUser = { ...preUser, ...res };
+      saveSecureLocalStorage("user", newUser);
+      return newUser;
+    });
+    return res;
   };
 
   const contextValue: AuthContextObj = {
     user,
     login,
     logout,
-    saveUser,
     sendWebmail,
     signup,
     emailDuplicationCheck,
