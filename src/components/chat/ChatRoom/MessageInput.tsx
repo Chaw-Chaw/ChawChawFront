@@ -8,6 +8,7 @@ import { useAlert } from "react-alert";
 import { ChatContext } from "../../../store/ChatContext";
 import { useCookies } from "react-cookie";
 import { INITIAL_ROOMID } from "../../../constants";
+import { getSecureLocalStorage } from "../../../utils";
 
 interface MessageInputProps {
   value: string;
@@ -28,7 +29,7 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
       .post("/chat/image", image, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: cookies.accessToken,
+          Authorization: getSecureLocalStorage("accessToken"),
         },
       })
       .catch((err) => err.response);

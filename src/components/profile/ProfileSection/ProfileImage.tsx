@@ -7,6 +7,7 @@ import axios from "axios";
 import { useAlert } from "react-alert";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import { useCookies } from "react-cookie";
+import { getSecureLocalStorage } from "../../../utils";
 
 const ProfileImage: React.FC = () => {
   const { user, updateUser, grantRefresh } = useContext(AuthContext);
@@ -19,7 +20,7 @@ const ProfileImage: React.FC = () => {
       .post("/users/image", image, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: cookies.accessToken,
+          Authorization: getSecureLocalStorage("accessToken"),
         },
       })
       .catch((err) => err.response);
@@ -59,7 +60,7 @@ const ProfileImage: React.FC = () => {
       .delete("/users/image", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: cookies.accessToken,
+          Authorization: getSecureLocalStorage("accessToken"),
           Accept: "*/*",
         },
       })

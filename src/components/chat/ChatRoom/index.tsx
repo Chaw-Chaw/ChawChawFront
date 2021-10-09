@@ -23,6 +23,7 @@ import {
   INITIAL_ROOMID,
   LIMIT_NEWALARM_SIZE,
 } from "../../../constants";
+import { getSecureLocalStorage } from "../../../utils";
 
 const ChatRoom: React.FC = (props) => {
   const {
@@ -58,7 +59,7 @@ const ChatRoom: React.FC = (props) => {
         },
         headers: {
           "Content-Type": "application/json",
-          Authorization: cookies.accessToken,
+          Authorization: getSecureLocalStorage("accessToken"),
           Accept: "application/json",
         },
       })

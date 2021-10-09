@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import styled from "styled-components";
 import { AuthContext } from "../../store/AuthContext";
+import { getSecureLocalStorage } from "../../utils";
 import Header from "./Header";
 
 const Layout: React.FC<{ type?: string }> = (props) => {
@@ -9,9 +10,9 @@ const Layout: React.FC<{ type?: string }> = (props) => {
 
   const loginTime = (() => {
     if (typeof window === "undefined") return {};
-    const localStorageLoginTime = window.localStorage.getItem("loginTime");
+    const localStorageLoginTime = getSecureLocalStorage("loginTime");
     if (!localStorageLoginTime) return 0;
-    return JSON.parse(localStorageLoginTime);
+    return localStorageLoginTime;
   })();
 
   useEffect(() => {

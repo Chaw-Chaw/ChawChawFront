@@ -5,6 +5,7 @@ import { useAlert } from "react-alert";
 import { useCookies } from "react-cookie";
 import styled from "styled-components";
 import { AuthContext } from "../../store/AuthContext";
+import { getSecureLocalStorage } from "../../utils";
 import { Button, ListItem } from "../common";
 
 const SettingUserDelete: React.FC = () => {
@@ -15,7 +16,7 @@ const SettingUserDelete: React.FC = () => {
     const response = await axios
       .delete("/users", {
         headers: {
-          Authorization: cookies.accessToken,
+          Authorization: getSecureLocalStorage("accessToken"),
         },
       })
       .catch((err) => err.response);

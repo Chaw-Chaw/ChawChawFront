@@ -18,6 +18,7 @@ import ProfileImage from "./ProfileImage";
 import ProfileSocialUrl from "./ProfileSocialUrl";
 import ProfileSelectInfo from "./ProfileSelectInfo";
 import { useCookies } from "react-cookie";
+import { getSecureLocalStorage } from "../../../utils";
 
 interface ProfileSection {
   title?: string;
@@ -93,7 +94,7 @@ const ProfileSection: React.FC = () => {
       .post("/users/profile", userProfile, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: cookies.accessToken,
+          Authorization: getSecureLocalStorage("accessToken"),
           Accept: "application/json",
         },
       })

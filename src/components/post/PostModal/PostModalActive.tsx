@@ -9,6 +9,7 @@ import { AuthContext } from "../../../store/AuthContext";
 import { useAlert } from "react-alert";
 import { ChatContext } from "../../../store/ChatContext";
 import { useCookies } from "react-cookie";
+import { getSecureLocalStorage } from "../../../utils";
 
 interface PostModalActive {
   id: number;
@@ -40,7 +41,7 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
         { userId: props.id },
         {
           headers: {
-            Authorization: cookies.accessToken,
+            Authorization: getSecureLocalStorage("accessToken"),
           },
         }
       )
@@ -75,7 +76,7 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
         },
         headers: {
           "Content-type": "application/json",
-          Authorization: cookies.accessToken,
+          Authorization: getSecureLocalStorage("accessToken"),
           Accept: "application/json",
         },
       })

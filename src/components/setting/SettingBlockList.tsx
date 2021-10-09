@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import styled from "styled-components";
 import { AuthContext } from "../../store/AuthContext";
+import { getSecureLocalStorage } from "../../utils";
 import { ListItem } from "../common";
 import { SettingBlockItem } from "./SettingBlockItem";
 
@@ -21,7 +22,7 @@ const SettingBlockList: React.FC = () => {
     const response = await axios
       .get("/users/block", {
         headers: {
-          Authorization: cookies.accessToken,
+          Authorization: getSecureLocalStorage("accessToken"),
         },
       })
       .catch((err) => err.response);

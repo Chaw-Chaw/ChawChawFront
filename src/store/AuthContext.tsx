@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { universityList } from "../components/common";
 import { useAlert } from "react-alert";
 import { useCookies } from "react-cookie";
+import { getSecureLocalStorage, saveSecureLocalStorage } from "../utils";
 
 interface UserPropertys {
   provider?: string;
@@ -106,19 +107,22 @@ const AuthContextProvider: React.FC = (props) => {
   const [user, setUser] = useState(
     (() => {
       if (typeof window === "undefined") return {};
-      const localStorageUser = window.localStorage.getItem("user");
+      const localStorageUser = getSecureLocalStorage("user");
       if (!localStorageUser) return {};
       return JSON.parse(localStorageUser);
     })()
   );
-  const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
-  const [isLogin, setIsLogin] = useState(Boolean(cookies.accessToken));
+  // const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
+  const [isLogin, setIsLogin] = useState(
+    Boolean(getSecureLocalStorage("accessToken"))
+  );
 
   const router = useRouter();
   const saveUser = (res: AuthResProps<AxiosResponse>) => {
     setUser((preUser: UserPropertys) => {
       const newUser = { ...preUser, ...res };
-      window.localStorage.setItem("user", JSON.stringify(newUser));
+      saveSecureLocalStorage("user", newUser);
+      // window.localStorage.setItem("user", JSON.stringify(newUser));
       return newUser;
     });
     return res;
@@ -128,7 +132,7 @@ const AuthContextProvider: React.FC = (props) => {
     const response = await axios
       .get("/logout", {
         headers: {
-          Authorization: "Bearer " + cookies.accessToken,
+          Authorization: getSecureLocalStorage("accessToken"),
         },
       })
       .catch((err) => {
@@ -137,20 +141,17 @@ const AuthContextProvider: React.FC = (props) => {
       });
 
     if (response.status === 401) {
-      // grantRefresh();
+      grantRefresh();
       return;
     }
     console.log(response, "로그아웃 성공");
     setIsLogin(false);
     setUser({});
     window.localStorage.clear();
-    removeCookie("accessToken", {
-      path: "/",
-      secure: true,
-    });
-    // document.cookie = "accessToken=;expires=Thu, 18 Dec 2013 12:00:00 GMT";
-    // router.reload();
-    // router.push("/account/login");
+    // removeCookie("accessToken", {
+    //   path: "/",
+    //   secure: true,
+    // });
     window.location.href = "/account/login";
   };
 
@@ -161,15 +162,19 @@ const AuthContextProvider: React.FC = (props) => {
     const accessTokenExpiresIn = new Date(Date.now() + 30 * 24 * 60 * 60000);
 
     // 현재 로그인 시각 브라우저에 저장
-    window.localStorage.setItem("loginTime", JSON.stringify(Date.now()));
+    // window.localStorage.setItem("loginTime", JSON.stringify(Date.now()));
+    saveSecureLocalStorage("loginTime", Date.now());
 
-    // 쿠키가 만료시간이 되면 지워지게 해서 자동으로 로그아웃을 유지
-    // 또한 브라우저를 끄고 켜도 로그인 유지
-    setCookie("accessToken", accessToken, {
-      path: "/",
-      secure: true,
-      expires: accessTokenExpiresIn,
-    });
+    // window.localStorage.setItem("accessToken", JSON.stringify);
+    saveSecureLocalStorage("accessToken", accessToken);
+
+    // // 쿠키가 만료시간이 되면 지워지게 해서 자동으로 로그아웃을 유지
+    // // 또한 브라우저를 끄고 켜도 로그인 유지
+    // setCookie("accessToken", accessToken, {
+    //   path: "/",
+    //   secure: true,
+    //   expires: accessTokenExpiresIn,
+    // });
 
     setIsLogin(true);
     setTimeout(grantRefresh, tokenInfo.expiresIn - 60000);
@@ -202,12 +207,7 @@ const AuthContextProvider: React.FC = (props) => {
 
     if (response.status === 401) {
       setIsLogin(false);
-      message.error("재로그인에 실패하셨습니다.", {
-        // onClose: () => {
-        //   router.push("/account/login");
-        // },
-      });
-
+      message.error("재로그인에 실패하셨습니다.");
       router.push("/account/login");
       return;
     }
@@ -436,7 +436,8 @@ const AuthContextProvider: React.FC = (props) => {
     setUser((preUser: UserPropertys) => {
       const newUser = { ...preUser, ...newUserInfo };
       console.log(preUser, newUser, "updateUser");
-      window.localStorage.setItem("user", JSON.stringify(newUser));
+      saveSecureLocalStorage("user", newUser);
+      // window.localStorage.setItem("user", JSON.stringify(newUser));
       return newUser;
     });
     console.log("update userInfo");

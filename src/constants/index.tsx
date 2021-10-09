@@ -18,3 +18,4 @@ export const INITIAL_ROOMID = -1;
 export const LIMIT_NEWALARM_SIZE = 99;
 export const FIRST_STAGE = 1;
 export const SECOND_STAGE = 2;
+export const SECRET_KEY = "HOLYBANG1!";

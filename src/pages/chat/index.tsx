@@ -10,6 +10,7 @@ import { useAlert } from "react-alert";
 import { BACKEND_URL, INITIAL_ID, INITIAL_ROOMID } from "../../constants";
 import { ChatContext, RoomType } from "../../store/ChatContext";
 import { useCookies } from "react-cookie";
+import { getSecureLocalStorage } from "../../utils";
 
 export default function Chat() {
   const { grantRefresh, isLogin, user } = useContext(AuthContext);
@@ -33,7 +34,7 @@ export default function Chat() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: cookies.accessToken,
+            Authorization: getSecureLocalStorage("accessToken"),
             Accept: "application/json",
           },
         }

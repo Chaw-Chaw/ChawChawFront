@@ -11,7 +11,7 @@ import SockJS from "sockjs-client";
 import { BACKEND_URL, DEFAULT_PROFILE_IMAGE } from "../constants";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
-import { arrayRemovedItem } from "../utils";
+import { arrayRemovedItem, getSecureLocalStorage } from "../utils";
 import { useCookies } from "react-cookie";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
@@ -117,7 +117,7 @@ const ChatContextProvider: React.FC = (props) => {
         console.error(frame);
       },
       connectHeaders: {
-        Authorization: cookies.accessToken,
+        Authorization: getSecureLocalStorage("accessToken"),
       },
     });
 
@@ -195,7 +195,7 @@ const ChatContextProvider: React.FC = (props) => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: cookies.accessToken,
+            Authorization: getSecureLocalStorage("accessToken"),
             Accept: "application/json",
           },
         }
@@ -241,7 +241,7 @@ const ChatContextProvider: React.FC = (props) => {
     const response = await axios
       .get("/users/alarm", {
         headers: {
-          Authorization: cookies.accessToken,
+          Authorization: getSecureLocalStorage("accessToken"),
         },
       })
       .catch((err) => {
@@ -303,7 +303,7 @@ const ChatContextProvider: React.FC = (props) => {
         { userId },
         {
           headers: {
-            Authorization: cookies.accessToken,
+            Authorization: getSecureLocalStorage("accessToken"),
           },
         }
       )
@@ -331,7 +331,7 @@ const ChatContextProvider: React.FC = (props) => {
       .delete("/users/block", {
         data: { userId: userId },
         headers: {
-          Authorization: cookies.accessToken,
+          Authorization: getSecureLocalStorage("accessToken"),
         },
       })
       .catch((err) => err.response);
@@ -359,7 +359,7 @@ const ChatContextProvider: React.FC = (props) => {
       .get(BACKEND_URL + "/chat/", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: cookies.accessToken,
+          Authorization: getSecureLocalStorage("accessToken"),
           Accept: "application/json",
         },
       })

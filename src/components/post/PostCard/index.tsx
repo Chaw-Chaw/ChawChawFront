@@ -10,6 +10,7 @@ import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import { PostCardImageInfoProps, PostCardImageInfo } from "./PostCardImageInfo";
 import { AuthContext } from "../../../store/AuthContext";
 import { useCookies } from "react-cookie";
+import { getSecureLocalStorage } from "../../../utils";
 
 interface PostCardProps extends PostCardInfoProps, PostCardImageInfoProps {
   imageUrl: string;
@@ -57,7 +58,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       .get(`/users/${props.id}`, {
         headers: {
           "Content-type": "application/json",
-          Authorization: cookies.accessToken,
+          Authorization: getSecureLocalStorage("accessToken"),
           Accept: "application/json",
         },
       })

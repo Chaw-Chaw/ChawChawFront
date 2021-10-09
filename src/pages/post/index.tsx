@@ -9,6 +9,7 @@ import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import { useAlert } from "react-alert";
 import { useCookies } from "react-cookie";
+import { getSecureLocalStorage } from "../../utils";
 
 export default function Post() {
   const { grantRefresh, user, isLogin } = useContext(AuthContext);
@@ -45,7 +46,7 @@ export default function Post() {
           isFirst: isFirst,
         },
         headers: {
-          Authorization: cookies.accessToken,
+          Authorization: getSecureLocalStorage("accessToken"),
         },
       })
       .catch((err) => err.response);
