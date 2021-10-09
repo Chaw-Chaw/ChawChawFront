@@ -20,7 +20,7 @@ const saveSecureLocalStorage = (itemName: string, item: any) => {
 
 const getSecureLocalStorage = (itemName: string) => {
   const cipherData = window.localStorage.getItem(itemName);
-  if (!cipherData) return undefined;
+  if (!cipherData) return null;
   const bytes = CryptoJS.AES.decrypt(cipherData, SECRET_KEY).toString(
     CryptoJS.enc.Utf8
   );

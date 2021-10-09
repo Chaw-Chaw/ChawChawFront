@@ -108,7 +108,7 @@ const AuthContextProvider: React.FC = (props) => {
   const message = useAlert();
   const [user, setUser] = useState(avoidLocalStorageUndefined("user", {}));
   const [isLogin, setIsLogin] = useState(
-    Boolean(avoidLocalStorageUndefined("accessToken", undefined))
+    Boolean(avoidLocalStorageUndefined("accessToken", false))
   );
   const router = useRouter();
 
