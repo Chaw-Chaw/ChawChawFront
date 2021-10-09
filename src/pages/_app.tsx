@@ -4,8 +4,6 @@ import { ThemeProvider, createGlobalStyle } from "styled-components";
 import LightTheme from "../theme/light";
 import DarkTheme from "../theme/dark";
 import { AuthContextProvider } from "../store/AuthContext";
-
-import { CookiesProvider } from "react-cookie";
 import {
   Provider as AlertProvider,
   AlertComponentPropsWithStyle,
