@@ -43,68 +43,64 @@ function MyApp({ Component, pageProps }: AppProps) {
   };
 
   return (
-    <CookiesProvider>
-      <ThemeProvider
-        theme={{
-          ...theme,
-          setTheme: () => {
-            setTheme((s) => (s.id === "light" ? DarkTheme : LightTheme));
-          },
-        }}
-      >
-        <AlertProvider template={AlertTemplate}>
-          <GlobalStyles />
-          <AuthContextProvider>
-            <ChatContextProvider>
-              <DefaultSeo
-                title={"ChawChaw 언어를 교환합시다.🗣"}
-                description={
-                  "대학내 교환학생 언어교환 채팅 어플리케이션입니다."
-                }
-                canonical="https://www.chawchaw.vercel.app"
-                openGraph={{
-                  type: "website",
-                  locale: "en_IE",
-                  title: "ChawChaw 언어를 교환합시다.🗣",
-                  description:
-                    "대학내 교환학생 언어교환 채팅 어플리케이션입니다.",
-                  images: [
-                    {
-                      url: "https://i.ibb.co/m0NY7yQ/image.jpg",
-                      width: 800,
-                      height: 600,
-                      alt: "ChawChaw 소개 이미지",
-                    },
-                  ],
-                  url: "https://www.chawchaw.vercel.app",
-                  site_name: "ChawChaw",
-                }}
-                twitter={{
-                  handle: "@chawchawTwitter",
-                  site: "chawchaw.vercel.app",
-                  cardType: "summary",
-                }}
-                additionalLinkTags={[
+    <ThemeProvider
+      theme={{
+        ...theme,
+        setTheme: () => {
+          setTheme((s) => (s.id === "light" ? DarkTheme : LightTheme));
+        },
+      }}
+    >
+      <AlertProvider template={AlertTemplate}>
+        <GlobalStyles />
+        <AuthContextProvider>
+          <ChatContextProvider>
+            <DefaultSeo
+              title={"ChawChaw 언어를 교환합시다.🗣"}
+              description={"대학내 교환학생 언어교환 채팅 어플리케이션입니다."}
+              canonical="https://www.chawchaw.vercel.app"
+              openGraph={{
+                type: "website",
+                locale: "en_IE",
+                title: "ChawChaw 언어를 교환합시다.🗣",
+                description:
+                  "대학내 교환학생 언어교환 채팅 어플리케이션입니다.",
+                images: [
                   {
-                    type: "image/png",
-                    sizes: "32x32",
-                    href: "/Layout/chaw.png",
-                    rel: "icon",
+                    url: "https://i.ibb.co/m0NY7yQ/image.jpg",
+                    width: 800,
+                    height: 600,
+                    alt: "ChawChaw 소개 이미지",
                   },
-                ]}
-                additionalMetaTags={[
-                  {
-                    name: "viewport",
-                    content: "width=device-width, initial-scale=1",
-                  },
-                ]}
-              />
-              <Component {...pageProps} />
-            </ChatContextProvider>
-          </AuthContextProvider>
-        </AlertProvider>
-      </ThemeProvider>
-    </CookiesProvider>
+                ],
+                url: "https://www.chawchaw.vercel.app",
+                site_name: "ChawChaw",
+              }}
+              twitter={{
+                handle: "@chawchawTwitter",
+                site: "chawchaw.vercel.app",
+                cardType: "summary",
+              }}
+              additionalLinkTags={[
+                {
+                  type: "image/png",
+                  sizes: "32x32",
+                  href: "/Layout/chaw.png",
+                  rel: "icon",
+                },
+              ]}
+              additionalMetaTags={[
+                {
+                  name: "viewport",
+                  content: "width=device-width, initial-scale=1",
+                },
+              ]}
+            />
+            <Component {...pageProps} />
+          </ChatContextProvider>
+        </AuthContextProvider>
+      </AlertProvider>
+    </ThemeProvider>
   );
 }
 export default MyApp;
