@@ -17,7 +17,6 @@ import ProfileContent from "./ProfileContent";
 import ProfileImage from "./ProfileImage";
 import ProfileSocialUrl from "./ProfileSocialUrl";
 import ProfileSelectInfo from "./ProfileSelectInfo";
-import { useCookies } from "react-cookie";
 import { getSecureLocalStorage } from "../../../utils";
 
 interface ProfileSection {
@@ -28,7 +27,6 @@ interface ProfileSection {
 const ProfileSection: React.FC = () => {
   const message = useAlert();
   const { grantRefresh } = useContext(AuthContext);
-  const [cookies] = useCookies(["accessToken"]);
   const { user, updateUser } = useContext(AuthContext);
   const [userCountries, setUserCountries] = useState<string[]>(
     user.country || ["Select"]

@@ -1,8 +1,5 @@
 import axios from "axios";
-import { Router, useRouter } from "next/router";
 import { MouseEventHandler, useContext } from "react";
-import { useAlert } from "react-alert";
-import { useCookies } from "react-cookie";
 import styled from "styled-components";
 import { AuthContext } from "../../store/AuthContext";
 import { getSecureLocalStorage } from "../../utils";
@@ -10,7 +7,6 @@ import { Button, ListItem } from "../common";
 
 const SettingUserDelete: React.FC = () => {
   const { grantRefresh, logout, isLogin } = useContext(AuthContext);
-  const [cookies] = useCookies(["accessToken"]);
   // 유저 삭제시 확인 메세지 alert 생성
   const deleteUser = async () => {
     const response = await axios
@@ -31,7 +27,8 @@ const SettingUserDelete: React.FC = () => {
       alert(`유저 삭제 실패`);
       return;
     }
-    logout();
+    window.localStorage.clear();
+    window.location.href = "/account/login";
   };
 
   const deleteUserButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {

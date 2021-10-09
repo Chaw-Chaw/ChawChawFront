@@ -12,7 +12,7 @@ import { BACKEND_URL, DEFAULT_PROFILE_IMAGE } from "../constants";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
 import { arrayRemovedItem, getSecureLocalStorage } from "../utils";
-import { useCookies } from "react-cookie";
+
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
 
@@ -93,7 +93,6 @@ const ChatContextProvider: React.FC = (props) => {
   const chatClient = useRef<any>({});
   const roomIdsRef = useRef<number[]>([]);
   const { user, grantRefresh, updateUser, isLogin } = useContext(AuthContext);
-  const [cookies] = useCookies(["accessToken"]);
   const message = useAlert();
   const router = useRouter();
 
@@ -114,7 +113,8 @@ const ChatContextProvider: React.FC = (props) => {
         likeChannelSubscribe();
       },
       onStompError: (frame) => {
-        console.error(frame);
+        console.log(frame, "connect error");
+        connect();
       },
       connectHeaders: {
         Authorization: getSecureLocalStorage("accessToken"),
@@ -265,6 +265,7 @@ const ChatContextProvider: React.FC = (props) => {
   };
 
   useEffect(() => {
+    // 한가지 문제가 있다. -> connect를 다시 연결할때
     // user.id 가 있으면 연결
     if (!isLogin || !user.id) return;
     getNewAlarms();

@@ -6,7 +6,6 @@ import axios from "axios";
 import { AuthContext } from "../../../store/AuthContext";
 import { useAlert } from "react-alert";
 import { ChatContext } from "../../../store/ChatContext";
-import { useCookies } from "react-cookie";
 import { INITIAL_ROOMID } from "../../../constants";
 import { getSecureLocalStorage } from "../../../utils";
 
@@ -22,7 +21,6 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
   const isNotActive = mainRoom.id === INITIAL_ROOMID ? true : false;
   const { grantRefresh } = useContext(AuthContext);
   const message = useAlert();
-  const [cookies] = useCookies(["accessToken"]);
 
   const sendImage = async (image: FormData) => {
     const response = await axios

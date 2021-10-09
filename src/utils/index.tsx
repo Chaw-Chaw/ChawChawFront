@@ -34,9 +34,16 @@ const avoidLocalStorageUndefined = (itemName: string, initialData: any) => {
   if (!localStorageData) return initialData;
   return localStorageData;
 };
+
+const getRefreshAccessTokenRemainingTime = () => {
+  const grantRefreshTime = avoidLocalStorageUndefined("grantRefreshTime", 0);
+  return Date.now() - grantRefreshTime;
+};
+
 export {
   arrayRemovedItem,
   saveSecureLocalStorage,
   getSecureLocalStorage,
   avoidLocalStorageUndefined,
+  getRefreshAccessTokenRemainingTime,
 };

@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import styled from "styled-components";
 import { AuthContext } from "../../store/AuthContext";
 import { getSecureLocalStorage } from "../../utils";
@@ -15,7 +14,6 @@ interface BlockItem {
 
 const SettingBlockList: React.FC = () => {
   const { isLogin, grantRefresh } = useContext(AuthContext);
-  const [cookies] = useCookies(["accessToken"]);
   const [blockList, setBlockList] = useState<BlockItem[]>([]);
 
   const getBlockList = async () => {

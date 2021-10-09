@@ -8,7 +8,6 @@ import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useAlert } from "react-alert";
 import { ChatContext } from "../../../store/ChatContext";
-import { useCookies } from "react-cookie";
 import { getSecureLocalStorage } from "../../../utils";
 
 interface PostModalActive {
@@ -18,7 +17,6 @@ interface PostModalActive {
 
 const PostModalActive: React.FC<PostModalActive> = (props) => {
   const router = useRouter();
-  const [cookies] = useCookies(["accessToken"]);
   const { grantRefresh, user } = useContext(AuthContext);
   const { blockUser, unblockUser } = useContext(ChatContext);
   const [isActiveLike, setIsActiveLike] = useState(props.isLike);

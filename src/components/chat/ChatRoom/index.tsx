@@ -17,7 +17,6 @@ import { AuthContext } from "../../../store/AuthContext";
 import { AlarmCount, ChangeLanguageDropDown } from "../../common";
 import { ChatContext } from "../../../store/ChatContext";
 import ChatList from "../ChatList";
-import { useCookies } from "react-cookie";
 import {
   INITIAL_ID,
   INITIAL_ROOMID,
@@ -38,7 +37,6 @@ const ChatRoom: React.FC = (props) => {
     newMessages,
   } = useContext(ChatContext);
   const { user, grantRefresh } = useContext(AuthContext);
-  const [cookies] = useCookies(["accessToken"]);
   const [message, setMessage] = useState<string>("");
   const [selectLanguage, setSelectLanguage] = useState<string[]>(["Korean"]);
   const chatMessageBox = useRef<HTMLDivElement>(null);

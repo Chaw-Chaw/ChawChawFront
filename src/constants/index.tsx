@@ -19,3 +19,6 @@ export const LIMIT_NEWALARM_SIZE = 99;
 export const FIRST_STAGE = 1;
 export const SECOND_STAGE = 2;
 export const SECRET_KEY = "HOLYBANG1!";
+
+export const MIN_1 = 60000;
+export const MIN_30 = 180000;

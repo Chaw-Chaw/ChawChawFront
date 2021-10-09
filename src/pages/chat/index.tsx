@@ -7,14 +7,12 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import { useAlert } from "react-alert";
-import { BACKEND_URL, INITIAL_ID, INITIAL_ROOMID } from "../../constants";
-import { ChatContext, RoomType } from "../../store/ChatContext";
-import { useCookies } from "react-cookie";
+import { INITIAL_ID, INITIAL_ROOMID } from "../../constants";
+import { ChatContext } from "../../store/ChatContext";
 import { getSecureLocalStorage } from "../../utils";
 
 export default function Chat() {
   const { grantRefresh, isLogin, user } = useContext(AuthContext);
-  const [cookies] = useCookies(["accessToken"]);
   const {
     mainRoom,
     setMainRoom,
@@ -40,6 +38,10 @@ export default function Chat() {
         }
       )
       .catch((err) => err.response);
+
+    if (response.status === 401) {
+      grantRefresh();
+    }
 
     if (response.data.responseMessage === "차단한 또는 차단된 유저") {
       message.error(
