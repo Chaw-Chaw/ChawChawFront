@@ -31,12 +31,12 @@ const DropDown: React.FC<DropDownProps> = (props) => {
       }}
       onMouseLeave={() => setIsActive(false)}
       color={
-        props.postOrder && props.initialValue !== props.value
+        props.search && props.initialValue !== props.value
           ? props.backgroundColor
           : props.color
       }
       backgroundColor={
-        props.postOrder && props.initialValue !== props.value
+        props.search && props.initialValue !== props.value
           ? props.color
           : props.backgroundColor
       }

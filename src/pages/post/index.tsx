@@ -1,6 +1,6 @@
 import { LanguageLocale, Layout } from "../../components/common";
 import styled from "styled-components";
-import PostSearch from "../../components/post/PostSearch";
+import { PostSearch } from "../../components/post/PostSearch";
 import PostOrder, { orderOptions } from "../../components/post/PostOrder";
 import PostSection from "../../components/post/PostSection";
 import { useContext, useEffect, useRef, useState } from "react";

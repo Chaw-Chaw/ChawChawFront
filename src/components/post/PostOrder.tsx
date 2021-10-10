@@ -7,13 +7,21 @@ interface PostOrderProps {
   setSortInfo: Dispatch<SetStateAction<string[]>>;
 }
 
+const orderOptions: {
+  [index: string]: string;
+} = {
+  최신: "date",
+  조회수: "view",
+  좋아요: "like",
+};
+
 const PostOrder: React.FC<PostOrderProps> = (props) => {
   return (
     <PostOrderBox>
       <DropDownBox>
         <SelectInfoBox>
           <SelectInfoDropDown
-            postOrder
+            search
             type="language"
             backgroundColor="white"
             width="150px"
@@ -27,7 +35,7 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
         </SelectInfoBox>
         <SelectInfoBox>
           <SelectInfoDropDown
-            postOrder
+            search
             type="language"
             backgroundColor="white"
             color="#FF8A00"
@@ -41,9 +49,8 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
         </SelectInfoBox>
         <SelectInfoBox>
           <SelectInfoDropDown
-            postOrder
+            search
             width="100px"
-            type="language"
             backgroundColor="white"
             color="#FF8A00"
             options={Object.keys(orderOptions)}
@@ -64,7 +71,7 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
 };
 
 export default PostOrder;
-export { orderOptions };
+export { orderOptions, PostOrderBox, SelectInfoBox };
 
 const ExplainIcons = styled.div`
   width: 100%;
@@ -101,10 +108,3 @@ const DropDownBox = styled.div`
 const SelectInfoBox = styled.div`
   margin: 2px 2px 2px 2px;
 `;
-
-const orderOptions: any = {
-  order: "",
-  최신: "date",
-  조회수: "view",
-  좋아요: "like",
-};
