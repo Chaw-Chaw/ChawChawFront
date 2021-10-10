@@ -219,6 +219,8 @@ const AuthContextProvider: React.FC = (props) => {
       )
       .catch((err) => err.response);
 
+    console.log(response, "login");
+
     if (!response.data.isSuccess) {
       if (response.data.responseMessage === "회원가입 필요") {
         updateUser(response.data.data);
@@ -235,6 +237,13 @@ const AuthContextProvider: React.FC = (props) => {
       return;
     }
     loginSuccess(response);
+
+    //관리자는 관리자 페이지로 접속
+    if (response.data.data.profile.role === "ADMIN") {
+      router.push("/manage/users");
+      return;
+    }
+
     router.push("/post");
   };
 
