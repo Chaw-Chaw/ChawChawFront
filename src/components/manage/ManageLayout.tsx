@@ -1,35 +1,45 @@
 import Image from "next/image";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE } from "../../constants";
 import { AuthContext } from "../../store/AuthContext";
+import { getRefreshAccessTokenRemainingTime } from "../../utils";
 import { TapList } from "./TapList";
 
 const ManageLayout: React.FC = (props) => {
-  const { user } = useContext(AuthContext);
+  const { user, isLogin, grantRefresh } = useContext(AuthContext);
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
+  useEffect(() => {
+    if (!isLogin) return;
+    setTimeout(grantRefresh, getRefreshAccessTokenRemainingTime());
+  }, []);
   return (
-    <Container>
-      <Tap>
-        <PageTitleBox>
-          <PageTitle>ChawChaw Manage</PageTitle>
-        </PageTitleBox>
-        <ProfileBox>
-          <ProfileImageBox>
-            <Image
-              src={profileImage}
-              alt="프로필 이미지"
-              width="50px"
-              height="50px"
-              objectFit="cover"
-            />
-          </ProfileImageBox>
-          <ProfileName>{user.name}</ProfileName>
-        </ProfileBox>
-        <TapList />
-      </Tap>
-      {props.children}
-    </Container>
+    <>
+      <Container>
+        <Tap>
+          <PageTitleBox>
+            <PageTitle>ChawChaw Manage</PageTitle>
+          </PageTitleBox>
+          <ProfileBox>
+            <ProfileImageBox>
+              <Image
+                src={profileImage}
+                alt="프로필 이미지"
+                width="50px"
+                height="50px"
+                objectFit="cover"
+              />
+            </ProfileImageBox>
+            <ProfileName>{user.name}</ProfileName>
+          </ProfileBox>
+          <TapList />
+        </Tap>
+        {props.children}
+      </Container>
+      <GuideText>
+        <p>데스크 탑 화면을 키워주세요.</p>
+      </GuideText>
+    </>
   );
 };
 export { ManageLayout };
@@ -38,6 +48,9 @@ const Container = styled.div`
   display: flex;
   height: 100%;
   width: 100%;
+  @media (max-width: 1024px) {
+    display: none;
+  }
 `;
 
 const Tap = styled.div`
@@ -45,6 +58,7 @@ const Tap = styled.div`
   display: flex;
   flex-direction: column;
   width: 300px;
+  box-sizing: border-box;
   height: 100vh;
   background-color: ${(props) => props.theme.primaryColor};
   padding-left: 30px;
@@ -88,4 +102,15 @@ const ProfileName = styled.h1`
   margin-left: 25px;
   padding: 0px;
   font-size: 25px;
+`;
+
+const GuideText = styled.div`
+  display: none;
+  @media (max-width: 1024px) {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;

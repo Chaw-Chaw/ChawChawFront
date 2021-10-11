@@ -1,26 +1,34 @@
-import { MouseEventHandler, useContext } from "react";
+import { MouseEventHandler, useContext, useState } from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import { AuthContext } from "../../../store/AuthContext";
-import { Button } from "../../common";
+import { AuthContext } from "../../store/AuthContext";
+import { Button } from "../common";
 import axios from "axios";
 import { useAlert } from "react-alert";
-import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
-import { getSecureLocalStorage } from "../../../utils";
+import { DEFAULT_PROFILE_IMAGE } from "../../constants";
+import { getSecureLocalStorage } from "../../utils";
 
-const ProfileImage: React.FC = () => {
-  const { user, updateUser, grantRefresh } = useContext(AuthContext);
-  const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
+const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
+  props
+) => {
+  const { grantRefresh } = useContext(AuthContext);
+  const [profileImage, setProfileImage] = useState(
+    props.userImage || DEFAULT_PROFILE_IMAGE
+  );
   const message = useAlert();
 
   const sendImage = async (image: FormData) => {
     const response = await axios
-      .post("/users/image", image, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: getSecureLocalStorage("accessToken"),
-        },
-      })
+      .post(
+        "admin/users/image",
+        { userId: props.userId, file: image },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: getSecureLocalStorage("accessToken"),
+          },
+        }
+      )
       .catch((err) => err.response);
 
     if (response.status === 401) {
@@ -31,8 +39,9 @@ const ProfileImage: React.FC = () => {
     if (!response.data.isSuccess) {
       return;
     }
+
     message.success("이미지 업로드 성공!");
-    updateUser({ imageUrl: response.data.data });
+    setProfileImage(response.data.data);
     return;
   };
 
@@ -52,7 +61,8 @@ const ProfileImage: React.FC = () => {
   const deleteImage: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
     const response = await axios
-      .delete("/users/image", {
+      .delete("/admin/users/image", {
+        data: { userId: props.userId },
         headers: {
           "Content-Type": "application/json",
           Authorization: getSecureLocalStorage("accessToken"),
@@ -70,7 +80,7 @@ const ProfileImage: React.FC = () => {
       console.error(response.data);
       return;
     }
-    updateUser({ imageUrl: response.data.data });
+    setProfileImage(DEFAULT_PROFILE_IMAGE);
   };
 
   return (
@@ -98,7 +108,7 @@ const ProfileImage: React.FC = () => {
     </Container>
   );
 };
-export default ProfileImage;
+export default ManageProfileImage;
 
 const Container = styled.div`
   display: flex;

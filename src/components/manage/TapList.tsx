@@ -10,12 +10,28 @@ const TapList: React.FC = () => {
   return (
     <TapContainter>
       <ToggleItem title="회원 정보 관리">
-        <ToggleListItem title="회원 정보 검색" type="userSearch" />
+        <ToggleListItem
+          title="회원 정보 검색"
+          type="userSearch"
+          link="/manage/users"
+        />
       </ToggleItem>
       <ToggleItem title="통계">
-        <ToggleListItem title="희망 언어 순위" type="hopeLanguage" />
-        <ToggleListItem title="할 수 있는 언어 순위" type="language" />
-        <ToggleListItem title="인기 검색 언어 순위" type="searchLanguage" />
+        <ToggleListItem
+          title="희망 언어 순위"
+          type="hopeLanguage"
+          link="/manage/statistics"
+        />
+        <ToggleListItem
+          title="할 수 있는 언어 순위"
+          type="language"
+          link="/manage/statistics"
+        />
+        <ToggleListItem
+          title="인기 검색 언어 순위"
+          type="searchLanguage"
+          link="/manage/statistics"
+        />
       </ToggleItem>
       <LogoutButton onClick={logout}>로그아웃</LogoutButton>
     </TapContainter>

@@ -164,6 +164,15 @@ const ProfileSection: React.FC = () => {
 };
 
 export default ProfileSection;
+export {
+  ProfileHeader,
+  ProfileImage,
+  ProfileContent,
+  ProfileInfoBox,
+  ProfileSelectInfo,
+  ProfileSocialUrl,
+  ProfileUploadButton,
+};
 
 const Container = styled.div`
   width: 100%;

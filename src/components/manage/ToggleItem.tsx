@@ -12,9 +12,10 @@ const ToggleItem: React.FC<{ title: string }> = (props) => {
     e.preventDefault();
     setIsopen((pre) => !pre);
   };
+
   return (
-    <ToggleItemContainer onClick={ToggleHandler}>
-      <ToggleItemBox>
+    <ToggleItemContainer>
+      <ToggleItemBox onClick={ToggleHandler}>
         {isopen ? <IoIosArrowDropdownCircle /> : <IoIosArrowDroprightCircle />}
         <ToggleItemTitle>{props.title}</ToggleItemTitle>
       </ToggleItemBox>

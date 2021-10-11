@@ -165,6 +165,10 @@ const PictureIconBox = styled.label`
     width: 40px;
     color: ${(props) =>
       props.theme.id === "light" ? "rgb(0, 0, 0, 0.5)" : "white"};
+    transition: color 0.5s;
+    :hover {
+      color: ${(props) => props.theme.primaryColor};
+    }
   }
   top: 3.5px;
   right: 60px;
@@ -180,6 +184,10 @@ const SendIconBox = styled.div`
     width: 40px;
     color: ${(props) =>
       props.theme.id === "light" ? "rgb(0, 0, 0, 0.5)" : "white"};
+    transition: color 0.5s;
+    :hover {
+      color: ${(props) => props.theme.primaryColor};
+    }
   }
   top: 3.5px;
   right: 10px;

@@ -2,26 +2,26 @@ import { Dispatch, SetStateAction } from "react";
 import { SelectInfoDropDown, universityList } from "../common";
 import { PostOrderBox as UserOrderBox, SelectInfoBox } from "../post/PostOrder";
 
+const orderOptions: {
+  [index: string]: string;
+} = {
+  오름차순: "asc",
+  내림차순: "desc",
+};
+
+const sortOptions: {
+  [index: string]: string;
+} = {
+  등록일: "date",
+  이름: "name",
+  좋아요: "like",
+  조회수: "view",
+};
+
 const UserOrder: React.FC<{
   searchInfo: string[];
   setSearchInfo: Dispatch<SetStateAction<string[]>>;
 }> = (props) => {
-  const orderOptions: {
-    [index: string]: string;
-  } = {
-    오름차순: "asc",
-    내림차순: "desc",
-  };
-
-  const sortOptions: {
-    [index: string]: string;
-  } = {
-    등록일: "date",
-    이름: "name",
-    좋아요: "like",
-    조회수: "view",
-  };
-
   return (
     <UserOrderBox>
       <SelectInfoBox>
@@ -31,7 +31,7 @@ const UserOrder: React.FC<{
           backgroundColor="white"
           width="100px"
           color="#FF8A00"
-          initialValue="언어"
+          initialValue="선택언어"
           fontSize="0.9rem"
           setValues={props.setSearchInfo}
           index={0}
@@ -45,7 +45,7 @@ const UserOrder: React.FC<{
           backgroundColor="white"
           width="100px"
           color="#FF8A00"
-          initialValue="희망언어"
+          initialValue="선택희망언어"
           fontSize="0.9rem"
           setValues={props.setSearchInfo}
           index={1}
@@ -112,4 +112,4 @@ const UserOrder: React.FC<{
   );
 };
 
-export { UserOrder };
+export { UserOrder, orderOptions, sortOptions };

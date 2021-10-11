@@ -26,7 +26,7 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
             backgroundColor="white"
             width="150px"
             color="#FF8A00"
-            initialValue="Main Language"
+            initialValue="선택언어"
             fontSize="0.9rem"
             setValues={props.setSortInfo}
             index={0}
@@ -40,7 +40,7 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
             backgroundColor="white"
             color="#FF8A00"
             width="150px"
-            initialValue="Hope Language"
+            initialValue="선택희망언어"
             fontSize="0.9rem"
             setValues={props.setSortInfo}
             index={1}
@@ -54,7 +54,7 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
             backgroundColor="white"
             color="#FF8A00"
             options={Object.keys(orderOptions)}
-            initialValue="order"
+            initialValue="순서"
             fontSize="0.9rem"
             setValues={props.setSortInfo}
             index={2}

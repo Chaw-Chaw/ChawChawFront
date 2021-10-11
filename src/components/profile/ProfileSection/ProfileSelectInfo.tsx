@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useEffect } from "react";
 import { useAlert } from "react-alert";
 import styled from "styled-components";
 import { Button, SelectInfoDropDown } from "../../common";
@@ -38,6 +38,10 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
       });
     }
   };
+
+  useEffect(() => {
+    console.log(props.values, "values");
+  }, [JSON.stringify(props.values)]);
 
   return (
     <ListItem title={props.title} description={props.description}>

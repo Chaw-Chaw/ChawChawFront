@@ -268,6 +268,7 @@ const ChatContextProvider: React.FC = (props) => {
     // 한가지 문제가 있다. -> connect를 다시 연결할때
     // user.id 가 있으면 연결
     if (!isLogin || !user.id) return;
+    if (user.role === "ADMIN") return;
     getNewAlarms();
     connect();
     return () => disconnect();

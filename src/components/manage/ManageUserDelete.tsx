@@ -1,16 +1,21 @@
 import axios from "axios";
+import { useRouter } from "next/router";
 import { MouseEventHandler, useContext } from "react";
+import { useAlert } from "react-alert";
 import styled from "styled-components";
 import { AuthContext } from "../../store/AuthContext";
 import { getSecureLocalStorage } from "../../utils";
 import { Button, ListItem } from "../common";
 
-const SettingUserDelete: React.FC = () => {
+const ManageUserDelete: React.FC<{ userId: number }> = (props) => {
   const { grantRefresh, isLogin } = useContext(AuthContext);
+  const router = useRouter();
+  const message = useAlert();
   // 유저 삭제시 확인 메세지 alert 생성
   const deleteUser = async () => {
     const response = await axios
-      .delete("/users", {
+      .delete("/admin/users", {
+        data: { userId: props.userId },
         headers: {
           Authorization: getSecureLocalStorage("accessToken"),
         },
@@ -27,8 +32,11 @@ const SettingUserDelete: React.FC = () => {
       alert(`유저 삭제 실패`);
       return;
     }
-    window.localStorage.clear();
-    window.location.href = "/account/login";
+    message.success("유저삭제성공!", {
+      onClose: () => {
+        router.push("/manage/users");
+      },
+    });
   };
 
   const deleteUserButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -48,7 +56,7 @@ const SettingUserDelete: React.FC = () => {
   );
 };
 
-export { SettingUserDelete };
+export { ManageUserDelete };
 
 const UserDeleteButton = styled(Button)`
   background-color: rgba(255, 107, 107, 1);

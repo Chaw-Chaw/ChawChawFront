@@ -20,3 +20,4 @@ export * from "./Button/UpdateButton";
 export * from "./AlarmCount";
 export * from "./ChatBox";
 export * from "./ListItem";
+export * from "./Pagenation";

@@ -35,13 +35,15 @@ const SettingBlockList: React.FC = () => {
       console.error(response.data);
       return;
     }
-    setBlockList(response.data.data);
-    return;
+    return response.data.data;
   };
 
   useEffect(() => {
     if (!isLogin) return;
-    getBlockList();
+    (async () => {
+      const result = await getBlockList();
+      setBlockList(result);
+    })();
   }, []);
 
   return (

@@ -7,8 +7,7 @@ import { arrayRemovedItem } from "../../../utils";
 import { useRouter } from "next/router";
 
 const ChatList: React.FC = (props) => {
-  const { totalMessage, setMainRoom, setIsViewChatList } =
-    useContext(ChatContext);
+  const { totalMessage } = useContext(ChatContext);
   const { user } = useContext(AuthContext);
   const router = useRouter();
 
