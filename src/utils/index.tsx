@@ -36,7 +36,7 @@ const avoidLocalStorageUndefined = (itemName: string, initialData: any) => {
 
 const getRefreshAccessTokenRemainingTime = () => {
   const grantRefreshTime = avoidLocalStorageUndefined("grantRefreshTime", 0);
-  return Date.now() - grantRefreshTime;
+  return grantRefreshTime - Date.now();
 };
 
 export {
