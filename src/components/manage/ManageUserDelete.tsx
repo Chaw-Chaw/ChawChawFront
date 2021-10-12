@@ -46,11 +46,11 @@ const ManageUserDelete: React.FC<{ userId: number }> = (props) => {
   };
   return (
     <ListItem
-      title="회원탈퇴"
-      description="탈퇴 시 작성하신 포스트 및 댓글이 모두 삭제되며 복구되지 않습니다."
+      title="회원삭제"
+      description="삭제시 유저가 작성한 포스트 및 댓글이 모두 삭제되며 복구되지 않습니다."
     >
       <UserDeleteButton onClick={deleteUserButtonHandler}>
-        회원 탈퇴
+        회원 삭제
       </UserDeleteButton>
     </ListItem>
   );

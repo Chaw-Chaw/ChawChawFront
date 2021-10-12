@@ -39,10 +39,6 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
     }
   };
 
-  useEffect(() => {
-    console.log(props.values, "values");
-  }, [JSON.stringify(props.values)]);
-
   return (
     <ListItem title={props.title} description={props.description}>
       <ButtonsBox>

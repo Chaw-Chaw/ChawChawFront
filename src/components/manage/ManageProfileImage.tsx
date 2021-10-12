@@ -1,4 +1,4 @@
-import { MouseEventHandler, useContext, useState } from "react";
+import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import { AuthContext } from "../../store/AuthContext";
@@ -19,17 +19,15 @@ const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
 
   const sendImage = async (image: FormData) => {
     const response = await axios
-      .post(
-        "admin/users/image",
-        { userId: props.userId, file: image },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: getSecureLocalStorage("accessToken"),
-          },
-        }
-      )
+      .post("/admin/users/image", image, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: getSecureLocalStorage("accessToken"),
+        },
+      })
       .catch((err) => err.response);
+
+    console.log(response, " sendImage");
 
     if (response.status === 401) {
       grantRefresh();
@@ -55,6 +53,7 @@ const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
     }
     const image = new FormData();
     image.append("file", file);
+    image.append("userId", String(props.userId));
     sendImage(image);
   };
 
@@ -83,6 +82,11 @@ const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
     setProfileImage(DEFAULT_PROFILE_IMAGE);
   };
 
+  useEffect(() => {
+    if (!props.userImage) return;
+    setProfileImage(props.userImage);
+  }, [props.userImage]);
+
   return (
     <Container>
       <Image
@@ -93,7 +97,6 @@ const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
         objectFit="cover"
         className="profile-image"
       />
-
       <InputFileButton htmlFor="image-file">이미지 업로드</InputFileButton>
       <input
         id="image-file"

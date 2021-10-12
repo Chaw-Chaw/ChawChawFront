@@ -215,8 +215,8 @@ export default function ManageUserDetail() {
         <ProfileHeadBox>
           <ManageProfileImage userId={userId} userImage={userInfo.imageUrl} />
           <ProfileContent
-            title="포스팅에 올라갈 당신의 매력을 어필해보세요!"
-            placeholder="당신을 소개할 내용을 입력해주세요."
+            title="유저의 프로필 소개글을 수정합니다."
+            placeholder="유저의 소개글이 비어있습니다."
             setValues={setUserContent}
             values={userContent}
             name={userInfo.name}
@@ -224,24 +224,24 @@ export default function ManageUserDetail() {
         </ProfileHeadBox>
         <ProfileInfoBox>
           <ProfileSelectInfo
-            title="Mother Country"
-            description="자신의 국적을 추가해주세요. (최대 2개) 가장 첫 칸은 주 국적으로 표시됩니다. "
+            title="국적"
+            description="유저의 국적을 관리합니다. (최대 2개) 가장 첫 칸은 대표 국적으로 표시됩니다. "
             type="country"
             count={2}
             setValues={setUserCountries}
             values={userCountries}
           />
           <ProfileSelectInfo
-            title="Language you can"
-            description="자신이 할 수 있는 언어를 추가해주세요. (최대 4개) 가장 첫 칸은 주 언어로 표시됩니다. "
+            title="유저의 선택 언어"
+            description="유저의 선택언어를 관리합니다. (최대 4개) 가장 첫 칸은 대표 언어로 표시됩니다. "
             type="language"
             count={4}
             setValues={setUserLanguages}
             values={userLanguages}
           />
           <ProfileSelectInfo
-            title="Learning lanugage"
-            description="배우고 싶은 언어를 모두 추가해주세요. (최대 4개) 가장 첫 칸은 주 언어로 표시됩니다."
+            title="유저의 선택 희망 언어"
+            description="유저의 선택 희망언어를 관리합니다. (최대 4개) 가장 첫 칸은 주 언어로 표시됩니다."
             type="hopeLanguage"
             count={4}
             setValues={setUserHopeLanguages}
@@ -255,7 +255,7 @@ export default function ManageUserDetail() {
           />
         </ProfileInfoBox>
         <ProfileModifyButton onClick={onSubmit}>
-          프로필 업로드
+          프로필 수정
         </ProfileModifyButton>
         <ManageContainer>
           <ManageBlockList blockList={userInfo.blockUsers} />

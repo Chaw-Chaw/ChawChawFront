@@ -49,10 +49,10 @@ export default function ManageUser() {
   ]);
   const [usersList, setUsersList] = useState<usersType[]>([]);
   const [pagenationInfo, setPagenationInfo] = useState<pagenationInfoType>({
-    totalCnt: 0,
-    startPage: 0,
-    endPage: 0,
-    curPage: 1,
+    totalCnt: 1,
+    startPage: 1,
+    endPage: 1,
+    curPage: 0,
     isNext: false,
     isPrevious: false,
   });
@@ -122,6 +122,7 @@ export default function ManageUser() {
           setSelectedPageNumber={setSelectedPageNumber}
         />
         <Pagenation
+          contentCounts={usersList.length}
           pagenationInfo={pagenationInfo}
           selectedPageNumber={selectedPageNumber}
           setSelectedPageNumber={setSelectedPageNumber}
