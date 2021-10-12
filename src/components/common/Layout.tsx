@@ -1,14 +1,23 @@
+import { Router, useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../store/AuthContext";
-import { getRefreshAccessTokenRemainingTime } from "../../utils";
+import {
+  getRefreshAccessTokenRemainingTime,
+  getSecureLocalStorage,
+} from "../../utils";
 import Header from "./Header";
 
 const Layout: React.FC<{ type?: string }> = (props) => {
   const { grantRefresh, isLogin } = useContext(AuthContext);
+  const router = useRouter();
 
   useEffect(() => {
     if (!isLogin) return;
+    const userRole = getSecureLocalStorage("user").role;
+    if (userRole === "ADMIN") {
+      router.push("/manage/users");
+    }
     setTimeout(grantRefresh, getRefreshAccessTokenRemainingTime());
   }, []);
 

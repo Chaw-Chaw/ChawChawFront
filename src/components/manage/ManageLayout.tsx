@@ -1,18 +1,29 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE } from "../../constants";
 import { AuthContext } from "../../store/AuthContext";
-import { getRefreshAccessTokenRemainingTime } from "../../utils";
+import {
+  getRefreshAccessTokenRemainingTime,
+  getSecureLocalStorage,
+} from "../../utils";
 import { TapList } from "./TapList";
 
 const ManageLayout: React.FC = (props) => {
   const { user, isLogin, grantRefresh } = useContext(AuthContext);
+  const router = useRouter();
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
+
   useEffect(() => {
     if (!isLogin) return;
+    const userRole = getSecureLocalStorage("user").role;
+    if (userRole !== "ADMIN") {
+      router.push("/");
+    }
     setTimeout(grantRefresh, getRefreshAccessTokenRemainingTime());
   }, []);
+
   return (
     <>
       <Container>
