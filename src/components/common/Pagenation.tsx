@@ -12,38 +12,28 @@ const Pagenation: React.FC<{
   pagenationInfo: pagenationInfoType;
   selectedPageNumber: number;
   setSelectedPageNumber: Dispatch<SetStateAction<number>>;
+  contentCounts: number;
 }> = (props) => {
-  const [totalPageArr, setTotalPageArr] = useState(
-    Array.from(
-      {
-        length:
-          props.pagenationInfo.endPage - props.pagenationInfo.startPage + 1,
-      },
-      (v, i) => i + 1
-    )
-  );
-  const [middlePageNum, setMiddlePageNum] = useState(3);
+  const [totalPageArr, setTotalPageArr] = useState<number[]>([0]);
+  const [middlePageNum, setMiddlePageNum] = useState(0);
+  const startPage = 1;
 
   useEffect(() => {
-    setTotalPageArr(
-      Array.from(
-        {
-          length:
-            props.pagenationInfo.endPage - props.pagenationInfo.startPage + 1,
-        },
-        (v, i) => i + 1
-      )
-    );
+    // pagenation 이 초기상태라면 넘김
+    if (props.pagenationInfo.curPage === 0) return;
+    const totalPageCount = props.pagenationInfo.totalCnt / props.contentCounts;
+    setTotalPageArr(Array.from({ length: totalPageCount }, (v, i) => i + 1));
     const middlePage = (() => {
-      if (props.pagenationInfo.endPage - props.pagenationInfo.startPage <= 5) {
+      if (totalPageCount <= 5) {
         return 0;
       }
       // 현재 페이지가 start페이지에 가까울 때
-      if (props.pagenationInfo.curPage - props.pagenationInfo.startPage <= 2) {
-        return props.pagenationInfo.startPage + 2;
+      if (props.pagenationInfo.curPage - startPage <= 2) {
+        return startPage + 2;
       }
-      if (props.pagenationInfo.endPage - props.pagenationInfo.curPage <= 2) {
-        return props.pagenationInfo.endPage - 2;
+      // 현재 페이지가 전체 페이지수 에 가까울 때
+      if (totalPageCount - props.pagenationInfo.curPage <= 2) {
+        return totalPageCount - 2;
       }
       return props.pagenationInfo.curPage;
     })();
@@ -53,10 +43,10 @@ const Pagenation: React.FC<{
   return (
     <PagenationContainer>
       <PageMoveButton
+        disable={props.pagenationInfo.curPage === startPage}
         onClick={(e) => {
           e.preventDefault();
-          if (props.pagenationInfo.curPage === props.pagenationInfo.startPage)
-            return;
+          if (props.pagenationInfo.curPage === startPage) return;
           props.setSelectedPageNumber(props.pagenationInfo.curPage - 1);
         }}
       >
@@ -81,31 +71,27 @@ const Pagenation: React.FC<{
       ) : (
         <>
           <PageButton
-            pageNum={props.pagenationInfo.startPage}
+            pageNum={startPage}
             currentNum={props.pagenationInfo.curPage}
             onClick={(e) => {
               e.preventDefault();
-              props.setSelectedPageNumber(props.pagenationInfo.startPage);
+              props.setSelectedPageNumber(startPage);
             }}
           >
-            {props.pagenationInfo.startPage}
+            {startPage}
           </PageButton>
           <PageButton
-            pageNum={props.pagenationInfo.startPage + 1}
+            pageNum={startPage + 1}
             currentNum={props.pagenationInfo.curPage}
             onClick={(e) => {
               e.preventDefault();
-              if (
-                props.pagenationInfo.curPage - props.pagenationInfo.startPage >
-                2
-              )
-                return;
-              props.setSelectedPageNumber(props.pagenationInfo.startPage + 1);
+              if (props.pagenationInfo.curPage - startPage > 2) return;
+              props.setSelectedPageNumber(startPage + 1);
             }}
           >
-            {props.pagenationInfo.curPage - props.pagenationInfo.startPage > 2
+            {props.pagenationInfo.curPage - startPage > 2
               ? "..."
-              : props.pagenationInfo.startPage + 1}
+              : startPage + 1}
           </PageButton>
           <PageButton
             pageNum={middlePageNum}
@@ -118,40 +104,37 @@ const Pagenation: React.FC<{
             {middlePageNum}
           </PageButton>
           <PageButton
-            pageNum={props.pagenationInfo.endPage - 1}
+            pageNum={totalPageArr.length - 1}
             currentNum={props.pagenationInfo.curPage}
             onClick={(e) => {
               e.preventDefault();
-              if (
-                props.pagenationInfo.endPage - props.pagenationInfo.curPage >
-                2
-              )
+              if (totalPageArr.length - props.pagenationInfo.curPage > 2)
                 return;
-              props.setSelectedPageNumber(props.pagenationInfo.endPage - 1);
+              props.setSelectedPageNumber(totalPageArr.length - 1);
             }}
           >
-            {props.pagenationInfo.endPage - props.pagenationInfo.curPage > 2
+            {totalPageArr.length - props.pagenationInfo.curPage > 2
               ? "..."
-              : props.pagenationInfo.endPage - 1}
+              : totalPageArr.length - 1}
           </PageButton>
           <PageButton
-            pageNum={props.pagenationInfo.endPage}
+            pageNum={totalPageArr.length}
             currentNum={props.pagenationInfo.curPage}
             onClick={(e) => {
               e.preventDefault();
-              props.setSelectedPageNumber(props.pagenationInfo.endPage);
+              props.setSelectedPageNumber(totalPageArr.length);
             }}
           >
-            {props.pagenationInfo.endPage}
+            {totalPageArr.length}
           </PageButton>
         </>
       )}
 
       <PageMoveButton
+        disable={props.pagenationInfo.curPage === totalPageArr.length}
         onClick={(e) => {
           e.preventDefault();
-          if (props.pagenationInfo.curPage === props.pagenationInfo.endPage)
-            return;
+          if (props.pagenationInfo.curPage === totalPageArr.length) return;
           props.setSelectedPageNumber(props.pagenationInfo.curPage + 1);
         }}
       >
@@ -171,7 +154,7 @@ const PagenationContainer = styled.div`
   align-items: center;
 `;
 
-const PageMoveButton = styled.button`
+const PageMoveButton = styled.button<{ disable: boolean }>`
   cursor: pointer;
   width: 30px;
   height: 30px;
@@ -180,7 +163,10 @@ const PageMoveButton = styled.button`
   color: white;
   font-family: "BMJUA";
   font-size: 1.5rem;
-  background: ${(props) => props.theme.primaryColor};
+  background: ${(props) => {
+    if (props.disabled) return props.theme.secondaryColor;
+    return props.theme.primaryColor;
+  }};
   transition: background-color 0.5s;
   :hover {
     background-color: ${(props) => props.theme.visitedColor};
