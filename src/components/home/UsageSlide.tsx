@@ -44,11 +44,14 @@ export { UsageSlide };
 
 const Container = styled.div`
   width: 100%;
-  height: calc(var(--vh, 1vh) * 100);
+  height: 100vh;
   box-sizing: border-box;
   /* padding-top: 80px; */
   display: flex;
   justify-content: center;
+  @supports (-webkit-touch-callout: none) {
+    height: -webkit-fill-available;
+  }
 `;
 
 const UsageImageBox = styled.div`
