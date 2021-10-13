@@ -107,6 +107,7 @@ const StatisticsChartSection: React.FC<{ moveTop: () => void }> = (props) => {
         setIsLoading(false);
         return;
       }
+      setSubtitle("");
       console.log("타입이 존재하지 않음");
     })();
   }, [type]);
@@ -118,18 +119,20 @@ const StatisticsChartSection: React.FC<{ moveTop: () => void }> = (props) => {
           <StatisticsTitle>{type[0]}</StatisticsTitle>
           <StatisticsSubHeader>
             <StatisticsSubtitle>{"기준 : " + subtitle}</StatisticsSubtitle>
-            <SelectInfoDropDown
-              search
-              backgroundColor="white"
-              width="150px"
-              color="#FF8A00"
-              initialValue="차트 타입"
-              fontSize="0.9rem"
-              setValues={setType}
-              index={0}
-              options={typeOptions}
-              value={type[0]}
-            />
+            <SelectTypeWrapper>
+              <SelectInfoDropDown
+                search
+                backgroundColor="white"
+                width="150px"
+                color="#FF8A00"
+                initialValue="차트 타입"
+                fontSize="0.9rem"
+                setValues={setType}
+                index={0}
+                options={typeOptions}
+                value={type[0]}
+              />
+            </SelectTypeWrapper>
           </StatisticsSubHeader>
         </StatisticsHeader>
         {isLoading ? (
@@ -201,4 +204,8 @@ const StatisticsSubHeader = styled.div`
 const StatisticsSubtitle = styled(StatisticsTitle)`
   margin-top: 10px;
   font-size: 1.5rem;
+`;
+
+const SelectTypeWrapper = styled.div`
+  min-width: 151px;
 `;
