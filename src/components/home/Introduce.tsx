@@ -123,7 +123,6 @@ export { Introduce };
 
 const IntroduceContainer = styled.div`
   box-sizing: border-box;
-  padding-top: 80px;
   display: flex;
   width: 100%;
   height: 100vh;
@@ -134,6 +133,7 @@ const IntroduceInner = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 80px;
 `;
 
 const IntroduceTitle = styled.h1`

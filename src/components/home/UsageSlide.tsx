@@ -46,7 +46,7 @@ const Container = styled.div`
   width: 100%;
   height: 100vh;
   box-sizing: border-box;
-  padding-top: 80px;
+  /* padding-top: 80px; */
   display: flex;
   justify-content: center;
 `;
@@ -59,6 +59,7 @@ const UsageImageBox = styled.div`
 
 const Inner = styled.div`
   width: 80%;
+  margin-top: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;

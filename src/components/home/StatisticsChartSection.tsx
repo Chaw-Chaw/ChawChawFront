@@ -156,16 +156,14 @@ const Container = styled.div`
   width: 100%;
   height: 100vh;
   box-sizing: border-box;
-  padding-top: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
-  overflow: hidden;
 `;
 
 const StatisticsHeader = styled.div`
-  margin-top: 30px;
+  margin-top: 110px;
   width: 100%;
   height: auto;
   display: flex;
