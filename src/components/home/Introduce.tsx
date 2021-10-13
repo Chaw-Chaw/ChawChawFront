@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import CSS from "csstype";
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../store/AuthContext";
 import { FaFacebookF } from "react-icons/fa";
 import { BiMessageRounded } from "react-icons/bi";
@@ -18,6 +18,7 @@ import Typed from "react-typed";
 
 const Introduce: React.FC = () => {
   const { isLogin, login } = useContext(AuthContext);
+  // const [viewLoginSection, setViewLoginSection] = useState(false);
   const router = useRouter();
 
   const callKakaoLogin = () => {
@@ -31,6 +32,12 @@ const Introduce: React.FC = () => {
     });
   };
 
+  // useEffect(() => {
+  //   console.log(isLogin, viewLoginSection, "뭔데이거");
+  //   if (isLogin) setViewLoginSection(false);
+  //   else setViewLoginSection(true);
+  // }, [isLogin]);
+
   return (
     <>
       <IntroduceContainer>
@@ -38,7 +45,16 @@ const Introduce: React.FC = () => {
           <IntroduceLogoTitle>ChawChaw 🗣</IntroduceLogoTitle>
           <IntroduceTitle>어려웠던 외국인 친구 🧑🏿👩🏼</IntroduceTitle>
           <IntroduceTitle>우리학교 버디 ChawChaw와 함께하자!</IntroduceTitle>
-          {!isLogin ? (
+          {isLogin ? (
+            <MovePostPageButton
+              onClick={(e) => {
+                e.preventDefault();
+                router.push("/post");
+              }}
+            >
+              우리학교 바로가기
+            </MovePostPageButton>
+          ) : (
             <LoginIconBox>
               <IconBox
                 onClick={(e) => {
@@ -77,15 +93,6 @@ const Introduce: React.FC = () => {
                 <AiOutlineLogin />
               </IconBox>
             </LoginIconBox>
-          ) : (
-            <MovePostPageButton
-              onClick={(e) => {
-                e.preventDefault();
-                router.push("/post");
-              }}
-            >
-              우리학교 바로가기
-            </MovePostPageButton>
           )}
           <GuideBox>
             <MyMessageBalloon>
