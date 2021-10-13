@@ -154,7 +154,7 @@ export { StatisticsChartSection };
 
 const Container = styled.div`
   width: 100%;
-  height: 100vh;
+  max-height: 100vh;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
