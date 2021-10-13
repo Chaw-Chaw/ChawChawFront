@@ -46,15 +46,6 @@ const Introduce: React.FC = () => {
           <IntroduceTitle>어려웠던 외국인 친구 🧑🏿👩🏼</IntroduceTitle>
           <IntroduceTitle>우리학교 버디 ChawChaw와 함께하자!</IntroduceTitle>
           {viewLoginSection ? (
-            <MovePostPageButton
-              onClick={(e) => {
-                e.preventDefault();
-                router.push("/post");
-              }}
-            >
-              우리학교 바로가기
-            </MovePostPageButton>
-          ) : (
             <LoginIconBox>
               <IconBox
                 onClick={(e) => {
@@ -93,6 +84,15 @@ const Introduce: React.FC = () => {
                 <AiOutlineLogin />
               </IconBox>
             </LoginIconBox>
+          ) : (
+            <MovePostPageButton
+              onClick={(e) => {
+                e.preventDefault();
+                router.push("/post");
+              }}
+            >
+              우리학교 바로가기
+            </MovePostPageButton>
           )}
           <GuideBox>
             <MyMessageBalloon>
@@ -168,7 +168,7 @@ const MovePostPageButton = styled(Button)`
   align-items: center;
   margin-top: 45px;
   margin-bottom: 40px;
-  width: 150px;
+  width: 160px;
   min-height: 40px;
   background-color: #eeeeee;
   color: #333333;

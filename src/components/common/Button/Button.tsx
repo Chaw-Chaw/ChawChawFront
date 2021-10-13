@@ -11,6 +11,7 @@ interface ButtonProps {
 }
 
 const Button = styled.button<ButtonProps>`
+  padding: 0px;
   font-family: "BMJUA";
   color: ${(props) => {
     if (props.primary) return "white";

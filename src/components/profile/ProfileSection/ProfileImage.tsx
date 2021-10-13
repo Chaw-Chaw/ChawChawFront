@@ -136,6 +136,10 @@ const InputFileButton = styled.label`
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
   font-weight: 600;
   cursor: pointer;
+  text-align: center;
+  white-space: pre-line;
+  padding: 0px;
+
   &:disabled {
     background-color: ${(props) => props.theme.bodyBackgroundColor};
     color: ${(props) => props.theme.secondaryColor};
