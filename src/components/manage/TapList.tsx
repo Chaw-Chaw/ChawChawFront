@@ -18,6 +18,11 @@ const TapList: React.FC = () => {
       </ToggleItem>
       <ToggleItem title="통계">
         <ToggleListItem
+          title="학교 활성도 순위"
+          type="rankSchool"
+          link="/manage/statistics"
+        />
+        <ToggleListItem
           title="희망 언어 순위"
           type="hopeLanguage"
           link="/manage/statistics"

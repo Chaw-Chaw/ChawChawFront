@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import Image from "next/image";
 import styled from "styled-components";
-import { Button } from "../../components/common";
+import { Button } from "../common";
 import BannerImage from "../../../public/Main/conversation.jpeg";
 import { useRouter } from "next/router";
 import { AuthContext } from "../../store/AuthContext";
@@ -30,12 +30,12 @@ const Banner: React.FC = () => {
         </Button>
       </BannerButton>
       <BannerText>ExChange languages</BannerText>
-      <ScrollingText>{"SpaceBar"}</ScrollingText>
+      <ScrollingText>ChawChaw 소개 ↓ </ScrollingText>
     </Container>
   );
 };
 
-export default Banner;
+export { Banner };
 
 const Container = styled.div`
   display: flex;

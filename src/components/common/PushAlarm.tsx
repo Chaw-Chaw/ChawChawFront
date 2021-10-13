@@ -9,7 +9,7 @@ import { INITIAL_ID, LIMIT_NEWALARM_SIZE } from "../../constants";
 import { AuthContext } from "../../store/AuthContext";
 import { useAlert } from "react-alert";
 
-const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
+const PushAlarm: React.FC = (props) => {
   const { newMessages, setMainRoom, newLikes } = useContext(ChatContext);
   const { user } = useContext(AuthContext);
   const [isActive, setIsActive] = useState(false);
@@ -30,7 +30,7 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
       <AiFillBell />
       {(() => {
         const newAlarmNumber =
-          props.router.pathname !== "/chat"
+          router.pathname !== "/chat"
             ? newMessages.length + newLikes.length
             : newLikes.length;
 
@@ -48,7 +48,7 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
       })()}
       <PushAlarmContainer isActive={isActive}>
         <PushAlarmTitle>New Alarms</PushAlarmTitle>
-        {props.router.pathname !== "/chat" ? (
+        {router.pathname !== "/chat" ? (
           <>
             <PushAlarmBox>
               {newMessages.length > 0 ? (
@@ -121,7 +121,7 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
   );
 };
 
-export default withRouter(PushAlarm);
+export { PushAlarm };
 
 const AlarmBell = styled.div`
   display: flex;
@@ -133,6 +133,12 @@ const AlarmBell = styled.div`
     color: #b1b1b1;
     @media (max-width: 768px) {
       color: white;
+    }
+  }
+  :hover {
+    svg {
+      transition: color 0.5s;
+      color: ${(props) => props.theme.primaryColor};
     }
   }
 `;

@@ -7,20 +7,15 @@ import { RiKakaoTalkFill } from "react-icons/ri";
 import FacebookLogin from "@greatsumini/react-facebook-login";
 import { FaFacebookF } from "react-icons/fa";
 import {
-  DEVELOPMENT_OAUTH_URL,
   FACEBOOK_APP_ID,
   KAKAO_CLIENT_ID,
   KAKAO_OAUTH_URL,
-  PRODUCT_OAUTH_URL,
+  REDIRECT_URL,
 } from "../../../constants";
 
 const SocialSection: React.FC = () => {
   const router = useRouter();
   const { login } = useContext(AuthContext);
-  const redirectUrl =
-    process.env.NODE_ENV === "development"
-      ? DEVELOPMENT_OAUTH_URL
-      : PRODUCT_OAUTH_URL;
 
   const callKakaoLogin = () => {
     router.push({
@@ -28,7 +23,7 @@ const SocialSection: React.FC = () => {
       query: {
         response_type: "code",
         client_id: KAKAO_CLIENT_ID,
-        redirect_uri: redirectUrl,
+        redirect_uri: REDIRECT_URL,
       },
     });
   };
@@ -61,9 +56,9 @@ const SocialSection: React.FC = () => {
             console.log("status: ", error.status);
           }}
         >
-          <IconBox>
+          <FacebookIconBox>
             <FaFacebookF />
-          </IconBox>
+          </FacebookIconBox>
         </FacebookLogin>
       </ButtonSection>
     </SocialContainer>
@@ -72,7 +67,7 @@ const SocialSection: React.FC = () => {
 
 export default SocialSection;
 
-const IconBox = styled.div`
+const FacebookIconBox = styled.div`
   cursor: pointer;
   width: 60px;
   height: 60px;

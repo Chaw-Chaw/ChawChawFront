@@ -11,6 +11,7 @@ import {
 import { AlertMessage } from "../components/common";
 import { DefaultSeo } from "next-seo";
 import { ChatContextProvider } from "../store/ChatContext";
+import { StatisticsContextProvider } from "../store/StatisticsContext";
 
 const GlobalStyles = createGlobalStyle`
   @font-face {
@@ -55,48 +56,52 @@ function MyApp({ Component, pageProps }: AppProps) {
         <GlobalStyles />
         <AuthContextProvider>
           <ChatContextProvider>
-            <DefaultSeo
-              title={"ChawChaw 언어를 교환합시다.🗣"}
-              description={"대학내 교환학생 언어교환 채팅 어플리케이션입니다."}
-              canonical="https://www.chawchaw.vercel.app"
-              openGraph={{
-                type: "website",
-                locale: "en_IE",
-                title: "ChawChaw 언어를 교환합시다.🗣",
-                description:
-                  "대학내 교환학생 언어교환 채팅 어플리케이션입니다.",
-                images: [
+            <StatisticsContextProvider>
+              <DefaultSeo
+                title={"ChawChaw 언어를 교환합시다.🗣"}
+                description={
+                  "대학내 교환학생 언어교환 채팅 어플리케이션입니다."
+                }
+                canonical="https://www.chawchaw.vercel.app"
+                openGraph={{
+                  type: "website",
+                  locale: "en_IE",
+                  title: "ChawChaw 언어를 교환합시다.🗣",
+                  description:
+                    "대학내 교환학생 언어교환 채팅 어플리케이션입니다.",
+                  images: [
+                    {
+                      url: "https://i.ibb.co/m0NY7yQ/image.jpg",
+                      width: 800,
+                      height: 600,
+                      alt: "ChawChaw 소개 이미지",
+                    },
+                  ],
+                  url: "https://www.chawchaw.vercel.app",
+                  site_name: "ChawChaw",
+                }}
+                twitter={{
+                  handle: "@chawchawTwitter",
+                  site: "chawchaw.vercel.app",
+                  cardType: "summary",
+                }}
+                additionalLinkTags={[
                   {
-                    url: "https://i.ibb.co/m0NY7yQ/image.jpg",
-                    width: 800,
-                    height: 600,
-                    alt: "ChawChaw 소개 이미지",
+                    type: "image/png",
+                    sizes: "32x32",
+                    href: "/Layout/chaw.png",
+                    rel: "icon",
                   },
-                ],
-                url: "https://www.chawchaw.vercel.app",
-                site_name: "ChawChaw",
-              }}
-              twitter={{
-                handle: "@chawchawTwitter",
-                site: "chawchaw.vercel.app",
-                cardType: "summary",
-              }}
-              additionalLinkTags={[
-                {
-                  type: "image/png",
-                  sizes: "32x32",
-                  href: "/Layout/chaw.png",
-                  rel: "icon",
-                },
-              ]}
-              additionalMetaTags={[
-                {
-                  name: "viewport",
-                  content: "width=device-width, initial-scale=1",
-                },
-              ]}
-            />
-            <Component {...pageProps} />
+                ]}
+                additionalMetaTags={[
+                  {
+                    name: "viewport",
+                    content: "width=device-width, initial-scale=1",
+                  },
+                ]}
+              />
+              <Component {...pageProps} />
+            </StatisticsContextProvider>
           </ChatContextProvider>
         </AuthContextProvider>
       </AlertProvider>

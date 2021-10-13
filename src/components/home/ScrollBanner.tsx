@@ -1,5 +1,5 @@
-import { Section } from "../../components/home/Section";
-import { ImageSection } from "../../components/home/ImageSection";
+import { Section } from "./Section";
+import { ImageSection } from "./ImageSection";
 import styled from "styled-components";
 import ProfileSectionImage from "../../../public/Main/profile.png";
 import PostingSectionImage from "../../../public/Main/posting.jpeg";
@@ -59,7 +59,7 @@ const ScrollBanner: React.FC = () => {
   );
 };
 
-export default ScrollBanner;
+export { ScrollBanner };
 
 const Container = styled.div`
   width: 100%;
@@ -70,11 +70,10 @@ const Container = styled.div`
       flex-direction: column-reverse;
     }
   }
-  scroll-snap-type: y mandatory;
+  scroll-snap-align: start;
 `;
 
 const Wrapper = styled.div`
-  scroll-snap-align: center;
   display: flex;
   width: 100%;
   position: relative;

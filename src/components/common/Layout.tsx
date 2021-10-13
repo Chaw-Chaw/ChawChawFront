@@ -1,4 +1,4 @@
-import { Router, useRouter } from "next/router";
+import { NextRouter, Router, useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../store/AuthContext";
@@ -23,7 +23,7 @@ const Layout: React.FC<{ type?: string }> = (props) => {
 
   return (
     <>
-      <Header type={props.type} />
+      {router.pathname !== "/" && <Header type={props.type} />}
       <Inner>{props.children}</Inner>
     </>
   );
