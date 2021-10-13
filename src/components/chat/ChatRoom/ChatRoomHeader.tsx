@@ -9,6 +9,7 @@ import { getSecureLocalStorage } from "../../../utils";
 import { RiHome2Line } from "react-icons/ri";
 import { BsBoxArrowRight, BsChatDots } from "react-icons/bs";
 import { AlarmCount, ChangeLanguageDropDown } from "../../common";
+import { FaArrowCircleRight } from "react-icons/fa";
 
 interface ChatRoomHeaderType {
   selectLanguage: string[];
@@ -76,7 +77,8 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
     <Header>
       <MessagesHeaderIcons>
         <MessageHeaderButton onClick={backHome}>
-          <RiHome2Line />
+          {/* <RiHome2Line /> */}
+          <FaArrowCircleRight />
         </MessageHeaderButton>
         <MessageHeaderButton onClick={leaveChatRoom}>
           <BsBoxArrowRight />

@@ -1,8 +1,7 @@
 import styled, { ThemeContext } from "styled-components";
-import { FaArrowCircleRight, FaFacebookF } from "react-icons/fa";
-import { RiKakaoTalkFill } from "react-icons/ri";
-import { ImageSection } from "./ImageSection";
-import { Button, ThemeToggle } from "../common";
+import { FaArrowCircleRight } from "react-icons/fa";
+import { RiHome2Line } from "react-icons/ri";
+import { ThemeToggle } from "../common";
 import { useContext } from "react";
 import { useRouter } from "next/router";
 import { AuthContext } from "../../store/AuthContext";
@@ -31,7 +30,8 @@ const IntroduceHeader: React.FC = () => {
           }}
         >
           <HeadLineLogoWord>시작하기</HeadLineLogoWord>
-          <FaArrowCircleRight />
+          {/* <FaArrowCircleRight /> */}
+          <RiHome2Line />
         </HeadLineStart>
       </HeadLineContentRight>
     </IntroduceHeadLine>
