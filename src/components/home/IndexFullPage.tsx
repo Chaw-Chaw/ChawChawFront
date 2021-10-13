@@ -1,4 +1,4 @@
-import ReactFullpage from "@fullpage-react-fullpage";
+import ReactFullpage from "@fullpage/react-fullpage";
 import { useContext, useEffect, useState } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { Layout } from "../common";
