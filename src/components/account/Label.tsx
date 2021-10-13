@@ -9,7 +9,7 @@ const Label: React.FC<LabelProps> = (props) => {
   return (
     <Box>
       <MainLabel htmlFor={props.htmlFor}>{props.children}</MainLabel>
-      {props.tag ? <Tag>({props.tag})</Tag> : null}
+      {props.tag ? <Tag>{props.tag}</Tag> : null}
     </Box>
   );
 };

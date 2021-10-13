@@ -5,17 +5,6 @@ import { ManageLayout } from "../../../components/manage/ManageLayout";
 import { StatisticsContext } from "../../../store/StatisticsContext";
 import { Line } from "react-chartjs-2";
 
-// const data = {
-//   labels: ["Red", "Orange", "Yellow", "Green", "Blue"],
-//   datasets: [
-//     {
-//       label: "Dataset 1",
-//       data: [65, 59, 80, 81, 56],
-//       backgroundColor: ["red", "orange", "yellow", "green", "blue"],
-//     },
-//   ],
-// };
-
 const initialChartData = {
   labels: ["sun", "mon", "tue", "wed", "thur", "fri", "sat"],
   datasets: [

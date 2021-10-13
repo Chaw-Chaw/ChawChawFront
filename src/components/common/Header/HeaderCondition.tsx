@@ -5,7 +5,7 @@ import { Button } from "../Button/Button";
 import MyImage from "./MyImage";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import styled from "styled-components";
-import { PushAlarm } from "../PushAlarm";
+import { PushAlarm } from "./PushAlarm";
 
 const HeaderCondition: React.FC<{ type?: string }> = (props) => {
   const headerType = props.type;

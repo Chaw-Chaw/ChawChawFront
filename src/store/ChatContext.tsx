@@ -12,7 +12,6 @@ import { BACKEND_URL, DEFAULT_PROFILE_IMAGE } from "../constants";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
 import { arrayRemovedItem, getSecureLocalStorage } from "../utils";
-
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
 

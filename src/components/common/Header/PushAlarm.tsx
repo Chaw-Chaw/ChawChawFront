@@ -1,11 +1,11 @@
 import { MouseEventHandler, useContext, useState } from "react";
 import styled from "styled-components";
-import { ChatContext } from "../../store/ChatContext";
-import { ChatBox } from "./ChatBox";
+import { ChatContext } from "../../../store/ChatContext";
+import { ChatBox } from "../ChatBox";
 import { AiFillBell } from "react-icons/ai";
-import { AlarmCount } from "./AlarmCount";
+import { AlarmCount } from "../AlarmCount";
 import { useRouter } from "next/router";
-import { LIMIT_NEWALARM_SIZE } from "../../constants";
+import { LIMIT_NEWALARM_SIZE } from "../../../constants";
 
 const PushAlarm: React.FC = (props) => {
   const { newMessages, setMainRoom, newLikes } = useContext(ChatContext);

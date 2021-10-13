@@ -4,8 +4,7 @@ import { MouseEventHandler, useContext, useState } from "react";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE } from "../../constants";
 import { AuthContext } from "../../store/AuthContext";
-import { ChatContext } from "../../store/ChatContext";
-import { arrayRemovedItem, getSecureLocalStorage } from "../../utils";
+import { getSecureLocalStorage } from "../../utils";
 import { Button } from "../common";
 import { BlockItem } from "./ManageBlockList";
 

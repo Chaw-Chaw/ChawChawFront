@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { GoPrimitiveDot } from "react-icons/go";
-import { makePublicRouterInstance, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
 
 const ToggleListItem: React.FC<{ title: string; type: string; link: string }> =

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Divider } from "../common";
 
 interface AccountContainerProps {
   title?: string;
@@ -62,4 +61,9 @@ const Section = styled.div`
     margin: 10px 0px;
   }
 `;
+
+const Divider = styled.div`
+  margin: 20px 0;
+`;
+
 export default AccountContainer;

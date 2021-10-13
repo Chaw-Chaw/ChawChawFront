@@ -1,4 +1,4 @@
-import { NextRouter, Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../store/AuthContext";

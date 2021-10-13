@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
-import axios, { AxiosResponse } from "axios";
+import React, { useContext } from "react";
+import axios from "axios";
 import { AuthContext } from "./AuthContext";
-import { getSecureLocalStorage } from "../utils";
+
 import { useAlert } from "react-alert";
 import { LocaleLanguage } from "../components/common";
 
