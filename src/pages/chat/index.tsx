@@ -143,17 +143,11 @@ const Container = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
-  /* @media (max-width: 1024px) {
-    margin: 122px;
-  } */
 `;
 
 const ChatListWrapper = styled.div`
   display: initial;
   width: 400px;
-  @media (max-width: 768px) {
-    display: none;
-  }
   @media (max-width: 1024px) {
     display: none;
   }
