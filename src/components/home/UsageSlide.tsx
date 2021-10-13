@@ -44,7 +44,7 @@ export { UsageSlide };
 
 const Container = styled.div`
   width: 100%;
-  max-height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   box-sizing: border-box;
   /* padding-top: 80px; */
   display: flex;
