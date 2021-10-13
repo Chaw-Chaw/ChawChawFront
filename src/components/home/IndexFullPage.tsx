@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { Layout } from "../common";
 import { Introduce } from "./Introduce";
+import { StatisticsChart } from "./StatisticsChart";
 import { UsageSlide } from "./UsageSlide";
 
 const usageInfo = [
@@ -67,7 +68,7 @@ const IndexFullPage: React.FC = () => {
                 })}
               </Section>
               <Section className="section">
-                <h3>Section 3</h3>
+                <StatisticsChart />
                 <button onClick={() => fullpageApi.moveTo(1, 0)}>
                   Move top
                 </button>

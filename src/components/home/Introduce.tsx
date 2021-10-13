@@ -18,7 +18,7 @@ import Typed from "react-typed";
 
 const Introduce: React.FC = () => {
   const { isLogin, login } = useContext(AuthContext);
-  // const [viewLoginSection, setViewLoginSection] = useState(false);
+  const [viewLoginSection, setViewLoginSection] = useState(false);
   const router = useRouter();
 
   const callKakaoLogin = () => {
@@ -32,11 +32,11 @@ const Introduce: React.FC = () => {
     });
   };
 
-  // useEffect(() => {
-  //   console.log(isLogin, viewLoginSection, "뭔데이거");
-  //   if (isLogin) setViewLoginSection(false);
-  //   else setViewLoginSection(true);
-  // }, [isLogin]);
+  useEffect(() => {
+    console.log(isLogin, viewLoginSection, "뭔데이거");
+    if (isLogin) setViewLoginSection(false);
+    else setViewLoginSection(true);
+  }, [isLogin]);
 
   return (
     <>
@@ -45,7 +45,7 @@ const Introduce: React.FC = () => {
           <IntroduceLogoTitle>ChawChaw 🗣</IntroduceLogoTitle>
           <IntroduceTitle>어려웠던 외국인 친구 🧑🏿👩🏼</IntroduceTitle>
           <IntroduceTitle>우리학교 버디 ChawChaw와 함께하자!</IntroduceTitle>
-          {isLogin ? (
+          {viewLoginSection ? (
             <MovePostPageButton
               onClick={(e) => {
                 e.preventDefault();
