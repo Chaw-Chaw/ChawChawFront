@@ -1,22 +1,9 @@
-import axios from "axios";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useRef, useState } from "react";
-import { useAlert } from "react-alert";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { ManageLayout } from "../../../components/manage/ManageLayout";
-import { AuthContext } from "../../../store/AuthContext";
-import {
-  RankHopeLanguageType,
-  RankLanguageType,
-  RankSchoolType,
-  RankVisitedLanguageType,
-  StatisticsContext,
-} from "../../../store/StatisticsContext";
-import { getSecureLocalStorage } from "../../../utils";
-import { Doughnut, Line, Bar } from "react-chartjs-2";
-
-const DATA_COUNT = 5;
-const NUMBER_CFG = { count: DATA_COUNT, min: 0, max: 100 };
+import { StatisticsContext } from "../../../store/StatisticsContext";
+import { Line } from "react-chartjs-2";
 
 // const data = {
 //   labels: ["Red", "Orange", "Yellow", "Green", "Blue"],
