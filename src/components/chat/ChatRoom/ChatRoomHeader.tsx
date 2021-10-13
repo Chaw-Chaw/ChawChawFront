@@ -140,7 +140,7 @@ const MessageHeaderButton = styled.button`
   width: 44px;
   svg {
     font-size: 2rem;
-    color: ${(props) => props.theme.primaryColor};
+    color: black;
   }
 `;
 
