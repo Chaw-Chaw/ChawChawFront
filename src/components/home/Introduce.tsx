@@ -78,14 +78,14 @@ const Introduce: React.FC = () => {
               </IconBox>
             </LoginIconBox>
           ) : (
-            <MovePostPageBox
+            <MovePostPageButton
               onClick={(e) => {
                 e.preventDefault();
                 router.push("/post");
               }}
             >
               우리학교 바로가기
-            </MovePostPageBox>
+            </MovePostPageButton>
           )}
           <GuideBox>
             <MyMessageBalloon>
@@ -155,7 +155,7 @@ const LoginIconBox = styled.div`
   min-height: 40px;
 `;
 
-const MovePostPageBox = styled(Button)`
+const MovePostPageButton = styled(Button)`
   display: flex;
   justify-content: center;
   align-items: center;

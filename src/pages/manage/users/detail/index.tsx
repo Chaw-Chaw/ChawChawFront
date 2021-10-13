@@ -10,10 +10,10 @@ import {
   ProfileInfoBox,
   ProfileSelectInfo,
   ProfileSocialUrl,
-  ProfileUploadButton,
 } from "../../../../components/profile/ProfileSection/";
 import styled from "styled-components";
 import {
+  Button,
   CountryLocale,
   LanguageLocale,
   LocaleLanguage,
@@ -285,7 +285,9 @@ const ProfileHeadBox = styled(ProfileHeader)`
   justify-content: center;
 `;
 
-const ProfileModifyButton = styled(ProfileUploadButton)`
+const ProfileModifyButton = styled(Button)`
+  width: 200px;
+  margin: 20px auto;
   min-height: 30px;
 `;
 
