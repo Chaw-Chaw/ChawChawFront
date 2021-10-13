@@ -13,13 +13,13 @@ const IntroduceHeader: React.FC = () => {
   const router = useRouter();
   return (
     <IntroduceHeadLine>
-      <HeadLineContent>
+      <HeadLineContentLeft>
         <HeadLineLogoWord>차우차우</HeadLineLogoWord>
-      </HeadLineContent>
+      </HeadLineContentLeft>
       <ThemeToggleBox>
         <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
       </ThemeToggleBox>
-      <HeadLineContent>
+      <HeadLineContentRight>
         <HeadLineStart
           onClick={(e) => {
             e.preventDefault();
@@ -33,7 +33,7 @@ const IntroduceHeader: React.FC = () => {
           <HeadLineLogoWord>시작하기</HeadLineLogoWord>
           <FaArrowCircleRight />
         </HeadLineStart>
-      </HeadLineContent>
+      </HeadLineContentRight>
     </IntroduceHeadLine>
   );
 };
@@ -57,13 +57,20 @@ const IntroduceHeadLine = styled.div`
   border-bottom: 1.5px solid ${(props) => props.theme.secondaryColor};
 `;
 
-const HeadLineContent = styled.div`
-  margin: 0px 50px;
+const HeadLineContentLeft = styled.div`
+  margin-left: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100px;
   height: 100%;
+  @media (max-width: 768px) {
+  }
+`;
+
+const HeadLineContentRight = styled(HeadLineContentLeft)`
+  margin-left: 0px;
+  margin-right: 50px;
 `;
 
 const HeadLineLogoWord = styled.span`
@@ -80,7 +87,7 @@ const HeadLineStart = styled.div`
     text-decoration: underline;
   }
 `;
-const ThemeToggleBox = styled(HeadLineContent)`
+const ThemeToggleBox = styled(HeadLineContentLeft)`
   margin: 0px;
   margin-left: auto;
 `;

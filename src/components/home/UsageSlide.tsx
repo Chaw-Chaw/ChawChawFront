@@ -22,7 +22,7 @@ const UsageSlide: React.FC<{ title: string; subtitle: string; src: string }> = (
             src={props.src}
             alt="사용소개 이미지"
             width="800"
-            height="400"
+            height="450"
             // layout="responsive"
             objectFit="contain"
             onLoad={() => {
@@ -49,6 +49,9 @@ const Container = styled.div`
   padding-top: 80px;
   display: flex;
   justify-content: center;
+  @media (max-width: 768px) {
+    padding-top: 120px;
+  }
 `;
 
 const UsageImageBox = styled.div`
@@ -81,10 +84,16 @@ const SubTitle = styled.h2`
   font-size: 1rem;
   color: white;
   max-width: 800px;
+  @media (max-width: 768px) {
+    margin: 15px 0px;
+  }
 `;
 
 const SubTitleBox = styled.div`
   margin: 20px 0px;
+  @media (max-width: 768px) {
+    margin: 50px 0px;
+  }
 `;
 
 const ImageWrapper = styled.div`
@@ -92,8 +101,10 @@ const ImageWrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 10px;
-  width: 900px;
-  height: 500px;
+  max-width: 900px;
+  max-height: 600px;
+  padding: 20px;
+  box-sizing: border-box;
   border-radius: 20px;
   background-color: #eeeeee;
   position: relative;

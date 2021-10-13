@@ -127,6 +127,9 @@ const IntroduceContainer = styled.div`
   display: flex;
   width: 100%;
   height: 100vh;
+  @media (max-width: 768px) {
+    padding-top: 120px;
+  }
 `;
 
 const IntroduceInner = styled.div`
@@ -141,6 +144,10 @@ const IntroduceTitle = styled.h1`
   font-size: 50px;
   margin: 15px 0px;
   text-align: center;
+  @media (max-width: 480px) {
+    margin: 5px 0px;
+    font-size: 2.2rem;
+  }
 `;
 
 const IntroduceLogoTitle = styled.h3`
@@ -150,6 +157,13 @@ const IntroduceLogoTitle = styled.h3`
   font-size: 1.5rem;
   color: ${(props) =>
     props.theme.id === "light" ? "black" : "rgba(255,255,255,0.8)"};
+  @media (max-width: 1024px) {
+    margin-top: 20px;
+  }
+  @media (max-width: 768px) {
+    margin-top: 0px;
+    margin-bottom: 20px;
+  }
 `;
 
 const LoginIconBox = styled.div`
@@ -229,6 +243,13 @@ const MyMessageBalloon = styled.div`
   border-top-left-radius: 0px;
   font-size: 2.5rem;
   color: black;
+  @media (max-width: 480px) {
+    width: 300px;
+    height: 75px;
+    font-size: 1.8rem;
+    left: 10px;
+    top: 50px;
+  }
 `;
 
 const YourMessageBalloon = styled(MyMessageBalloon)`
@@ -238,6 +259,10 @@ const YourMessageBalloon = styled(MyMessageBalloon)`
   border-radius: 30px;
   border-top-right-radius: 0px;
   font-family: sans-serif;
+  @media (max-width: 480px) {
+    right: 10px;
+    top: 180px;
+  }
 `;
 
 const ScrollingText = styled.span`
@@ -261,12 +286,7 @@ const ScrollingText = styled.span`
   }
   animation: slide-top 2s infinite;
 
-  @media (max-width: 1000px) {
-    font-size: 2rem;
-    top: 60%;
-    left: 35%;
-  }
-  @media (max-width: 768px) {
+  @media (max-width: 1100px) {
     display: none;
   }
 `;

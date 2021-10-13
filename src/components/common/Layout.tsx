@@ -35,8 +35,9 @@ const Inner = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 110px;
+  box-sizing: border-box;
   @media (max-width: 768px) {
-    box-sizing: border-box;
     padding-top: 70px;
   }
 `;
