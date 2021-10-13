@@ -97,7 +97,6 @@ export default function Chat() {
       if (!blockedRoom) return;
       setMainRoom({ id: blockedRoom.roomId, userId: userId });
       organizeChatMessages(blockedRoom.roomId);
-
       return;
     }
 

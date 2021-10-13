@@ -20,6 +20,7 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
   const { setIsViewChatList, mainRoom, setTotalMessage, newMessages } =
     useContext(ChatContext);
   const { grantRefresh } = useContext(AuthContext);
+
   const backHome: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     router.push("/post");
@@ -70,6 +71,7 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
       query: { userId: INITIAL_ID },
     });
   };
+
   return (
     <Header>
       <MessagesHeaderIcons>
@@ -110,6 +112,7 @@ const Header = styled.div`
   top: 0px;
   width: 100%;
   display: flex;
+  justify-content: space-between;
   border-bottom: ${(props) =>
     props.theme.id === "light"
       ? "1px solid rgb(0, 0, 0, 0.2)"
@@ -126,12 +129,11 @@ const Header = styled.div`
 
 const MessagesHeaderIcons = styled.div`
   display: flex;
-  margin-right: auto;
+  justify-content: flex-start;
 `;
 
 const MessageHeaderButton = styled.button`
   display: flex;
-  position: relative;
   border: none;
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   font-size: 2rem;
