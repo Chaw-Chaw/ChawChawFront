@@ -161,6 +161,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   color: white;
+  overflow: hidden;
 `;
 
 const StatisticsHeader = styled.div`

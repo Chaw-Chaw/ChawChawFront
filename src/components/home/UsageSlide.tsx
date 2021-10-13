@@ -49,6 +49,7 @@ const Container = styled.div`
   padding-top: 80px;
   display: flex;
   justify-content: center;
+  overflow: hidden;
   @media (max-width: 768px) {
     padding-top: 120px;
   }
