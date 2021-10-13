@@ -45,7 +45,6 @@ const StatisticsChartSection: React.FC<{ moveTop: () => void }> = (props) => {
 
   const [chartData, setChartData] = useState(initialChartData);
   const [type, setType] = useState<string[]>(["학교 활성도 순위"]);
-  const [title, setTitle] = useState("학교 활성도 순위");
   const [subtitle, setSubtitle] = useState("유저 수");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -116,7 +115,7 @@ const StatisticsChartSection: React.FC<{ moveTop: () => void }> = (props) => {
     <Container>
       <ChartSection>
         <StatisticsHeader>
-          <StatisticsTitle>{title}</StatisticsTitle>
+          <StatisticsTitle>{type[0]}</StatisticsTitle>
           <StatisticsSubHeader>
             <StatisticsSubtitle>{"기준 : " + subtitle}</StatisticsSubtitle>
             <SelectInfoDropDown
@@ -154,7 +153,7 @@ export { StatisticsChartSection };
 
 const Container = styled.div`
   width: 100%;
-  max-height: 100vh;
+  height: 100vh;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
