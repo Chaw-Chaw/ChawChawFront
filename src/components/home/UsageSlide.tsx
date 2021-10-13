@@ -49,10 +49,6 @@ const Container = styled.div`
   padding-top: 80px;
   display: flex;
   justify-content: center;
-  overflow: hidden;
-  @media (max-width: 768px) {
-    padding-top: 120px;
-  }
 `;
 
 const UsageImageBox = styled.div`
@@ -85,14 +81,14 @@ const SubTitle = styled.h2`
   font-size: 1rem;
   color: white;
   max-width: 800px;
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     margin: 15px 0px;
   }
 `;
 
 const SubTitleBox = styled.div`
   margin: 20px 0px;
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     margin: 50px 0px;
   }
 `;
