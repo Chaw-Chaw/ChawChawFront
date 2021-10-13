@@ -158,10 +158,10 @@ const IntroduceLogoTitle = styled.h3`
   color: ${(props) =>
     props.theme.id === "light" ? "black" : "rgba(255,255,255,0.8)"};
   @media (max-width: 1024px) {
-    margin-top: 20px;
+    margin-top: 50px;
   }
   @media (max-width: 768px) {
-    margin-top: 0px;
+    margin-top: 50px;
     margin-bottom: 20px;
   }
 `;
