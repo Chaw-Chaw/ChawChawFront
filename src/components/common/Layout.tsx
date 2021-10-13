@@ -19,6 +19,13 @@ const Layout: React.FC<{ type?: string }> = (props) => {
       router.push("/manage/users");
     }
     setTimeout(grantRefresh, getRefreshAccessTokenRemainingTime());
+
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+    window.addEventListener("resize", () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    });
   }, []);
 
   return (
