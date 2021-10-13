@@ -1,6 +1,5 @@
 import styled, { ThemeContext } from "styled-components";
 import { FaArrowCircleRight } from "react-icons/fa";
-import { RiHome2Line } from "react-icons/ri";
 import { ThemeToggle } from "../common";
 import { useContext } from "react";
 import { useRouter } from "next/router";
@@ -30,8 +29,7 @@ const IntroduceHeader: React.FC = () => {
           }}
         >
           <HeadLineLogoWord>시작하기</HeadLineLogoWord>
-          {/* <FaArrowCircleRight /> */}
-          <RiHome2Line />
+          <FaArrowCircleRight />
         </HeadLineStart>
       </HeadLineContentRight>
     </IntroduceHeadLine>
