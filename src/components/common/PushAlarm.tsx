@@ -2,19 +2,15 @@ import { MouseEventHandler, useContext, useState } from "react";
 import styled from "styled-components";
 import { ChatContext } from "../../store/ChatContext";
 import { ChatBox } from "./ChatBox";
-import { AiFillBell, AiFillHeart } from "react-icons/ai";
+import { AiFillBell } from "react-icons/ai";
 import { AlarmCount } from "./AlarmCount";
-import { NextRouter, useRouter, withRouter } from "next/router";
-import { INITIAL_ID, LIMIT_NEWALARM_SIZE } from "../../constants";
-import { AuthContext } from "../../store/AuthContext";
-import { useAlert } from "react-alert";
+import { useRouter } from "next/router";
+import { LIMIT_NEWALARM_SIZE } from "../../constants";
 
 const PushAlarm: React.FC = (props) => {
   const { newMessages, setMainRoom, newLikes } = useContext(ChatContext);
-  const { user } = useContext(AuthContext);
   const [isActive, setIsActive] = useState(false);
   const router = useRouter();
-  const message = useAlert();
 
   const controlPushAlarm: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
@@ -127,18 +123,13 @@ const AlarmBell = styled.div`
   display: flex;
   position: relative;
   cursor: pointer;
+
   svg {
     width: 40px;
     height: 40px;
     color: #b1b1b1;
     @media (max-width: 768px) {
       color: white;
-    }
-  }
-  :hover {
-    svg {
-      transition: color 0.5s;
-      color: ${(props) => props.theme.primaryColor};
     }
   }
 `;

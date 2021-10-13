@@ -49,11 +49,6 @@ const IntroduceHeadLine = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 80px;
-  /* border-top: 1.5px solid
-    ${(props) =>
-    props.theme.id === "light"
-      ? "rgba(0, 0, 0, 0.05)"
-      : "rgba(255,255,255,0.3)"}; */
   border-bottom: 1.5px solid ${(props) => props.theme.secondaryColor};
 `;
 

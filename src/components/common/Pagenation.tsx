@@ -129,7 +129,6 @@ const Pagenation: React.FC<{
           </PageButton>
         </>
       )}
-
       <PageMoveButton
         disable={props.pagenationInfo.curPage === totalPageArr.length}
         onClick={(e) => {
