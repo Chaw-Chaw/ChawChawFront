@@ -29,18 +29,18 @@ ChawChaw는 국내 대학교 유학생들 과 국내 재학생 간의 언어소�
     <summary>회원가입</summary>   
 
 - 일반 회원가입
-    1. 로그인 페이지 → 일반 회원가입 버튼 → 웹메일 인증 페이지 
+    * 로그인 페이지 → 일반 회원가입 버튼 → 웹메일 인증 페이지 
     
         ![회원가입-일반1.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/91d188e7-0d38-44fb-ad5e-7dd20306522f/회원가입-일반1.gif)    
-    2. 웹메일 주소 입력 → 발송하기 버튼 →  웹 메일 유효성 검사 → 웹 메일 인증 번호 발송
+    * 웹메일 주소 입력 → 발송하기 버튼 →  웹 메일 유효성 검사 → 웹 메일 인증 번호 발송
     
         ![회원가입-일반2.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/09048bd4-b852-4624-8eaa-a24a3bf84c47/회원가입-일반2.gif)
-    3. 인증번호 입력 → 회원 정보 입력 버튼 → 웹 메일 인증 번호 유효성 검사 → 회원가입 정보 입력 페이지
+    * 인증번호 입력 → 회원 정보 입력 버튼 → 웹 메일 인증 번호 유효성 검사 → 회원가입 정보 입력 페이지
             
         ![회원가입-일반3.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9fded45b-b384-4a82-87fc-93def9f10f32/회원가입-일반3.gif)
             
         ![회원가입-일반4.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/05067bf5-b3a4-4d79-81e1-3abec053ef00/회원가입-일반4.gif) 
-    4. 이메일 유효성 검사 → 이메일 중복검사 → 비밀번호 유효성 검사 → 그외 정보 입력 → 회원가입버튼 →  회원가입 [GUEST]
+    * 이메일 유효성 검사 → 이메일 중복검사 → 비밀번호 유효성 검사 → 그외 정보 입력 → 회원가입버튼 →  회원가입 [GUEST]
             
         ![회원가입-일반5.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/77b8f13b-3eaa-4725-8192-e9c54bf8e80d/회원가입-일반5.gif)
             
@@ -50,22 +50,22 @@ ChawChaw는 국내 대학교 유학생들 과 국내 재학생 간의 언어소�
             
     ❗️ [GUSET]는 프로필 작성을 하지 않은 회원으로 채팅기능에 제한이 있습니다.     
 - 소셜 회원가입
-    1. 로그인 페이지 → [카카오, 페이스북 버튼] → 소셜 로그인 인증 → 회원가입 여부 확인
-    2. 비가입 회원인경우 → 회원가입진행 → 웹메일 인증 페에지
-    3. 웹메일 주소 입력 → 발송하기 버튼 →  웹 메일 유효성 검사 → 웹 메일 인증 번호 발송
-    4. 회원가입 버튼 → 회원가입 [GUEST]
+    * 로그인 페이지 → [카카오, 페이스북 버튼] → 소셜 로그인 인증 → 회원가입 여부 확인
+    * 비가입 회원인경우 → 회원가입진행 → 웹메일 인증 페에지
+    * 웹메일 주소 입력 → 발송하기 버튼 →  웹 메일 유효성 검사 → 웹 메일 인증 번호 발송
+    * 회원가입 버튼 → 회원가입 [GUEST]
 </details>
 <details>
     <summary>로그인</summary>
 
 - 일반 로그인
-    1. 로그인 페이지 → 이메일, 비밀번호 입력 → 로그인 버튼 → 로그인
-    2. 학교별  페이지 
+    * 로그인 페이지 → 이메일, 비밀번호 입력 → 로그인 버튼 → 로그인
+    * 학교별  페이지 
             
         ![로그인-일반1.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/188a501c-ad17-46a9-ab71-bcdf37896e8b/로그인-일반1.gif)
  - 소셜 로그인
-    1. 로그인 페이지 → [카카오, 페이스북 버튼] → 소셜 로그인 인증 → 로그인
-    2. 학교별 페이지
+    * 로그인 페이지 → [카카오, 페이스북 버튼] → 소셜 로그인 인증 → 로그인
+    * 학교별 페이지
 </details>
 <details>
     <summary>헤더</summary>
@@ -94,86 +94,90 @@ ChawChaw는 국내 대학교 유학생들 과 국내 재학생 간의 언어소�
 <details>
     <summary>프로필 작성</summary>
 
-![프로필1.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3ed1205c-4a90-4302-ba3f-16c4d23b492b/프로필1.gif)    
+    ![프로필1.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3ed1205c-4a90-4302-ba3f-16c4d23b492b/프로필1.gif)    
+    
 - 이미지 수정
-    1. 이미지 버튼 → 5MB 이하 이미지 선택 → 이미지 업로드 완료
+    * 이미지 버튼 → 5MB 이하 이미지 선택 → 이미지 업로드 완료
             
         ![프로필2.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/de578f0d-e1f3-4cf3-ae0d-b6098f95936a/프로필2.gif)   
 - 이미지 삭제
-    1. 이미지 삭제버튼 → 이미지 삭제 완료
+    * 이미지 삭제버튼 → 이미지 삭제 완료
             
         ![프로필3.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/85a15380-a451-4c31-9bf9-85beabeccb2e/프로필3.gif)  
 - 자기소개 수정
-    1. 코멘트 수정 버튼 → 코멘트 수정 → 업데이트 버튼 
+    * 코멘트 수정 버튼 → 코멘트 수정 → 업데이트 버튼 
             
         ![프로필4.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/51f9f8ff-6185-4aa0-a031-c29c30cd9fd1/프로필4.gif)    
 - 국적, 할수있는 언어, 배우고 싶은언어 추가
-    1. '+' 버튼 → dropbox 버튼 → select 박스에서 원하는 메뉴 선택'+'  
-    2. '-' 버튼 → 이전 선택 박스 삭제
+    * '+' 버튼 → dropbox 버튼 → select 박스에서 원하는 메뉴 선택'+'  
+    * '-' 버튼 → 이전 선택 박스 삭제
     
-        ❗️ 국적은 최대 2개, 언어는 최대 4개 선택가능 합니다 
-        
+    ❗️ 국적은 최대 2개, 언어는 최대 4개 선택가능 합니다 
         ![프로필5.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ead14d66-7e69-40d2-a13b-0a82c0821db8/프로필5.gif)
         
 - SNS 주소 수정
     1. [facebook, instagram] 주소 수정 버튼 → 수정 → 업데이트 버튼
             
-    ![프로필6.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ce2b1038-bf6a-4d17-bdac-60b33e041440/프로필6.gif)
+        ![프로필6.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ce2b1038-bf6a-4d17-bdac-60b33e041440/프로필6.gif)
             
 - 프로필 업로드 버튼 → 프로필
         
     ![프로필7.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/44d6fa0c-5439-476b-9b47-f428f941cfbe/프로필7.gif)
     ❗️ 프로필 업로드시 이미지, SNS 주소를 제외하고 국적, 언어, 희망언어 모두 하나이상 선택해야 업로드가 가능합니다. 
     
-    ![프로필8.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1daad7db-8098-4ce6-8f5e-a2b925c562f3/프로필8.gif)
+        ![프로필8.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1daad7db-8098-4ce6-8f5e-a2b925c562f3/프로필8.gif)
 </details>
 <details>
     <summary>포스팅 검색</summary>
 
-    프로필 업로드를 하면 학교별 포스팅 페이지에 포스팅이 올라갑니다. 자기 자신의 포스팅은 볼 수 없습니다. 그리고 자신의 학교에 속한 학생들의 포스팅만 볼 수 있습니다. 포스팅은 자신의 프로필을 기반으로 올라갑니다.
-    1. 검색창에 검색하고 싶은 이름 입력 [이름에 해당 입력한 단어가 들어가면 해당 유저의 포스팅이 검색됩니다.]
+프로필 업로드를 하면 학교별 포스팅 페이지에 포스팅이 올라갑니다. 자기 자신의 포스팅은 볼 수 없습니다. 그리고 자신의 학교에 속한 학생들의 포스팅만 볼 수 있습니다. 포스팅은 자신의 프로필을 기반으로 올라갑니다.
+- 검색창에 검색하고 싶은 이름 입력 [이름에 해당 입력한 단어가 들어가면 해당 유저의 포스팅이 검색됩니다.]
         
-        ![포스팅1.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/69369a3f-fcec-4add-b978-b7cd9dee9983/포스팅1.gif)
-    2. 모국어, 할수 있는 언어, 국적 선택
+    ![포스팅1.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/69369a3f-fcec-4add-b978-b7cd9dee9983/포스팅1.gif)
+- 모국어, 할수 있는 언어, 국적 선택
     
-        ![Oct-04-2021 20-49-16.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4a0d0ebd-a9c7-4069-b0be-974079ab485f/Oct-04-2021_20-49-16.gif)
-    3. Search 버튼 → 포스팅 검색 화면
+    ![Oct-04-2021 20-49-16.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4a0d0ebd-a9c7-4069-b0be-974079ab485f/Oct-04-2021_20-49-16.gif)
+- Search 버튼 → 포스팅 검색 화면
         
-        ![포스팅3.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a3c1909e-79e0-422f-8063-8b3772ded19f/포스팅3.gif)
-    ❗️자신이 차단한 유저는 검색되지 않습니다. 
+    ![포스팅3.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a3c1909e-79e0-422f-8063-8b3772ded19f/포스팅3.gif)
+❗️자신이 차단한 유저는 검색되지 않습니다. 
+    
     ![포스팅4.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c48ebf1f-68b0-43f5-9220-ed1789f3a7b8/포스팅4.gif)
 </details>
 <details>
     <summary>포스팅 카드</summary>
-    검색화면에서 보이는 포스팅 카드에는 해당유저의 [ 프로필 사진, 이름, 대표 국적, 대표 언어, 대표 희망 언어 , 간략한 자기소개, 포스팅 좋아요, 포스팅이 올라간 후 시간, 포스팅 카드 조회수 ] 가 표시됩니다. 
-        ![포스트모달1.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a3d768b7-9dcd-42df-8a91-78985467a202/포스트모달1.gif)
-    1. 해당 유저의 포스팅 카드를 클릭하면 포스트 카드 모달이 뜨며 자세한 해당 유저의 자세한 프로필을 확인 할수 있습니다.
+    
+검색화면에서 보이는 포스팅 카드에는 해당유저의 [ 프로필 사진, 이름, 대표 국적, 대표 언어, 대표 희망 언어 , 간략한 자기소개, 포스팅 좋아요, 포스팅이 올라간 후 시간, 포스팅 카드 조회수 ] 가 표시됩니다. 
+    
+    ![포스트모달1.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a3d768b7-9dcd-42df-8a91-78985467a202/포스트모달1.gif)
+- 해당 유저의 포스팅 카드를 클릭하면 포스트 카드 모달이 뜨며 자세한 해당 유저의 자세한 프로필을 확인 할수 있습니다.
         
     ![포스트모달5.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7816db25-f09b-43cf-9a7f-9ef488babb85/포스트모달5.gif)    
-    2. 포스트 카드 모달에는  [ 프로필 사진, 이름, 국적들, 할 수 있는 언어들, 희망 언어들 , 자기소개 전체, 포스팅 좋아요, 포스팅이 올라간 후 시간, 포스팅 카드 조회수, sns 주소, 좋아요 버튼, 차단 버튼, 채팅버튼 ]게시됩니다. 
-    3. 좋아요
-       
+- 포스트 카드 모달에는  [ 프로필 사진, 이름, 국적들, 할 수 있는 언어들, 희망 언어들 , 자기소개 전체, 포스팅 좋아요, 포스팅이 올라간 후 시간, 포스팅 카드 조회수, sns 주소, 좋아요 버튼, 차단 버튼, 채팅버튼 ]게시됩니다. 
+    
+- 좋아요
+    
     ![포스트모달2.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/bc276929-c3ec-491a-a2cf-8c16b8d1fd85/포스트모달2.gif)     
-        - 좋아요 버튼 :  해당 사용자가 좋아요 표시가 되며 해당 사용자의 좋아요 갯수가 1 올라갑니다. → 좋아요 취소 버튼 변환
-        - 좋아요 취소 버튼 : 좋아요 표시가 취소되며 해당 사용자의 좋아요 갯수가 1 내려갑니다. → 좋아요 버튼 변환
-4. 차단
+    * 좋아요 버튼 :  해당 사용자가 좋아요 표시가 되며 해당 사용자의 좋아요 갯수가 1 올라갑니다. → 좋아요 취소 버튼 변환
+    * 좋아요 취소 버튼 : 좋아요 표시가 취소되며 해당 사용자의 좋아요 갯수가 1 내려갑니다. → 좋아요 버튼 변환
+- 차단
     
     ![포스트모달3.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5de4d0cf-3664-4ef8-b54d-9fe922d022be/포스트모달3.gif)
         
     ![포스트모달4.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/281e47c3-9765-4b3c-9e30-29b456c8e7f4/포스트모달4.gif)    
-    - 차단 버튼
-        1. 해당 사용자가 보내는 메세지가 차단
-        2. 사용자와 차단 대상 모두 서로에게 채팅을 걸수 없음
-        3. 차단 상태에서 좋아요 취소는 가능하나 좋아요는 할 수 없음
-        4. 설정 페이지에서 차단목록 관리 가능
-    - 차단 해제 버튼
-        1. 차단 상태의 모든 기능이 다시 정상화 
-5. TryChat 버튼
+    * 차단 버튼
+        + 해당 사용자가 보내는 메세지가 차단
+        + 사용자와 차단 대상 모두 서로에게 채팅을 걸수 없음
+        + 차단 상태에서 좋아요 취소는 가능하나 좋아요는 할 수 없음
+        + 설정 페이지에서 차단목록 관리 가능
+    * 차단 해제 버튼
+        + 차단 상태의 모든 기능이 다시 정상화 
+- TryChat 버튼
         
     ![포스트모달-tryChat.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4f977806-46f7-4212-a86c-3e22f6bd672f/포스트모달-tryChat.gif)
-    - 채팅방 페이지로 이동
-    - 해당 사용자와의 채팅방 생성 → 채팅방 목록 추가
-    - 해당 사용자와의 채팅방이 메인채팅방 → 메세지 입력창 활성화
+    * 채팅방 페이지로 이동
+    * 해당 사용자와의 채팅방 생성 → 채팅방 목록 추가
+    * 해당 사용자와의 채팅방이 메인채팅방 → 메세지 입력창 활성화
 </details>
 <details>
     <summary>채팅</summary>
@@ -192,10 +196,10 @@ ChawChaw는 국내 대학교 유학생들 과 국내 재학생 간의 언어소�
     * 메세지 입력
         + 일반 텍스트 : 일반 텍스트 입력후 'enter' 혹은 보내기 버튼을 누르면 메세지 전송 → 메인 채팅방에 메시지
                 
-        ![채팅1.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/503c9cc1-c01a-40c8-a548-f804ddfeb90b/채팅1.gif)   
+            ![채팅1.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/503c9cc1-c01a-40c8-a548-f804ddfeb90b/채팅1.gif)   
         + 이미지 보내기 : 이미지 버튼 누르고 이미지 선택 [5MB 이하 파일] →  이미지 전송 → 메인 채팅방에 이미지 메시지 띄우기
                 
-        ![채팅2.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/fc2b0283-271a-4f27-bcc3-f6d2f14a101e/채팅2.gif)
+            ![채팅2.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/fc2b0283-271a-4f27-bcc3-f6d2f14a101e/채팅2.gif)
         + 메세지 번역 : 헤더에서 번역이 될 언어를 선택 → 번역을 원하는 메시지 박스 클릭 → 번역 버튼 생성 → 번역 버튼 클릭 → 메세지 박스의 언어가 헤더에 선택한 언어로 번역
             
             ![채팅3.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3e825703-5ca8-4446-9224-99cce388843c/채팅3.gif)
@@ -213,16 +217,16 @@ ChawChaw는 국내 대학교 유학생들 과 국내 재학생 간의 언어소�
         
     * 상대방에게 새로운 채팅이 올 경우 : 새로운 채팅목록이 생성됩니다.
             
-    ![채팅-새로운채팅.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8867538b-5b38-44ee-9331-97dae6bed8a0/채팅-새로운채팅.gif)
+        ![채팅-새로운채팅.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8867538b-5b38-44ee-9331-97dae6bed8a0/채팅-새로운채팅.gif)
     * 채팅페이지 들어올 때 : 해당 채팅방에서 새로운 메시지의 갯수를 표시합니다.
             
-    ![채팅-새로운채팅2.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/74adc07d-0a0d-4151-ae9d-179ae027bbaa/채팅-새로운채팅2.gif)
+        ![채팅-새로운채팅2.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/74adc07d-0a0d-4151-ae9d-179ae027bbaa/채팅-새로운채팅2.gif)
     * 채팅방 입장시 : 채팅방에 들어가면 해당 채팅방의 메세지들은 읽음 표시가 되어 새로운 메세지에서 제외 됩니다.
             
-    ![채팅-새로운채팅입장.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7318eaa4-b971-4ed6-88d7-3dc4810a3fcc/채팅-새로운채팅입장.gif)
+        ![채팅-새로운채팅입장.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7318eaa4-b971-4ed6-88d7-3dc4810a3fcc/채팅-새로운채팅입장.gif)
     * 채팅방에서 알림 표시 : 메세지 알림을 제외한 좋아요 알림만 울립니다.
             
-    ![채팅-좋아요알림.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6ca1472b-0582-4b42-bb12-da1271ad6a50/채팅-좋아요알림.gif)
+        ![채팅-좋아요알림.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6ca1472b-0582-4b42-bb12-da1271ad6a50/채팅-좋아요알림.gif)
     ❗️ 채팅중 상대방이 차단을 할 경우
     
         + 채팅방은 여전히 존재합니다. 다만 서로 메세지를 보낼수 없습니다.
