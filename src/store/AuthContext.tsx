@@ -240,7 +240,7 @@ const AuthContextProvider: React.FC = (props) => {
         });
         return;
       }
-      message.error("로그인에 실패하셨습니다.");
+      message.error("아이디 혹은 비밀번호가 잘못되었습니다.");
       console.error(response.data.responseMessage);
       return;
     }
