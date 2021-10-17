@@ -7,7 +7,7 @@ import Chaw from "../../../../public/Layout/chaw.png";
 
 const Logo: React.FC = () => {
   return (
-    <Link href="/" passHref>
+    <Link href="/post" passHref>
       <a>
         <HeaderLogo>
           <Image src={ChawLogo} alt="ChawChaw 로고" width={500} height={110} />
