@@ -122,7 +122,6 @@ export default function ManageUser() {
           setSelectedPageNumber={setSelectedPageNumber}
         />
         <Pagenation
-          contentCounts={usersList.length}
           pagenationInfo={pagenationInfo}
           selectedPageNumber={selectedPageNumber}
           setSelectedPageNumber={setSelectedPageNumber}
