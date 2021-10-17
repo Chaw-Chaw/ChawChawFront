@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Doughnut } from "react-chartjs-2";
+import { Bar, Doughnut } from "react-chartjs-2";
 import styled from "styled-components";
 import { StatisticsContext } from "../../store/StatisticsContext";
 import { LoadingSpinner, SelectInfoDropDown } from "../common";
@@ -11,16 +11,17 @@ const initialChartData = {
       label: "",
       data: [12, 19, 3, 5, 2, 3],
       backgroundColor: [
-        "rgba(255, 99, 132, 1)",
-        "rgba(54, 162, 235, 1)",
-        "rgba(255, 206, 86, 1)",
-        "rgba(75, 192, 192, 1)",
-        "rgba(153, 102, 255, 1)",
-        "rgba(255, 159, 64, 1)",
-        "rgba(48, 57, 82,1)",
-        "rgba(243, 166, 131,1)",
-        "rgba(225, 95, 65,1)",
-        "rgba(119, 139, 235,1)",
+        // "rgba(255, 99, 132, 1)",
+        // "rgba(54, 162, 235, 1)",
+        // "rgba(255, 206, 86, 1)",
+        // "rgba(75, 192, 192, 1)",
+        // "rgba(153, 102, 255, 1)",
+        // "rgba(255, 159, 64, 1)",
+        // "rgba(48, 57, 82,1)",
+        // "rgba(243, 166, 131,1)",
+        // "rgba(225, 95, 65,1)",
+        // "rgba(119, 139, 235,1)",
+        "rgba(247, 241, 227,0.4)",
       ],
       borderColor: ["white"],
       borderWidth: 1,
@@ -60,6 +61,7 @@ const StatisticsChartSection: React.FC<{ moveTop: () => void }> = (props) => {
         const tmpChartData = JSON.parse(JSON.stringify(initialChartData));
         tmpChartData.labels = result.labels;
         tmpChartData.datasets[0].data = result.data;
+        tmpChartData.datasets[0].label = "유저 수";
         setSubtitle("유저 수");
         setChartData(tmpChartData);
         setIsLoading(false);
@@ -74,6 +76,7 @@ const StatisticsChartSection: React.FC<{ moveTop: () => void }> = (props) => {
         const tmpChartData = JSON.parse(JSON.stringify(initialChartData));
         tmpChartData.labels = result.labels;
         tmpChartData.datasets[0].data = result.data;
+        tmpChartData.datasets[0].label = "해당 언어를 사용할 수 있는 유저 수";
         setSubtitle("해당 언어를 사용할 수 있는 유저 수");
         setChartData(tmpChartData);
         setIsLoading(false);
@@ -88,6 +91,7 @@ const StatisticsChartSection: React.FC<{ moveTop: () => void }> = (props) => {
         const tmpChartData = JSON.parse(JSON.stringify(initialChartData));
         tmpChartData.labels = result.labels;
         tmpChartData.datasets[0].data = result.data;
+        tmpChartData.datasets[0].label = "해당 언어 배우길 희망하는 유저 수";
         setSubtitle("해당 언어 배우길 희망하는 유저 수");
         setChartData(tmpChartData);
         setIsLoading(false);
@@ -102,6 +106,7 @@ const StatisticsChartSection: React.FC<{ moveTop: () => void }> = (props) => {
         const tmpChartData = JSON.parse(JSON.stringify(initialChartData));
         tmpChartData.labels = result.labels;
         tmpChartData.datasets[0].data = result.data;
+        tmpChartData.datasets[0].label = "해당 언어를 검색한 유저 수";
         setSubtitle("해당 언어를 검색한 유저 수");
         setChartData(tmpChartData);
         setIsLoading(false);
@@ -139,11 +144,31 @@ const StatisticsChartSection: React.FC<{ moveTop: () => void }> = (props) => {
           <LoadingSpinner />
         ) : (
           <StatisticsChart>
-            <Doughnut
+            <Bar
               data={chartData}
               width={300}
               height={300}
-              options={{ maintainAspectRatio: false }}
+              options={{
+                maintainAspectRatio: false,
+                scales: {
+                  x: {
+                    grid: {
+                      color: "rgba(247, 241, 227,0.2)",
+                    },
+                    ticks: {
+                      color: "white",
+                    },
+                  },
+                  y: {
+                    grid: {
+                      color: "rgba(247, 241, 227,0.2)",
+                    },
+                    ticks: {
+                      color: "white",
+                    },
+                  },
+                },
+              }}
             />
           </StatisticsChart>
         )}
