@@ -17,7 +17,7 @@ const UserList: React.FC<{
           <UserListHeaderItem width="13%">학교</UserListHeaderItem>
           <UserListHeaderItem width="6%">이름</UserListHeaderItem>
           <UserListHeaderItem width="13%">이메일</UserListHeaderItem>
-          <UserListHeaderItem width="12%">나라</UserListHeaderItem>
+          <UserListHeaderItem width="12%">대표나라</UserListHeaderItem>
           <UserListHeaderItem width="13%">대표언어</UserListHeaderItem>
           <UserListHeaderItem width="13%">대표희망언어</UserListHeaderItem>
           <UserListHeaderItem width="6%">조회수</UserListHeaderItem>
