@@ -164,6 +164,14 @@ const ProfileSection: React.FC = () => {
 };
 
 export default ProfileSection;
+export {
+  ProfileHeader,
+  ProfileImage,
+  ProfileContent,
+  ProfileInfoBox,
+  ProfileSelectInfo,
+  ProfileSocialUrl,
+};
 
 const Container = styled.div`
   width: 100%;
@@ -194,7 +202,6 @@ const ProfileInfoBox = styled.div`
 `;
 
 const ProfileUploadButton = styled(Button)`
-  font-family: "BMJUA";
   width: 200px;
   margin: 20px auto;
 `;

@@ -1,20 +1,16 @@
 import { MouseEventHandler, useContext, useState } from "react";
 import styled from "styled-components";
-import { ChatContext } from "../../store/ChatContext";
-import { ChatBox } from "./ChatBox";
-import { AiFillBell, AiFillHeart } from "react-icons/ai";
-import { AlarmCount } from "./AlarmCount";
-import { NextRouter, useRouter, withRouter } from "next/router";
-import { INITIAL_ID, LIMIT_NEWALARM_SIZE } from "../../constants";
-import { AuthContext } from "../../store/AuthContext";
-import { useAlert } from "react-alert";
+import { ChatContext } from "../../../store/ChatContext";
+import { ChatBox } from "../ChatBox";
+import { AiFillBell } from "react-icons/ai";
+import { AlarmCount } from "../AlarmCount";
+import { useRouter } from "next/router";
+import { LIMIT_NEWALARM_SIZE } from "../../../constants";
 
-const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
+const PushAlarm: React.FC = (props) => {
   const { newMessages, setMainRoom, newLikes } = useContext(ChatContext);
-  const { user } = useContext(AuthContext);
   const [isActive, setIsActive] = useState(false);
   const router = useRouter();
-  const message = useAlert();
 
   const controlPushAlarm: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
@@ -30,7 +26,7 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
       <AiFillBell />
       {(() => {
         const newAlarmNumber =
-          props.router.pathname !== "/chat"
+          router.pathname !== "/chat"
             ? newMessages.length + newLikes.length
             : newLikes.length;
 
@@ -48,7 +44,7 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
       })()}
       <PushAlarmContainer isActive={isActive}>
         <PushAlarmTitle>New Alarms</PushAlarmTitle>
-        {props.router.pathname !== "/chat" ? (
+        {router.pathname !== "/chat" ? (
           <>
             <PushAlarmBox>
               {newMessages.length > 0 ? (
@@ -121,12 +117,13 @@ const PushAlarm: React.FC<{ router: NextRouter }> = (props) => {
   );
 };
 
-export default withRouter(PushAlarm);
+export { PushAlarm };
 
 const AlarmBell = styled.div`
   display: flex;
   position: relative;
   cursor: pointer;
+
   svg {
     width: 40px;
     height: 40px;

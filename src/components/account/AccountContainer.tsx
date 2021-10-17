@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Divider } from "../common";
 
 interface AccountContainerProps {
   title?: string;
@@ -34,8 +33,9 @@ const Container = styled.div<{ width?: string }>`
   @media (max-width: 768px) {
     width: 450px;
   }
-  @media (max-width: 500px) {
+  @media (max-width: 480px) {
     width: 320px;
+    margin-bottom: 10px;
   }
   /* margin-bottom: 200px; */
 `;
@@ -56,7 +56,14 @@ const Section = styled.div`
     margin: 0;
   }
   width: 100%;
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin: 50px 0px;
+  @media (max-width: 480px) {
+    margin: 10px 0px;
+  }
 `;
+
+const Divider = styled.div`
+  margin: 20px 0;
+`;
+
 export default AccountContainer;

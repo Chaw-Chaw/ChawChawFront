@@ -39,6 +39,8 @@ const PostSearch: React.FC<PostSearchProps> = (props) => {
   );
 };
 
+export { PostSearch };
+
 const PostSearchBox = styled.div`
   border: 1px solid ${(props) => props.theme.primaryColor};
   background-color: ${(props) => props.theme.bodyBackgroundColor};
@@ -87,5 +89,3 @@ const SearchButton = styled(Button)`
   color: ${(props) => props.theme.bodyFontColor};
   font-family: "BMJUA";
 `;
-
-export default PostSearch;

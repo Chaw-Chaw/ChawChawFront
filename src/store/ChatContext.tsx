@@ -12,7 +12,6 @@ import { BACKEND_URL, DEFAULT_PROFILE_IMAGE } from "../constants";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
 import { arrayRemovedItem, getSecureLocalStorage } from "../utils";
-
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
 
@@ -268,6 +267,7 @@ const ChatContextProvider: React.FC = (props) => {
     // 한가지 문제가 있다. -> connect를 다시 연결할때
     // user.id 가 있으면 연결
     if (!isLogin || !user.id) return;
+    if (user.role === "ADMIN") return;
     getNewAlarms();
     connect();
     return () => disconnect();

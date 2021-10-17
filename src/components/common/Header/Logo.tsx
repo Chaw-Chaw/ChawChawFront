@@ -2,8 +2,8 @@ import React from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import Image from "next/image";
-import ChawLogo from "../../../public/Layout/ChawChawLogo.png";
-import Chaw from "../../../public/Layout/chaw.png";
+import ChawLogo from "../../../../public/Layout/ChawChawLogo.png";
+import Chaw from "../../../../public/Layout/chaw.png";
 
 const Logo: React.FC = () => {
   return (

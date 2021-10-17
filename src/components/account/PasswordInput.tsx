@@ -1,4 +1,4 @@
-import { Input } from ".";
+import { Input } from "../common";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { AiOutlineEye } from "react-icons/ai";

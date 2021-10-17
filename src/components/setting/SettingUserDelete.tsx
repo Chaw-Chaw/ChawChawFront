@@ -6,7 +6,7 @@ import { getSecureLocalStorage } from "../../utils";
 import { Button, ListItem } from "../common";
 
 const SettingUserDelete: React.FC = () => {
-  const { grantRefresh, logout, isLogin } = useContext(AuthContext);
+  const { grantRefresh, isLogin } = useContext(AuthContext);
   // 유저 삭제시 확인 메세지 alert 생성
   const deleteUser = async () => {
     const response = await axios

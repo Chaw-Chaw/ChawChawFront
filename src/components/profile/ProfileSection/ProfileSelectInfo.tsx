@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useEffect } from "react";
 import { useAlert } from "react-alert";
 import styled from "styled-components";
 import { Button, SelectInfoDropDown } from "../../common";

@@ -1,4 +1,6 @@
-const CountryLocale: any = {
+const CountryLocale: {
+  [index: string]: string;
+} = {
   Andorra: "AD",
   "United Arab Emirates": "AE",
   Afghanistan: "AF",
@@ -250,7 +252,9 @@ const CountryLocale: any = {
   Zambia: "ZM",
   Zimbabwe: "ZW",
 };
-const LanguageLocale: any = {
+const LanguageLocale: {
+  [index: string]: string;
+} = {
   Afrikaans: "af",
   Albanian: "sq",
   Amharic: "am",
@@ -356,7 +360,9 @@ const LanguageLocale: any = {
   Yiddish: "yi",
   Yoruba: "yo",
 };
-const LocaleLanguage: any = {
+const LocaleLanguage: {
+  [index: string]: string;
+} = {
   af: "Afrikaans",
   sq: "Albanian",
   am: "Amharic",

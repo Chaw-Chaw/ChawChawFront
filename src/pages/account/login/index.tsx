@@ -138,7 +138,7 @@ const RequiredText = styled.span`
 const SignupBox = styled.div`
   margin-top: 20px;
   margin-bottom: 10px;
-  width: 70%;
+  width: 320px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -152,7 +152,9 @@ const SignupBox = styled.div`
 `;
 
 const SignupTitle = styled.h2`
+  padding: 0px;
   margin: 0px;
+  width: 160px;
   margin-right: 5px;
   color: ${(props) =>
     props.theme.id === "light" ? "rgba(0, 0, 0, 0.3)" : "white"};

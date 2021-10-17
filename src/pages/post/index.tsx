@@ -1,6 +1,6 @@
 import { LanguageLocale, Layout } from "../../components/common";
 import styled from "styled-components";
-import PostSearch from "../../components/post/PostSearch";
+import { PostSearch } from "../../components/post/PostSearch";
 import PostOrder, { orderOptions } from "../../components/post/PostOrder";
 import PostSection from "../../components/post/PostSection";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -12,11 +12,11 @@ import { getSecureLocalStorage } from "../../utils";
 
 export default function Post() {
   const { grantRefresh, user, isLogin } = useContext(AuthContext);
-  const [postInfo, setPostInfo] = useState<any>([]);
+  const [postInfo, setPostInfo] = useState([]);
   const [sortInfo, setSortInfo] = useState<string[]>([
-    "Main Language",
-    "Hope Language",
-    "order",
+    "선택언어",
+    "선택희망언어",
+    "순서",
   ]);
   const [isEnd, setIsEnd] = useState(false);
   const postIds = useRef("");
@@ -32,8 +32,6 @@ export default function Post() {
     const orderConvert = orderOptions[sortInfo[2]] || "";
     const isFirst = postIds.current === "";
 
-    // console.log(document.cookie, "cookie");
-    console.log(postIds.current, "postIds");
     const response = await axios
       .get(`/users`, {
         params: {
@@ -50,9 +48,8 @@ export default function Post() {
       .catch((err) => err.response);
     console.log(response, "postInfo");
     const data = response.data.data;
+
     if (response.status === 401) {
-      // access token 만료
-      // refresh token 전송
       grantRefresh();
       return;
     }

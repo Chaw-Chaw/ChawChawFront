@@ -173,8 +173,13 @@ export { PostModalActive };
 const PostChatButton = styled(Button)`
   margin: 15px auto;
   min-height: 30px;
+  border: 1px solid ${(props) => props.theme.primaryColor};
   @media (max-width: 500px) {
     width: 150px;
+  }
+  transition: background-color 0.5s;
+  :hover {
+    background-color: ${(props) => props.theme.primaryColor};
   }
 `;
 
@@ -236,10 +241,14 @@ const UnActionButton = styled(Button)`
   svg {
     margin-right: 5px;
   }
+  transition: background-color 0.5s;
+  :hover {
+    background-color: ${(props) => props.theme.primaryColor};
+  }
 `;
 
 const ActionButton = styled(UnActionButton)`
-  background-color: white;
+  background-color: ${(props) => props.theme.bodyBackgroundColor};
   border: 1px solid ${(props) => props.theme.primaryColor};
   color: ${(props) => props.theme.primaryColor};
 `;

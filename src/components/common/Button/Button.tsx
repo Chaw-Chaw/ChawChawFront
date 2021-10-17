@@ -1,3 +1,4 @@
+import { MouseEventHandler } from "react";
 import styled from "styled-components";
 
 interface ButtonProps {
@@ -10,6 +11,7 @@ interface ButtonProps {
 }
 
 const Button = styled.button<ButtonProps>`
+  padding: 0px;
   font-family: "BMJUA";
   color: ${(props) => {
     if (props.primary) return "white";
@@ -22,7 +24,8 @@ const Button = styled.button<ButtonProps>`
     if (props.secondary) return props.theme.bodyBackgroundColor;
     return props.theme.primaryColor;
   }};
-  border: 1px solid ${(props) => props.theme.primaryColor};
+  /* border: 1px solid ${(props) => props.theme.primaryColor}; */
+  border: none;
   width: ${(props) => (props.width ? props.width : "6rem")};
   height: ${(props) => (props.height ? props.height : "2rem")};
   font-weight: ${(props) => (props.fontWeight ? props.fontWeight : "600")};
@@ -34,16 +37,12 @@ const Button = styled.button<ButtonProps>`
     background-color: ${(props) => props.theme.bodyBackgroundColor};
     color: ${(props) => props.theme.secondaryColor};
   }
-  @keyframes color-change-2x {
-    0% {
-      background: ${(props) => props.theme.primaryColor};
-    }
-    100% {
-      background: ${(props) => props.theme.visitedColor};
-    }
-  }
-  :active {
-    animation: color-change-2x 200ms linear alternate both;
+
+  transition: background-color 0.5s;
+
+  :hover {
+    background-color: ${(props) => props.theme.visitedColor};
+    color: white;
   }
 `;
 

@@ -1,10 +1,18 @@
-import React, { useContext } from "react";
-import styled, { ThemeContext } from "styled-components";
+import React from "react";
+import styled from "styled-components";
 
 interface ThemeToggleProps {
   isActive?: boolean;
   onToggle?: () => void;
 }
+
+const ThemeToggle: React.FC<ThemeToggleProps> = (props) => {
+  return (
+    <ToggleWrapper onClick={props.onToggle}>
+      <Notch isActive={props.isActive} />
+    </ToggleWrapper>
+  );
+};
 
 const ToggleWrapper = styled.div`
   width: 50px;
@@ -23,23 +31,13 @@ const ToggleWrapper = styled.div`
 const Notch = styled.div<{ isActive?: boolean }>`
   height: 21px;
   width: 21px;
-
   background: white;
   border-radius: 50%;
   transition: transform 0.1s linear;
-  transform: translate(${(p) => (p.isActive ? "28px" : "1px")});
+  transform: translate(${(props) => (props.isActive ? "28px" : "1px")});
   text-align: center;
   background: ${(props) =>
     props.theme.id === "light" ? props.theme.primaryColor : "white"};
 `;
-
-const ThemeToggle: React.FC<ThemeToggleProps> = (props) => {
-  const { id } = useContext(ThemeContext);
-  return (
-    <ToggleWrapper onClick={props.onToggle}>
-      <Notch isActive={props.isActive} />
-    </ToggleWrapper>
-  );
-};
 
 export { ThemeToggle };

@@ -1,20 +1,29 @@
+import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../store/AuthContext";
-import { getRefreshAccessTokenRemainingTime } from "../../utils";
+import {
+  getRefreshAccessTokenRemainingTime,
+  getSecureLocalStorage,
+} from "../../utils";
 import Header from "./Header";
 
 const Layout: React.FC<{ type?: string }> = (props) => {
   const { grantRefresh, isLogin } = useContext(AuthContext);
+  const router = useRouter();
 
   useEffect(() => {
     if (!isLogin) return;
+    const userRole = getSecureLocalStorage("user").role;
+    if (userRole === "ADMIN") {
+      router.push("/manage/users");
+    }
     setTimeout(grantRefresh, getRefreshAccessTokenRemainingTime());
   }, []);
 
   return (
     <>
-      <Header type={props.type} />
+      {router.pathname !== "/" && <Header type={props.type} />}
       <Inner>{props.children}</Inner>
     </>
   );
@@ -26,8 +35,9 @@ const Inner = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 110px;
+  box-sizing: border-box;
   @media (max-width: 768px) {
-    box-sizing: border-box;
     padding-top: 70px;
   }
 `;

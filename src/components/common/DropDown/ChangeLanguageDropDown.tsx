@@ -22,7 +22,7 @@ const ChangeLanguageDropDown: React.FC<ChangeLanguageDropDownProps> = (
       <DropDown
         fontWeight="600"
         fontSize="1em"
-        width="70px"
+        width="110px"
         height="30px"
         options={options}
         initialValue={initialValue}
@@ -39,6 +39,5 @@ const ChangeLanguageDropDown: React.FC<ChangeLanguageDropDownProps> = (
 export { ChangeLanguageDropDown };
 
 const ChangeLanguageDropDownBox = styled.div`
-  margin-bottom: 10px;
-  margin-right: 10px; ;
+  margin-right: 10px;
 `;

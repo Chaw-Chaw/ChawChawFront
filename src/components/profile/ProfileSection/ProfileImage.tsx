@@ -28,13 +28,10 @@ const ProfileImage: React.FC = () => {
       return;
     }
 
-    if (response.data.isSuccess) {
-      message.success("이미지 업로드 성공!");
-      console.log(response.data, "image Upload");
-    } else {
-      console.error(response.data, "이미지 업로드 실패");
+    if (!response.data.isSuccess) {
       return;
     }
+    message.success("이미지 업로드 성공!");
     updateUser({ imageUrl: response.data.data });
     return;
   };
@@ -71,6 +68,7 @@ const ProfileImage: React.FC = () => {
 
     if (!response.data.isSuccess) {
       console.error(response.data);
+      return;
     }
     updateUser({ imageUrl: response.data.data });
   };
@@ -138,19 +136,17 @@ const InputFileButton = styled.label`
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
   font-weight: 600;
   cursor: pointer;
+  text-align: center;
+  white-space: pre-line;
+  padding: 0px;
+
   &:disabled {
     background-color: ${(props) => props.theme.bodyBackgroundColor};
     color: ${(props) => props.theme.secondaryColor};
   }
-  @keyframes color-change-2x {
-    0% {
-      background: ${(props) => props.theme.primaryColor};
-    }
-    100% {
-      background: ${(props) => props.theme.visitedColor};
-    }
-  }
-  :active {
-    animation: color-change-2x 200ms linear alternate both;
+  transition: background-color 0.5s;
+  :hover {
+    background-color: ${(props) => props.theme.visitedColor};
+    color: white;
   }
 `;

@@ -116,13 +116,7 @@ const AuthContextProvider: React.FC = (props) => {
     })()
   );
   const [isLogin, setIsLogin] = useState(
-    (() => {
-      if (typeof window === "undefined") return false;
-      const localStorageData = getSecureLocalStorage("accessToken");
-      if (!localStorageData) return false;
-      return Boolean(localStorageData);
-      // Boolean(avoidLocalStorageUndefined("accessToken", false))
-    })()
+    Boolean(avoidLocalStorageUndefined("accessToken", false))
   );
   const router = useRouter();
 
@@ -233,6 +227,8 @@ const AuthContextProvider: React.FC = (props) => {
       )
       .catch((err) => err.response);
 
+    console.log(response, "login");
+
     if (!response.data.isSuccess) {
       if (response.data.responseMessage === "회원가입 필요") {
         updateUser(response.data.data);
@@ -249,6 +245,13 @@ const AuthContextProvider: React.FC = (props) => {
       return;
     }
     loginSuccess(response);
+
+    //관리자는 관리자 페이지로 접속
+    if (response.data.data.profile.role === "ADMIN") {
+      router.push("/manage/users");
+      return;
+    }
+
     router.push("/post");
   };
 

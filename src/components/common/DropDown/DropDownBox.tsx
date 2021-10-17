@@ -17,7 +17,7 @@ interface DropDownProps extends initialBoxProps {
   isActive?: boolean;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: () => void;
-  postOrder?: boolean;
+  search?: boolean;
   index?: number;
   type?: string;
   setValues?: Dispatch<SetStateAction<string[]>>;
@@ -82,17 +82,6 @@ const InitialBox = styled.div<initialBoxProps>`
     position: absolute;
     left: 5px;
   }
-  /* span {
-    color: ${(props) => {
-    if (props.value === "Select") return props.theme.primaryColor;
-    return "white";
-  }};
-    font-size: ${(props) => {
-    if (props.value === "Select") return "1.2rem";
-    return props.fontSize;
-  }};
-  } */
-
   font-family: "BMJUA";
 
   :hover {

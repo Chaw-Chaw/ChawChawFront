@@ -7,8 +7,7 @@ import { arrayRemovedItem } from "../../../utils";
 import { useRouter } from "next/router";
 
 const ChatList: React.FC = (props) => {
-  const { totalMessage, setMainRoom, setIsViewChatList } =
-    useContext(ChatContext);
+  const { totalMessage } = useContext(ChatContext);
   const { user } = useContext(AuthContext);
   const router = useRouter();
 
@@ -80,24 +79,10 @@ const Outline = styled.div`
   border: none;
   box-sizing: border-box;
   overflow: auto;
-  height: calc(100vh - 150px);
-  height: calc(var(--vh, 1vh) * 100 - 150px);
-  /* margin-bottom: 50px; */
+  height: 100%;
   width: 100%;
   max-width: 400px;
-  padding: 20px 20px 20px 20px;
-
-  @media (max-width: 1024px) {
-    max-width: 100%;
-    height: calc(100vh - 210px);
-    height: calc(var(--vh, 1vh) * 100 - 210px);
-  }
-
-  @media (max-width: 768px) {
-    max-width: 100%;
-    height: calc(100vh - 130px);
-    height: calc(var(--vh, 1vh) * 100 - 130px);
-  }
+  padding: 20px;
 `;
 
 const Inner = styled.div`

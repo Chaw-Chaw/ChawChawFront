@@ -17,7 +17,9 @@ const Header: React.FC<HeaderProps> = (props) => {
       <HeaderWrapper>
         <LogoFragment>
           <Logo />
-          {props.type === "post" && <SchoolHead>{user.school}</SchoolHead>}
+          {props.type === "post" && (
+            <SchoolHead>{user.school || ""}</SchoolHead>
+          )}
         </LogoFragment>
         <HeaderComponentsBox>
           <ThemeToggleBox>
@@ -46,10 +48,9 @@ const HeaderWrapper = styled.header`
   display: flex;
   justify-content: center;
   width: 100%;
-  height: 140px;
+  padding: 0px;
   box-sizing: border-box;
-  padding: 10px 16px;
-  position: sticky;
+  position: fixed;
   z-index: 30;
   top: 0px;
   -ms-user-select: none;
