@@ -10,6 +10,11 @@ const arrayRemovedItem = (item: any, array: any[]) => {
   return result;
 };
 
+const divideMain = (main: string, nomal: string[]) => {
+  const onlyNomal = arrayRemovedItem(main, nomal);
+  return [main, ...onlyNomal];
+};
+
 const saveSecureLocalStorage = (itemName: string, item: any) => {
   const cipherData = CryptoJS.AES.encrypt(
     JSON.stringify(item),
@@ -45,4 +50,5 @@ export {
   getSecureLocalStorage,
   avoidLocalStorageUndefined,
   getRefreshAccessTokenRemainingTime,
+  divideMain,
 };

@@ -17,7 +17,7 @@ import ProfileContent from "./ProfileContent";
 import ProfileImage from "./ProfileImage";
 import ProfileSocialUrl from "./ProfileSocialUrl";
 import ProfileSelectInfo from "./ProfileSelectInfo";
-import { getSecureLocalStorage } from "../../../utils";
+import { divideMain, getSecureLocalStorage } from "../../../utils";
 
 interface ProfileSection {
   title?: string;
@@ -29,16 +29,24 @@ const ProfileSection: React.FC = () => {
   const { grantRefresh } = useContext(AuthContext);
   const { user, updateUser } = useContext(AuthContext);
   const [userCountries, setUserCountries] = useState<string[]>(
-    user.country || ["Select"]
+    user.country && user.repCountry
+      ? divideMain(user.repCountry, user.country)
+      : ["Select"]
   );
   const [userLanguages, setUserLanguages] = useState<string[]>(
-    user.language
-      ? user.language.map((item: string) => LocaleLanguage[item])
+    user.language && user.repLanguage
+      ? divideMain(
+          LocaleLanguage[user?.repLanguage],
+          user.language.map((item: string) => LocaleLanguage[item])
+        )
       : ["Select"]
   );
   const [userHopeLanguages, setUserHopeLanguages] = useState<string[]>(
-    user.hopeLanguage
-      ? user.hopeLanguage.map((item: string) => LocaleLanguage[item])
+    user.hopeLanguage && user.repHopeLanguage
+      ? divideMain(
+          LocaleLanguage[user.repHopeLanguage],
+          user.hopeLanguage.map((item: string) => LocaleLanguage[item])
+        )
       : ["Select"]
   );
   const [userContent, setUserContent] = useState<string>(user.content || "");

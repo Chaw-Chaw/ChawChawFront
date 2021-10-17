@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { ManageLayout } from "../../../../components/manage/ManageLayout";
 import { AuthContext } from "../../../../store/AuthContext";
-import { getSecureLocalStorage } from "../../../../utils";
+import { divideMain, getSecureLocalStorage } from "../../../../utils";
 import {
   ProfileHeader,
   ProfileContent,
@@ -79,27 +79,16 @@ export default function ManageUserDetail() {
     ],
   });
   const [userSchool, setUserSchool] = useState<string>("");
-  const [userCountries, setUserCountries] = useState<string[]>(
-    userInfo.country || ["Select"]
-  );
-  const [userLanguages, setUserLanguages] = useState<string[]>(
-    userInfo.language
-      ? userInfo.language.map((item: string) => LocaleLanguage[item])
-      : ["Select"]
-  );
-  const [userHopeLanguages, setUserHopeLanguages] = useState<string[]>(
-    userInfo.hopeLanguage
-      ? userInfo.hopeLanguage.map((item: string) => LocaleLanguage[item])
-      : ["Select"]
-  );
-  const [userContent, setUserContent] = useState<string>(
-    userInfo.content || ""
-  );
-  const [userFaceBookUrl, setUserFaceBookUrl] = useState<string>(
-    userInfo.facebookUrl || DEFAULT_FACEBOOK_URL
-  );
+  const [userCountries, setUserCountries] = useState<string[]>(["Select"]);
+  const [userLanguages, setUserLanguages] = useState<string[]>(["Select"]);
+  const [userHopeLanguages, setUserHopeLanguages] = useState<string[]>([
+    "Select",
+  ]);
+  const [userContent, setUserContent] = useState<string>("");
+  const [userFaceBookUrl, setUserFaceBookUrl] =
+    useState<string>(DEFAULT_FACEBOOK_URL);
   const [userInstagramUrl, setUserInstagramUrl] = useState<string>(
-    userInfo.instagramUrl || DEFAULT_INSTAGRAM_URL
+    DEFAULT_INSTAGRAM_URL
   );
 
   const getUserDetailInfo = async (userId: number) => {
@@ -192,20 +181,27 @@ export default function ManageUserDetail() {
     if (userId === undefined) return;
     getUserDetailInfo(userId);
     setUserId(userId);
+
     if (userSchool === undefined) return;
     setUserSchool(userSchool);
   }, [JSON.stringify(router.query)]);
 
   useEffect(() => {
     setUserContent(userInfo.content);
-    setUserCountries(userInfo.country);
+    setUserCountries(divideMain(userInfo.repCountry, userInfo.country));
     setUserFaceBookUrl(userInfo.facebookUrl);
     setUserHopeLanguages(
-      userInfo.hopeLanguage.map((item: string) => LocaleLanguage[item])
+      divideMain(
+        LocaleLanguage[userInfo.repHopeLanguage],
+        userInfo.hopeLanguage.map((item: string) => LocaleLanguage[item])
+      )
     );
     setUserInstagramUrl(userInfo.instagramUrl);
     setUserLanguages(
-      userInfo.language.map((item: string) => LocaleLanguage[item])
+      divideMain(
+        LocaleLanguage[userInfo?.repLanguage],
+        userInfo.language.map((item: string) => LocaleLanguage[item])
+      )
     );
   }, [JSON.stringify(userInfo)]);
 
