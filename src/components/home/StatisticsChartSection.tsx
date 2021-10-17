@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Bar, Doughnut } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import styled from "styled-components";
 import { StatisticsContext } from "../../store/StatisticsContext";
 import { LoadingSpinner, SelectInfoDropDown } from "../common";
