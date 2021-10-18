@@ -149,7 +149,6 @@ const AuthContextProvider: React.FC = (props) => {
     saveSecureLocalStorage("grantRefreshTime", Date.now() + MIN_30 - MIN_1);
     saveSecureLocalStorage("accessToken", accessToken);
     setIsLogin(true);
-    setTimeout(grantRefresh, tokenInfo.expiresIn - MIN_1);
 
     if (response.data.data.profile) {
       const newData: UserPropertys = {
