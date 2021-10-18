@@ -31,7 +31,10 @@ const Layout: React.FC<{ type?: string }> = (props) => {
 
 const Inner = styled.main`
   margin: 0px auto 0px auto;
-  height: 100%;
+  height: 100vh;
+  @supports (-webkit-touch-callout: none) {
+    height: -webkit-fill-available;
+  }
   display: flex;
   flex-direction: column;
   align-items: center;
