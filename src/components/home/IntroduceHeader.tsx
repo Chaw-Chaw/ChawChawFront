@@ -1,18 +1,26 @@
 import styled, { ThemeContext } from "styled-components";
 import { FaArrowCircleRight } from "react-icons/fa";
 import { ThemeToggle } from "../common";
-import { useContext } from "react";
+import { MouseEventHandler, useContext, useRef } from "react";
 import { useRouter } from "next/router";
 import { AuthContext } from "../../store/AuthContext";
 
-const IntroduceHeader: React.FC = () => {
+const IntroduceHeader: React.FC<{ moveTop: () => void }> = (props) => {
   const { isLogin } = useContext(AuthContext);
   const { id, setTheme } = useContext(ThemeContext);
   const router = useRouter();
+
+  const headLineLogoHandler: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    props.moveTop();
+  };
+
   return (
     <IntroduceHeadLine>
       <HeadLineContentLeft>
-        <HeadLineLogoWord>차우차우</HeadLineLogoWord>
+        <HeadLineStart onClick={headLineLogoHandler}>
+          <HeadLineLogoWord>차우차우</HeadLineLogoWord>
+        </HeadLineStart>
       </HeadLineContentLeft>
       <ThemeToggleBox>
         <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
@@ -51,6 +59,7 @@ const IntroduceHeadLine = styled.div`
 `;
 
 const HeadLineContentLeft = styled.div`
+  cursor: pointer;
   margin-left: 50px;
   display: flex;
   justify-content: center;
