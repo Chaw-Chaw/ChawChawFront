@@ -24,7 +24,7 @@ const typeOptions: string[] = [
   "인기 검색 언어 순위",
 ];
 
-const StatisticsChartSection: React.FC<{ moveTop: () => void }> = (props) => {
+const StatisticsChartSection: React.FC = () => {
   const {
     getRankSchool,
     getRankHopeLanguage,
