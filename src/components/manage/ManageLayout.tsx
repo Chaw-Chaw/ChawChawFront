@@ -57,7 +57,10 @@ export { ManageLayout };
 
 const Container = styled.div`
   display: flex;
-  height: 100%;
+  height: 100vh;
+  @supports (-webkit-touch-callout: none) {
+    height: -webkit-fill-available;
+  }
   width: 100%;
   @media (max-width: 1024px) {
     display: none;
