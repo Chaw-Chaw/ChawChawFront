@@ -9,6 +9,7 @@ import { getSecureLocalStorage } from "../../../utils";
 import { RiHome2Line } from "react-icons/ri";
 import { BsBoxArrowRight, BsChatDots } from "react-icons/bs";
 import { AlarmCount, ChangeLanguageDropDown } from "../../common";
+import { useAlert } from "react-alert";
 
 interface ChatRoomHeaderType {
   selectLanguage: string[];
@@ -17,6 +18,7 @@ interface ChatRoomHeaderType {
 
 const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
   const router = useRouter();
+  const message = useAlert();
   const { setIsViewChatList, mainRoom, setTotalMessage, newMessages } =
     useContext(ChatContext);
   const { grantRefresh } = useContext(AuthContext);
@@ -49,13 +51,25 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
     console.log(response, "leaveChatRoom");
 
     if (response.status === 401) {
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
       //acessToken 만료
-      grantRefresh();
+      await grantRefresh();
+      leaveChatRoom(e);
       return;
     }
 
     if (!response.data.isSuccess) {
-      console.error(response.data);
+      console.log(response.data);
       return;
     }
 
@@ -64,8 +78,7 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
       const resultFilter = result.filter((item) => item.roomId !== mainRoom.id);
       return resultFilter;
     });
-    // setMainChatMessages([]);
-    // setMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID });
+
     router.push({
       pathname: "/chat",
       query: { userId: INITIAL_ID },

@@ -30,11 +30,24 @@ const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
     console.log(response, " sendImage");
 
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await sendImage(image);
       return;
     }
 
     if (!response.data.isSuccess) {
+      console.log(response, "sendImage 실패");
       return;
     }
 
@@ -71,7 +84,19 @@ const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
       .catch((err) => err.response);
 
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      deleteImage(e);
       return;
     }
 

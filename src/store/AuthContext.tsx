@@ -133,7 +133,25 @@ const AuthContextProvider: React.FC = (props) => {
       });
 
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 다른 곳에서 접속중인 아이디는 로그아웃 되지 않습니다.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+        return;
+      }
+      await grantRefresh();
+      await logout();
+      return;
+    }
+
+    if (!response.data.isSuccess) {
+      console.log(response.data, "logout 실패");
       return;
     }
     console.log(response, "로그아웃 성공");
@@ -172,26 +190,38 @@ const AuthContextProvider: React.FC = (props) => {
         }
       )
       .catch((err) => {
-        console.error(err, "grant access Token Fail");
         console.log(err, "grant access Token Fail");
         return err.response;
       });
+    console.log(response, "grantRefresh");
 
     if (response.status === 401) {
-      window.localStorage.clear();
-      setIsLogin(false);
-      message.error("다시 로그인 해주세요.", {
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+
+      message.error("로그인 기한이 오래되었습니다. 다시 로그인 해주세요.", {
         onClose: () => {
-          router.push("/account/login");
+          window.localStorage.clear();
+          window.location.href = "/account/login";
         },
       });
       return;
     }
 
     if (!response.data.isSuccess) {
-      console.error(response.data);
+      console.log(response.data);
       return;
     }
+
     console.log(response, "Success get accessToken");
     // 성공할경우
     loginSuccess(response);

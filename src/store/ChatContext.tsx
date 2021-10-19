@@ -205,7 +205,20 @@ const ChatContextProvider: React.FC = (props) => {
       });
 
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await detectMainRoom();
+      return;
     }
 
     if (!response.data.isSuccess) {
@@ -248,7 +261,23 @@ const ChatContextProvider: React.FC = (props) => {
         return err.response;
       });
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await getNewAlarms();
+      return;
+    }
+    if (!response.data.isSuccess) {
+      console.log(response, "getNewAlarms 실패");
       return;
     }
 
@@ -311,13 +340,25 @@ const ChatContextProvider: React.FC = (props) => {
       .catch((err) => err.response);
 
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await blockUser(userId);
       return;
     }
 
     console.log(response, "유저 차단 결과");
     if (!response.data.isSuccess) {
-      alert("유저 차단 실패");
+      console.log(response, "유저 차단 실패");
       return;
     }
 
@@ -338,14 +379,27 @@ const ChatContextProvider: React.FC = (props) => {
       .catch((err) => err.response);
 
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+
+      await grantRefresh();
+      await unblockUser(userId);
       return;
     }
 
     console.log(response, "유저 차단해제 결과");
 
     if (!response.data.isSuccess) {
-      alert("유저 차단해제 실패");
+      console.log(response, "유저 차단해제 실패");
       return;
     }
 
@@ -375,14 +429,25 @@ const ChatContextProvider: React.FC = (props) => {
       });
     }
     if (response.status === 401) {
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
       // access token 만료
       // refresh token 전송
-      grantRefresh();
+      await grantRefresh();
+      await getMessageLog();
       return;
     }
     if (!response.data.isSuccess) {
-      console.log(response.data, "chatError");
-      console.error(response.data);
+      console.log(response.data, "getMessage Log 실패");
       return;
     }
     return response.data.data;

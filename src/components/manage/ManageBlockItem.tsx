@@ -1,6 +1,7 @@
 import axios from "axios";
 import Image from "next/image";
 import { MouseEventHandler, useContext, useState } from "react";
+import { useAlert } from "react-alert";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE } from "../../constants";
 import { AuthContext } from "../../store/AuthContext";
@@ -13,6 +14,8 @@ interface BlockItemProps extends BlockItem {}
 const ManageBlockItem: React.FC<BlockItemProps> = (props) => {
   const { grantRefresh } = useContext(AuthContext);
   const [isBlock, setIsBlock] = useState(true);
+  const message = useAlert();
+
   const manageUnblockUser = async (userId: number) => {
     const response = await axios
       .delete("/admin/users/block", {
@@ -24,15 +27,26 @@ const ManageBlockItem: React.FC<BlockItemProps> = (props) => {
       .catch((err) => err.response);
 
     if (response.status === 401) {
-      grantRefresh();
-      return false;
-    }
-    console.log(response, "유저 차단해제 결과");
-    if (!response.data.isSuccess) {
-      alert("유저 차단해제 실패");
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await manageUnblockUser(userId);
       return false;
     }
 
+    if (!response.data.isSuccess) {
+      console.log(response, "유저 차단해제 실패");
+      return false;
+    }
     return true;
   };
 
@@ -50,13 +64,24 @@ const ManageBlockItem: React.FC<BlockItemProps> = (props) => {
       .catch((err) => err.response);
 
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await manageBlockUser(userId);
       return false;
     }
 
-    console.log(response, "유저 차단 결과");
     if (!response.data.isSuccess) {
-      alert("유저 차단 실패");
+      console.log(response, "유저 차단 실패");
       return false;
     }
 
@@ -68,7 +93,7 @@ const ManageBlockItem: React.FC<BlockItemProps> = (props) => {
   ) => {
     e.preventDefault();
     (async () => {
-      const result = manageUnblockUser(props.userId);
+      const result = await manageUnblockUser(props.userId);
       if (!result) return;
       setIsBlock(false);
     })();
@@ -77,7 +102,7 @@ const ManageBlockItem: React.FC<BlockItemProps> = (props) => {
   const blockUserButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     (async () => {
-      const result = manageBlockUser(props.userId);
+      const result = await manageBlockUser(props.userId);
       if (!result) return;
       setIsBlock(true);
     })();

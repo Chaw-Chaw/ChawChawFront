@@ -40,22 +40,36 @@ export default function Chat() {
       .catch((err) => err.response);
 
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await makeChatRoom(userId);
+      return;
     }
 
     if (response.data.responseMessage === "차단한 또는 차단된 유저") {
-      message.error(
+      message.info(
         "상대방을 차단 했거나 차단되어 채팅방을 생성할 수 없습니다.",
         {
           onClose: () => {
             router.back();
+            return;
           },
         }
       );
     }
 
     if (!response.data.isSuccess) {
-      console.error(response.data);
+      console.log(response.data);
       return;
     }
     console.log(response, "makeChatRoom");
