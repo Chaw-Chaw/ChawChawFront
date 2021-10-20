@@ -85,7 +85,9 @@ export default function Chat() {
       });
     }
     // 채팅 페이지에서 나가면 메인 룸 넘버는 -1
-    setMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID });
+    return () => {
+      setMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID });
+    };
   }, []);
 
   // 채팅페이지에서 메인룸 변경시 메인채팅창 내용 수정
@@ -133,6 +135,8 @@ export default function Chat() {
           return filteredNewMessages;
         });
       })();
+
+      return;
     }
 
     // 채팅 페이지만 입장한 경우
