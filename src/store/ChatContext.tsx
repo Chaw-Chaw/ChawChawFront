@@ -205,7 +205,20 @@ const ChatContextProvider: React.FC = (props) => {
       });
 
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await detectMainRoom();
+      return;
     }
 
     if (!response.data.isSuccess) {
@@ -217,7 +230,6 @@ const ChatContextProvider: React.FC = (props) => {
 
   const publish = (message: string, messageType: string) => {
     if (!chatClient.current.connected) return;
-
     const timezoneOffset = new Date().getTimezoneOffset() * 60000;
     const now = new Date(Date.now() - timezoneOffset);
 
@@ -248,7 +260,23 @@ const ChatContextProvider: React.FC = (props) => {
         return err.response;
       });
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await getNewAlarms();
+      return;
+    }
+    if (!response.data.isSuccess) {
+      console.log(response, "getNewAlarms 실패");
       return;
     }
 
@@ -262,40 +290,6 @@ const ChatContextProvider: React.FC = (props) => {
     setNewLikes([...likeMessages]);
     setNewMessages([...newMessages]);
   };
-
-  useEffect(() => {
-    // 한가지 문제가 있다. -> connect를 다시 연결할때
-    // user.id 가 있으면 연결
-    if (!isLogin || !user.id) return;
-    if (user.role === "ADMIN") return;
-    getNewAlarms();
-    connect();
-    return () => disconnect();
-  }, [JSON.stringify(user.id)]);
-
-  useEffect(() => {
-    console.log(mainRoom.id, "메인룸변경");
-    mainRoomRef.current.id = mainRoom.id;
-
-    if (mainRoom.id === -1) return;
-
-    // 메인 룸 변경 api 전송;
-    (async () => {
-      const result = await detectMainRoom();
-      if (!result) return;
-    })();
-
-    // 메인룸에 해당하는 새로운 메시지 거르기
-    setNewMessages((pre) => {
-      const result = pre;
-      const filteredNewMessages = result.filter((item: any) => {
-        if (item.roomId === undefined) return true;
-        if (item.roomId !== mainRoom.id) return true;
-        return false;
-      });
-      return filteredNewMessages;
-    });
-  }, [JSON.stringify(mainRoom.id)]);
 
   const blockUser = async (userId: number) => {
     const response = await axios
@@ -311,13 +305,25 @@ const ChatContextProvider: React.FC = (props) => {
       .catch((err) => err.response);
 
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await blockUser(userId);
       return;
     }
 
     console.log(response, "유저 차단 결과");
     if (!response.data.isSuccess) {
-      alert("유저 차단 실패");
+      console.log(response, "유저 차단 실패");
       return;
     }
 
@@ -338,14 +344,27 @@ const ChatContextProvider: React.FC = (props) => {
       .catch((err) => err.response);
 
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+
+      await grantRefresh();
+      await unblockUser(userId);
       return;
     }
 
     console.log(response, "유저 차단해제 결과");
 
     if (!response.data.isSuccess) {
-      alert("유저 차단해제 실패");
+      console.log(response, "유저 차단해제 실패");
       return;
     }
 
@@ -375,14 +394,25 @@ const ChatContextProvider: React.FC = (props) => {
       });
     }
     if (response.status === 401) {
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
       // access token 만료
       // refresh token 전송
-      grantRefresh();
+      await grantRefresh();
+      await getMessageLog();
       return;
     }
     if (!response.data.isSuccess) {
-      console.log(response.data, "chatError");
-      console.error(response.data);
+      console.log(response.data, "getMessage Log 실패");
       return;
     }
     return response.data.data;
@@ -404,6 +434,48 @@ const ChatContextProvider: React.FC = (props) => {
     // 메인 채팅내용 저장
     organizeMainChat(totalMessage, mainRoomId);
   };
+
+  useEffect(() => {
+    // user.id 가 있으면 연결
+    if (!isLogin || !user.id) return;
+    if (user.role === "ADMIN") return;
+
+    (async () => {
+      await getNewAlarms();
+    })();
+    connect();
+    return () => disconnect();
+  }, [JSON.stringify(user.id)]);
+
+  // useEffect(() => {
+  //   if (!isLogin || !user.id) return;
+  //   if (user.role === "ADMIN") return;
+  //   if (avoidLocalStorageUndefined("accessToken", "") === "") return;
+  // }, [avoidLocalStorageUndefined("accessToken", "")]);
+
+  useEffect(() => {
+    console.log(mainRoom.id, "메인룸변경");
+    mainRoomRef.current.id = mainRoom.id;
+
+    // 메인 룸 변경 api 전송;
+    (async () => {
+      const result = await detectMainRoom();
+      if (!result) return;
+    })();
+
+    if (mainRoom.id === -1) return;
+
+    // 메인룸에 해당하는 새로운 메시지 거르기
+    setNewMessages((pre) => {
+      const result = pre;
+      const filteredNewMessages = result.filter((item: any) => {
+        if (item.roomId === undefined) return true;
+        if (item.roomId !== mainRoom.id) return true;
+        return false;
+      });
+      return filteredNewMessages;
+    });
+  }, [JSON.stringify(mainRoom.id)]);
 
   //새로운 방이 생기면
   useEffect(() => {

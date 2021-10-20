@@ -49,15 +49,28 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
       });
 
     if (response.status === 401) {
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
       // access token 만료
       // refresh token 전송
-      grantRefresh();
+      await grantRefresh();
+      await like();
       return;
     }
 
     if (response.data.responseMessage === "차단한 또는 차단된 유저") {
-      message.error("유저로 부터 차단되어 좋아요를 할 수 없습니다.");
+      message.info("유저로 부터 차단되어 좋아요를 할 수 없습니다.");
     }
+
     if (!response.data.isSuccess) {
       console.log(response, "좋아요 실패");
       return;
@@ -81,16 +94,28 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
       .catch((err) => err.response);
 
     if (response.status === 401) {
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await unLike();
       // access token 만료
       // refresh token 전송
-      grantRefresh();
       return;
     }
     if (!response.data.isSuccess) {
       console.log(response, "좋아요 취소 실패");
       return;
     }
-    console.log("좋아요 취소 성공!");
+
     return true;
   };
 

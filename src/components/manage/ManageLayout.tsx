@@ -21,7 +21,6 @@ const ManageLayout: React.FC = (props) => {
     if (userRole !== "ADMIN") {
       router.push("/");
     }
-    setTimeout(grantRefresh, getRefreshAccessTokenRemainingTime());
   }, []);
 
   return (

@@ -81,12 +81,27 @@ export default function ManageUser() {
 
     console.log(response, "userList");
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await getUsersList();
       return;
     }
 
     if (!response.data.isSuccess) {
-      message.info("조회 결과가 없습니다.");
+      console.log(response, "getUserList");
+      if (response.data.responseMessage === "조회 결과가 존재하지 않음") {
+        message.info("조회 결과가 없습니다.");
+      }
       return;
     }
 

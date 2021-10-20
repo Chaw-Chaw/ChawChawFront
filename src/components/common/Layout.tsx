@@ -18,7 +18,6 @@ const Layout: React.FC<{ type?: string }> = (props) => {
     if (userRole === "ADMIN") {
       router.push("/manage/users");
     }
-    setTimeout(grantRefresh, getRefreshAccessTokenRemainingTime());
   }, []);
 
   return (

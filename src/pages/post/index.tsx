@@ -50,19 +50,32 @@ export default function Post() {
     const data = response.data.data;
 
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await getPosts();
       return;
     }
 
     if (response.data.responseMessage === "조회 결과가 존재하지 않음") {
       setIsEnd(true);
       if (isFirst && searchType.current === "SEARCH") {
-        message.error("조회 결과가 없습니다.");
+        message.info("조회 결과가 없습니다.");
       }
       return;
     }
 
     if (!response.data.isSuccess) {
+      console.log(response, "getPost 실패");
       return;
     }
 

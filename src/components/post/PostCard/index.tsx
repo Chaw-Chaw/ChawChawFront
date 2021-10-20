@@ -10,6 +10,7 @@ import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import { PostCardImageInfoProps, PostCardImageInfo } from "./PostCardImageInfo";
 import { AuthContext } from "../../../store/AuthContext";
 import { getSecureLocalStorage } from "../../../utils";
+import { useAlert } from "react-alert";
 
 interface PostCardProps extends PostCardInfoProps, PostCardImageInfoProps {
   imageUrl: string;
@@ -36,6 +37,8 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     views: 0,
     isLike: false,
   };
+  const { grantRefresh } = useContext(AuthContext);
+  const message = useAlert();
   const postCardContentArr = props.content.split("\n");
   const postCardContentTmp =
     postCardContentArr.length > 11
@@ -49,9 +52,8 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const [open, setOpen] = useState(false);
   const [postModalInfo, setPostModalInfo] =
     useState<PostModalInfoProps>(initialPostInfo);
-  const { grantRefresh } = useContext(AuthContext);
 
-  const handleModal = async () => {
+  const getPostModalData = async () => {
     const response = await axios
       .get(`/users/${props.id}`, {
         headers: {
@@ -62,21 +64,33 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       })
       .catch((err) => err.response);
     if (response.status === 401) {
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
       // access token 만료
       // refresh token 전송
-      grantRefresh();
+      await getPostModalData();
       return;
     }
     console.log(response, "PostModal data");
 
     if (!response.data.isSuccess) {
-      alert(`${props.id} 데이터 조회 실패`);
-      console.error(response.data);
+      console.log(response, `${props.id} 데이터 조회 실패`);
       return;
     }
     setPostModalInfo((pre) => {
       return { ...pre, ...response.data.data };
     });
+
     setOpen((open) => !open);
   };
 
@@ -86,7 +100,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
         <PostCardBox
           onClick={(e) => {
             e.preventDefault();
-            handleModal();
+            getPostModalData();
           }}
         >
           <PostImageBox>

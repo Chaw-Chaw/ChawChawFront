@@ -40,22 +40,36 @@ export default function Chat() {
       .catch((err) => err.response);
 
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await makeChatRoom(userId);
+      return;
     }
 
     if (response.data.responseMessage === "차단한 또는 차단된 유저") {
-      message.error(
+      message.info(
         "상대방을 차단 했거나 차단되어 채팅방을 생성할 수 없습니다.",
         {
           onClose: () => {
             router.back();
+            return;
           },
         }
       );
     }
 
     if (!response.data.isSuccess) {
-      console.error(response.data);
+      console.log(response.data);
       return;
     }
     console.log(response, "makeChatRoom");
@@ -71,7 +85,9 @@ export default function Chat() {
       });
     }
     // 채팅 페이지에서 나가면 메인 룸 넘버는 -1
-    setMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID });
+    return () => {
+      setMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID });
+    };
   }, []);
 
   // 채팅페이지에서 메인룸 변경시 메인채팅창 내용 수정
@@ -119,6 +135,8 @@ export default function Chat() {
           return filteredNewMessages;
         });
       })();
+
+      return;
     }
 
     // 채팅 페이지만 입장한 경우

@@ -101,13 +101,27 @@ export default function ManageUserDetail() {
       .catch((err) => err.response);
 
     if (response.status === 401) {
-      grantRefresh();
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
+      await grantRefresh();
+      await getUserDetailInfo(userId);
       return;
     }
-    console.log(response, "getUserDetailInfo");
+
     if (!response.data.isSuccess) {
+      console.log(response, "getUserDetailInfo 실패");
       return;
     }
+
     setUserInfo(response.data.data);
     return response.data.data;
   };
@@ -156,16 +170,30 @@ export default function ManageUserDetail() {
       .catch((err) => err.response);
 
     if (response.status === 401) {
+      if (response.data.responseMessage === "다른 곳에서 접속함") {
+        message.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = "/account/login";
+            },
+          }
+        );
+      }
       // access token 만료
       // refresh token 전송
-      grantRefresh();
+      await grantRefresh();
+      onSubmit(e);
+      return;
     }
 
     if (!response.data.isSuccess) {
-      console.error(response.data);
+      console.log(response.data);
       return;
     }
     message.success("프로필이 수정 되었습니다.");
+    return;
   };
 
   useEffect(() => {
