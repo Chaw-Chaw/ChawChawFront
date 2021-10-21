@@ -23,18 +23,38 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
     useContext(ChatContext);
   const { grantRefresh } = useContext(AuthContext);
 
-  const backHome: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleClickBackHomeBtn: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     router.push("/post");
   };
 
-  const viewChatList: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleClickViewChatListBtn: MouseEventHandler<HTMLButtonElement> = (
+    e
+  ) => {
     e.preventDefault();
     setIsViewChatList((pre) => !pre);
   };
 
-  const leaveChatRoom: MouseEventHandler<HTMLButtonElement> = async (e) => {
+  const handleClickLeaveChatBtn: MouseEventHandler<HTMLButtonElement> = async (
+    e
+  ) => {
     e.preventDefault();
+    const result = await leaveChat();
+    if (!result) return;
+
+    setTotalMessage((pre) => {
+      const result = pre;
+      const resultFilter = result.filter((item) => item.roomId !== mainRoom.id);
+      return resultFilter;
+    });
+
+    router.push({
+      pathname: "/chat",
+      query: { userId: INITIAL_ID },
+    });
+  };
+
+  const leaveChat = async () => {
     const response = await axios
       .delete("/chat/room", {
         data: {
@@ -64,38 +84,28 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
       }
       //acessToken 만료
       await grantRefresh();
-      leaveChatRoom(e);
-      return;
+      await leaveChat();
+      return false;
     }
 
     if (!response.data.isSuccess) {
       console.log(response.data);
-      return;
+      return false;
     }
-
-    setTotalMessage((pre) => {
-      const result = pre;
-      const resultFilter = result.filter((item) => item.roomId !== mainRoom.id);
-      return resultFilter;
-    });
-
-    router.push({
-      pathname: "/chat",
-      query: { userId: INITIAL_ID },
-    });
+    return true;
   };
 
   return (
     <Header>
       <MessagesHeaderIcons>
-        <MessageHeaderButton onClick={backHome}>
+        <BackHomeButton onClick={handleClickBackHomeBtn}>
           <RiHome2Line />
-        </MessageHeaderButton>
-        <MessageHeaderButton onClick={leaveChatRoom}>
+        </BackHomeButton>
+        <LeaveChatButton onClick={handleClickLeaveChatBtn}>
           <BsBoxArrowRight />
-        </MessageHeaderButton>
+        </LeaveChatButton>
         <ChatListViewButtonBox>
-          <MessageHeaderButton onClick={viewChatList}>
+          <ViewChatListButton onClick={handleClickViewChatListBtn}>
             <BsChatDots />
             {newMessages.length !== 0 && (
               <AlarmCount>
@@ -106,7 +116,7 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
                 </span>
               </AlarmCount>
             )}
-          </MessageHeaderButton>
+          </ViewChatListButton>
         </ChatListViewButtonBox>
       </MessagesHeaderIcons>
       <ChangeLanguageDropDown
@@ -163,3 +173,7 @@ const ChatListViewButtonBox = styled.div`
     display: flex;
   }
 `;
+
+const BackHomeButton = styled(MessageHeaderButton)``;
+const LeaveChatButton = styled(MessageHeaderButton)``;
+const ViewChatListButton = styled(MessageHeaderButton)``;

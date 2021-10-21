@@ -5,6 +5,7 @@ import {
   useEffect,
   Dispatch,
   SetStateAction,
+  MouseEventHandler,
 } from "react";
 import styled from "styled-components";
 import { TextArea, Label, UpdateButton } from "../../common";
@@ -20,13 +21,9 @@ interface ProfileContentProps {
 const ProfileContent: React.FC<ProfileContentProps> = (props) => {
   const textAreaResizHandle = () => {
     if (textAreaRef === null || textAreaRef.current === null) return;
-    // textAreaRef.current.value = props.values;
     setContent(textAreaRef.current.value);
     textAreaRef.current.style.height = "110px";
     textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
-    // console.log(
-    //   textAreaRef?.current.value.replace(/(?:\r\n|\r|\n)/g, "<br />")
-    // );
   };
   const [isActive, setIsActive] = useState(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -34,10 +31,24 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
   const [content, setContent] = useState<string>(
     props.values ? props.values : ""
   );
+
+  const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    setIsActive((isActive) => !isActive);
+    const content = textAreaRef.current;
+    if (textAreaRef === null || content === null) return;
+    if (isActive) {
+      props.setValues(() => {
+        return content.value;
+      });
+    }
+  };
+
   useEffect(() => {
     textAreaResizHandle();
     setContent(props.values);
   }, [props.values]);
+
   return (
     <Container>
       <h1>{props.name}</h1>
@@ -52,20 +63,7 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
         ref={textAreaRef}
         onInput={textAreaResize}
       />
-      <UpdateButton
-        onClick={(e) => {
-          e.preventDefault();
-          setIsActive((isActive) => !isActive);
-          const content = textAreaRef.current;
-          if (textAreaRef === null || content === null) return;
-          if (isActive) {
-            props.setValues(() => {
-              return content.value;
-            });
-          }
-          // props.update
-        }}
-      >
+      <UpdateButton onClick={handleClick}>
         {isActive ? "업데이트" : "수정"}
       </UpdateButton>
     </Container>

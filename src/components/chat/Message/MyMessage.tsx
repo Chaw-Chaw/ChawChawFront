@@ -20,20 +20,8 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
   const [context, setContext] = useState(props.context);
   const selectLanguage = LanguageLocale[props.selectLanguage[0]];
 
-  const onClick: MouseEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault();
-    if (props.imageUrl) return;
-    setIsActive((pre) => !pre);
-    return;
-  };
-
-  const translateContext: React.MouseEventHandler<HTMLDivElement> = async (
-    e
-  ) => {
-    e.preventDefault();
-    if (props.imageUrl) return;
+  const translateContext = async () => {
     const url = `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_API_KEY}`;
-    console.log(context, selectLanguage, "번역 시작");
     const response: any = await axios
       .get(url, {
         headers: {
@@ -48,13 +36,27 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
       })
       .catch((err) => err.response);
     if (response.status !== 200) {
-      console.error(response, "번역 에러");
+      console.log(response, "번역 에러");
       return;
     }
+    return response;
+  };
 
+  const handleClickMsgBox: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    if (props.imageUrl) return;
+    setIsActive((pre) => !pre);
+    return;
+  };
+
+  const handleClickMsgContext: React.MouseEventHandler<HTMLDivElement> = async (
+    e
+  ) => {
+    e.preventDefault();
+    if (props.imageUrl) return;
+    const response = await translateContext();
     const convertContext = response.data.data.translations[0].translatedText;
     setContext(convertContext);
-    console.log(convertContext, "드디어 나오는거냐");
     return;
   };
 
@@ -77,12 +79,12 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
         </MessageImageBox>
       ) : (
         <>
-          <MyMessageBox onClick={onClick}>
+          <MyMessageBox onClick={handleClickMsgBox}>
             <MessageContext
               isActive={isActive}
               setIsActive={setIsActive}
               type="me"
-              onClick={translateContext}
+              onClick={handleClickMsgContext}
             />
             <MessageText>{context}</MessageText>
           </MyMessageBox>

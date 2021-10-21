@@ -10,15 +10,24 @@ const IntroduceHeader: React.FC<{ moveTop: () => void }> = (props) => {
   const { id, setTheme } = useContext(ThemeContext);
   const router = useRouter();
 
-  const headLineLogoHandler: MouseEventHandler<HTMLDivElement> = (e) => {
+  const handleClickLogo: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     props.moveTop();
+  };
+
+  const handleClickMoveStart: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    if (isLogin) {
+      router.push("/post");
+    } else {
+      router.push("/account/login");
+    }
   };
 
   return (
     <IntroduceHeadLine>
       <HeadLineContentLeft>
-        <HeadLineStart onClick={headLineLogoHandler}>
+        <HeadLineStart onClick={handleClickLogo}>
           <HeadLineLogoWord>차우차우</HeadLineLogoWord>
         </HeadLineStart>
       </HeadLineContentLeft>
@@ -26,16 +35,7 @@ const IntroduceHeader: React.FC<{ moveTop: () => void }> = (props) => {
         <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
       </ThemeToggleBox>
       <HeadLineContentRight>
-        <HeadLineStart
-          onClick={(e) => {
-            e.preventDefault();
-            if (isLogin) {
-              router.push("/post");
-            } else {
-              router.push("/account/login");
-            }
-          }}
-        >
+        <HeadLineStart onClick={handleClickMoveStart}>
           <HeadLineLogoWord>시작하기</HeadLineLogoWord>
           <FaArrowCircleRight />
         </HeadLineStart>

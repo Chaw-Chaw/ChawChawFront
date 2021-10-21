@@ -1,7 +1,12 @@
 import styled from "styled-components";
 import { TextArea } from "../../common/Input";
 import { AiOutlinePicture, AiOutlineSend } from "react-icons/ai";
-import { ChangeEventHandler, useContext } from "react";
+import {
+  ChangeEventHandler,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  useContext,
+} from "react";
 import axios from "axios";
 import { AuthContext } from "../../../store/AuthContext";
 import { useAlert } from "react-alert";
@@ -74,6 +79,39 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
     publish(imageUrl, "IMAGE");
   };
 
+  const handleKeyPress: KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
+    if (isNotActive) return;
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (user.blockIds?.includes(mainRoom.userId)) {
+        message.error("차단한 사용자 입니다.");
+        return;
+      }
+      props.sendMessage();
+    }
+  };
+
+  const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    e.preventDefault();
+    if (user.blockIds?.includes(mainRoom.userId)) {
+      message.error("차단한 사용자 입니다.");
+      return;
+    }
+    imageMessageSend(e);
+    // 같은 이미지 한번더 보낼수 있도록 이벤트 타겟 값 초기화
+    e.target.value = "";
+  };
+
+  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    if (isNotActive) return;
+    if (user.blockIds?.includes(mainRoom.userId)) {
+      message.error("차단한 사용자 입니다.");
+      return;
+    }
+    props.sendMessage();
+  };
+
   return (
     <InputBox>
       <InputBoxInner>
@@ -81,17 +119,7 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
           disabled={isNotActive}
           value={props.value}
           onChange={props.onChange}
-          onKeyPress={(e) => {
-            if (isNotActive) return;
-            if (e.key === "Enter") {
-              e.preventDefault();
-              if (user.blockIds?.includes(mainRoom.userId)) {
-                message.error("차단한 사용자 입니다.");
-                return;
-              }
-              props.sendMessage();
-            }
-          }}
+          onKeyPress={handleKeyPress}
           placeholder="메세지를 입력해주세요."
           autoFocus
         />
@@ -101,30 +129,11 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
             type="file"
             style={{ display: "none" }}
             accept="image/png, image/jpeg"
-            onChange={(e) => {
-              e.preventDefault();
-              if (user.blockIds?.includes(mainRoom.userId)) {
-                message.error("차단한 사용자 입니다.");
-                return;
-              }
-              imageMessageSend(e);
-              // 같은 이미지 한번더 보낼수 있도록 이벤트 타겟 값 초기화
-              e.target.value = "";
-            }}
+            onChange={handleChange}
           />
           <AiOutlinePicture />
         </PictureIconBox>
-        <SendIconBox
-          onClick={(e) => {
-            e.preventDefault();
-            if (isNotActive) return;
-            if (user.blockIds?.includes(mainRoom.userId)) {
-              message.error("차단한 사용자 입니다.");
-              return;
-            }
-            props.sendMessage();
-          }}
-        >
+        <SendIconBox onClick={handleClick}>
           <AiOutlineSend />
         </SendIconBox>
       </InputBoxInner>

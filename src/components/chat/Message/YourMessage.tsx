@@ -25,24 +25,17 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [context, setContext] = useState(props.context);
   const selectLanguage = LanguageLocale[props.selectLanguage[0]];
-  const onClick: MouseEventHandler<HTMLDivElement> = (e) => {
+
+  const handleClickMsgBox: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     if (props.imageUrl) return;
     setIsActive((pre) => !pre);
     return;
   };
 
-  const profileHandler: MouseEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault();
-    setOpen((pre) => !pre);
-  };
-
-  const translateContext: React.MouseEventHandler<HTMLDivElement> = async (
-    e
-  ) => {
-    e.preventDefault();
+  // api 분류시 MyMessage api와 통합
+  const translateContext = async () => {
     const url = `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_API_KEY}`;
-    console.log(context, selectLanguage, "번역 시작");
     const response: any = await axios
       .get(url, {
         headers: {
@@ -57,9 +50,27 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
       })
       .catch((err) => err.response);
     if (response.status !== 200) {
-      console.error(response, "번역 에러");
+      console.log(response, "번역 에러");
       return;
     }
+    return response;
+  };
+  const handleClickMsgUserImage: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    setOpen(true);
+  };
+
+  const handleClickChatProfile: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    setOpen(false);
+  };
+
+  const handleClickMsgContext: React.MouseEventHandler<HTMLDivElement> = async (
+    e
+  ) => {
+    e.preventDefault();
+    if (props.imageUrl) return;
+    const response = await translateContext();
     const convertContext = response.data.data.translations[0].translatedText;
     setContext(convertContext);
     return;
@@ -69,9 +80,9 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
     <>
       <YourMessageContainer>
         <YourMessageInfo>
-          <ChatProfileWrap onClick={profileHandler}>
+          <MsgUserImageWrap onClick={handleClickMsgUserImage}>
             <MessageImage src={props.src} />
-          </ChatProfileWrap>
+          </MsgUserImageWrap>
           <YourMessageContent>
             <MessageUserName>{props.userName}</MessageUserName>
             {props.messageType === "IMAGE" ? (
@@ -84,12 +95,12 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
                 />
               </MessageImageBox>
             ) : (
-              <YourMessageBox onClick={onClick}>
+              <YourMessageBox onClick={handleClickMsgBox}>
                 <MessageContext
                   isActive={isActive}
                   setIsActive={setIsActive}
                   type="you"
-                  onClick={translateContext}
+                  onClick={handleClickMsgContext}
                 />
                 <MessageText>{context}</MessageText>
               </YourMessageBox>
@@ -100,7 +111,7 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
       </YourMessageContainer>
       {open ? (
         <>
-          <ModalLayout onClick={profileHandler} />
+          <ModalLayout onClick={handleClickChatProfile} />
           <ChatProfile
             name={props.userName || ""}
             imageUrl={props.src}
@@ -115,7 +126,7 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
 
 export { YourMessage };
 
-const ChatProfileWrap = styled.div`
+const MsgUserImageWrap = styled.div`
   cursor: pointer;
 `;
 

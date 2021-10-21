@@ -26,12 +26,14 @@ const ChatProfile: React.FC<ChatProfileProps> = (props) => {
   const { user } = useContext(AuthContext);
   const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.userId));
 
-  const ChatBlockHandler: MouseEventHandler<HTMLDivElement> = (e) => {
+  const handleClickBlockBtn: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     blockUser(props.userId);
     setIsBlock(true);
   };
-  const ChatUnblockHandler: MouseEventHandler<HTMLDivElement> = async (e) => {
+  const handleClickUnblockBtn: MouseEventHandler<HTMLDivElement> = async (
+    e
+  ) => {
     e.preventDefault();
     await unblockUser(props.userId);
     setIsBlock(false);
@@ -63,12 +65,12 @@ const ChatProfile: React.FC<ChatProfileProps> = (props) => {
 
       <ChatBlockBox>
         {isBlock ? (
-          <ChatUnblockButton onClick={ChatUnblockHandler}>
+          <ChatUnblockButton onClick={handleClickUnblockBtn}>
             <CgUnblock />
             <span>차단해제</span>
           </ChatUnblockButton>
         ) : (
-          <ChatBlockButton onClick={ChatBlockHandler}>
+          <ChatBlockButton onClick={handleClickBlockBtn}>
             <CgBlock />
             <span>차단하기</span>
           </ChatBlockButton>

@@ -11,6 +11,7 @@ const SettingUserDelete: React.FC = () => {
   const { grantRefresh, isLogin } = useContext(AuthContext);
   const message = useAlert();
   const router = useRouter();
+
   // 유저 삭제시 확인 메세지 alert 생성
   const deleteUser = async () => {
     const response = await axios
@@ -35,30 +36,31 @@ const SettingUserDelete: React.FC = () => {
       }
       await grantRefresh();
       await deleteUser();
-      return;
+      return false;
     }
     console.log(response, "delete User 결과");
 
     if (!response.data.isSuccess) {
       console.log(response, "유저 삭제 실패");
-      return;
+      return false;
     }
+    return response;
+  };
+
+  const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    e.preventDefault();
+    if (!isLogin) return;
+    const response = await deleteUser();
+    if (!response) return;
     router.push("/manage/users");
   };
 
-  const deleteUserButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.preventDefault();
-    if (!isLogin) return;
-    deleteUser();
-  };
   return (
     <ListItem
       title="회원탈퇴"
       description="탈퇴 시 작성하신 포스트 및 댓글이 모두 삭제되며 복구되지 않습니다."
     >
-      <UserDeleteButton onClick={deleteUserButtonHandler}>
-        회원 탈퇴
-      </UserDeleteButton>
+      <UserDeleteButton onClick={handleClick}>회원 탈퇴</UserDeleteButton>
     </ListItem>
   );
 };

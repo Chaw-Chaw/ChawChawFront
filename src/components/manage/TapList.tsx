@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { MouseEventHandler, useContext } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../store/AuthContext";
 import { Button } from "../common";
@@ -7,6 +7,10 @@ import { ToggleListItem } from "./ToggleListItem";
 
 const TapList: React.FC = () => {
   const { logout } = useContext(AuthContext);
+  const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    logout();
+  };
   return (
     <TapContainter>
       <ToggleItem title="회원 정보 관리">
@@ -38,7 +42,7 @@ const TapList: React.FC = () => {
           link="/manage/statistics"
         />
       </ToggleItem>
-      <LogoutButton onClick={logout}>로그아웃</LogoutButton>
+      <LogoutButton onClick={handleClick}>로그아웃</LogoutButton>
     </TapContainter>
   );
 };

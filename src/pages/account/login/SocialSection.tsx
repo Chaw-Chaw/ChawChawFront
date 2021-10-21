@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { MouseEventHandler, useContext } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import CSS from "csstype";
@@ -28,16 +28,16 @@ const SocialSection: React.FC = () => {
     });
   };
 
+  const handleClickKaKaoBtn: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    callKakaoLogin();
+  };
+
   return (
     <SocialContainer>
       <SocialButtonTitle>소셜계정으로 로그인 | 회원가입</SocialButtonTitle>
       <ButtonSection>
-        <KakaoLogin
-          onClick={(e) => {
-            e.preventDefault();
-            callKakaoLogin();
-          }}
-        >
+        <KakaoLogin onClick={handleClickKaKaoBtn}>
           <RiKakaoTalkFill />
         </KakaoLogin>
         <FacebookLogin

@@ -119,36 +119,36 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
     return true;
   };
 
-  const unblockButtonHandler: MouseEventHandler<HTMLButtonElement> = async (
+  const handleClickUnBlock: MouseEventHandler<HTMLButtonElement> = async (
     e
   ) => {
     e.preventDefault();
     const result = await unblockUser(props.id);
-    if (result) setIsBlock(false);
+    if (!result) return;
+    setIsBlock(false);
   };
-  const blockButtonHandler: MouseEventHandler<HTMLButtonElement> = async (
-    e
-  ) => {
+  const handleClickBlock: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
     // message.info(
     //   "차단하면 더이상 차단한 상대방의 메세지와 알람을 받을 수 없습니다. 차단하시겠습니까?"
     // );
     const result = await blockUser(props.id);
-    if (result) setIsBlock(true);
+    if (!result) return;
+    setIsBlock(true);
   };
 
-  const unLikeButtonHandler: MouseEventHandler<HTMLButtonElement> = async (
-    e
-  ) => {
+  const handleClickUnLike: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
     const result = await unLike();
-    if (result) setIsActiveLike(false);
+    if (!result) return;
+    setIsActiveLike(false);
   };
 
-  const likeButtonHandler: MouseEventHandler<HTMLButtonElement> = async (e) => {
+  const handleClickLike: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
     const result = await like();
-    if (result) setIsActiveLike(true);
+    if (!result) return;
+    setIsActiveLike(true);
   };
 
   useEffect(() => {
@@ -164,12 +164,12 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
       <PostActionBox>
         <PostLikeBox>
           {isActiveLike ? (
-            <UnActionButton onClick={unLikeButtonHandler}>
+            <UnActionButton onClick={handleClickUnLike}>
               <AiFillHeart />
               취소
             </UnActionButton>
           ) : (
-            <ActionButton onClick={likeButtonHandler}>
+            <ActionButton onClick={handleClickLike}>
               <AiOutlineHeart />
               좋아요
             </ActionButton>
@@ -177,12 +177,12 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
         </PostLikeBox>
         <PostBlockBox>
           {isBlock ? (
-            <UnActionButton onClick={unblockButtonHandler}>
+            <UnActionButton onClick={handleClickUnBlock}>
               <CgUnblock />
               차단해제
             </UnActionButton>
           ) : (
-            <ActionButton onClick={blockButtonHandler}>
+            <ActionButton onClick={handleClickBlock}>
               <CgBlock />
               차단
             </ActionButton>

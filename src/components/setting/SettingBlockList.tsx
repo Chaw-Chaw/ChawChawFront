@@ -26,6 +26,7 @@ const SettingBlockList: React.FC = () => {
         },
       })
       .catch((err) => err.response);
+
     if (response.status == 401) {
       if (response.data.responseMessage === "다른 곳에서 접속함") {
         message.error(
@@ -40,14 +41,14 @@ const SettingBlockList: React.FC = () => {
       }
       await grantRefresh();
       await getBlockList();
-      return;
+      return false;
     }
 
     console.log(response, "getBlockList Info");
 
     if (!response.data.isSuccess) {
       console.log(response, "데이터 조회 실패");
-      return;
+      return false;
     }
 
     return response.data.data;
@@ -57,6 +58,7 @@ const SettingBlockList: React.FC = () => {
     if (!isLogin) return;
     (async () => {
       const result = await getBlockList();
+      if (!result) return;
       setBlockList(result);
     })();
   }, []);

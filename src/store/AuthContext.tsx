@@ -145,8 +145,11 @@ const AuthContextProvider: React.FC = (props) => {
         );
         return;
       }
-      await grantRefresh();
-      await logout();
+      if (response.data.responseMessage === "로그아웃 실패") {
+        await grantRefresh();
+        await logout();
+        return;
+      }
       return;
     }
 

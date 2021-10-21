@@ -204,6 +204,8 @@ const ChatContextProvider: React.FC = (props) => {
         return err.response;
       });
 
+    console.log(response, "detectMainRoom");
+
     if (response.status === 401) {
       if (response.data.responseMessage === "다른 곳에서 접속함") {
         message.error(
@@ -273,12 +275,12 @@ const ChatContextProvider: React.FC = (props) => {
       }
       await grantRefresh();
       await getNewAlarms();
-      return;
+      return false;
     }
-    if (!response.data.isSuccess) {
-      console.log(response, "getNewAlarms 실패");
-      return;
-    }
+    // if (!response.data.isSuccess) {
+    //   console.log(response, "getNewAlarms 실패");
+    //   return false;
+    // }
 
     // 알림 목록은 차단된 아이디를 제외하고 받습니다.
     const likeMessages: LikeAlarmType[] = response.data.likes.filter(
@@ -289,6 +291,7 @@ const ChatContextProvider: React.FC = (props) => {
     );
     setNewLikes([...likeMessages]);
     setNewMessages([...newMessages]);
+    return true;
   };
 
   const blockUser = async (userId: number) => {
@@ -376,6 +379,7 @@ const ChatContextProvider: React.FC = (props) => {
   // totalMessage 가져오기
   const getMessageLog = async () => {
     const response = await axios
+      // BACKEND_URL 이 api만 왜이러지
       .get(BACKEND_URL + "/chat/", {
         headers: {
           "Content-Type": "application/json",
@@ -411,10 +415,10 @@ const ChatContextProvider: React.FC = (props) => {
       await getMessageLog();
       return;
     }
-    if (!response.data.isSuccess) {
-      console.log(response.data, "getMessage Log 실패");
-      return;
-    }
+    // if (!response.data.isSuccess) {
+    //   console.log(response.data, "getMessage Log 실패");
+    //   return;
+    // }
     return response.data.data;
   };
 
@@ -441,9 +445,10 @@ const ChatContextProvider: React.FC = (props) => {
     if (user.role === "ADMIN") return;
 
     (async () => {
-      await getNewAlarms();
+      const result = await getNewAlarms();
+      if (!result) return;
+      connect();
     })();
-    connect();
     return () => disconnect();
   }, [JSON.stringify(user.id)]);
 

@@ -1,5 +1,11 @@
 import styled from "styled-components";
-import { useContext, useEffect, useRef, useState } from "react";
+import {
+  ChangeEventHandler,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import MessageInput from "./MessageInput";
 import ChatMessage from "../Message/ChatMessage";
 import { RiWechat2Line } from "react-icons/ri";
@@ -16,6 +22,10 @@ const ChatRoom: React.FC = (props) => {
   const [message, setMessage] = useState<string>("");
   const [selectLanguage, setSelectLanguage] = useState<string[]>(["Korean"]);
   const chatMessageBox = useRef<HTMLDivElement>(null);
+
+  const handleChangeInput: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
+    setMessage(e.target.value);
+  };
 
   const sendMessage = () => {
     if (message === "") return;
@@ -99,7 +109,7 @@ const ChatRoom: React.FC = (props) => {
               })()}
             </MessageContainer>
             <MessageInput
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={handleChangeInput}
               sendMessage={sendMessage}
               value={message}
             />

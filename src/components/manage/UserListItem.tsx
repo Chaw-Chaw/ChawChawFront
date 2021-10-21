@@ -15,7 +15,7 @@ const UserListItem: React.FC<{
   const hopeLanguage = LocaleLanguage[props.userItem.repHopeLanguage];
   const joinDate = props.userItem.regDate.substring(2, 10);
 
-  const moveDetailPageHandler: MouseEventHandler<HTMLDivElement> = (e) => {
+  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     router.push({
       pathname: "/manage/users/detail",
@@ -24,7 +24,7 @@ const UserListItem: React.FC<{
   };
 
   return (
-    <UserListItemBox last={props.index === 9} onClick={moveDetailPageHandler}>
+    <UserListItemBox last={props.index === 9} onClick={handleClick}>
       <UserListAtom width="6%">{ranking}</UserListAtom>
       <UserListAtom width="13%">{props.userItem.school}</UserListAtom>
       <UserListAtom width="6%">{props.userItem.name}</UserListAtom>

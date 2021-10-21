@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useContext, useState } from "react";
+import { MouseEventHandler, useContext, useState } from "react";
 import Image from "next/image";
 import PostModal from "../PostModal";
 import { ModalLayout } from "../../common";
@@ -63,6 +63,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
         },
       })
       .catch((err) => err.response);
+
     if (response.status === 401) {
       if (response.data.responseMessage === "다른 곳에서 접속함") {
         message.error(
@@ -79,30 +80,36 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       // access token 만료
       // refresh token 전송
       await getPostModalData();
-      return;
+      return false;
     }
     console.log(response, "PostModal data");
 
     if (!response.data.isSuccess) {
       console.log(response, `${props.id} 데이터 조회 실패`);
-      return;
+      return false;
     }
+
+    return response;
+  };
+
+  const handleClickPostCard: MouseEventHandler<HTMLDivElement> = async (e) => {
+    e.preventDefault();
+    const response = await getPostModalData();
+    if (!response) return;
     setPostModalInfo((pre) => {
       return { ...pre, ...response.data.data };
     });
-
     setOpen((open) => !open);
+  };
+  const handleClickModalLayout: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    setOpen(false);
   };
 
   return (
     <div>
       <PostCardContainer>
-        <PostCardBox
-          onClick={(e) => {
-            e.preventDefault();
-            getPostModalData();
-          }}
-        >
+        <PostCardBox onClick={handleClickPostCard}>
           <PostImageBox>
             <Image
               src={`${props.imageUrl}`}
@@ -131,11 +138,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       </PostCardContainer>
       {open ? (
         <>
-          <ModalLayout
-            onClick={() => {
-              setOpen(false);
-            }}
-          />
+          <ModalLayout onClick={handleClickModalLayout} />
           <PostModal
             content={postModalInfo.content}
             country={postModalInfo.country}
