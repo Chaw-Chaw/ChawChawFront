@@ -1,38 +1,34 @@
 import styled from "styled-components";
 import { Input, Button } from "../common";
 import { IoIosSearch } from "react-icons/io";
-import { useRef } from "react";
+import { KeyboardEventHandler, MouseEventHandler, useRef } from "react";
 interface PostSearchProps {
   searchHandler: (inputs: string) => void;
 }
 
 const PostSearch: React.FC<PostSearchProps> = (props) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const handleKeyPress: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const searchInput = searchInputRef.current;
+      if (!searchInput) return;
+      props.searchHandler(searchInput.value);
+    }
+  };
+  const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    const searchInput = searchInputRef.current;
+    if (!searchInput) return;
+    props.searchHandler(searchInput.value);
+  };
   return (
     <PostSearchBox>
       <SearchIconBox>
         <IoIosSearch />
       </SearchIconBox>
-      <SearchInput
-        onKeyPress={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            const searchInput = searchInputRef.current;
-            if (!searchInput) return;
-            props.searchHandler(searchInput.value);
-          }
-        }}
-        ref={searchInputRef}
-      />
-      <SearchButton
-        secondary
-        onClick={(e) => {
-          e.preventDefault();
-          const searchInput = searchInputRef.current;
-          if (!searchInput) return;
-          props.searchHandler(searchInput.value);
-        }}
-      >
+      <SearchInput onKeyPress={handleKeyPress} ref={searchInputRef} />
+      <SearchButton secondary onClick={handleClick}>
         <span>search</span>
       </SearchButton>
     </PostSearchBox>

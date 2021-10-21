@@ -16,7 +16,7 @@ interface DropDownProps extends initialBoxProps {
   initialValue?: string;
   isActive?: boolean;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
-  onMouseLeave?: () => void;
+  // onMouseLeave?: () => void;
   search?: boolean;
   index?: number;
   type?: string;

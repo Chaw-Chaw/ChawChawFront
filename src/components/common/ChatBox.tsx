@@ -1,4 +1,5 @@
-import { useContext, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+import { MouseEventHandler, useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE, LIMIT_NEWALARM_SIZE } from "../../constants";
 import { ChatContext } from "../../store/ChatContext";
@@ -10,20 +11,45 @@ interface ChatBoxProps {
   regDate: string;
   sender: string;
   roomId?: number;
-  onClick: () => void;
   context: string;
-  chatList?: boolean;
+  senderId?: number;
+  type: string;
+  // chatList?: boolean;
 }
 
 const ChatBox: React.FC<ChatBoxProps> = (props) => {
-  const { mainRoom, newMessages } = useContext(ChatContext);
+  const { mainRoom, newMessages, setMainRoom } = useContext(ChatContext);
   const mainChatList = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const regDate = props.regDate.split("T").join(" ");
   const isCurrentChat = props.roomId === mainRoom.id;
   const matchNewMessages = newMessages.filter((item: any) => {
     if (item.roomId === props.roomId) return true;
     return false;
   });
+
+  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    if (props.type === "CHATROOM") {
+      if (isCurrentChat) return;
+      router.push({
+        pathname: "/chat",
+        query: { userId: props.senderId },
+      });
+      return;
+    }
+    if (props.type === "CHATALARM") {
+      if (props.roomId && props.senderId) {
+        setMainRoom({ id: props.roomId, userId: props.senderId });
+        router.push({ pathname: "/chat", query: { userId: props.senderId } });
+      }
+      return;
+    }
+    if (props.type === "LIKEALARM") {
+      return;
+    }
+    return;
+  };
 
   useEffect(() => {
     if (!mainChatList.current) return;
@@ -38,16 +64,12 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
     <ChatContainer
       ref={isCurrentChat ? mainChatList : null}
       isCurrentChat={isCurrentChat}
-      onClick={(e) => {
-        e.preventDefault();
-        if (isCurrentChat) return;
-        props.onClick();
-      }}
+      onClick={handleClick}
     >
       <MessageImage
         src={props.imageUrl ? `${props.imageUrl}` : DEFAULT_PROFILE_IMAGE}
       >
-        {!props.chatList && matchNewMessages.length !== 0 && (
+        {props.type === "CHATROOM" && matchNewMessages.length !== 0 && (
           <AlarmCount>
             <span>
               {matchNewMessages.length > LIMIT_NEWALARM_SIZE

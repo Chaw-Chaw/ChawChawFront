@@ -17,10 +17,6 @@ const PushAlarm: React.FC = (props) => {
     setIsActive((pre) => !pre);
   };
 
-  const moveChat = (senderId: number) => {
-    router.push({ pathname: "/chat", query: { userId: senderId } });
-  };
-
   return (
     <AlarmBell onClick={controlPushAlarm}>
       <AiFillBell />
@@ -54,23 +50,17 @@ const PushAlarm: React.FC = (props) => {
                   return (
                     <AlarmChatBox key={index}>
                       <ChatBox
-                        // type={}
                         imageUrl={item.imageUrl}
                         regDate={item.regDate.split("T").join(" ")}
                         sender={item.sender}
-                        onClick={() => {
-                          setMainRoom({
-                            id: item.roomId,
-                            userId: item.senderId,
-                          });
-                          moveChat(item.senderId);
-                        }}
                         context={
                           context.lenght > 20
                             ? context.substring(0, 20) + "..."
                             : context
                         }
-                        chatList
+                        roomId={item.roomId}
+                        type="CHATALARM"
+                        senderId={item.senderId}
                       />
                     </AlarmChatBox>
                   );
@@ -94,14 +84,11 @@ const PushAlarm: React.FC = (props) => {
                     imageUrl={`/Layout/heart.png`}
                     regDate={item.regDate}
                     sender={item.likeType}
-                    onClick={() => {
-                      return;
-                    }}
                     context={`${item.name}님이 ${item.likeType} 하셨습니다.`.substring(
                       0,
                       20
                     )}
-                    chatList
+                    type="LIKEALARM"
                   />
                 </AlarmChatBox>
               );

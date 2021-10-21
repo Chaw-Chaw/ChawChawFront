@@ -7,14 +7,14 @@ import styled from "styled-components";
 
 const ToggleItem: React.FC<{ title: string }> = (props) => {
   const [isopen, setIsopen] = useState(true);
-  const ToggleHandler: MouseEventHandler<HTMLDivElement> = (e) => {
+  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     setIsopen((pre) => !pre);
   };
 
   return (
     <ToggleItemContainer>
-      <ToggleItemBox onClick={ToggleHandler}>
+      <ToggleItemBox onClick={handleClick}>
         {isopen ? <IoIosArrowDropdownCircle /> : <IoIosArrowDroprightCircle />}
         <ToggleItemTitle>{props.title}</ToggleItemTitle>
       </ToggleItemBox>

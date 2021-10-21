@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { CgProfile } from "react-icons/cg";
 import { BsChat } from "react-icons/bs";
 import { AiOutlineLogout, AiOutlineSetting } from "react-icons/ai";
-import { useContext, useState } from "react";
+import { MouseEvent, MouseEventHandler, useContext, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -12,6 +12,27 @@ const MyImage: React.FC<{ profileImage: string }> = (props) => {
   const { logout } = useContext(AuthContext);
   const router = useRouter();
 
+  const handleClickImage: MouseEventHandler<HTMLImageElement> = (e) => {
+    e.preventDefault();
+    setIsActive((isActive) => !isActive);
+  };
+  const handleClickProfile: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    router.push("/account/profile");
+  };
+  const handleClickChat: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    router.push({ pathname: "/chat", query: { userId: -1 } });
+  };
+
+  const handleClickSetting: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    router.push("/account/setting");
+  };
+  const handleClickLogout: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    logout();
+  };
   return (
     <MyImageBox>
       <Image
@@ -19,42 +40,24 @@ const MyImage: React.FC<{ profileImage: string }> = (props) => {
         alt="프로필 이미지"
         width="50px"
         height="50px"
-        onClick={(e) => {
-          e.preventDefault();
-          setIsActive((isActive) => !isActive);
-        }}
+        onClick={handleClickImage}
         objectFit="cover"
       />
 
       <SelectMenu isActive={isActive}>
-        <Option
-          onClick={(e) => {
-            e.preventDefault();
-            router.push("/account/profile");
-          }}
-        >
+        <Option onClick={handleClickProfile}>
           <CgProfile />
           <span>프로필</span>
         </Option>
-        <Option
-          onClick={(e) => {
-            e.preventDefault();
-            router.push({ pathname: "/chat", query: { userId: -1 } });
-          }}
-        >
+        <Option onClick={handleClickChat}>
           <BsChat />
           <span>채팅창</span>
         </Option>
-        <Option
-          onClick={(e) => {
-            e.preventDefault();
-            router.push("/account/setting");
-          }}
-        >
+        <Option onClick={handleClickSetting}>
           <AiOutlineSetting />
           <span>설정</span>
         </Option>
-        <Option onClick={logout}>
+        <Option onClick={handleClickLogout}>
           <AiOutlineLogout />
           <span>로그아웃</span>
         </Option>

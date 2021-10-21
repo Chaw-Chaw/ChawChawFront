@@ -12,6 +12,10 @@ interface PasswordInputProps {
 
 const PasswordInput: React.FC<PasswordInputProps> = (props) => {
   const [showPassword, setShowPassword] = useState(false);
+  const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    setShowPassword((state) => !state);
+  };
   return (
     <>
       <PasswordWrapper>
@@ -21,12 +25,7 @@ const PasswordInput: React.FC<PasswordInputProps> = (props) => {
           placeholder={props.placeholder}
           {...props.register}
         />
-        <ShowButton
-          onClick={(e) => {
-            e.preventDefault();
-            setShowPassword((state) => !state);
-          }}
-        >
+        <ShowButton onClick={handleClick}>
           {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
         </ShowButton>
       </PasswordWrapper>

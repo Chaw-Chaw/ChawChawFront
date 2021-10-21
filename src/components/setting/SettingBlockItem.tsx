@@ -13,15 +13,13 @@ const SettingBlockItem: React.FC<BlockItemProps> = (props) => {
   const { user } = useContext(AuthContext);
   const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.userId));
 
-  const UnblockUserButtonHandler: MouseEventHandler<HTMLButtonElement> = (
-    e
-  ) => {
+  const handleClickUnblock: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     unblockUser(props.userId);
     setIsBlock(false);
   };
 
-  const blockUserButtonHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleClickBlock: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     blockUser(props.userId);
     setIsBlock(true);
@@ -44,11 +42,9 @@ const SettingBlockItem: React.FC<BlockItemProps> = (props) => {
         <BlockItemDescription>메세지 차단, 알림 차단</BlockItemDescription>
       </BlockItemInfo>
       {isBlock ? (
-        <UnblockButton onClick={UnblockUserButtonHandler}>
-          차단 해제
-        </UnblockButton>
+        <UnblockButton onClick={handleClickUnblock}>차단 해제</UnblockButton>
       ) : (
-        <BlockButton onClick={blockUserButtonHandler}>차단</BlockButton>
+        <BlockButton onClick={handleClickBlock}>차단</BlockButton>
       )}
     </BlockBox>
   );

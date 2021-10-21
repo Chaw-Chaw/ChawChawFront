@@ -1,4 +1,10 @@
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import {
+  Dispatch,
+  MouseEventHandler,
+  SetStateAction,
+  useRef,
+  useState,
+} from "react";
 import {
   DEFAULT_FACEBOOK_URL,
   DEFAULT_INSTAGRAM_URL,
@@ -22,6 +28,18 @@ const ProfileSocialUrlFragment: React.FC<ProfileSocialUrlFragmentProps> = (
   const defaultUrl =
     props.type === "facebook" ? DEFAULT_FACEBOOK_URL : DEFAULT_INSTAGRAM_URL;
 
+  const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    setIsActive((isActive) => !isActive);
+    const url = urlRef.current;
+    if (urlRef === null || url === null) return;
+    if (isActive && props.setUrl && url) {
+      props.setUrl(() => {
+        return url.value;
+      });
+    }
+  };
+
   return (
     <ProfileSocialUrlBox key={props.url} type={props.type}>
       {props.type === "facebook" ? <FaFacebook /> : <AiFillInstagram />}
@@ -31,19 +49,7 @@ const ProfileSocialUrlFragment: React.FC<ProfileSocialUrlFragmentProps> = (
         ref={urlRef}
         defaultValue={props.url || defaultUrl}
       />
-      <UrlUpdateButton
-        onClick={(e) => {
-          e.preventDefault();
-          setIsActive((isActive) => !isActive);
-          const url = urlRef.current;
-          if (urlRef === null || url === null) return;
-          if (isActive && props.setUrl && url) {
-            props.setUrl(() => {
-              return url.value;
-            });
-          }
-        }}
-      >
+      <UrlUpdateButton onClick={handleClick}>
         {isActive ? "업데이트" : "수정"}
       </UrlUpdateButton>
     </ProfileSocialUrlBox>

@@ -9,7 +9,7 @@ import {
 import Header from "./Header";
 
 const Layout: React.FC<{ type?: string }> = (props) => {
-  const { grantRefresh, isLogin } = useContext(AuthContext);
+  const { isLogin } = useContext(AuthContext);
   const router = useRouter();
 
   useEffect(() => {

@@ -4,12 +4,10 @@ import { ChatBox } from "../../common";
 import { ChatContext } from "../../../store/ChatContext";
 import { AuthContext } from "../../../store/AuthContext";
 import { arrayRemovedItem } from "../../../utils";
-import { useRouter } from "next/router";
 
 const ChatList: React.FC = (props) => {
   const { totalMessage } = useContext(ChatContext);
   const { user } = useContext(AuthContext);
-  const router = useRouter();
 
   return (
     <Outline>
@@ -54,17 +52,9 @@ const ChatList: React.FC = (props) => {
                   regDate={regDate}
                   sender={sender}
                   roomId={item.roomId}
-                  onClick={() => {
-                    // setIsViewChatList(false);
-                    // setMainRoom({ id: item.roomId, userId: senderId });
-                    router.push({
-                      pathname: "/chat",
-                      query: { userId: senderId },
-                    });
-                    // location.href = `/chat?userId=${senderId}`;
-                    return;
-                  }}
+                  senderId={senderId}
                   context={limitMessage}
+                  type="CHATROOM"
                 />
               );
             })}

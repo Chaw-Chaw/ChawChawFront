@@ -1,4 +1,11 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import {
+  KeyboardEventHandler,
+  MouseEventHandler,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Layout, Input, Label, Button } from "../../../../components/common/";
 import AccountContainer from "../../../../components/account/AccountContainer";
 import SignupOrder from "../../../../components/account/SignupOrder";
@@ -36,7 +43,7 @@ export default function WebMailAuth() {
   const [activeVerificationNumber, setActiveVerificationNumber] =
     useState<boolean>(true);
 
-  const webmailSubmit: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+  const publishSubmit = () => {
     if (!webmailRef.current) {
       return;
     }
@@ -79,7 +86,13 @@ export default function WebMailAuth() {
       provider: user?.provider,
     });
   };
-  const checkKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+
+  const handleClickPublishBtn: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    publishSubmit();
+  };
+
+  const handleKeyDown: KeyboardEventHandler<HTMLFormElement> = (e) => {
     if (e.code === "Enter") e.preventDefault();
   };
 
@@ -92,6 +105,7 @@ export default function WebMailAuth() {
       });
     }
   }, []);
+
   return (
     <Layout type="signup">
       <AccountContainer
@@ -113,21 +127,18 @@ export default function WebMailAuth() {
           )}
         </InputSection>
         <ButtonSection>
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              webmailSubmit(e);
-            }}
+          <PublishButton
+            onClick={handleClickPublishBtn}
             width="100%"
             height="2rem"
             fontSize="1rem"
           >
             발송하기
-          </Button>
+          </PublishButton>
         </ButtonSection>
         <Form
           onSubmit={handleSubmit(verificationNumSubmit)}
-          onKeyDown={(e) => checkKeyDown(e)}
+          onKeyDown={handleKeyDown}
         >
           <InputSection>
             <Label htmlFor="verificationNum" tag="필수">
@@ -169,6 +180,8 @@ const InputSection = styled.div`
   width: 100%;
   margin: 20px 0;
 `;
+
+const PublishButton = styled(Button)``;
 const ButtonSection = styled.div<{ marginRight?: string; marginLeft?: string }>`
   margin-right: ${(props) => (props.marginRight ? props.marginRight : "0px")};
   margin-left: ${(props) => (props.marginLeft ? props.marginLeft : "0px")};

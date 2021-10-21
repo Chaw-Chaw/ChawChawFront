@@ -43,35 +43,18 @@ const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
       }
       await grantRefresh();
       await sendImage(image);
-      return;
+      return false;
     }
 
     if (!response.data.isSuccess) {
       console.log(response, "sendImage 실패");
-      return;
+      return false;
     }
 
-    message.success("이미지 업로드 성공!");
-    setProfileImage(response.data.data);
-    return;
+    return response;
   };
 
-  const imageUpload: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const target = e.target as HTMLInputElement;
-    const file: File = (target.files as FileList)[0];
-    if (file === undefined) return;
-    if (file.size > 1024 * 1024 * 5) {
-      message.error("5MB 이상 파일을 업로드 할 수 없습니다.");
-      return;
-    }
-    const image = new FormData();
-    image.append("file", file);
-    image.append("userId", String(props.userId));
-    sendImage(image);
-  };
-
-  const deleteImage: MouseEventHandler<HTMLButtonElement> = async (e) => {
-    e.preventDefault();
+  const deleteImage = async () => {
     const response = await axios
       .delete("/admin/users/image", {
         data: { userId: props.userId },
@@ -96,14 +79,40 @@ const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
         );
       }
       await grantRefresh();
-      deleteImage(e);
-      return;
+      await deleteImage();
+      return false;
     }
 
     if (!response.data.isSuccess) {
       console.error(response.data);
+      return false;
+    }
+    return response;
+  };
+
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = async (
+    e
+  ) => {
+    const target = e.target as HTMLInputElement;
+    const file: File = (target.files as FileList)[0];
+    if (file === undefined) return;
+    if (file.size > 1024 * 1024 * 5) {
+      message.error("5MB 이상 파일을 업로드 할 수 없습니다.");
       return;
     }
+    const image = new FormData();
+    image.append("file", file);
+    image.append("userId", String(props.userId));
+    const response = await sendImage(image);
+    if (!response) return;
+    message.success("이미지 업로드 성공!");
+    setProfileImage(response.data.data);
+  };
+
+  const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    e.preventDefault();
+    const response = await deleteImage();
+    if (!response) return;
     setProfileImage(DEFAULT_PROFILE_IMAGE);
   };
 
@@ -128,9 +137,9 @@ const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
         type="file"
         style={{ display: "none" }}
         accept="image/png, image/jpeg"
-        onChange={imageUpload}
+        onChange={handleChange}
       />
-      <Button onClick={deleteImage} width="100%">
+      <Button onClick={handleClick} width="100%">
         이미지 제거
       </Button>
     </Container>

@@ -26,9 +26,3 @@ export default function Profile() {
     </Layout>
   );
 }
-
-// const SettingContainer = styled.div`
-//   width: 100%;
-//   display: flex;
-//   justify-content: ;
-// `;

@@ -6,7 +6,7 @@ import { MouseEventHandler } from "react";
 const ToggleListItem: React.FC<{ title: string; type: string; link: string }> =
   (props) => {
     const router = useRouter();
-    const movePageHandler: MouseEventHandler<HTMLDivElement> = (e) => {
+    const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
       e.preventDefault();
       if (props.type === "userSearch") {
         router.push(props.link);
@@ -19,7 +19,7 @@ const ToggleListItem: React.FC<{ title: string; type: string; link: string }> =
       return;
     };
     return (
-      <ToggleListItemBox onClick={movePageHandler}>
+      <ToggleListItemBox onClick={handleClick}>
         <GoPrimitiveDot />
         <ToggleListItemTitle>{props.title}</ToggleListItemTitle>
       </ToggleListItemBox>

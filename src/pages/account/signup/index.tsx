@@ -1,4 +1,10 @@
-import React, { MouseEvent, useContext, useEffect, useState } from "react";
+import React, {
+  MouseEvent,
+  MouseEventHandler,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import {
   Layout,
   Input,
@@ -78,6 +84,21 @@ export default function SignUp() {
     }
   };
 
+  const emailDupCheck = async () => {
+    const email = watch("email");
+    if (email !== "") {
+      const result = await emailDuplicationCheck({ email });
+      setIsEmailDupCheck(!result);
+      console.log(result, "이메일 중복 체크 결과");
+      // 중복된 이메일이 있으면 사용자가 회원가입이 불가능
+    } else message.error("이메일을 입력해주세요.");
+  };
+
+  const handleClickEmailChkBtn: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    emailDupCheck();
+  };
+
   useEffect(() => {
     const userSchool = user.school;
     if (isLogin) {
@@ -95,17 +116,6 @@ export default function SignUp() {
         },
       });
   }, []);
-
-  const emailDupCheckHandle = async (e: MouseEvent) => {
-    e.preventDefault();
-    const email = watch("email");
-    if (email !== "") {
-      const result = await emailDuplicationCheck({ email });
-      setIsEmailDupCheck(!result);
-      console.log(result, "이메일 중복 체크 결과");
-      // 중복된 이메일이 있으면 사용자가 회원가입이 불가능
-    } else message.error("이메일을 입력해주세요.");
-  };
 
   return (
     <Layout type="signup">
@@ -128,12 +138,7 @@ export default function SignUp() {
               {errors.email && (
                 <RequiredText>이메일 형식을 맞춰주세요.</RequiredText>
               )}
-              <EmailDuplicationCheckButton
-                onClick={(e: MouseEvent) => {
-                  e.preventDefault();
-                  emailDupCheckHandle(e);
-                }}
-              >
+              <EmailDuplicationCheckButton onClick={handleClickEmailChkBtn}>
                 중복검사
               </EmailDuplicationCheckButton>
             </EmailInputBox>

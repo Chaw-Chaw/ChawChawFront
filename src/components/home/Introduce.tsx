@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import CSS from "csstype";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../store/AuthContext";
 import { FaFacebookF } from "react-icons/fa";
 import { BiMessageRounded } from "react-icons/bi";
@@ -32,6 +32,21 @@ const Introduce: React.FC = () => {
     });
   };
 
+  const handleClickKakaoBtn: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    callKakaoLogin();
+  };
+
+  const handleClickLoginBtn: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    router.push("/account/login");
+  };
+
+  const handleClickMovePost: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    router.push("/post");
+  };
+
   useEffect(() => {
     console.log(isLogin, viewLoginSection, "뭔데이거");
     if (isLogin) setViewLoginSection(false);
@@ -46,15 +61,10 @@ const Introduce: React.FC = () => {
           <IntroduceTitle>어려웠던 외국인 친구 🧑🏿👩🏼</IntroduceTitle>
           <IntroduceTitle>우리학교 버디 ChawChaw와 함께하자!</IntroduceTitle>
           {viewLoginSection ? (
-            <LoginIconBox>
-              <IconBox
-                onClick={(e) => {
-                  e.preventDefault();
-                  callKakaoLogin();
-                }}
-              >
+            <LoginIconContainer>
+              <KakaoIconBox onClick={handleClickKakaoBtn}>
                 <BiMessageRounded />
-              </IconBox>
+              </KakaoIconBox>
               <FacebookLogin
                 style={styleFacebookLogin}
                 appId={FACEBOOK_APP_ID}
@@ -71,26 +81,16 @@ const Introduce: React.FC = () => {
                   console.log("status: ", error.status);
                 }}
               >
-                <IconBox>
+                <FacebookIconBox>
                   <FaFacebookF />
-                </IconBox>
+                </FacebookIconBox>
               </FacebookLogin>
-              <IconBox
-                onClick={(e) => {
-                  e.preventDefault();
-                  router.push("/account/login");
-                }}
-              >
+              <LoginIconBox onClick={handleClickLoginBtn}>
                 <AiOutlineLogin />
-              </IconBox>
-            </LoginIconBox>
+              </LoginIconBox>
+            </LoginIconContainer>
           ) : (
-            <MovePostPageButton
-              onClick={(e) => {
-                e.preventDefault();
-                router.push("/post");
-              }}
-            >
+            <MovePostPageButton onClick={handleClickMovePost}>
               우리학교 바로가기
             </MovePostPageButton>
           )}
@@ -166,7 +166,7 @@ const IntroduceLogoTitle = styled.h3`
   }
 `;
 
-const LoginIconBox = styled.div`
+const LoginIconContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -213,6 +213,10 @@ const IconBox = styled.div`
     }
   }
 `;
+
+const KakaoIconBox = styled(IconBox)``;
+const FacebookIconBox = styled(IconBox)``;
+const LoginIconBox = styled(IconBox)``;
 
 const styleFacebookLogin: CSS.Properties = {
   border: "none",

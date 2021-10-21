@@ -57,8 +57,7 @@ const ProfileSection: React.FC = () => {
     user.instagramUrl || DEFAULT_INSTAGRAM_URL
   );
 
-  const onSubmit: MouseEventHandler<HTMLButtonElement> = async (e) => {
-    e.preventDefault();
+  const onSubmit = async () => {
     const country: string[] = [];
     userCountries.forEach((item) => {
       if (Object.keys(CountryLocale).includes(item)) country.push(item);
@@ -121,14 +120,21 @@ const ProfileSection: React.FC = () => {
         );
       }
       await grantRefresh();
-      onSubmit(e);
-      return;
+      await onSubmit();
+      return false;
     }
 
     if (!response.data.isSuccess) {
-      console.error(response.data);
-      return;
+      console.log(response.data);
+      return false;
     }
+    return userProfile;
+  };
+
+  const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    e.preventDefault();
+    const userProfile = await onSubmit();
+    if (!userProfile) return;
     message.success("프로필이 업로드 되었습니다.");
     updateUser(userProfile);
   };
@@ -177,7 +183,7 @@ const ProfileSection: React.FC = () => {
           instagramUrl={userInstagramUrl}
         />
       </ProfileInfoBox>
-      <ProfileUploadButton onClick={onSubmit}>
+      <ProfileUploadButton onClick={handleClick}>
         프로필 업로드
       </ProfileUploadButton>
     </Container>
