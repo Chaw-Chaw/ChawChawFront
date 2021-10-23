@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { CgProfile } from "react-icons/cg";
 import { BsChat } from "react-icons/bs";
 import { AiOutlineLogout, AiOutlineSetting } from "react-icons/ai";
-import { MouseEvent, MouseEventHandler, useContext, useState } from "react";
+import { MouseEventHandler, useContext, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useRouter } from "next/router";
 import Image from "next/image";
