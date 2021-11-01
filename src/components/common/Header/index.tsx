@@ -8,7 +8,6 @@ import HeaderCondition from "./HeaderCondition";
 import { MobileHeader } from "./MobileHeader";
 
 const Header: React.FC = () => {
-  const { id, setTheme } = useContext(ThemeContext);
   const { user } = useContext(AuthContext);
   const router = useRouter();
   return (
@@ -22,7 +21,7 @@ const Header: React.FC = () => {
         </LogoFragment>
         <HeaderComponentsBox>
           <ThemeToggleBox>
-            <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
+            <ThemeToggle />
           </ThemeToggleBox>
           <HeaderCondition />
         </HeaderComponentsBox>

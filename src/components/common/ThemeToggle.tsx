@@ -1,15 +1,17 @@
-import React from "react";
-import styled from "styled-components";
+import React, { useContext } from "react";
+import styled, { ThemeContext } from "styled-components";
+import { saveSecureLocalStorage } from "../../utils";
 
-interface ThemeToggleProps {
-  isActive: boolean;
-  onToggle: () => void;
-}
+const ThemeToggle: React.FC = (props) => {
+  const { id, setTheme } = useContext(ThemeContext);
+  const handleClick = () => {
+    setTheme();
+    saveSecureLocalStorage("displayMode", id === "light" ? "dark" : "light");
+  };
 
-const ThemeToggle: React.FC<ThemeToggleProps> = (props) => {
   return (
-    <ToggleWrapper onClick={props.onToggle}>
-      <Notch isActive={props.isActive} />
+    <ToggleWrapper onClick={handleClick}>
+      <Notch isActive={id === "dark"} />
     </ToggleWrapper>
   );
 };

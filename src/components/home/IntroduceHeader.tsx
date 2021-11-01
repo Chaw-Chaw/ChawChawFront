@@ -8,7 +8,6 @@ import { LOGIN_PAGE_URL, POST_PAGE_URL } from "../../constants/pageUrls";
 
 const IntroduceHeader: React.FC<{ moveTop: () => void }> = (props) => {
   const { isLogin } = useContext(AuthContext);
-  const { id, setTheme } = useContext(ThemeContext);
   const router = useRouter();
 
   const handleClickLogo: MouseEventHandler<HTMLDivElement> = (e) => {
@@ -33,7 +32,7 @@ const IntroduceHeader: React.FC<{ moveTop: () => void }> = (props) => {
         </HeadLineStart>
       </HeadLineContentLeft>
       <ThemeToggleBox>
-        <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
+        <ThemeToggle />
       </ThemeToggleBox>
       <HeadLineContentRight>
         <HeadLineStart onClick={handleClickMoveStart}>
