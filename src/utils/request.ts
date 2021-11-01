@@ -40,7 +40,8 @@ const grantRefresh = async () => {
         status === "T402" ||
         status === "T403" ||
         status === "T404" ||
-        status === "T405"
+        status === "T405" ||
+        status === "G403"
       ) {
         alert(ERROR_CODES[status].message);
         window.localStorage.clear();
