@@ -4,6 +4,7 @@ import Document, {
   NextScript,
   DocumentContext,
   DocumentInitialProps,
+  Html,
 } from "next/document";
 import React, { ReactElement } from "react";
 import { ServerStyleSheet } from "styled-components";
@@ -44,7 +45,7 @@ export default class MyDocument extends Document {
   }
   render(): ReactElement {
     return (
-      <html>
+      <Html>
         <Head>
           <meta name="viewport" content="viewport-fit=cover" />
           <meta name="viewport" content="width=device-width" />
@@ -59,7 +60,7 @@ export default class MyDocument extends Document {
             <NextScript />
           </div>
         </body>
-      </html>
+      </Html>
     );
   }
 }

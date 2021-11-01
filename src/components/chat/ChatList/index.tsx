@@ -9,56 +9,48 @@ const ChatList: React.FC = (props) => {
   const { totalMessage } = useContext(ChatContext);
   const { user } = useContext(AuthContext);
 
+  const manufactureMessages = totalMessage.map((item) => {
+    const limitMessageWord = 20;
+    const isNewChatRoom = item.messages.length <= 0;
+    const lastMessageInfo = item.messages[item.messages.length - 1];
+    const lastMessage = (() => {
+      if (isNewChatRoom) {
+        return "새로운 채팅방이 생성되었습니다.";
+      }
+      if (lastMessageInfo.messageType === "IMAGE") {
+        return "🏞 사진";
+      }
+      return lastMessageInfo.message;
+    })();
+    const limitMessage =
+      lastMessage.length > limitMessageWord
+        ? lastMessage.substring(0, limitMessageWord) + "..."
+        : lastMessage;
+    const chatRoomImageUrl = arrayRemovedItem(
+      user.imageUrl,
+      item.participantImageUrls
+    )[0];
+    const sender = arrayRemovedItem(user.name, item.participantNames)[0];
+    const senderId = arrayRemovedItem(user.id, item.participantIds)[0];
+    const regDate = isNewChatRoom ? "" : lastMessageInfo.regDate;
+
+    return (
+      <ChatBox
+        key={item.roomId}
+        imageUrl={chatRoomImageUrl}
+        regDate={regDate}
+        sender={sender}
+        roomId={item.roomId}
+        senderId={senderId}
+        context={limitMessage}
+        type="CHATROOM"
+      />
+    );
+  });
+
   return (
     <Outline>
-      <Inner>
-        {totalMessage.length === 0
-          ? null
-          : totalMessage.map((item) => {
-              const limitMessageWord = 20;
-              const isNewChatRoom = item.messages.length <= 0;
-              const lastMessageInfo = item.messages[item.messages.length - 1];
-              const lastMessage = (() => {
-                if (isNewChatRoom) {
-                  return "새로운 채팅방이 생성되었습니다.";
-                }
-                if (lastMessageInfo.messageType === "IMAGE") {
-                  return "🏞 사진";
-                }
-                return lastMessageInfo.message;
-              })();
-              const limitMessage =
-                lastMessage.length > limitMessageWord
-                  ? lastMessage.substring(0, limitMessageWord) + "..."
-                  : lastMessage;
-              const chatRoomImageUrl = arrayRemovedItem(
-                user.imageUrl,
-                item.participantImageUrls
-              )[0];
-              const sender = arrayRemovedItem(
-                user.name,
-                item.participantNames
-              )[0];
-              const senderId = arrayRemovedItem(
-                user.id,
-                item.participantIds
-              )[0];
-              const regDate = isNewChatRoom ? "" : lastMessageInfo.regDate;
-
-              return (
-                <ChatBox
-                  key={item.roomId}
-                  imageUrl={chatRoomImageUrl}
-                  regDate={regDate}
-                  sender={sender}
-                  roomId={item.roomId}
-                  senderId={senderId}
-                  context={limitMessage}
-                  type="CHATROOM"
-                />
-              );
-            })}
-      </Inner>
+      <Inner>{totalMessage.length !== 0 && manufactureMessages}</Inner>
     </Outline>
   );
 };
@@ -71,7 +63,7 @@ const Outline = styled.div`
   overflow: auto;
   height: 100%;
   width: 100%;
-  max-width: 400px;
+  max-width: 100%;
   padding: 20px;
 `;
 

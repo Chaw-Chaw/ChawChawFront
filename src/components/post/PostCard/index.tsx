@@ -1,44 +1,16 @@
 import styled from "styled-components";
-import { MouseEventHandler, useContext, useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import Image from "next/image";
 import PostModal from "../PostModal";
 import { ModalLayout } from "../../common";
-import axios from "axios";
-import { PostModalInfoProps } from "../PostModal";
-import { PostCardInfoProps, PostCardInfo } from "../PostCard/PostCardInfo";
-import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
-import { PostCardImageInfoProps, PostCardImageInfo } from "./PostCardImageInfo";
-import { AuthContext } from "../../../store/AuthContext";
-import { getSecureLocalStorage } from "../../../utils";
-import { useAlert } from "react-alert";
-
-interface PostCardProps extends PostCardInfoProps, PostCardImageInfoProps {
-  imageUrl: string;
-  id: number;
-  content: string;
-}
+import { usePost } from "../../../hooks/api/post/usePost";
+import { initialPostInfo } from "../../../constants/post";
+import { PostCardProps, PostModalInfoProps } from "../../../../types/post";
+import { PostCardImageInfo } from "./PostCardImageInfo";
+import { PostCardInfo } from "./PostCardInfo";
 
 const PostCard: React.FC<PostCardProps> = (props) => {
-  const initialPostInfo = {
-    content: "",
-    country: [],
-    regDate: "",
-    facebookUrl: "",
-    likes: 0,
-    hopeLanguage: [],
-    id: 0,
-    imageUrl: DEFAULT_PROFILE_IMAGE,
-    instagramUrl: "",
-    language: [],
-    name: "",
-    repCountry: "",
-    repHopeLanguage: "",
-    repLanguage: "",
-    views: 0,
-    isLike: false,
-  };
-  const { grantRefresh } = useContext(AuthContext);
-  const message = useAlert();
+  const { getPostModalData } = usePost();
   const postCardContentArr = props.content.split("\n");
   const postCardContentTmp =
     postCardContentArr.length > 11
@@ -53,51 +25,11 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const [postModalInfo, setPostModalInfo] =
     useState<PostModalInfoProps>(initialPostInfo);
 
-  const getPostModalData = async () => {
-    const response = await axios
-      .get(`/users/${props.id}`, {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: getSecureLocalStorage("accessToken"),
-          Accept: "application/json",
-        },
-      })
-      .catch((err) => err.response);
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      // access token 만료
-      // refresh token 전송
-      await getPostModalData();
-      return false;
-    }
-    console.log(response, "PostModal data");
-
-    if (!response.data.isSuccess) {
-      console.log(response, `${props.id} 데이터 조회 실패`);
-      return false;
-    }
-
-    return response;
-  };
-
   const handleClickPostCard: MouseEventHandler<HTMLDivElement> = async (e) => {
     e.preventDefault();
-    const response = await getPostModalData();
-    if (!response) return;
+    const data = await getPostModalData(props.id);
     setPostModalInfo((pre) => {
-      return { ...pre, ...response.data.data };
+      return { ...pre, ...data };
     });
     setOpen((open) => !open);
   };
@@ -105,6 +37,32 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     e.preventDefault();
     setOpen(false);
   };
+
+  const postModal = open && (
+    <>
+      <ModalLayout onClick={handleClickModalLayout} />
+      <PostModal
+        content={postModalInfo.content}
+        country={postModalInfo.country}
+        regDate={postModalInfo.regDate}
+        facebookUrl={postModalInfo.facebookUrl}
+        likes={postModalInfo.likes}
+        hopeLanguage={postModalInfo.hopeLanguage}
+        id={postModalInfo.id}
+        imageUrl={postModalInfo.imageUrl}
+        instagramUrl={postModalInfo.instagramUrl}
+        language={postModalInfo.language}
+        name={postModalInfo.name}
+        repCountry={postModalInfo.repCountry}
+        repHopeLanguage={postModalInfo.repHopeLanguage}
+        repLanguage={postModalInfo.repLanguage}
+        views={postModalInfo.views}
+        isLike={postModalInfo.isLike}
+      >
+        {props.children}
+      </PostModal>
+    </>
+  );
 
   return (
     <div>
@@ -136,31 +94,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           />
         </PostCardBox>
       </PostCardContainer>
-      {open ? (
-        <>
-          <ModalLayout onClick={handleClickModalLayout} />
-          <PostModal
-            content={postModalInfo.content}
-            country={postModalInfo.country}
-            regDate={postModalInfo.regDate}
-            facebookUrl={postModalInfo.facebookUrl}
-            likes={postModalInfo.likes}
-            hopeLanguage={postModalInfo.hopeLanguage}
-            id={postModalInfo.id}
-            imageUrl={postModalInfo.imageUrl}
-            instagramUrl={postModalInfo.instagramUrl}
-            language={postModalInfo.language}
-            name={postModalInfo.name}
-            repCountry={postModalInfo.repCountry}
-            repHopeLanguage={postModalInfo.repHopeLanguage}
-            repLanguage={postModalInfo.repLanguage}
-            views={postModalInfo.views}
-            isLike={postModalInfo.isLike}
-          >
-            {props.children}
-          </PostModal>
-        </>
-      ) : null}
+      {postModal}
     </div>
   );
 };
@@ -168,7 +102,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
 export { PostCard };
 
 const PostCardBox = styled.div`
-  /* margin: 0px 15px 20px 15px; */
+  cursor: pointer;
   width: 300px;
   display: flex;
   flex-direction: column;
@@ -177,7 +111,7 @@ const PostCardBox = styled.div`
   border: 0.5px solid
     ${(props) =>
       props.theme.id === "light" ? "none" : props.theme.primaryColor};
-  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5);
   border-radius: 20px;
   box-sizing: border-box;
 
@@ -199,6 +133,7 @@ const PostCardBox = styled.div`
   :hover {
     animation: kenburns-top 0.2s ease-out both;
   }
+
   -ms-user-select: none;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;

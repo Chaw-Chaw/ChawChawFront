@@ -2,10 +2,8 @@ import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 
 interface ListItemProps {
-  title?: string;
+  title: string;
   description?: string;
-  setValues?: Dispatch<SetStateAction<string[]>>;
-  values?: string[];
 }
 
 const ListItem: React.FC<ListItemProps> = (props) => {

@@ -1,19 +1,31 @@
-import React, { MouseEventHandler, useState } from "react";
+import React, { MouseEventHandler, SetStateAction, useState } from "react";
+import { useAlert } from "react-alert";
 import styled from "styled-components";
-import { DropDownBox, DropDownProps } from "./DropDownBox";
+import { DropDownBox, InitialBoxProps } from "./DropDownBox";
 import { Option } from "./Option";
 
-interface SelectMenuProps extends DropDownProps {}
+interface DropDownProps extends InitialBoxProps {
+  options: string[];
+  initialValue: string;
+  index: number;
+  type: "SEARCH" | "NORMAL";
+  setValues: React.Dispatch<SetStateAction<string[]>>;
+}
 
 const DropDown: React.FC<DropDownProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const index = props?.index;
   const option = props.options;
+  const message = useAlert();
 
   const saveInfo = (item: string) => {
     if (props.setValues && index !== undefined) {
       props.setValues((preState) => {
         const result = preState;
+        if (result.includes(item)) {
+          message.info("이미 같은 값을 선택하셨습니다.");
+          return result;
+        }
         result[index] = item;
         return [...result];
       });
@@ -30,6 +42,10 @@ const DropDown: React.FC<DropDownProps> = (props) => {
     setIsActive(false);
   };
 
+  const options = option.map((item: string, index: number) => {
+    return <Option key={index} item={item} saveInfo={saveInfo} />;
+  });
+
   return (
     <DropDownBox
       fontWeight={props.fontWeight}
@@ -38,12 +54,12 @@ const DropDown: React.FC<DropDownProps> = (props) => {
       height={props.height}
       onClick={handleClickDropDown}
       color={
-        props.search && props.initialValue !== props.value
+        props.type === "SEARCH" && props.initialValue !== props.value
           ? props.backgroundColor
           : props.color
       }
       backgroundColor={
-        props.search && props.initialValue !== props.value
+        props.type === "SEARCH" && props.initialValue !== props.value
           ? props.color
           : props.backgroundColor
       }
@@ -51,13 +67,10 @@ const DropDown: React.FC<DropDownProps> = (props) => {
     >
       <SelectMenu
         width={props.width}
-        height={props.height}
         isActive={isActive}
         onMouseLeave={handleMouseLeaveDropDown}
       >
-        {option?.map((item: string, index: number) => {
-          return <Option key={index} item={item} saveInfo={saveInfo} />;
-        })}
+        {options}
       </SelectMenu>
       {props.children}
     </DropDownBox>
@@ -65,8 +78,9 @@ const DropDown: React.FC<DropDownProps> = (props) => {
 };
 
 export { DropDown };
+export type { DropDownProps };
 
-const SelectMenu = styled.div<SelectMenuProps>`
+const SelectMenu = styled.div<{ width: string; isActive: boolean }>`
   padding: 4px 0px;
   position: absolute;
   width: ${(props) => props.width};
@@ -77,7 +91,7 @@ const SelectMenu = styled.div<SelectMenuProps>`
   top: 40px;
   left: 0px;
   background-color: ${(props) => props.theme.bodyBackgroundColor};
-  color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
+  color: ${(props) => props.theme.bodyFontColor};
   animation: growDown 300ms ease-in-out forwards;
   transform-origin: top center;
   overflow: auto;

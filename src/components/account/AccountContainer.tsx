@@ -7,16 +7,18 @@ interface AccountContainerProps {
 }
 
 const AccountContainer: React.FC<AccountContainerProps> = (props) => {
+  const title = props.title?.split("`").map((line, index) => {
+    return <h3 key={index}>{line}</h3>;
+  });
+  const subtitle = props.subtitle?.split("`").map((line, index) => {
+    return <h4 key={index}>{line}</h4>;
+  });
   return (
     <Container width={props.width}>
       <Section>
-        {props.title?.split("`").map((line, index) => {
-          return <h3 key={index}>{line}</h3>;
-        })}
+        {title}
         <Divider />
-        {props.subtitle?.split("`").map((line, index) => {
-          return <h4 key={index}>{line}</h4>;
-        })}
+        {subtitle}
       </Section>
       {props.children}
     </Container>

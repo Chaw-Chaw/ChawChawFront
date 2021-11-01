@@ -9,27 +9,25 @@ interface BlockItem {
 }
 
 const ManageBlockList: React.FC<{ blockList: BlockItem[] }> = (props) => {
+  const manageBlockList = props.blockList.map((item) => {
+    return (
+      <ManageBlockItem
+        key={item.userId}
+        userId={item.userId}
+        name={item.name}
+        imageUrl={item.imageUrl}
+      />
+    );
+  });
+  const emptyBlockList = (
+    <EmptyBlockList>
+      <EmptyBlockListPhrase>🗑 차단 목록이 비어있습니다.</EmptyBlockListPhrase>
+    </EmptyBlockList>
+  );
   return (
     <ListItem title="차단목록">
       <ManageBlockBox>
-        {props.blockList.length > 0 ? (
-          props.blockList.map((item, index) => {
-            return (
-              <ManageBlockItem
-                key={index}
-                userId={item.userId}
-                name={item.name}
-                imageUrl={item.imageUrl}
-              />
-            );
-          })
-        ) : (
-          <EmptyBlockList>
-            <EmptyBlockListPhrase>
-              🗑 차단 목록이 비어있습니다.
-            </EmptyBlockListPhrase>
-          </EmptyBlockList>
-        )}
+        {props.blockList.length > 0 ? manageBlockList : emptyBlockList}
       </ManageBlockBox>
     </ListItem>
   );

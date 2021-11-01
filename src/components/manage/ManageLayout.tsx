@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
+import { useAlert } from "react-alert";
 import styled from "styled-components";
-import { DEFAULT_PROFILE_IMAGE } from "../../constants";
+import { DEFAULT_PROFILE_IMAGE, MAIN_PAGE } from "../../constants";
 import { AuthContext } from "../../store/AuthContext";
 import {
   getRefreshAccessTokenRemainingTime,
@@ -11,15 +12,20 @@ import {
 import { TapList } from "./TapList";
 
 const ManageLayout: React.FC = (props) => {
-  const { user, isLogin, grantRefresh } = useContext(AuthContext);
+  const { user, isLogin } = useContext(AuthContext);
   const router = useRouter();
+  const message = useAlert();
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
 
   useEffect(() => {
     if (!isLogin) return;
     const userRole = getSecureLocalStorage("user").role;
     if (userRole !== "ADMIN") {
-      router.push("/");
+      message.error("유저 아이디로 서비스를 이용할 수 없습니다.", {
+        onClose: () => {
+          router.push(MAIN_PAGE);
+        },
+      });
     }
   }, []);
 

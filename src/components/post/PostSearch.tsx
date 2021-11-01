@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Input, Button } from "../common";
 import { IoIosSearch } from "react-icons/io";
 import { KeyboardEventHandler, MouseEventHandler, useRef } from "react";
+
 interface PostSearchProps {
   searchHandler: (inputs: string) => void;
 }

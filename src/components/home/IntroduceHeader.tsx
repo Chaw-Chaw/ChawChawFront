@@ -4,6 +4,7 @@ import { ThemeToggle } from "../common";
 import { MouseEventHandler, useContext, useRef } from "react";
 import { useRouter } from "next/router";
 import { AuthContext } from "../../store/AuthContext";
+import { LOGIN_PAGE_URL, POST_PAGE_URL } from "../../constants/pageUrls";
 
 const IntroduceHeader: React.FC<{ moveTop: () => void }> = (props) => {
   const { isLogin } = useContext(AuthContext);
@@ -18,9 +19,9 @@ const IntroduceHeader: React.FC<{ moveTop: () => void }> = (props) => {
   const handleClickMoveStart: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     if (isLogin) {
-      router.push("/post");
+      router.push(POST_PAGE_URL);
     } else {
-      router.push("/account/login");
+      router.push(LOGIN_PAGE_URL);
     }
   };
 

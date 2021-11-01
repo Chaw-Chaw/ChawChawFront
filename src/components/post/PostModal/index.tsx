@@ -2,27 +2,11 @@ import styled from "styled-components";
 import { LocaleLanguage } from "../../common";
 import { PostModalInfoList } from "./PostModalInfoList";
 import { PostModalSocialList } from "./PostModalSocialList";
-import { PostModalHeadProps, PostModalInfo } from "./PostModalInfo";
+import { PostModalInfo } from "./PostModalInfo";
 import { PostModalImage } from "./PostModalImage";
 import { PostModalActive } from "./PostModalActive";
 import { PostModalContent } from "./PostModalContent";
-
-interface PostModalInfoProps extends PostModalHeadProps {
-  content: string;
-  country: string[];
-  facebookUrl: string;
-  hopeLanguage: string[];
-  id: number;
-  imageUrl: string;
-  instagramUrl: string;
-  language: string[];
-  name: string;
-  repCountry: string;
-  repHopeLanguage: string;
-  repLanguage: string;
-  isLike: boolean;
-}
-interface PostModalProps extends PostModalInfoProps {}
+import { PostModalProps } from "../../../../types/post";
 
 const PostModal: React.FC<PostModalProps> = (props) => {
   const now = new Date();
@@ -84,7 +68,6 @@ const PostModal: React.FC<PostModalProps> = (props) => {
 };
 
 export default PostModal;
-export type { PostModalInfoProps };
 
 const PostModalBox = styled.div`
   position: fixed;
@@ -93,10 +76,6 @@ const PostModalBox = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-
-  /* top: center;
-  left: 0; */
-  /* transform: translate(-50%, -50%); */
   z-index: 30;
   width: 500px;
   display: flex;

@@ -7,104 +7,27 @@ import axios from "axios";
 import { useAlert } from "react-alert";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import { getSecureLocalStorage } from "../../../utils";
+import { useSendImage } from "../../../hooks/api/useSendImage";
 
 const ProfileImage: React.FC = () => {
-  const { user, updateUser, grantRefresh } = useContext(AuthContext);
+  const { user, updateUser } = useContext(AuthContext);
+  const { sendProfileImage, deleteProfileImage, putImage } = useSendImage();
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
   const message = useAlert();
-
-  const sendImage = async (image: FormData) => {
-    const response = await axios
-      .post("/users/image", image, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: getSecureLocalStorage("accessToken"),
-        },
-      })
-      .catch((err) => err.response);
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      await sendImage(image);
-      return false;
-    }
-
-    if (!response.data.isSuccess) {
-      console.log(response, "sendImage 실패");
-      return false;
-    }
-    return response;
-  };
-
-  const deleteImage = async () => {
-    const response = await axios
-      .delete("/users/image", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getSecureLocalStorage("accessToken"),
-          Accept: "*/*",
-        },
-      })
-      .catch((err) => err.response);
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      await deleteImage();
-      return false;
-    }
-
-    if (!response.data.isSuccess) {
-      console.error(response.data);
-      return false;
-    }
-    return response;
-  };
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = async (
     e
   ) => {
-    const target = e.target as HTMLInputElement;
-    const file: File = (target.files as FileList)[0];
-    if (file === undefined) return;
-    if (file.size > 1024 * 1024 * 5) {
-      message.error("5MB 이상 파일을 업로드 할 수 없습니다.");
-      return;
-    }
-    const image = new FormData();
-    image.append("file", file);
-    const response = await sendImage(image);
-    if (!response) return;
+    const image = putImage(e);
+    const imageUrl = await sendProfileImage(image);
     message.success("이미지 업로드 성공!");
-    updateUser({ imageUrl: response.data.data });
+    updateUser({ imageUrl });
   };
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
-    const response = await deleteImage();
-    if (!response) return;
-    updateUser({ imageUrl: response.data.data });
+    const imageUrl = await deleteProfileImage();
+    updateUser({ imageUrl });
   };
 
   return (
@@ -117,7 +40,6 @@ const ProfileImage: React.FC = () => {
         objectFit="cover"
         className="profile-image"
       />
-
       <InputFileButton htmlFor="image-file">이미지 업로드</InputFileButton>
       <input
         id="image-file"

@@ -1,171 +1,119 @@
-import { useContext, useEffect, useState } from "react";
+import { Component, useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import styled from "styled-components";
-import { StatisticsContext } from "../../store/StatisticsContext";
+import {
+  CHART_SUBJECT,
+  INIT_BAR_CHART_DATA,
+  SUBJECT_OPTIONS,
+  SUBJECT_CONVERT,
+} from "../../constants";
+import { useChart } from "../../hooks/useChart";
 import { LoadingSpinner, SelectInfoDropDown } from "../common";
 
-const initialChartData = {
-  labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-  datasets: [
-    {
-      label: "",
-      data: [12, 19, 3, 5, 2, 3],
-      backgroundColor: ["rgba(247, 241, 227,0.4)"],
-      borderColor: ["white"],
-      borderWidth: 1,
-    },
-  ],
-};
-
-const typeOptions: string[] = [
-  "학교 활성도 순위",
-  "희망 언어 순위",
-  "할 수 있는 언어 순위",
-  "인기 검색 언어 순위",
-];
+const typeOptions = Object.values(SUBJECT_OPTIONS);
 
 const StatisticsChartSection: React.FC = () => {
-  const {
-    getRankSchool,
-    getRankHopeLanguage,
-    getRankVisitedLanguage,
-    getRankLanguage,
-  } = useContext(StatisticsContext);
-
-  const [chartData, setChartData] = useState(initialChartData);
-  const [type, setType] = useState<string[]>(["학교 활성도 순위"]);
-  const [subtitle, setSubtitle] = useState("유저 수");
   const [isLoading, setIsLoading] = useState(true);
+  const [chartData, setChartData] = useState(INIT_BAR_CHART_DATA);
+  const [subject, setSubject] = useState<string[]>(["학교 활성도 순위"]);
+  const { getChartData, subtitle } = useChart();
+
+  const changeChartData = async () => {
+    setIsLoading(true);
+    const subjectKey = SUBJECT_CONVERT[subject[0]];
+    if (!SUBJECT_OPTIONS[subjectKey]) {
+      return;
+    }
+    const data = await getChartData(subjectKey);
+    setChartData((pre) => {
+      const result = pre;
+      result.labels = data.labels;
+      result.datasets[0].data = data.datasets[0].data;
+      result.datasets[0].label = CHART_SUBJECT[subjectKey].subtitle;
+      return result;
+    });
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    if (type[0] === "") return;
+    // changeChartData();
+    //첫 렌더링시에는 서버에서 아래 코드를 실행시켜버리는구나
+    console.log(isLoading, "isLoading");
+    console.log(chartData, "chartData");
+    console.log(subject, "subject");
+    // if (isLoading) return;
     (async () => {
-      if (type[0] === "학교 활성도 순위") {
-        const result = await getRankSchool();
-        if (!result) {
-          setIsLoading(true);
-          return;
-        }
-        const tmpChartData = JSON.parse(JSON.stringify(initialChartData));
-        tmpChartData.labels = result.labels;
-        tmpChartData.datasets[0].data = result.data;
-        tmpChartData.datasets[0].label = "유저 수";
-        setSubtitle("유저 수");
-        setChartData(tmpChartData);
-        setIsLoading(false);
-        return;
-      }
-      if (type[0] === "희망 언어 순위") {
-        const result = await getRankLanguage();
-        if (!result) {
-          setIsLoading(true);
-          return;
-        }
-        const tmpChartData = JSON.parse(JSON.stringify(initialChartData));
-        tmpChartData.labels = result.labels;
-        tmpChartData.datasets[0].data = result.data;
-        tmpChartData.datasets[0].label = "해당 언어를 사용할 수 있는 유저 수";
-        setSubtitle("해당 언어를 사용할 수 있는 유저 수");
-        setChartData(tmpChartData);
-        setIsLoading(false);
-        return;
-      }
-      if (type[0] === "할 수 있는 언어 순위") {
-        const result = await getRankHopeLanguage();
-        if (!result) {
-          setIsLoading(true);
-          return;
-        }
-        const tmpChartData = JSON.parse(JSON.stringify(initialChartData));
-        tmpChartData.labels = result.labels;
-        tmpChartData.datasets[0].data = result.data;
-        tmpChartData.datasets[0].label = "해당 언어 배우길 희망하는 유저 수";
-        setSubtitle("해당 언어 배우길 희망하는 유저 수");
-        setChartData(tmpChartData);
-        setIsLoading(false);
-        return;
-      }
-      if (type[0] === "인기 검색 언어 순위") {
-        const result = await getRankVisitedLanguage();
-        if (!result) {
-          setIsLoading(true);
-          return;
-        }
-        const tmpChartData = JSON.parse(JSON.stringify(initialChartData));
-        tmpChartData.labels = result.labels;
-        tmpChartData.datasets[0].data = result.data;
-        tmpChartData.datasets[0].label = "해당 언어를 검색한 유저 수";
-        setSubtitle("해당 언어를 검색한 유저 수");
-        setChartData(tmpChartData);
-        setIsLoading(false);
-        return;
-      }
-      setSubtitle("");
-      console.log("타입이 존재하지 않음");
+      await changeChartData();
     })();
-  }, [type]);
+  }, [subject[0]]);
+
+  const lazyChart = isLoading ? (
+    <LoadingSpinnerContainer>
+      <LoadingSpinner />
+    </LoadingSpinnerContainer>
+  ) : (
+    <StatisticsChart>
+      <Bar
+        data={chartData}
+        width={300}
+        height={300}
+        options={{
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              grid: {
+                color: "rgba(247, 241, 227,0.2)",
+              },
+              ticks: {
+                color: "white",
+              },
+            },
+            y: {
+              grid: {
+                color: "rgba(247, 241, 227,0.2)",
+              },
+              ticks: {
+                color: "white",
+              },
+            },
+          },
+        }}
+      />
+    </StatisticsChart>
+  );
 
   return (
     <Container>
       <ChartSection>
         <StatisticsHeader>
-          <StatisticsTitle>{type[0]}</StatisticsTitle>
+          <StatisticsTitle>{subject[0]}</StatisticsTitle>
           <StatisticsSubHeader>
             <StatisticsSubtitle>{"기준 : " + subtitle}</StatisticsSubtitle>
             <SelectTypeWrapper>
               <SelectInfoDropDown
-                search
+                fontWeight="900"
+                type="SEARCH"
                 backgroundColor="white"
                 width="150px"
+                height="30px"
                 color="#FF8A00"
                 initialValue="차트 타입"
                 fontSize="0.9rem"
-                setValues={setType}
+                setValues={setSubject}
                 index={0}
                 options={typeOptions}
-                value={type[0]}
+                value={subject[0]}
               />
             </SelectTypeWrapper>
           </StatisticsSubHeader>
         </StatisticsHeader>
-        {isLoading ? (
-          <LoadingSpinner />
-        ) : (
-          <StatisticsChart>
-            <Bar
-              data={chartData}
-              width={300}
-              height={300}
-              options={{
-                maintainAspectRatio: false,
-                scales: {
-                  x: {
-                    grid: {
-                      color: "rgba(247, 241, 227,0.2)",
-                    },
-                    ticks: {
-                      color: "white",
-                    },
-                  },
-                  y: {
-                    grid: {
-                      color: "rgba(247, 241, 227,0.2)",
-                    },
-                    ticks: {
-                      color: "white",
-                    },
-                  },
-                },
-              }}
-            />
-          </StatisticsChart>
-        )}
+        {lazyChart}
       </ChartSection>
     </Container>
   );
 };
 
-export { StatisticsChartSection };
+export { StatisticsChartSection, LoadingSpinnerContainer };
 
 const Container = styled.div`
   width: 100%;
@@ -224,4 +172,15 @@ const StatisticsSubtitle = styled(StatisticsTitle)`
 
 const SelectTypeWrapper = styled.div`
   min-width: 151px;
+`;
+
+const LoadingSpinnerContainer = styled.div`
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+  background-color: ${(props) => props.theme.secondaryColor};
 `;

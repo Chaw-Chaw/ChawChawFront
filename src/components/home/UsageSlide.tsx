@@ -8,26 +8,28 @@ const UsageSlide: React.FC<{ title: string; subtitle: string; src: string }> = (
 ) => {
   const subtitleArr = props.subtitle.split("/n");
   const [isLoading, setIsLoading] = useState(true);
+
+  const handleLoad = () => {
+    setIsLoading(false);
+  };
+
+  const subtitle = subtitleArr.map((item) => {
+    return <SubTitle key={item}>{item}</SubTitle>;
+  });
+
   return (
     <Container>
       <Inner>
         <Title>{props.title}</Title>
-        <SubTitleBox>
-          {subtitleArr.map((item, index) => {
-            return <SubTitle key={index}>{item}</SubTitle>;
-          })}
-        </SubTitleBox>
+        <SubTitleBox>{subtitle}</SubTitleBox>
         <ImageWrapper>
           <Image
             src={props.src}
             alt="사용소개 이미지"
             width="800"
             height="450"
-            // layout="responsive"
             objectFit="contain"
-            onLoad={() => {
-              setIsLoading(false);
-            }}
+            onLoad={handleLoad}
           />
           {isLoading && (
             <LoadingWrapper>
@@ -52,12 +54,6 @@ const Container = styled.div`
   @supports (-webkit-touch-callout: none) {
     height: -webkit-fill-available;
   }
-`;
-
-const UsageImageBox = styled.div`
-  width: 500px;
-  height: 400px;
-  background-color: orange;
 `;
 
 const Inner = styled.div`

@@ -1,12 +1,14 @@
 import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
 import styled from "styled-components";
-import { usersType } from "../../pages/manage/users";
+import { UserListItemType } from "../../../types/manage";
+import { MANAGE_USER_PAGE_URL } from "../../constants";
+
 import { LocaleLanguage } from "../common";
 
 const UserListItem: React.FC<{
   index: number;
-  userItem: usersType;
+  userItem: UserListItemType;
   currentPage: number;
 }> = (props) => {
   const router = useRouter();
@@ -18,7 +20,7 @@ const UserListItem: React.FC<{
   const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     router.push({
-      pathname: "/manage/users/detail",
+      pathname: MANAGE_USER_PAGE_URL,
       query: { userId: props.userItem.id, userSchool: props.userItem.school },
     });
   };

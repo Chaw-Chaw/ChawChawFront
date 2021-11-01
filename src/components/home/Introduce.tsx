@@ -9,27 +9,32 @@ import { AiOutlineLogin } from "react-icons/ai";
 import {
   FACEBOOK_APP_ID,
   KAKAO_CLIENT_ID,
+  KAKAO_OAUTH_REDIRECT_URL,
   KAKAO_OAUTH_URL,
   REDIRECT_URL,
 } from "../../constants";
 import FacebookLogin from "@greatsumini/react-facebook-login";
 import { Button } from "../common";
 import Typed from "react-typed";
+import { LOGIN_PAGE_URL, POST_PAGE_URL } from "../../constants/pageUrls";
+import { FacebookLoginWrap } from "../common/FacebookLoginWrap";
 
 const Introduce: React.FC = () => {
-  const { isLogin, login } = useContext(AuthContext);
+  const { isLogin } = useContext(AuthContext);
   const [viewLoginSection, setViewLoginSection] = useState(false);
   const router = useRouter();
 
   const callKakaoLogin = () => {
-    router.push({
-      pathname: KAKAO_OAUTH_URL,
-      query: {
-        response_type: "code",
-        client_id: KAKAO_CLIENT_ID,
-        redirect_uri: REDIRECT_URL,
-      },
-    });
+    // next js 공식 문서에 따르면 외부 페이지 이용시 router를 사용할 필요가 없다.
+    window.location.href = KAKAO_OAUTH_REDIRECT_URL;
+    // router.push({
+    //   pathname: KAKAO_OAUTH_URL,
+    //   query: {
+    //     response_type: "code",
+    //     client_id: KAKAO_CLIENT_ID,
+    //     redirect_uri: REDIRECT_URL,
+    //   },
+    // });
   };
 
   const handleClickKakaoBtn: MouseEventHandler<HTMLDivElement> = (e) => {
@@ -39,19 +44,40 @@ const Introduce: React.FC = () => {
 
   const handleClickLoginBtn: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
-    router.push("/account/login");
+    router.push(LOGIN_PAGE_URL);
   };
 
   const handleClickMovePost: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    router.push("/post");
+    router.push(POST_PAGE_URL);
   };
 
   useEffect(() => {
-    console.log(isLogin, viewLoginSection, "뭔데이거");
     if (isLogin) setViewLoginSection(false);
     else setViewLoginSection(true);
   }, [isLogin]);
+
+  const loginSection = (
+    <LoginIconContainer>
+      <KakaoIconBox onClick={handleClickKakaoBtn}>
+        <BiMessageRounded />
+      </KakaoIconBox>
+      <FacebookLoginWrap>
+        <FacebookIconBox>
+          <FaFacebookF />
+        </FacebookIconBox>
+      </FacebookLoginWrap>
+      <LoginIconBox onClick={handleClickLoginBtn}>
+        <AiOutlineLogin />
+      </LoginIconBox>
+    </LoginIconContainer>
+  );
+
+  const movePostPageSection = (
+    <MovePostPageButton onClick={handleClickMovePost}>
+      우리학교 바로가기
+    </MovePostPageButton>
+  );
 
   return (
     <>
@@ -60,40 +86,7 @@ const Introduce: React.FC = () => {
           <IntroduceLogoTitle>ChawChaw 🗣</IntroduceLogoTitle>
           <IntroduceTitle>어려웠던 외국인 친구 🧑🏿👩🏼</IntroduceTitle>
           <IntroduceTitle>우리학교 버디 ChawChaw와 함께하자!</IntroduceTitle>
-          {viewLoginSection ? (
-            <LoginIconContainer>
-              <KakaoIconBox onClick={handleClickKakaoBtn}>
-                <BiMessageRounded />
-              </KakaoIconBox>
-              <FacebookLogin
-                style={styleFacebookLogin}
-                appId={FACEBOOK_APP_ID}
-                onSuccess={(response) => {
-                  console.log(response, "Login Success!");
-                  const facebookToken = response?.accessToken;
-                  const facebookId = response?.userID;
-                  if (facebookToken && facebookId) {
-                    login({ facebookToken, facebookId, provider: "facebook" });
-                  }
-                }}
-                onFail={(error) => {
-                  console.log("Login Failed!");
-                  console.log("status: ", error.status);
-                }}
-              >
-                <FacebookIconBox>
-                  <FaFacebookF />
-                </FacebookIconBox>
-              </FacebookLogin>
-              <LoginIconBox onClick={handleClickLoginBtn}>
-                <AiOutlineLogin />
-              </LoginIconBox>
-            </LoginIconContainer>
-          ) : (
-            <MovePostPageButton onClick={handleClickMovePost}>
-              우리학교 바로가기
-            </MovePostPageButton>
-          )}
+          {viewLoginSection ? loginSection : movePostPageSection}
           <GuideBox>
             <MyMessageBalloon>
               <Typed

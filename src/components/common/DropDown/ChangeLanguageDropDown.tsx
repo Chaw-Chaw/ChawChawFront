@@ -1,8 +1,8 @@
-import { LanguageLocale, LocaleLanguage } from "../LocaleList";
+import { LanguageLocale, LocaleLanguage } from "../../../constants/LocaleList";
 import { DropDown } from "./DropDown";
 import { ImEarth } from "react-icons/im";
-import { Dispatch, SetStateAction } from "react";
-import styled from "styled-components";
+import { Dispatch, SetStateAction, useContext } from "react";
+import styled, { ThemeContext } from "styled-components";
 
 interface ChangeLanguageDropDownProps {
   selectLanguage: string[];
@@ -12,10 +12,11 @@ interface ChangeLanguageDropDownProps {
 const ChangeLanguageDropDown: React.FC<ChangeLanguageDropDownProps> = (
   props
 ) => {
+  const { bodyBackgroundColor, bodyFontColor } = useContext(ThemeContext);
   const initialValue = LanguageLocale[props.selectLanguage[0]].toUpperCase();
-  const Languages: string[] = Object.values(LanguageLocale);
-  const myHopeLanguages = ["ko", ...Languages];
-  const options = myHopeLanguages.map((item) => LocaleLanguage[item]);
+  const Languages: string[] = Object.keys(LanguageLocale);
+  const options = ["Korean", ...Languages];
+  // const options = myHopeLanguages.map((item) => LocaleLanguage[item]);
 
   return (
     <ChangeLanguageDropDownBox>
@@ -29,6 +30,9 @@ const ChangeLanguageDropDown: React.FC<ChangeLanguageDropDownProps> = (
         setValues={props.setSelectLanguage}
         value={initialValue}
         index={0}
+        type="NORMAL"
+        backgroundColor={bodyBackgroundColor}
+        color={bodyFontColor}
       >
         <ImEarth />
       </DropDown>

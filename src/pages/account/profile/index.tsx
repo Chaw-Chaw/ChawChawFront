@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { useAlert } from "react-alert";
 import { Layout } from "../../../components/common";
 import ProfileSection from "../../../components/profile/ProfileSection";
+import { LOGIN_PAGE_URL } from "../../../constants";
 import { AuthContext } from "../../../store/AuthContext";
 
 export default function Profile() {
@@ -14,7 +15,7 @@ export default function Profile() {
     if (!isLogin) {
       message.error("로그인 후 이용해주세요.", {
         onClose: () => {
-          router.push("/account/login");
+          router.push(LOGIN_PAGE_URL);
         },
       });
     }

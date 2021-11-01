@@ -8,36 +8,17 @@ import React, {
 } from "react";
 import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { BACKEND_URL, DEFAULT_PROFILE_IMAGE } from "../constants";
+import {
+  BACKEND_URL,
+  DEFAULT_PROFILE_IMAGE,
+  INITIAL_ID,
+  LOGIN_PAGE_URL,
+} from "../constants";
 import { AuthContext } from "./AuthContext";
-import axios from "axios";
-import { arrayRemovedItem, getSecureLocalStorage } from "../utils";
+import { getSecureLocalStorage } from "../utils";
+import { useChat } from "../hooks/api/chat/useChat";
+import { LikeAlarmType, MessageType, RoomType } from "../../types/chat";
 import { useAlert } from "react-alert";
-import { useRouter } from "next/router";
-
-interface LikeAlarmType {
-  likeType: string; // LIKE, UNLIKE
-  name: string;
-  regDate: string;
-}
-interface MessageType {
-  messageType: string;
-  roomId: number;
-  senderId: number;
-  sender: string;
-  regDate: string;
-  message: string;
-  imageUrl: string;
-  isRead: boolean;
-}
-
-interface RoomType {
-  roomId: number;
-  participantIds: number[];
-  participantNames: string[];
-  messages: MessageType[];
-  participantImageUrls: string[];
-}
 
 interface ChatContextObj {
   mainChatMessages: MessageType[];
@@ -46,16 +27,13 @@ interface ChatContextObj {
   setTotalMessage: Dispatch<SetStateAction<RoomType[]>>;
   mainRoom: { id: number; userId: number };
   setMainRoom: Dispatch<SetStateAction<{ id: number; userId: number }>>;
-  newMessages: Object[];
-  setNewMessages: Dispatch<React.SetStateAction<Object[]>>;
-  newLikes: Object[];
-  setNewLikes: Dispatch<React.SetStateAction<Object[]>>;
+  newMessages: MessageType[];
+  setNewMessages: Dispatch<React.SetStateAction<MessageType[]>>;
+  newLikes: LikeAlarmType[];
+  setNewLikes: Dispatch<React.SetStateAction<LikeAlarmType[]>>;
   isViewChatList: boolean;
   setIsViewChatList: Dispatch<React.SetStateAction<boolean>>;
   publish: (message: string, messageType: string) => void;
-  blockUser: (userId: number) => Promise<true | undefined>;
-  unblockUser: (userId: number) => Promise<true | undefined>;
-  getMessageLog: () => Promise<any>;
   organizeMainChat: (totalMessage: RoomType[], mainRoomId: number) => void;
   organizeChatMessages: (mainRoomId: number) => Promise<void>;
 }
@@ -74,26 +52,23 @@ const ChatContext = React.createContext<ChatContextObj>({
   isViewChatList: false,
   setIsViewChatList: () => {},
   publish: (message: string, messageType: string) => {},
-  blockUser: (userId: number) => new Promise(() => {}),
-  unblockUser: (userId: number) => new Promise(() => {}),
-  getMessageLog: () => new Promise(() => {}),
-  organizeMainChat: (totalMessage: RoomType[], mainRoomId: number) => {},
-  organizeChatMessages: (mainRoomId: number) => new Promise(() => {}),
+  organizeMainChat: () => {},
+  organizeChatMessages: () => new Promise(() => {}),
 });
 
 const ChatContextProvider: React.FC = (props) => {
   const [mainChatMessages, setMainChatMessages] = useState<MessageType[]>([]);
   const [totalMessage, setTotalMessage] = useState<RoomType[]>([]);
-  const [mainRoom, setMainRoom] = useState({ id: -1, userId: -1 });
-  const [newMessages, setNewMessages] = useState<Object[]>([]);
-  const [newLikes, setNewLikes] = useState<Object[]>([]);
+  const [mainRoom, setMainRoom] = useState({ id: -2, userId: -1 });
+  const [newMessages, setNewMessages] = useState<MessageType[]>([]);
+  const [newLikes, setNewLikes] = useState<LikeAlarmType[]>([]);
   const [isViewChatList, setIsViewChatList] = useState(false);
   const mainRoomRef = useRef({ id: -1, userId: -1 });
   const chatClient = useRef<any>({});
   const roomIdsRef = useRef<number[]>([]);
-  const { user, grantRefresh, updateUser, isLogin } = useContext(AuthContext);
-  const message = useAlert();
-  const router = useRouter();
+  const { user, isLogin } = useContext(AuthContext);
+  const { noticeMainRoom, getNewAlarms, getMessageLog } = useChat();
+  const alertMessage = useAlert();
 
   const connect = () => {
     chatClient.current = new StompJs.Client({
@@ -132,6 +107,18 @@ const ChatContextProvider: React.FC = (props) => {
       const message: MessageType = JSON.parse(response.body);
       console.log(message, "새로운 메세지 내용");
 
+      if (message.messageType === "CLOSE") {
+        alertMessage.error(
+          "현재 같은 아이디로 다른 곳에서 접속 중입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+          {
+            onClose: () => {
+              window.localStorage.clear();
+              window.location.href = LOGIN_PAGE_URL;
+            },
+          }
+        );
+      }
+
       // 블록 리스트에 추가된 메세지는 알람 받지 않음
       if (user.blockIds?.includes(message.senderId)) {
         return;
@@ -151,7 +138,7 @@ const ChatContextProvider: React.FC = (props) => {
       if (!roomIdsRef.current.includes(message.roomId)) {
         const myImage = user.imageUrl || DEFAULT_PROFILE_IMAGE;
         const myName = user.name || "";
-        const myId = user.id || -1;
+        const myId = user.id || INITIAL_ID;
         const newChatList: RoomType = {
           participantImageUrls: [message.imageUrl, myImage],
           messages: [message],
@@ -164,9 +151,9 @@ const ChatContextProvider: React.FC = (props) => {
       }
 
       // 기존 채팅방에 들어오는 메세지일 경우
-      setTotalMessage((pre: any) => {
-        const result: any = [];
-        pre.forEach((item: any) => {
+      setTotalMessage((pre) => {
+        const result: RoomType[] = [];
+        pre.forEach((item) => {
           if (message.roomId === item.roomId) {
             result.push({ ...item, messages: [...item.messages, message] });
             return;
@@ -184,50 +171,6 @@ const ChatContextProvider: React.FC = (props) => {
       const message: LikeAlarmType = JSON.parse(response.body);
       setNewLikes((pre) => [...pre, message]);
     });
-  };
-
-  const detectMainRoom = async () => {
-    const response = await axios
-      .post(
-        "/chat/room/enter",
-        { roomId: mainRoom.id },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: getSecureLocalStorage("accessToken"),
-            Accept: "application/json",
-          },
-        }
-      )
-      .catch((err) => {
-        console.error(err);
-        return err.response;
-      });
-
-    console.log(response, "detectMainRoom");
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      await detectMainRoom();
-      return;
-    }
-
-    if (!response.data.isSuccess) {
-      console.log(response.data, "메인룸 디텍트 api 전송 실패");
-      return false;
-    }
-    return true;
   };
 
   const publish = (message: string, messageType: string) => {
@@ -250,179 +193,6 @@ const ChatContextProvider: React.FC = (props) => {
     });
   };
 
-  const getNewAlarms = async () => {
-    const response = await axios
-      .get("/users/alarm", {
-        headers: {
-          Authorization: getSecureLocalStorage("accessToken"),
-        },
-      })
-      .catch((err) => {
-        console.log(err, "새로운 메세지 받아오기 실패");
-        return err.response;
-      });
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      await getNewAlarms();
-      return false;
-    }
-    // if (!response.data.isSuccess) {
-    //   console.log(response, "getNewAlarms 실패");
-    //   return false;
-    // }
-
-    // 알림 목록은 차단된 아이디를 제외하고 받습니다.
-    const likeMessages: LikeAlarmType[] = response.data.likes.filter(
-      (item: any) => !user.blockIds?.includes(item.senderId)
-    );
-    const newMessages = response.data.messages.filter(
-      (item: any) => !user.blockIds?.includes(item.senderId)
-    );
-    setNewLikes([...likeMessages]);
-    setNewMessages([...newMessages]);
-    return true;
-  };
-
-  const blockUser = async (userId: number) => {
-    const response = await axios
-      .post(
-        `/users/block`,
-        { userId },
-        {
-          headers: {
-            Authorization: getSecureLocalStorage("accessToken"),
-          },
-        }
-      )
-      .catch((err) => err.response);
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      await blockUser(userId);
-      return;
-    }
-
-    console.log(response, "유저 차단 결과");
-    if (!response.data.isSuccess) {
-      console.log(response, "유저 차단 실패");
-      return;
-    }
-
-    const newBlockIds = user.blockIds || [];
-    newBlockIds.push(userId);
-    updateUser({ blockIds: newBlockIds });
-    return true;
-  };
-
-  const unblockUser = async (userId: number) => {
-    const response = await axios
-      .delete("/users/block", {
-        data: { userId: userId },
-        headers: {
-          Authorization: getSecureLocalStorage("accessToken"),
-        },
-      })
-      .catch((err) => err.response);
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-
-      await grantRefresh();
-      await unblockUser(userId);
-      return;
-    }
-
-    console.log(response, "유저 차단해제 결과");
-
-    if (!response.data.isSuccess) {
-      console.log(response, "유저 차단해제 실패");
-      return;
-    }
-
-    const newBlockIds = arrayRemovedItem(userId, user.blockIds || []);
-    updateUser({ blockIds: newBlockIds });
-    return true;
-  };
-
-  // totalMessage 가져오기
-  const getMessageLog = async () => {
-    const response = await axios
-      // BACKEND_URL 이 api만 왜이러지
-      .get(BACKEND_URL + "/chat/", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getSecureLocalStorage("accessToken"),
-          Accept: "application/json",
-        },
-      })
-      .catch((err) => err.response);
-
-    console.log(response, "getMessageLog");
-    if (response.status === 403) {
-      message.error("프로필을 작성해주세요.", {
-        onClose: () => {
-          router.push("/account/profile");
-        },
-      });
-    }
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      // access token 만료
-      // refresh token 전송
-      await grantRefresh();
-      await getMessageLog();
-      return;
-    }
-    // if (!response.data.isSuccess) {
-    //   console.log(response.data, "getMessage Log 실패");
-    //   return;
-    // }
-    return response.data.data;
-  };
-
-  // 메인 채팅 내용 분류해서 넣기
   const organizeMainChat = (totalMessage: RoomType[], mainRoomId: number) => {
     const mainChatLog = totalMessage.find((item) => item.roomId === mainRoomId);
     if (!mainChatLog) return;
@@ -430,9 +200,10 @@ const ChatContextProvider: React.FC = (props) => {
     setMainChatMessages([...mainChatLog.messages]);
   };
 
-  // 모든 채팅 메세지들 분류해서 넣기
+  //mainRoomId을 인수로 받지 말고 그냥 mainRoom으로 받아도 되지않나?
   const organizeChatMessages = async (mainRoomId: number) => {
     const totalMessage = await getMessageLog();
+    if (!totalMessage) return;
     // 토탈 메세지 저장
     setTotalMessage(totalMessage);
     // 메인 채팅내용 저장
@@ -445,31 +216,24 @@ const ChatContextProvider: React.FC = (props) => {
     if (user.role === "ADMIN") return;
 
     (async () => {
-      const result = await getNewAlarms();
-      if (!result) return;
+      await getNewAlarms();
       connect();
     })();
-    return () => disconnect();
-  }, [JSON.stringify(user.id)]);
 
-  // useEffect(() => {
-  //   if (!isLogin || !user.id) return;
-  //   if (user.role === "ADMIN") return;
-  //   if (avoidLocalStorageUndefined("accessToken", "") === "") return;
-  // }, [avoidLocalStorageUndefined("accessToken", "")]);
+    return () => disconnect();
+  }, [user.id, isLogin, user.role]);
 
   useEffect(() => {
+    if (mainRoom.id === -2) return;
     console.log(mainRoom.id, "메인룸변경");
     mainRoomRef.current.id = mainRoom.id;
 
     // 메인 룸 변경 api 전송;
     (async () => {
-      const result = await detectMainRoom();
-      if (!result) return;
+      await noticeMainRoom();
     })();
 
     if (mainRoom.id === -1) return;
-
     // 메인룸에 해당하는 새로운 메시지 거르기
     setNewMessages((pre) => {
       const result = pre;
@@ -480,7 +244,7 @@ const ChatContextProvider: React.FC = (props) => {
       });
       return filteredNewMessages;
     });
-  }, [JSON.stringify(mainRoom.id)]);
+  }, [mainRoom.id]);
 
   //새로운 방이 생기면
   useEffect(() => {
@@ -506,11 +270,8 @@ const ChatContextProvider: React.FC = (props) => {
     publish,
     newLikes,
     setNewLikes,
-    blockUser,
-    unblockUser,
-    getMessageLog,
-    organizeMainChat,
     organizeChatMessages,
+    organizeMainChat,
   };
 
   return (

@@ -25,6 +25,7 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
     textAreaRef.current.style.height = "110px";
     textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
   };
+
   const [isActive, setIsActive] = useState(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const textAreaResize = useCallback(textAreaResizHandle, []);

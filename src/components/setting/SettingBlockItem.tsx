@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { MouseEventHandler, useContext, useState } from "react";
 import styled from "styled-components";
+import { useBlock } from "../../hooks/api/useBlock";
 import { AuthContext } from "../../store/AuthContext";
 import { ChatContext } from "../../store/ChatContext";
 import { Button } from "../common";
@@ -9,21 +10,29 @@ import { BlockItem } from "./SettingBlockList";
 interface BlockItemProps extends BlockItem {}
 
 const SettingBlockItem: React.FC<BlockItemProps> = (props) => {
-  const { unblockUser, blockUser } = useContext(ChatContext);
+  const { unblockUser, blockUser } = useBlock();
   const { user } = useContext(AuthContext);
   const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.userId));
 
-  const handleClickUnblock: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleClickUnblock: MouseEventHandler<HTMLButtonElement> = async (
+    e
+  ) => {
     e.preventDefault();
-    unblockUser(props.userId);
+    await unblockUser(props.userId);
     setIsBlock(false);
   };
 
-  const handleClickBlock: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleClickBlock: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
-    blockUser(props.userId);
+    await blockUser(props.userId);
     setIsBlock(true);
   };
+
+  const blockButton = isBlock ? (
+    <UnblockButton onClick={handleClickUnblock}>차단 해제</UnblockButton>
+  ) : (
+    <BlockButton onClick={handleClickBlock}>차단</BlockButton>
+  );
 
   return (
     <BlockBox>
@@ -41,11 +50,7 @@ const SettingBlockItem: React.FC<BlockItemProps> = (props) => {
         <BlockItemName>{props.name}</BlockItemName>
         <BlockItemDescription>메세지 차단, 알림 차단</BlockItemDescription>
       </BlockItemInfo>
-      {isBlock ? (
-        <UnblockButton onClick={handleClickUnblock}>차단 해제</UnblockButton>
-      ) : (
-        <BlockButton onClick={handleClickBlock}>차단</BlockButton>
-      )}
+      {blockButton}
     </BlockBox>
   );
 };

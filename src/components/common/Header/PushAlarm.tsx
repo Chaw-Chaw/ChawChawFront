@@ -1,14 +1,16 @@
 import { MouseEventHandler, useContext, useState } from "react";
 import styled from "styled-components";
-import { ChatContext } from "../../../store/ChatContext";
+import { ChatContext, MessageType } from "../../../store/ChatContext";
 import { ChatBox } from "../ChatBox";
 import { AiFillBell } from "react-icons/ai";
 import { AlarmCount } from "../AlarmCount";
 import { useRouter } from "next/router";
 import { LIMIT_NEWALARM_SIZE } from "../../../constants";
+import { CHAT_PAGE_URL } from "../../../constants/pageUrls";
+import { titleMatches } from "selenium-webdriver/lib/until";
 
-const PushAlarm: React.FC = (props) => {
-  const { newMessages, setMainRoom, newLikes } = useContext(ChatContext);
+const PushAlarm: React.FC = () => {
+  const { newMessages, newLikes } = useContext(ChatContext);
   const [isActive, setIsActive] = useState(false);
   const router = useRouter();
 
@@ -17,87 +19,87 @@ const PushAlarm: React.FC = (props) => {
     setIsActive((pre) => !pre);
   };
 
+  const viewAlarmCount = () => {
+    const newAlarmNumber =
+      router.pathname !== CHAT_PAGE_URL
+        ? newMessages.length + newLikes.length
+        : newLikes.length;
+    const alarmCount =
+      newAlarmNumber > LIMIT_NEWALARM_SIZE
+        ? LIMIT_NEWALARM_SIZE
+        : newAlarmNumber;
+
+    return newAlarmNumber !== 0 ? (
+      <AlarmCount>
+        <span>{alarmCount}</span>
+      </AlarmCount>
+    ) : null;
+  };
+
+  const alarmMessages = newMessages.map((item) => {
+    const context = item.messageType === "IMAGE" ? "🏞 사진" : item.message;
+    return (
+      <AlarmChatBox key={item.regDate}>
+        <ChatBox
+          imageUrl={item.imageUrl}
+          regDate={item.regDate.split("T").join(" ")}
+          sender={item.sender}
+          context={
+            context.length > 20 ? context.substring(0, 20) + "..." : context
+          }
+          roomId={item.roomId}
+          type="CHATALARM"
+          senderId={item.senderId}
+        />
+      </AlarmChatBox>
+    );
+  });
+
+  const alarmlikeMessages = newLikes.map((item) => {
+    return (
+      <AlarmChatBox key={item.regDate}>
+        <ChatBox
+          imageUrl={`/Layout/heart.png`}
+          regDate={item.regDate}
+          sender={item.likeType}
+          context={`${item.name}님이 ${item.likeType} 하셨습니다.`.substring(
+            0,
+            20
+          )}
+          type="LIKEALARM"
+        />
+      </AlarmChatBox>
+    );
+  });
+
+  const emptyAlarm = (title: string) => {
+    return (
+      <EmptyNewMessageMark>
+        <span>{title}</span>
+      </EmptyNewMessageMark>
+    );
+  };
+
+  const messageAlarm = router.pathname !== CHAT_PAGE_URL && (
+    <>
+      <PushAlarmBox>
+        {newMessages.length > 0 ? alarmMessages : emptyAlarm("No new Messages")}
+      </PushAlarmBox>
+      <Divider />
+    </>
+  );
+
   return (
     <AlarmBell onClick={controlPushAlarm}>
       <AiFillBell />
-      {(() => {
-        const newAlarmNumber =
-          router.pathname !== "/chat"
-            ? newMessages.length + newLikes.length
-            : newLikes.length;
-
-        if (newAlarmNumber !== 0) {
-          return (
-            <AlarmCount>
-              <span>
-                {newAlarmNumber > LIMIT_NEWALARM_SIZE
-                  ? LIMIT_NEWALARM_SIZE
-                  : newAlarmNumber}
-              </span>
-            </AlarmCount>
-          );
-        } else null;
-      })()}
+      {viewAlarmCount()}
       <PushAlarmContainer isActive={isActive}>
         <PushAlarmTitle>New Alarms</PushAlarmTitle>
-        {router.pathname !== "/chat" ? (
-          <>
-            <PushAlarmBox>
-              {newMessages.length > 0 ? (
-                newMessages.map((item: any, index) => {
-                  const context =
-                    item.messageType === "IMAGE" ? "🏞 사진" : item.message;
-                  return (
-                    <AlarmChatBox key={index}>
-                      <ChatBox
-                        imageUrl={item.imageUrl}
-                        regDate={item.regDate.split("T").join(" ")}
-                        sender={item.sender}
-                        context={
-                          context.lenght > 20
-                            ? context.substring(0, 20) + "..."
-                            : context
-                        }
-                        roomId={item.roomId}
-                        type="CHATALARM"
-                        senderId={item.senderId}
-                      />
-                    </AlarmChatBox>
-                  );
-                })
-              ) : (
-                <EmptyNewMessageMark>
-                  <span>No new messages</span>
-                </EmptyNewMessageMark>
-              )}
-            </PushAlarmBox>
-            <Divider />
-          </>
-        ) : null}
-
+        {messageAlarm}
         <PushAlarmBox>
-          {newLikes.length > 0 ? (
-            newLikes.map((item: any, index) => {
-              return (
-                <AlarmChatBox key={index}>
-                  <ChatBox
-                    imageUrl={`/Layout/heart.png`}
-                    regDate={item.regDate}
-                    sender={item.likeType}
-                    context={`${item.name}님이 ${item.likeType} 하셨습니다.`.substring(
-                      0,
-                      20
-                    )}
-                    type="LIKEALARM"
-                  />
-                </AlarmChatBox>
-              );
-            })
-          ) : (
-            <EmptyNewMessageMark>
-              <span>No new follow alarms</span>
-            </EmptyNewMessageMark>
-          )}
+          {newLikes.length > 0
+            ? alarmMessages
+            : emptyAlarm("No new likes Messages")}
         </PushAlarmBox>
       </PushAlarmContainer>
     </AlarmBell>

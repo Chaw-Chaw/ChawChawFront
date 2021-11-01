@@ -1,18 +1,21 @@
 import { LanguageLocale, Layout } from "../../components/common";
 import styled from "styled-components";
 import { PostSearch } from "../../components/post/PostSearch";
-import PostOrder, { orderOptions } from "../../components/post/PostOrder";
+import PostOrder from "../../components/post/PostOrder";
 import PostSection from "../../components/post/PostSection";
 import { useContext, useEffect, useRef, useState } from "react";
-import axios from "axios";
 import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import { useAlert } from "react-alert";
-import { getSecureLocalStorage } from "../../utils";
+import { orderOptions } from "../../constants/order";
+import { usePost } from "../../hooks/api/post/usePost";
+import { PostCardProps } from "../../../types/post";
+import { LOGIN_API_URL } from "../../constants";
 
 export default function Post() {
-  const { grantRefresh, user, isLogin } = useContext(AuthContext);
-  const [postInfo, setPostInfo] = useState([]);
+  const { user, isLogin } = useContext(AuthContext);
+  const { getPostCardList } = usePost();
+  const [postInfo, setPostInfo] = useState<PostCardProps[]>([]);
   const [sortInfo, setSortInfo] = useState<string[]>([
     "선택언어",
     "선택희망언어",
@@ -26,47 +29,23 @@ export default function Post() {
   const blockIds = user.blockIds ? user.blockIds.join("/") : "";
   const searchType = useRef("BASIC");
 
-  const getPosts = async () => {
+  const loadPostCards = async () => {
     const languageConvert = LanguageLocale[sortInfo[0]] || "";
     const hopeLanguageConvert = LanguageLocale[sortInfo[1]] || "";
     const orderConvert = orderOptions[sortInfo[2]] || "";
     const isFirst = postIds.current === "";
 
-    const response = await axios
-      .get(`/users`, {
-        params: {
-          name: searchName.current,
-          language: languageConvert,
-          hopeLanguage: hopeLanguageConvert,
-          order: orderConvert,
-          isFirst: isFirst,
-        },
-        headers: {
-          Authorization: getSecureLocalStorage("accessToken"),
-        },
-      })
-      .catch((err) => err.response);
-    console.log(response, "postInfo");
-    const data = response.data.data;
+    const searchCondition = {
+      name: searchName.current,
+      language: languageConvert,
+      hopeLanguage: hopeLanguageConvert,
+      order: orderConvert,
+      isFirst: isFirst,
+    };
 
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      await getPosts();
-      return;
-    }
+    const data = await getPostCardList(searchCondition);
 
-    if (response.data.responseMessage === "조회 결과가 존재하지 않음") {
+    if (data.length === 0) {
       setIsEnd(true);
       if (isFirst && searchType.current === "SEARCH") {
         message.info("조회 결과가 없습니다.");
@@ -74,18 +53,13 @@ export default function Post() {
       return;
     }
 
-    if (!response.data.isSuccess) {
-      console.log(response, "getPost 실패");
-      return;
-    }
-
     if (postIds.current === "") {
-      postIds.current += data.map((item: any) => item.id).join("/");
+      postIds.current += data.map((item) => item.id).join("/");
     } else {
-      postIds.current += "/" + data.map((item: any) => item.id).join("/");
+      postIds.current += "/" + data.map((item) => item.id).join("/");
     }
 
-    setPostInfo((item: any) => {
+    setPostInfo((item) => {
       const result = item;
       if (isFirst === true) return data;
       return result.concat(data);
@@ -101,12 +75,12 @@ export default function Post() {
     // 검색 직후 바로 observer로 인한 중복검색 방지
     searchType.current = "SEARCH";
     document.cookie = "exclude=" + blockIds + ";path=/;";
-    await getPosts();
+    await loadPostCards();
     document.cookie = "exclude=;path=/;expires=Thu, 18 Dec 2013 12:00:00 GMT";
     searchType.current = "BASIC";
   };
 
-  const target = useRef<any>(null);
+  const target = useRef<HTMLDivElement>(null);
 
   const onIntersect = async (
     [entry]: IntersectionObserverEntry[],
@@ -126,7 +100,7 @@ export default function Post() {
           "exclude=" + blockIds + "/" + postIds.current + ";path=/;";
       }
 
-      await getPosts();
+      await loadPostCards();
       document.cookie = "exclude=;path=/;expires=Thu, 18 Dec 2013 12:00:00 GMT";
       observer.observe(entry.target);
     }
@@ -136,7 +110,7 @@ export default function Post() {
     if (!isLogin) {
       message.error("로그인 후에 서비스를 이용해주세요.", {
         onClose: () => {
-          router.push("/account/login");
+          router.push(LOGIN_API_URL);
         },
       });
     }
@@ -149,7 +123,7 @@ export default function Post() {
   }, []);
 
   return (
-    <Layout type="post">
+    <Layout>
       <Container>
         <PostSearch searchHandler={searchHandler} />
         <PostOrder setSortInfo={setSortInfo} sortInfo={sortInfo} />

@@ -1,12 +1,12 @@
 import { MouseEventHandler, useContext } from "react";
 import styled from "styled-components";
-import { AuthContext } from "../../store/AuthContext";
+import { useLogin } from "../../hooks/api/account/useLogin";
 import { Button } from "../common";
 import { ToggleItem } from "./ToggleItem";
 import { ToggleListItem } from "./ToggleListItem";
 
 const TapList: React.FC = () => {
-  const { logout } = useContext(AuthContext);
+  const { logout } = useLogin();
   const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     logout();
@@ -23,22 +23,22 @@ const TapList: React.FC = () => {
       <ToggleItem title="통계">
         <ToggleListItem
           title="학교 활성도 순위"
-          type="rankSchool"
+          type="RANK_SCHOOL"
           link="/manage/statistics"
         />
         <ToggleListItem
           title="희망 언어 순위"
-          type="hopeLanguage"
+          type="HOPE_LANGUAGE"
           link="/manage/statistics"
         />
         <ToggleListItem
           title="할 수 있는 언어 순위"
-          type="language"
+          type="LANGUAGE"
           link="/manage/statistics"
         />
         <ToggleListItem
           title="인기 검색 언어 순위"
-          type="searchLanguage"
+          type="SEARCH_LANGUAGE"
           link="/manage/statistics"
         />
       </ToggleItem>

@@ -1,15 +1,13 @@
-import axios from "axios";
 import { useRouter } from "next/router";
 import { Dispatch, MouseEventHandler, SetStateAction, useContext } from "react";
 import styled from "styled-components";
-import { INITIAL_ID, LIMIT_NEWALARM_SIZE } from "../../../constants";
-import { AuthContext } from "../../../store/AuthContext";
+import { LIMIT_NEWALARM_SIZE } from "../../../constants";
 import { ChatContext } from "../../../store/ChatContext";
-import { getSecureLocalStorage } from "../../../utils";
 import { RiHome2Line } from "react-icons/ri";
 import { BsBoxArrowRight, BsChatDots } from "react-icons/bs";
 import { AlarmCount, ChangeLanguageDropDown } from "../../common";
-import { useAlert } from "react-alert";
+import { POST_PAGE_URL } from "../../../constants/pageUrls";
+import { useChat } from "../../../hooks/api/chat/useChat";
 
 interface ChatRoomHeaderType {
   selectLanguage: string[];
@@ -18,14 +16,12 @@ interface ChatRoomHeaderType {
 
 const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
   const router = useRouter();
-  const message = useAlert();
-  const { setIsViewChatList, mainRoom, setTotalMessage, newMessages } =
-    useContext(ChatContext);
-  const { grantRefresh } = useContext(AuthContext);
+  const { setIsViewChatList, newMessages } = useContext(ChatContext);
+  const { leaveChat } = useChat();
 
   const handleClickBackHomeBtn: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    router.push("/post");
+    router.push(POST_PAGE_URL);
   };
 
   const handleClickViewChatListBtn: MouseEventHandler<HTMLButtonElement> = (
@@ -39,61 +35,18 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
     e
   ) => {
     e.preventDefault();
-    const result = await leaveChat();
-    if (!result) return;
-
-    setTotalMessage((pre) => {
-      const result = pre;
-      const resultFilter = result.filter((item) => item.roomId !== mainRoom.id);
-      return resultFilter;
-    });
-
-    router.push({
-      pathname: "/chat",
-      query: { userId: INITIAL_ID },
-    });
+    await leaveChat();
   };
 
-  const leaveChat = async () => {
-    const response = await axios
-      .delete("/chat/room", {
-        data: {
-          roomId: mainRoom.id,
-        },
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getSecureLocalStorage("accessToken"),
-          Accept: "application/json",
-        },
-      })
-      .catch((err) => err.response);
-
-    console.log(response, "leaveChatRoom");
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      //acessToken 만료
-      await grantRefresh();
-      await leaveChat();
-      return false;
-    }
-
-    if (!response.data.isSuccess) {
-      console.log(response.data);
-      return false;
-    }
-    return true;
-  };
+  const newMessageNumber = newMessages.length !== 0 && (
+    <AlarmCount>
+      <span>
+        {newMessages.length > LIMIT_NEWALARM_SIZE
+          ? LIMIT_NEWALARM_SIZE
+          : newMessages.length}
+      </span>
+    </AlarmCount>
+  );
 
   return (
     <Header>
@@ -107,15 +60,7 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
         <ChatListViewButtonBox>
           <ViewChatListButton onClick={handleClickViewChatListBtn}>
             <BsChatDots />
-            {newMessages.length !== 0 && (
-              <AlarmCount>
-                <span>
-                  {newMessages.length > LIMIT_NEWALARM_SIZE
-                    ? LIMIT_NEWALARM_SIZE
-                    : newMessages.length}
-                </span>
-              </AlarmCount>
-            )}
+            {newMessageNumber}
           </ViewChatListButton>
         </ChatListViewButtonBox>
       </MessagesHeaderIcons>

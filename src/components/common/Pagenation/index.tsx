@@ -6,11 +6,12 @@ import {
   useState,
 } from "react";
 import styled from "styled-components";
-import { pagenationInfoType } from "../../../pages/manage/users";
+import { PagenationInfoType } from "../../../../types/manage";
+
 import { PageButton } from "./PageButton";
 
 const Pagenation: React.FC<{
-  pagenationInfo: pagenationInfoType;
+  pagenationInfo: PagenationInfoType;
   selectedPageNumber: number;
   setSelectedPageNumber: Dispatch<SetStateAction<number>>;
 }> = (props) => {
@@ -19,7 +20,7 @@ const Pagenation: React.FC<{
     {
       length: props.pagenationInfo.endPage - props.pagenationInfo.startPage + 1,
     },
-    (v, i) => i + props.pagenationInfo.startPage
+    (_, i) => i + props.pagenationInfo.startPage
   );
 
   const handleClickMoveLast: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -43,11 +44,32 @@ const Pagenation: React.FC<{
     props.setSelectedPageNumber(props.pagenationInfo.startPage - 1);
   };
 
+  const fullSizeButtons = totalPageArr.map((item) => {
+    return (
+      <PageButton
+        key={item}
+        pageNum={item}
+        currentNum={props.pagenationInfo.curPage}
+        setSelectedPageNumber={props.setSelectedPageNumber}
+      />
+    );
+  });
+
+  const remainSizeButtons = pagenationSizeArr.map((item) => {
+    return (
+      <PageButton
+        key={item}
+        pageNum={item}
+        currentNum={props.pagenationInfo.curPage}
+        setSelectedPageNumber={props.setSelectedPageNumber}
+      />
+    );
+  });
   useEffect(() => {
     // pagenation 이 초기상태라면 넘김
     if (props.pagenationInfo.curPage === 0) return;
     const totalPageCount = Math.ceil(props.pagenationInfo.totalCnt / 10);
-    setTotalPageArr(Array.from({ length: totalPageCount }, (v, i) => i + 1));
+    setTotalPageArr(Array.from({ length: totalPageCount }, (_, i) => i + 1));
   }, [JSON.stringify(props.pagenationInfo)]);
 
   return (
@@ -66,27 +88,7 @@ const Pagenation: React.FC<{
           {"<"}
         </PageMovePrevious>
       </PageMoveButtonsBox>
-      {totalPageArr.length <= 10
-        ? totalPageArr.map((item, index) => {
-            return (
-              <PageButton
-                key={index}
-                pageNum={item}
-                currentNum={props.pagenationInfo.curPage}
-                setSelectedPageNumber={props.setSelectedPageNumber}
-              />
-            );
-          })
-        : pagenationSizeArr.map((item, index) => {
-            return (
-              <PageButton
-                key={index}
-                pageNum={item}
-                currentNum={props.pagenationInfo.curPage}
-                setSelectedPageNumber={props.setSelectedPageNumber}
-              />
-            );
-          })}
+      {totalPageArr.length <= 10 ? fullSizeButtons : remainSizeButtons}
       <PageMoveButtonsBox>
         <PageMoveNext
           disable={!props.pagenationInfo.isNext}
