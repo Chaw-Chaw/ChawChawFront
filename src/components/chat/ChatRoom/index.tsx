@@ -78,7 +78,7 @@ const ChatRoom: React.FC = () => {
         return (
           <ChatMessage
             userId={chatMessage.senderId}
-            key={index}
+            key={index + chatMessage.roomId}
             src={userImageUrl(chatMessage.senderId, chatMessage.imageUrl)}
             imageUrl={chatImageUrl(
               chatMessage.messageType,
