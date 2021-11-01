@@ -5,12 +5,10 @@ import { ThemeToggle } from "../ThemeToggle";
 import HeaderCondition from "./HeaderCondition";
 
 const MobileHeader: React.FC = () => {
-  const { id, setTheme } = useContext(ThemeContext);
-
   return (
     <MobileHeaderContainer>
       <ThemeToggleBox>
-        <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
+        <ThemeToggle />
       </ThemeToggleBox>
       <Logo />
       <HeaderCondition />

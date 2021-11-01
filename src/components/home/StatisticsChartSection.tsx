@@ -36,12 +36,8 @@ const StatisticsChartSection: React.FC = () => {
   };
 
   useEffect(() => {
-    // changeChartData();
     //첫 렌더링시에는 서버에서 아래 코드를 실행시켜버리는구나
-    console.log(isLoading, "isLoading");
-    console.log(chartData, "chartData");
-    console.log(subject, "subject");
-    // if (isLoading) return;
+
     (async () => {
       await changeChartData();
     })();

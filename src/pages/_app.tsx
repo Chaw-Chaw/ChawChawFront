@@ -1,5 +1,5 @@
 import type { AppProps } from "next/app";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import LightTheme from "../theme/light";
 import DarkTheme from "../theme/dark";
@@ -11,6 +11,7 @@ import {
 import { AlertMessage } from "../components/common";
 import { DefaultSeo } from "next-seo";
 import { ChatContextProvider } from "../store/ChatContext";
+import { avoidLocalStorageUndefined } from "../utils";
 
 const GlobalStyles = createGlobalStyle`
   @font-face {
@@ -26,12 +27,20 @@ const GlobalStyles = createGlobalStyle`
     min-height: 100vh;
     margin: 0;
     color: ${(props) => props.theme.bodyFontColor};
-  
   }
 `;
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [theme, setTheme] = useState(LightTheme);
+
+  useEffect(() => {
+    setTheme(
+      avoidLocalStorageUndefined("displayMode", "light") === "light"
+        ? LightTheme
+        : DarkTheme
+    );
+  }, []);
+
   const AlertTemplate: React.FC<AlertComponentPropsWithStyle> = ({
     message,
     close,
