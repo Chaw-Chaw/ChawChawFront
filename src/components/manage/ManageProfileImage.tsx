@@ -1,123 +1,41 @@
-import { MouseEventHandler, useContext, useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import { AuthContext } from "../../store/AuthContext";
 import { Button } from "../common";
-import axios from "axios";
 import { useAlert } from "react-alert";
 import { DEFAULT_PROFILE_IMAGE } from "../../constants";
-import { getSecureLocalStorage } from "../../utils";
+import { useSendImage } from "../../hooks/api/useSendImage";
 
 const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
   props
 ) => {
-  const { grantRefresh } = useContext(AuthContext);
-  const [profileImage, setProfileImage] = useState(
-    props.userImage || DEFAULT_PROFILE_IMAGE
-  );
+  const { putImage, sendManageProfileImage, deleteManageProfileImage } =
+    useSendImage();
+  const [profileImage, setProfileImage] = useState(props.userImage);
   const message = useAlert();
-
-  const sendImage = async (image: FormData) => {
-    const response = await axios
-      .post("/admin/users/image", image, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: getSecureLocalStorage("accessToken"),
-        },
-      })
-      .catch((err) => err.response);
-
-    console.log(response, " sendImage");
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      await sendImage(image);
-      return false;
-    }
-
-    if (!response.data.isSuccess) {
-      console.log(response, "sendImage 실패");
-      return false;
-    }
-
-    return response;
-  };
-
-  const deleteImage = async () => {
-    const response = await axios
-      .delete("/admin/users/image", {
-        data: { userId: props.userId },
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getSecureLocalStorage("accessToken"),
-          Accept: "*/*",
-        },
-      })
-      .catch((err) => err.response);
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      await deleteImage();
-      return false;
-    }
-
-    if (!response.data.isSuccess) {
-      console.error(response.data);
-      return false;
-    }
-    return response;
-  };
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = async (
     e
   ) => {
-    const target = e.target as HTMLInputElement;
-    const file: File = (target.files as FileList)[0];
-    if (file === undefined) return;
-    if (file.size > 1024 * 1024 * 5) {
-      message.error("5MB 이상 파일을 업로드 할 수 없습니다.");
-      return;
+    try {
+      const image = putImage(e);
+      if (!image) throw new Error("파일이 없습니다.");
+      image.append("userId", String(props.userId));
+      const imageUrl = await sendManageProfileImage(image);
+      setProfileImage(imageUrl);
+      message.success("이미지 업로드 성공!");
+    } catch (err) {
+      message.error(err.message);
     }
-    const image = new FormData();
-    image.append("file", file);
-    image.append("userId", String(props.userId));
-    const response = await sendImage(image);
-    if (!response) return;
-    message.success("이미지 업로드 성공!");
-    setProfileImage(response.data.data);
   };
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
-    const response = await deleteImage();
-    if (!response) return;
+    await deleteManageProfileImage(props.userId);
     setProfileImage(DEFAULT_PROFILE_IMAGE);
   };
 
   useEffect(() => {
-    if (!props.userImage) return;
     setProfileImage(props.userImage);
   }, [props.userImage]);
 

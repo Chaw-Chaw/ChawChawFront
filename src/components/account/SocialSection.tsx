@@ -1,21 +1,18 @@
-import { MouseEventHandler, useContext } from "react";
+import { MouseEventHandler } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import CSS from "csstype";
-import { AuthContext } from "../../../store/AuthContext";
 import { RiKakaoTalkFill } from "react-icons/ri";
-import FacebookLogin from "@greatsumini/react-facebook-login";
 import { FaFacebookF } from "react-icons/fa";
 import {
-  FACEBOOK_APP_ID,
   KAKAO_CLIENT_ID,
   KAKAO_OAUTH_URL,
   REDIRECT_URL,
-} from "../../../constants";
+} from "../../constants";
+import { FacebookLoginWrap } from "../common/FacebookLoginWrap";
 
 const SocialSection: React.FC = () => {
   const router = useRouter();
-  const { login } = useContext(AuthContext);
 
   const callKakaoLogin = () => {
     router.push({
@@ -40,26 +37,11 @@ const SocialSection: React.FC = () => {
         <KakaoLogin onClick={handleClickKaKaoBtn}>
           <RiKakaoTalkFill />
         </KakaoLogin>
-        <FacebookLogin
-          style={styleFacebookLogin}
-          appId={FACEBOOK_APP_ID}
-          onSuccess={(response) => {
-            console.log(response, "Login Success!");
-            const facebookToken = response?.accessToken;
-            const facebookId = response?.userID;
-            if (facebookToken && facebookId) {
-              login({ facebookToken, facebookId, provider: "facebook" });
-            }
-          }}
-          onFail={(error) => {
-            console.log("Login Failed!");
-            console.log("status: ", error.status);
-          }}
-        >
+        <FacebookLoginWrap>
           <FacebookIconBox>
             <FaFacebookF />
           </FacebookIconBox>
-        </FacebookLogin>
+        </FacebookLoginWrap>
       </ButtonSection>
     </SocialContainer>
   );

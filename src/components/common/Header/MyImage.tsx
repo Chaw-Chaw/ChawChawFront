@@ -6,10 +6,16 @@ import { MouseEventHandler, useContext, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import {
+  CHAT_PAGE_URL,
+  PROFILE_PAGE_URL,
+  SETTING_PAGE_URL,
+} from "../../../constants/pageUrls";
+import { useLogin } from "../../../hooks/api/account/useLogin";
 
 const MyImage: React.FC<{ profileImage: string }> = (props) => {
   const [isActive, setIsActive] = useState(false);
-  const { logout } = useContext(AuthContext);
+  const { logout } = useLogin();
   const router = useRouter();
 
   const handleClickImage: MouseEventHandler<HTMLImageElement> = (e) => {
@@ -18,16 +24,16 @@ const MyImage: React.FC<{ profileImage: string }> = (props) => {
   };
   const handleClickProfile: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
-    router.push("/account/profile");
+    router.push(PROFILE_PAGE_URL);
   };
   const handleClickChat: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
-    router.push({ pathname: "/chat", query: { userId: -1 } });
+    router.push({ pathname: CHAT_PAGE_URL, query: { userId: -1 } });
   };
 
   const handleClickSetting: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
-    router.push("/account/setting");
+    router.push(SETTING_PAGE_URL);
   };
   const handleClickLogout: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
@@ -43,7 +49,6 @@ const MyImage: React.FC<{ profileImage: string }> = (props) => {
         onClick={handleClickImage}
         objectFit="cover"
       />
-
       <SelectMenu isActive={isActive}>
         <Option onClick={handleClickProfile}>
           <CgProfile />

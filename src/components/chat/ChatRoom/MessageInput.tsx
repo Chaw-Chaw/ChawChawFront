@@ -12,7 +12,7 @@ import { AuthContext } from "../../../store/AuthContext";
 import { useAlert } from "react-alert";
 import { ChatContext } from "../../../store/ChatContext";
 import { INITIAL_ROOMID } from "../../../constants";
-import { getSecureLocalStorage } from "../../../utils";
+import { useSendImage } from "../../../hooks/api/useSendImage";
 
 interface MessageInputProps {
   value: string;
@@ -21,63 +21,11 @@ interface MessageInputProps {
 }
 
 const MessageInput: React.FC<MessageInputProps> = (props) => {
-  const { mainRoom, publish } = useContext(ChatContext);
+  const { mainRoom } = useContext(ChatContext);
   const { user } = useContext(AuthContext);
-  const isNotActive = mainRoom.id === INITIAL_ROOMID ? true : false;
-  const { grantRefresh } = useContext(AuthContext);
   const message = useAlert();
-
-  const sendImage = async (image: FormData) => {
-    const response = await axios
-      .post("/chat/image", image, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: getSecureLocalStorage("accessToken"),
-        },
-      })
-      .catch((err) => err.response);
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      await sendImage(image);
-      return;
-    }
-
-    if (!response.data.isSuccess) {
-      console.log(response.data, "이미지 업로드 실패");
-      return;
-    }
-
-    const imageUrl = response.data.data;
-    return imageUrl;
-  };
-
-  const imageMessageSend: React.ChangeEventHandler<HTMLInputElement> = async (
-    e
-  ) => {
-    const target = e.target as HTMLInputElement;
-    const file: File = (target.files as FileList)[0];
-    if (file === undefined) return;
-    if (file.size > 1024 * 1024 * 5) {
-      message.error("5MB 이상 파일을 업로드 할 수 없습니다.");
-      return;
-    }
-    const image = new FormData();
-    image.append("file", file);
-    const imageUrl = await sendImage(image);
-    publish(imageUrl, "IMAGE");
-  };
+  const { sendImageMessage } = useSendImage();
+  const isNotActive = mainRoom.id === INITIAL_ROOMID ? true : false;
 
   const handleKeyPress: KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
     if (isNotActive) return;
@@ -97,7 +45,7 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
       message.error("차단한 사용자 입니다.");
       return;
     }
-    imageMessageSend(e);
+    sendImageMessage(e);
     // 같은 이미지 한번더 보낼수 있도록 이벤트 타겟 값 초기화
     e.target.value = "";
   };

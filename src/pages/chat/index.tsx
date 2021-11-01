@@ -7,12 +7,13 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import { useAlert } from "react-alert";
-import { INITIAL_ID, INITIAL_ROOMID } from "../../constants";
+import { INITIAL_ID, INITIAL_ROOMID, LOGIN_PAGE_URL } from "../../constants";
 import { ChatContext } from "../../store/ChatContext";
-import { getSecureLocalStorage } from "../../utils";
+import { getSecureLocalStorage, isExistRoom } from "../../utils";
+import { useChat } from "../../hooks/api/chat/useChat";
 
 export default function Chat() {
-  const { grantRefresh, isLogin, user } = useContext(AuthContext);
+  const { isLogin, user } = useContext(AuthContext);
   const {
     mainRoom,
     setMainRoom,
@@ -21,66 +22,15 @@ export default function Chat() {
     organizeChatMessages,
     organizeMainChat,
   } = useContext(ChatContext);
+  const { makeChatRoom } = useChat();
   const router = useRouter();
   const message = useAlert();
-
-  const makeChatRoom = async (userId: number) => {
-    const response = await axios
-      .post(
-        "/chat/room",
-        { userId: userId },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: getSecureLocalStorage("accessToken"),
-            Accept: "application/json",
-          },
-        }
-      )
-      .catch((err) => err.response);
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      await makeChatRoom(userId);
-      return;
-    }
-
-    if (response.data.responseMessage === "차단한 또는 차단된 유저") {
-      message.info(
-        "상대방을 차단 했거나 차단되어 채팅방을 생성할 수 없습니다.",
-        {
-          onClose: () => {
-            router.back();
-            return;
-          },
-        }
-      );
-    }
-
-    if (!response.data.isSuccess) {
-      console.log(response.data);
-      return;
-    }
-    console.log(response, "makeChatRoom");
-    return response.data.data.roomId;
-  };
 
   useEffect(() => {
     if (!isLogin) {
       message.error("로그인 후에 서비스를 이용해주세요.", {
         onClose: () => {
-          router.push("/account/login");
+          router.push(LOGIN_PAGE_URL);
         },
       });
     }
@@ -92,6 +42,7 @@ export default function Chat() {
 
   // 채팅페이지에서 메인룸 변경시 메인채팅창 내용 수정
   useEffect(() => {
+    if (mainRoom.id === -1) return;
     organizeMainChat(totalMessage, mainRoom.id);
   }, [JSON.stringify(mainRoom.id)]);
 
@@ -116,10 +67,20 @@ export default function Chat() {
       return;
     }
 
+    // 채팅룸 입장인경우
     if (userId !== INITIAL_ID) {
       (async () => {
-        // 채팅룸 입장인경우
-        const mainRoomId = await makeChatRoom(userId);
+        let mainRoomId = INITIAL_ROOMID;
+
+        // 여기에 새로운 api 도입
+        const existRoom = isExistRoom(totalMessage, userId);
+        // 채팅방이 없다면 채팅방 만들기
+        if (!existRoom) {
+          mainRoomId = await makeChatRoom(userId);
+        } else {
+          mainRoomId = existRoom;
+        }
+
         // 채팅방을 만들고 전체 메세지들을 받기
         setMainRoom({ id: mainRoomId, userId: userId });
         organizeChatMessages(mainRoomId);
@@ -163,7 +124,7 @@ const Container = styled.div`
 `;
 
 const ChatListWrapper = styled.div`
-  display: initial;
+  display: flex;
   width: 400px;
   @media (max-width: 1024px) {
     display: none;

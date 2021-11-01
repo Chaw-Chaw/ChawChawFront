@@ -6,6 +6,7 @@ import { Layout } from "../../../components/common";
 import { SettingBlockList } from "../../../components/setting/SettingBlockList";
 import { SettingUserDelete } from "../../../components/setting/SettingUserDelete";
 import { SettingUserUniversity } from "../../../components/setting/SettingUserUniversity";
+import { LOGIN_PAGE_URL } from "../../../constants";
 import { AuthContext } from "../../../store/AuthContext";
 
 export default function Setting() {
@@ -17,7 +18,7 @@ export default function Setting() {
     if (!isLogin) {
       message.error("로그인 후 이용해주세요.", {
         onClose: () => {
-          router.push("/account/login");
+          router.push(LOGIN_PAGE_URL);
         },
       });
     }

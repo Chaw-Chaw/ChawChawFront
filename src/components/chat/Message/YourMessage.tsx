@@ -2,7 +2,7 @@ import { MouseEventHandler, useState } from "react";
 import styled from "styled-components";
 import { MessageContext } from "./MessageContext";
 import { MessageImage } from "./MessageImage";
-import { GOOGLE_TRANSLATE_API_KEY } from "../../../constants";
+
 import {
   MyMessageProps,
   MessageImageBox,
@@ -10,9 +10,10 @@ import {
   MessageText,
 } from "./MyMessage";
 import { LanguageLocale, ModalLayout } from "../../common";
-import axios from "axios";
+
 import Image from "next/image";
 import ChatProfile from "../ChatProfile";
+import { useChat } from "../../../hooks/api/chat/useChat";
 
 interface YourMessageProps extends MyMessageProps {
   src: string;
@@ -24,6 +25,7 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
   const [open, setOpen] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [context, setContext] = useState(props.context);
+  const { translateContext } = useChat();
   const selectLanguage = LanguageLocale[props.selectLanguage[0]];
 
   const handleClickMsgBox: MouseEventHandler<HTMLDivElement> = (e) => {
@@ -33,28 +35,6 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
     return;
   };
 
-  // api 분류시 MyMessage api와 통합
-  const translateContext = async () => {
-    const url = `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_API_KEY}`;
-    const response: any = await axios
-      .get(url, {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        params: {
-          q: context,
-          source: "",
-          target: selectLanguage,
-        },
-      })
-      .catch((err) => err.response);
-    if (response.status !== 200) {
-      console.log(response, "번역 에러");
-      return;
-    }
-    return response;
-  };
   const handleClickMsgUserImage: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     setOpen(true);
@@ -70,12 +50,45 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
   ) => {
     e.preventDefault();
     if (props.imageUrl) return;
-    const response = await translateContext();
-    const convertContext = response.data.data.translations[0].translatedText;
+    const convertContext = await translateContext(context, selectLanguage);
     setContext(convertContext);
     return;
   };
 
+  const chatProfileModal = (
+    <>
+      <ModalLayout onClick={handleClickChatProfile} />
+      <ChatProfile
+        name={props.userName || ""}
+        imageUrl={props.src}
+        setOpen={setOpen}
+        userId={props.userId}
+      />
+    </>
+  );
+
+  const messageImage = (
+    <MessageImageBox>
+      <Image
+        className="chat_image"
+        src={`${props.imageUrl}`}
+        alt="채팅 이미지"
+        layout="fill"
+      />
+    </MessageImageBox>
+  );
+
+  const messageText = (
+    <YourMessageBox onClick={handleClickMsgBox}>
+      <MessageContext
+        isActive={isActive}
+        setIsActive={setIsActive}
+        type="you"
+        onClick={handleClickMsgContext}
+      />
+      <MessageText>{context}</MessageText>
+    </YourMessageBox>
+  );
   return (
     <>
       <YourMessageContainer>
@@ -85,41 +98,12 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
           </MsgUserImageWrap>
           <YourMessageContent>
             <MessageUserName>{props.userName}</MessageUserName>
-            {props.messageType === "IMAGE" ? (
-              <MessageImageBox>
-                <Image
-                  className="chat_image"
-                  src={`${props.imageUrl}`}
-                  alt="채팅 이미지"
-                  layout="fill"
-                />
-              </MessageImageBox>
-            ) : (
-              <YourMessageBox onClick={handleClickMsgBox}>
-                <MessageContext
-                  isActive={isActive}
-                  setIsActive={setIsActive}
-                  type="you"
-                  onClick={handleClickMsgContext}
-                />
-                <MessageText>{context}</MessageText>
-              </YourMessageBox>
-            )}
+            {props.messageType === "IMAGE" ? messageImage : messageText}
           </YourMessageContent>
         </YourMessageInfo>
         <RegDateMessage>{props.regDate}</RegDateMessage>
       </YourMessageContainer>
-      {open ? (
-        <>
-          <ModalLayout onClick={handleClickChatProfile} />
-          <ChatProfile
-            name={props.userName || ""}
-            imageUrl={props.src}
-            setOpen={setOpen}
-            userId={props.userId}
-          />
-        </>
-      ) : null}
+      {open && chatProfileModal}
     </>
   );
 };

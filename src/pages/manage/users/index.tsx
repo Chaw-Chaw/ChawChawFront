@@ -1,44 +1,19 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { ManageLayout } from "../../../components/manage/ManageLayout";
-import {
-  UserOrder,
-  orderOptions,
-  sortOptions,
-} from "../../../components/manage/UserOrder";
+import { UserOrder } from "../../../components/manage/UserOrder";
 import { UserList } from "../../../components/manage/UserList";
 import { PostSearch as UserSearch } from "../../../components/post/PostSearch";
-import axios from "axios";
 import { LanguageLocale, Pagenation } from "../../../components/common";
-import { getSecureLocalStorage } from "../../../utils";
-import { AuthContext } from "../../../store/AuthContext";
+import { orderOptions, sortOptions } from "../../../constants/order";
+import { PagenationInfoType, UserListItemType } from "../../../../types/manage";
+import { useManage } from "../../../hooks/api/account/manage/useManage";
 import { useAlert } from "react-alert";
 
-interface usersType {
-  id: number; // 이거 순번 아니고 그냥 userId
-  name: string;
-  school: string;
-  email: string;
-  repCountry: string;
-  repLanguage: string;
-  repHopeLanguage: string;
-  likes: number;
-  views: string;
-  regDate: string;
-}
-
-interface pagenationInfoType {
-  totalCnt: number;
-  startPage: number;
-  endPage: number;
-  curPage: number;
-  isNext: boolean;
-  isPrevious: boolean;
-}
-
 export default function ManageUser() {
-  const { grantRefresh } = useContext(AuthContext);
   const message = useAlert();
+  const { takeUserList } = useManage();
+  const [isLoading, setIsLoading] = useState(true);
   const [searchInfo, setSearchInfo] = useState<string[]>([
     "선택언어",
     "선택희망언어",
@@ -47,8 +22,8 @@ export default function ManageUser() {
     "정렬",
     "순서",
   ]);
-  const [usersList, setUsersList] = useState<usersType[]>([]);
-  const [pagenationInfo, setPagenationInfo] = useState<pagenationInfoType>({
+  const [usersList, setUsersList] = useState<UserListItemType[]>([]);
+  const [pagenationInfo, setPagenationInfo] = useState<PagenationInfoType>({
     totalCnt: 1,
     startPage: 1,
     endPage: 1,
@@ -60,6 +35,7 @@ export default function ManageUser() {
   const searchName = useRef("");
 
   const getUsersList = async () => {
+    setIsLoading(true);
     const searchCondition = {
       name: searchName.current,
       language: LanguageLocale[searchInfo[0]] || "",
@@ -70,50 +46,24 @@ export default function ManageUser() {
       order: orderOptions[searchInfo[5]] || "",
       pageNo: selectedPageNumber,
     };
-    const response = await axios
-      .get("/admin/users", {
-        params: searchCondition,
-        headers: {
-          Authorization: getSecureLocalStorage("accessToken"),
-        },
-      })
-      .catch((err) => err.response);
 
-    console.log(response, "userList");
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      await getUsersList();
+    const data = await takeUserList(searchCondition);
+    setUsersList(data.contents);
+    if (data.contents.length === 0) {
+      message.info("조회 결과가 없습니다.");
+      setIsLoading(true);
       return;
     }
-
-    if (!response.data.isSuccess) {
-      console.log(response, "getUserList");
-      if (response.data.responseMessage === "조회 결과가 존재하지 않음") {
-        message.info("조회 결과가 없습니다.");
-      }
-      return;
-    }
-
-    setUsersList(response.data.data.contents);
     setPagenationInfo({
-      totalCnt: response.data.data.totalCnt,
-      startPage: response.data.data.startPage,
-      endPage: response.data.data.endPage,
-      curPage: response.data.data.curPage,
-      isNext: response.data.data.isNext,
-      isPrevious: response.data.data.isPrevious,
+      totalCnt: data.totalCnt,
+      startPage: data.startPage,
+      endPage: data.endPage,
+      curPage: data.curPage,
+      isNext: data.isNext,
+      isPrevious: data.isPrevious,
     });
+
+    setIsLoading(false);
   };
 
   const userSearchHandler = async (inputs: string) => {
@@ -136,17 +86,17 @@ export default function ManageUser() {
           selectedPageNumber={selectedPageNumber}
           setSelectedPageNumber={setSelectedPageNumber}
         />
-        <Pagenation
-          pagenationInfo={pagenationInfo}
-          selectedPageNumber={selectedPageNumber}
-          setSelectedPageNumber={setSelectedPageNumber}
-        />
+        {!isLoading && (
+          <Pagenation
+            pagenationInfo={pagenationInfo}
+            selectedPageNumber={selectedPageNumber}
+            setSelectedPageNumber={setSelectedPageNumber}
+          />
+        )}
       </Container>
     </ManageLayout>
   );
 }
-
-export type { usersType, pagenationInfoType };
 
 const Container = styled.div`
   margin: 40px auto 0px auto;

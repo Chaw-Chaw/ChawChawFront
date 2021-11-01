@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 interface ThemeToggleProps {
-  isActive?: boolean;
-  onToggle?: () => void;
+  isActive: boolean;
+  onToggle: () => void;
 }
 
 const ThemeToggle: React.FC<ThemeToggleProps> = (props) => {

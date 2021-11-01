@@ -1,28 +1,34 @@
-import { CountryLocale, LocaleLanguage } from "../LocaleList";
+import { SetStateAction } from "react";
+import { CountryLocale, LocaleLanguage } from "../../../constants/LocaleList";
 import { DropDown } from "./DropDown";
-import { DropDownProps } from "./DropDownBox";
+import { InitialBoxProps } from "./DropDownBox";
 
-interface SelectInfoDropDownProps extends DropDownProps {}
+interface SelectInfoDropDown extends InitialBoxProps {
+  initialValue: string;
+  options: string[];
+  type: "SEARCH" | "NORMAL";
+  index: number;
+  setValues: React.Dispatch<SetStateAction<string[]>>;
+  fontSize: string;
+  width: string;
+  height: string;
+  backgroundColor: string;
+  value: string;
+  color: string;
+}
 
-const SelectInfoDropDown: React.FC<SelectInfoDropDownProps> = (props) => {
+const SelectInfoDropDown: React.FC<SelectInfoDropDown> = (props) => {
+  const options = [props.initialValue, ...props.options];
   return (
     <DropDown
       fontWeight="900"
-      fontSize={props.fontSize || "0.7rem"}
-      width={props.width || "80px"}
-      height={props.height || "30px"}
-      options={(() => {
-        if (props.options) return [props.initialValue, ...props.options];
-        if (props.type === "country")
-          return [props.initialValue, ...Object.keys(CountryLocale)];
-        if (props.type === "language" || props.type === "hopeLanguage")
-          return [props.initialValue, ...Object.values(LocaleLanguage)];
-        else return [props.initialValue, ...Object.values(LocaleLanguage)];
-      })()}
-      backgroundColor={props.backgroundColor || "#06C074"}
-      color={props.color || "white"}
+      fontSize={props.fontSize}
+      width={props.width}
+      height={props.height}
+      options={options}
+      backgroundColor={props.backgroundColor}
+      color={props.color}
       initialValue={props.initialValue}
-      search={props.search}
       index={props.index}
       type={props.type}
       setValues={props.setValues}

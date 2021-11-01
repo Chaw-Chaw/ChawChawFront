@@ -1,9 +1,8 @@
-import axios from "axios";
 import { useRouter } from "next/router";
-import { MouseEventHandler, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ManageLayout } from "../../../../components/manage/ManageLayout";
-import { AuthContext } from "../../../../store/AuthContext";
-import { divideMain, getSecureLocalStorage } from "../../../../utils";
+
+import { divideMain } from "../../../../utils";
 import {
   ProfileHeader,
   ProfileContent,
@@ -21,112 +20,41 @@ import {
 import {
   DEFAULT_FACEBOOK_URL,
   DEFAULT_INSTAGRAM_URL,
+  INITIAL_ID,
 } from "../../../../constants";
-import { useAlert } from "react-alert";
+
 import { ManageBlockList } from "../../../../components/manage/ManageBlockList";
 import { ManageUserDelete } from "../../../../components/manage/ManageUserDelete";
 import { ManageUserUniversity } from "../../../../components/manage/ManageUserUniversity";
 import ManageProfileImage from "../../../../components/manage/ManageProfileImage";
-
-interface userInfoType {
-  name: string;
-  imageUrl: string;
-  content: string;
-  country: string[];
-  language: string[];
-  hopeLanguage: string[];
-  repCountry: string;
-  repLanguage: string;
-  repHopeLanguage: string;
-  facebookUrl: string;
-  instagramUrl: string;
-  days: string;
-  views: number;
-  likes: number;
-  blockUsers: {
-    userId: number;
-    name: string;
-    imageUrl: string;
-  }[];
-}
+import { useProfile } from "../../../../hooks/api/profile/useProfile";
+import { ManageUserInfoType } from "../../../../../types/profile";
+import { INIT_USERINFO } from "../../../../constants/profile";
 
 export default function ManageUserDetail() {
   const router = useRouter();
-  const message = useAlert();
-  const { grantRefresh } = useContext(AuthContext);
-  const [userId, setUserId] = useState(-1);
-  const [userInfo, setUserInfo] = useState<userInfoType>({
-    name: "",
-    imageUrl: "",
-    content: "",
-    country: [""],
-    language: [""],
-    hopeLanguage: [""],
-    repCountry: "",
-    repLanguage: "",
-    repHopeLanguage: "",
-    facebookUrl: "",
-    instagramUrl: "",
-    days: "",
-    views: 0,
-    likes: 0,
-    blockUsers: [
-      {
-        userId: 0,
-        name: "",
-        imageUrl: "",
-      },
-    ],
-  });
-  const [userSchool, setUserSchool] = useState<string>("");
-  const [userCountries, setUserCountries] = useState<string[]>(["Select"]);
-  const [userLanguages, setUserLanguages] = useState<string[]>(["Select"]);
-  const [userHopeLanguages, setUserHopeLanguages] = useState<string[]>([
-    "Select",
-  ]);
-  const [userContent, setUserContent] = useState<string>("");
-  const [userFaceBookUrl, setUserFaceBookUrl] =
-    useState<string>(DEFAULT_FACEBOOK_URL);
+  const { getUserDetailInfo, manageUploadUserProfile } = useProfile();
+  const [userId, setUserId] = useState(INITIAL_ID);
+  const [userInfo, setUserInfo] = useState<ManageUserInfoType>(INIT_USERINFO);
+  const [userSchool, setUserSchool] = useState<string>(INIT_USERINFO.school);
+  const [userCountries, setUserCountries] = useState<string[]>(
+    INIT_USERINFO.country
+  );
+  const [userLanguages, setUserLanguages] = useState<string[]>(
+    INIT_USERINFO.language
+  );
+  const [userHopeLanguages, setUserHopeLanguages] = useState<string[]>(
+    INIT_USERINFO.hopeLanguage
+  );
+  const [userContent, setUserContent] = useState<string>(INIT_USERINFO.content);
+  const [userFaceBookUrl, setUserFaceBookUrl] = useState<string>(
+    INIT_USERINFO.facebookUrl
+  );
   const [userInstagramUrl, setUserInstagramUrl] = useState<string>(
-    DEFAULT_INSTAGRAM_URL
+    INIT_USERINFO.instagramUrl
   );
 
-  const getUserDetailInfo = async (userId: number) => {
-    const response = await axios
-      .get(`/admin/users/${userId}`, {
-        headers: {
-          Authorization: getSecureLocalStorage("accessToken"),
-        },
-      })
-      .catch((err) => err.response);
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      await getUserDetailInfo(userId);
-      return;
-    }
-
-    if (!response.data.isSuccess) {
-      console.log(response, "getUserDetailInfo 실패");
-      return;
-    }
-
-    setUserInfo(response.data.data);
-    return response.data.data;
-  };
-
-  const onSubmit: MouseEventHandler<HTMLButtonElement> = async (e) => {
+  const onSubmit: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
     const country: string[] = [];
     userCountries.forEach((item) => {
@@ -144,7 +72,7 @@ export default function ManageUserDetail() {
     });
 
     const body = {
-      userId: router.query.userId,
+      userId: Number(router.query.userId),
       country,
       language,
       hopeLanguage,
@@ -157,43 +85,7 @@ export default function ManageUserDetail() {
       repHopeLanguage: hopeLanguage[0],
     };
 
-    console.log(body, "profileInfo");
-
-    const response = await axios
-      .post("/admin/users/profile", body, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getSecureLocalStorage("accessToken"),
-          Accept: "application/json",
-        },
-      })
-      .catch((err) => err.response);
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      // access token 만료
-      // refresh token 전송
-      await grantRefresh();
-      onSubmit(e);
-      return;
-    }
-
-    if (!response.data.isSuccess) {
-      console.log(response.data);
-      return;
-    }
-    message.success("프로필이 수정 되었습니다.");
-    return;
+    await manageUploadUserProfile(body);
   };
 
   useEffect(() => {
@@ -207,30 +99,42 @@ export default function ManageUserDetail() {
 
     // 라우터 쿼리에 userId가 없으면 무시
     if (userId === undefined) return;
-    getUserDetailInfo(userId);
     setUserId(userId);
+
+    (async () => {
+      const data = await getUserDetailInfo(userId);
+      setUserInfo(data);
+    })();
 
     if (userSchool === undefined) return;
     setUserSchool(userSchool);
   }, [JSON.stringify(router.query)]);
 
   useEffect(() => {
+    if (userInfo === INIT_USERINFO) return;
     setUserContent(userInfo.content);
-    setUserCountries(divideMain(userInfo.repCountry, userInfo.country));
-    setUserFaceBookUrl(userInfo.facebookUrl);
-    setUserHopeLanguages(
-      divideMain(
-        LocaleLanguage[userInfo.repHopeLanguage],
-        userInfo.hopeLanguage.map((item: string) => LocaleLanguage[item])
-      )
+    setUserCountries(
+      userInfo.country && userInfo.repCountry
+        ? [userInfo.repCountry, ...userInfo.country]
+        : ["Select"]
     );
-    setUserInstagramUrl(userInfo.instagramUrl);
     setUserLanguages(
-      divideMain(
-        LocaleLanguage[userInfo?.repLanguage],
-        userInfo.language.map((item: string) => LocaleLanguage[item])
-      )
+      userInfo.language && userInfo.repLanguage
+        ? [userInfo.repLanguage, ...userInfo.language].map(
+            (item) => LocaleLanguage[item]
+          )
+        : ["Select"]
     );
+    setUserHopeLanguages(
+      userInfo.hopeLanguage && userInfo.repHopeLanguage
+        ? [userInfo.repHopeLanguage, ...userInfo.hopeLanguage].map(
+            (item) => LocaleLanguage[item]
+          )
+        : ["Select"]
+    );
+
+    setUserFaceBookUrl(userInfo.facebookUrl);
+    setUserInstagramUrl(userInfo.instagramUrl);
   }, [JSON.stringify(userInfo)]);
 
   return (
@@ -266,7 +170,7 @@ export default function ManageUserDetail() {
           <ProfileSelectInfo
             title="유저의 선택 희망 언어"
             description="유저의 선택 희망언어를 관리합니다. (최대 4개) 가장 첫 칸은 주 언어로 표시됩니다."
-            type="hopeLanguage"
+            type="language"
             count={4}
             setValues={setUserHopeLanguages}
             values={userHopeLanguages}

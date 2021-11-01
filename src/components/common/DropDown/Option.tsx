@@ -21,6 +21,7 @@ const OptionBox = styled.div`
   padding: 4px 8px;
   display: flex;
   background: ${(props) => props.theme.bodyBackgroundColor};
+  transition: background-color 0.3s;
   :hover {
     background-color: ${(props) => props.theme.primaryColor};
     color: white;

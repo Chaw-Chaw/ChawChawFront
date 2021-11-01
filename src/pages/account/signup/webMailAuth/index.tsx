@@ -15,9 +15,16 @@ import { AuthContext } from "../../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
+import { useLogin } from "../../../../hooks/api/account/useLogin";
+import { useSignup } from "../../../../hooks/api/account/useSignup";
+import {
+  MAIN_PAGE,
+  POST_PAGE_URL,
+  SIGNUP_PAGE_URL,
+} from "../../../../constants";
 type Inputs = {
   webmail: string;
-  verificationNum: number;
+  verificationNumber: number;
 };
 
 export default function WebMailAuth() {
@@ -25,65 +32,85 @@ export default function WebMailAuth() {
   const message = useAlert();
   const webmailRef = useRef<HTMLInputElement>(null);
   const [webmailValidate, setWebmailValidate] = useState(false);
-  const {
-    sendWebmail,
-    signup,
-    webmailVerify,
-    verificationNumber,
-    user,
-    isLogin,
-  } = useContext(AuthContext);
+  const { user, isLogin } = useContext(AuthContext);
+  const { signup, sendWebmail, verificationNumber, webmailVerify } =
+    useSignup();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-  const isSocialSignup =
-    user?.provider === "facebook" || user?.provider === "kakao" ? true : false;
+  const isSocialSignup = user?.provider !== undefined;
   const [activeVerificationNumber, setActiveVerificationNumber] =
     useState<boolean>(true);
 
   const publishSubmit = () => {
-    if (!webmailRef.current) {
+    try {
+      if (!webmailRef.current) {
+        throw new SyntaxError("웹메일 칸이 없습니다.");
+      }
+      const webmail = webmailRef.current.value;
+      if (webmail === "") {
+        throw new Error("웹메일을 입력해주세요.");
+      }
+
+      const validationWebmail = webmailVerify(webmail);
+      if (validationWebmail) {
+        setWebmailValidate(false);
+        setActiveVerificationNumber(false);
+        sendWebmail({ email: webmail });
+      } else {
+        setWebmailValidate(true);
+        throw new Error("등록되지 않은 웹메일 입니다.");
+      }
+    } catch (err) {
+      message.error(err.message);
+    }
+  };
+
+  const verifyNumberSubsequent = () => {
+    if (!isSocialSignup) {
+      router.push(SIGNUP_PAGE_URL);
       return;
     }
-    const webmail = webmailRef.current.value;
-    if (webmail === "") message.error("웹메일을 입력해주세요.");
-    const validationWebmail = webmailVerify({ web_email: webmail });
-    if (validationWebmail) {
-      setWebmailValidate(false);
-      setActiveVerificationNumber(false);
-      console.log(webmail);
-      sendWebmail({ web_email: webmail });
-    } else {
-      setWebmailValidate(true);
-      message.error("등록되지 않은 웹메일 입니다.");
+
+    if (
+      user.email &&
+      user.name &&
+      user.web_email &&
+      user.school &&
+      user.imageUrl &&
+      user.provider
+    ) {
+      signup({
+        email: user.email,
+        name: user.name,
+        web_email: user.web_email,
+        school: user.school,
+        imageUrl: user.imageUrl,
+        provider: user.provider,
+      });
     }
   };
 
   const verificationNumSubmit: SubmitHandler<Inputs> = async (data) => {
     if (!webmailRef.current) return;
-    if (!(data.verificationNum && !activeVerificationNumber)) {
+    if (!(data.verificationNumber && !activeVerificationNumber)) {
       message.error("인증번호를 입력해주세요.");
       return;
     }
-    if (!isSocialSignup) {
-      router.push("/account/signup");
+
+    try {
+      await verificationNumber({
+        email: webmailRef.current.value,
+        verificationNumber: data.verificationNumber,
+      });
+    } catch {
       return;
     }
 
-    verificationNumber({
-      web_email: webmailRef.current.value,
-      verificationNum: data.verificationNum?.toString(),
-    });
-
-    signup({
-      email: user?.email,
-      name: user?.name,
-      web_email: user?.web_email,
-      school: user?.school,
-      imageUrl: user?.imageUrl,
-      provider: user?.provider,
+    message.success("인증번호 확인을 완료하였습니다.", {
+      onClose: verifyNumberSubsequent,
     });
   };
 
@@ -100,63 +127,71 @@ export default function WebMailAuth() {
     if (isLogin) {
       message.error("로그아웃 후 회원가입을 진행해주세요.", {
         onClose: () => {
-          router.push("/post");
+          router.push(POST_PAGE_URL);
         },
       });
     }
   }, []);
 
+  const webmailSection = (
+    <InputSection>
+      <Label htmlFor="webmail" tag="필수">
+        웹 메일
+      </Label>
+      <Input name="webmail" placeholder="대학교 웹메일주소" ref={webmailRef} />
+      {webmailValidate && (
+        <RequiredText>웹메일 형식을 맞춰주세요.</RequiredText>
+      )}
+    </InputSection>
+  );
+
+  const publishWebmailButton = (
+    <ButtonSection>
+      <PublishButton
+        onClick={handleClickPublishBtn}
+        width="100%"
+        height="2rem"
+        fontSize="1rem"
+      >
+        발송하기
+      </PublishButton>
+    </ButtonSection>
+  );
+
+  const enterVerifyNumberSection = (
+    <InputSection>
+      <Label htmlFor="verificationNumber" tag="필수">
+        인증번호
+      </Label>
+      <Input
+        disabled={activeVerificationNumber}
+        {...register("verificationNumber", {
+          pattern: /[0-9]/g,
+        })}
+      />
+      {errors.verificationNumber && (
+        <RequiredText>숫자만 입력해 주세요.</RequiredText>
+      )}
+    </InputSection>
+  );
+
   return (
-    <Layout type="signup">
+    <Layout>
       <AccountContainer
         title="ChawChaw에`오신 것을 환영 해요."
         subtitle="현재 재학중인 대학교의 웹메일을 입력해주세요.`웹 메일로 인증번호가 발송됩니다."
       >
         <SignupOrder activeType="1" />
-        <InputSection>
-          <Label htmlFor="webmail" tag="필수">
-            웹 메일
-          </Label>
-          <Input
-            name="webmail"
-            placeholder="대학교 웹메일주소"
-            ref={webmailRef}
-          />
-          {webmailValidate && (
-            <RequiredText>웹메일 형식을 맞춰주세요.</RequiredText>
-          )}
-        </InputSection>
-        <ButtonSection>
-          <PublishButton
-            onClick={handleClickPublishBtn}
-            width="100%"
-            height="2rem"
-            fontSize="1rem"
-          >
-            발송하기
-          </PublishButton>
-        </ButtonSection>
+        {webmailSection}
+        {publishWebmailButton}
         <Form
           onSubmit={handleSubmit(verificationNumSubmit)}
           onKeyDown={handleKeyDown}
         >
-          <InputSection>
-            <Label htmlFor="verificationNum" tag="필수">
-              인증번호
-            </Label>
-            <Input
-              disabled={activeVerificationNumber}
-              {...register("verificationNum", {
-                pattern: /[0-9]/g,
-              })}
-            />
-            {errors.verificationNum && (
-              <RequiredText>숫자만 입력해 주세요.</RequiredText>
-            )}
-          </InputSection>
+          {enterVerifyNumberSection}
           <MovePageButtonSection>
             <ButtonSection marginRight="20px">
-              <Link href="/">
+              <Link href={MAIN_PAGE}>
                 <a>
                   <Button secondary width="100%" height="4rem" fontSize="1rem">
                     페이지 소개

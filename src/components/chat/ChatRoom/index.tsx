@@ -15,13 +15,29 @@ import ChatList from "../ChatList";
 import { INITIAL_ROOMID } from "../../../constants";
 import { ChatRoomHeader } from "./ChatRoomHeader";
 
-const ChatRoom: React.FC = (props) => {
+const ChatRoom: React.FC = () => {
   const { mainRoom, mainChatMessages, isViewChatList, publish } =
     useContext(ChatContext);
   const { user } = useContext(AuthContext);
   const [message, setMessage] = useState<string>("");
   const [selectLanguage, setSelectLanguage] = useState<string[]>(["Korean"]);
   const chatMessageBox = useRef<HTMLDivElement>(null);
+
+  const userImageUrl = (senderId: number, imageUrl: string) => {
+    if (user.id !== senderId) {
+      return undefined;
+    } else {
+      return imageUrl;
+    }
+  };
+
+  const chatImageUrl = (type: string, message: string) => {
+    if (type === "IMAGE") {
+      return message;
+    } else {
+      return undefined;
+    }
+  };
 
   const handleChangeInput: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     setMessage(e.target.value);
@@ -46,6 +62,48 @@ const ChatRoom: React.FC = (props) => {
     scrollToBottom();
   }, [JSON.stringify(mainChatMessages)]);
 
+  const emptyChatRoom = (
+    <EmptyChatRoom>
+      <EmptyChatRoomBox>
+        <RiWechat2Line />
+        <EmptyChatRoomTitle>채팅방에 내용이 없습니다.</EmptyChatRoomTitle>
+      </EmptyChatRoomBox>
+    </EmptyChatRoom>
+  );
+
+  const chatMessages = (
+    <div ref={chatMessageBox}>
+      {mainChatMessages.map((chatMessage, index) => {
+        // 토크 타입인 일반메세지 분류
+        return (
+          <ChatMessage
+            userId={chatMessage.senderId}
+            key={index}
+            src={userImageUrl(chatMessage.senderId, chatMessage.imageUrl)}
+            imageUrl={chatImageUrl(
+              chatMessage.messageType,
+              chatMessage.message
+            )}
+            regDate={chatMessage.regDate}
+            context={chatMessage.message}
+            selectLanguage={selectLanguage}
+            userName={chatMessage.sender}
+            messageType={chatMessage.messageType}
+            scrollToBottom={scrollToBottom}
+          />
+        );
+      })}
+    </div>
+  );
+
+  const messageBoxContent = () => {
+    if (mainRoom.id !== INITIAL_ROOMID && mainChatMessages.length > 0) {
+      return chatMessages;
+    } else {
+      return emptyChatRoom;
+    }
+  };
+
   return (
     <Outline>
       <Inner>
@@ -53,61 +111,13 @@ const ChatRoom: React.FC = (props) => {
           selectLanguage={selectLanguage}
           setSelectLanguage={setSelectLanguage}
         />
-        {/* use Memo 적용할것 */}
         {isViewChatList ? (
           <ChatListWrapper>
             <ChatList />
           </ChatListWrapper>
         ) : (
           <>
-            <MessageContainer>
-              {(() => {
-                if (mainRoom.id !== INITIAL_ROOMID) {
-                  if (mainChatMessages.length > 0) {
-                    return (
-                      <div ref={chatMessageBox}>
-                        {mainChatMessages.map((chatMessage, index) => {
-                          // 토크 타입인 일반메세지 분류
-                          return (
-                            <ChatMessage
-                              userId={chatMessage.senderId}
-                              key={index}
-                              src={
-                                user.id === chatMessage.senderId
-                                  ? undefined
-                                  : `${chatMessage.imageUrl}`
-                              }
-                              imageUrl={
-                                chatMessage.messageType === "IMAGE"
-                                  ? chatMessage.message
-                                  : undefined
-                              }
-                              regDate={chatMessage.regDate}
-                              context={chatMessage.message}
-                              selectLanguage={selectLanguage}
-                              userName={chatMessage.sender}
-                              messageType={chatMessage.messageType}
-                              scrollToBottom={scrollToBottom}
-                            />
-                          );
-                        })}
-                      </div>
-                    );
-                  }
-                } else {
-                  return (
-                    <EmptyChatRoom>
-                      <EmptyChatRoomBox>
-                        <RiWechat2Line />
-                        <EmptyChatRoomTitle>
-                          채팅방에 입장해주세요
-                        </EmptyChatRoomTitle>
-                      </EmptyChatRoomBox>
-                    </EmptyChatRoom>
-                  );
-                }
-              })()}
-            </MessageContainer>
+            <MessageContainer>{messageBoxContent()}</MessageContainer>
             <MessageInput
               onChange={handleChangeInput}
               sendMessage={sendMessage}
@@ -125,7 +135,7 @@ export default ChatRoom;
 const Outline = styled.div`
   border: none;
   box-sizing: border-box;
-  height: calc(100vh - 150px);
+  min-height: calc(100vh - 150px);
   /* margin-bottom: 50px; */
   width: 100%;
   max-width: 600px;
@@ -181,7 +191,8 @@ const EmptyChatRoomTitle = styled.h1`
 
 const ChatListWrapper = styled.div`
   display: none;
+
   @media (max-width: 1024px) {
-    display: initial;
+    display: flex;
   }
 `;

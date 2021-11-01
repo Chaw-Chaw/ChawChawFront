@@ -1,67 +1,50 @@
-import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
-import { SelectInfoDropDown } from "../common";
-
-interface PostOrderProps {
-  sortInfo: string[];
-  setSortInfo: Dispatch<SetStateAction<string[]>>;
-}
-
-const orderOptions: {
-  [index: string]: string;
-} = {
-  최신: "date",
-  조회수: "view",
-  좋아요: "like",
-};
+import { PostOrderProps } from "../../../types/post";
+import { LanguageLocale, LocaleLanguage, SelectInfoDropDown } from "../common";
+import { ORDER_OPTIONS } from "../../constants/post";
 
 const PostOrder: React.FC<PostOrderProps> = (props) => {
+  const selectItemInfoList = [
+    {
+      id: 0,
+      options: Object.keys(LanguageLocale),
+      initialValue: "선택언어",
+    },
+    {
+      id: 1,
+      options: Object.keys(LanguageLocale),
+      initialValue: "선택희망언어",
+    },
+    {
+      id: 2,
+      options: Object.keys(ORDER_OPTIONS),
+      initialValue: "순서",
+    },
+  ];
+
+  const selectItemList = selectItemInfoList.map((item) => {
+    return (
+      <SelectInfoBox key={item.id}>
+        <SelectInfoDropDown
+          options={item.options}
+          setValues={props.setSortInfo}
+          index={item.id}
+          value={props.sortInfo[item.id]}
+          fontWeight="900"
+          height="30px"
+          type="SEARCH"
+          backgroundColor="white"
+          width="150px"
+          color="#FF8A00"
+          initialValue={item.initialValue}
+          fontSize="0.9rem"
+        />
+      </SelectInfoBox>
+    );
+  });
   return (
     <PostOrderBox>
-      <DropDownBox>
-        <SelectInfoBox>
-          <SelectInfoDropDown
-            search
-            type="language"
-            backgroundColor="white"
-            width="150px"
-            color="#FF8A00"
-            initialValue="선택언어"
-            fontSize="0.9rem"
-            setValues={props.setSortInfo}
-            index={0}
-            value={props.sortInfo[0]}
-          />
-        </SelectInfoBox>
-        <SelectInfoBox>
-          <SelectInfoDropDown
-            search
-            type="language"
-            backgroundColor="white"
-            color="#FF8A00"
-            width="150px"
-            initialValue="선택희망언어"
-            fontSize="0.9rem"
-            setValues={props.setSortInfo}
-            index={1}
-            value={props.sortInfo[1]}
-          />
-        </SelectInfoBox>
-        <SelectInfoBox>
-          <SelectInfoDropDown
-            search
-            width="100px"
-            backgroundColor="white"
-            color="#FF8A00"
-            options={Object.keys(orderOptions)}
-            initialValue="순서"
-            fontSize="0.9rem"
-            setValues={props.setSortInfo}
-            index={2}
-            value={props.sortInfo[2]}
-          />
-        </SelectInfoBox>
-      </DropDownBox>
+      <DropDownBox>{selectItemList}</DropDownBox>
       <ExplainIcons>
         <span>🗣 : Mother Language</span>
         <span>📖 : Want to learn this language</span>
@@ -71,7 +54,7 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
 };
 
 export default PostOrder;
-export { orderOptions, PostOrderBox, SelectInfoBox };
+export { PostOrderBox, SelectInfoBox };
 
 const ExplainIcons = styled.div`
   width: 100%;

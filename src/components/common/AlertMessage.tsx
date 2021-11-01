@@ -15,8 +15,9 @@ const AlertMessage: React.FC<AlertMessageProps> = (props) => {
         <AlertMessageTitleBox>
           <span>{props.type}</span>
         </AlertMessageTitleBox>
-        {props.message}
+        <AlertMessageContent>{props.message}</AlertMessageContent>
         <AlertMessageButtonBox>
+          {props.children}
           <AlertMessageConfirmButton onClick={props.onClick}>
             확인
           </AlertMessageConfirmButton>
@@ -40,25 +41,35 @@ const AlertMessageContainer = styled.div`
 const AlertMessageBox = styled.div`
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   width: 500px;
-  height: 200px;
+  min-height: 200px;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  position: relative;
   font-weight: 700;
   box-sizing: border-box;
-  padding: 20px;
   word-wrap: break-word;
   @media (max-width: 500px) {
     width: 200px;
   }
+  @keyframes slide-in-bottom {
+    0% {
+      -webkit-transform: translateY(1000px);
+      transform: translateY(1000px);
+      opacity: 0;
+    }
+    100% {
+      -webkit-transform: translateY(0);
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  animation: slide-in-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 `;
 
 const AlertMessageTitleBox = styled.div`
-  position: absolute;
-  top: 0;
   background-color: ${(props) => props.theme.primaryColor};
   width: 100%;
   height: 40px;
@@ -78,10 +89,14 @@ const AlertMessageTitleBox = styled.div`
 const AlertMessageButtonBox = styled.div`
   display: flex;
   justify-content: center;
-  position: absolute;
-  bottom: 40px;
+  margin-bottom: 20px;
 `;
 
 const AlertMessageConfirmButton = styled(Button)`
   border-radius: 10px;
+`;
+
+const AlertMessageContent = styled.span`
+  margin: 0px 20px;
+  word-break: break-word;
 `;

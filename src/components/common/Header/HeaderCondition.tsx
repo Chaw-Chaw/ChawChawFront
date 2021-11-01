@@ -1,47 +1,48 @@
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { Button } from "../Button/Button";
 import MyImage from "./MyImage";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import styled from "styled-components";
 import { PushAlarm } from "./PushAlarm";
+import { useRouter } from "next/router";
+import {
+  LOGIN_PAGE_URL,
+  SIGNUP_WEBMAIL_AUTH_PAGE_URL,
+} from "../../../constants/pageUrls";
 
-const HeaderCondition: React.FC<{ type?: string }> = (props) => {
-  const headerType = props.type;
+const HeaderCondition: React.FC = (props) => {
   const { user, isLogin } = useContext(AuthContext);
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
+  const router = useRouter();
 
-  if (isLogin) {
-    return (
-      <HeaderInfoBox>
-        <PushAlarm />
-        <MyImage profileImage={profileImage} />
-      </HeaderInfoBox>
-    );
-  }
+  const userImage = (
+    <HeaderInfoBox>
+      <PushAlarm />
+      <MyImage profileImage={profileImage} />
+    </HeaderInfoBox>
+  );
 
-  if (headerType === "login") {
-    return (
-      <Link href="/account/signup/webMailAuth">
-        <a>
-          <ButtonOutline>
-            <Button>Signup</Button>
-          </ButtonOutline>
-        </a>
-      </Link>
-    );
-  }
-
-  return (
-    <Link href="/account/login">
+  const loginButton = (
+    <Link
+      href={
+        router.pathname === LOGIN_PAGE_URL
+          ? LOGIN_PAGE_URL
+          : SIGNUP_WEBMAIL_AUTH_PAGE_URL
+      }
+    >
       <a>
         <ButtonOutline>
-          <Button>Login</Button>
+          <Button>
+            {router.pathname === LOGIN_PAGE_URL ? "Login" : "Signup"}
+          </Button>
         </ButtonOutline>
       </a>
     </Link>
   );
+
+  return isLogin ? userImage : loginButton;
 };
 
 export default HeaderCondition;

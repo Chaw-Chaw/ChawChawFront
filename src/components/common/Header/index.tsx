@@ -1,31 +1,30 @@
+import { useRouter } from "next/router";
 import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { Logo, ThemeToggle } from "..";
+import { POST_PAGE_URL } from "../../../constants/pageUrls";
 import { AuthContext } from "../../../store/AuthContext";
 import HeaderCondition from "./HeaderCondition";
 import { MobileHeader } from "./MobileHeader";
 
-interface HeaderProps {
-  type?: string;
-}
-
-const Header: React.FC<HeaderProps> = (props) => {
+const Header: React.FC = () => {
   const { id, setTheme } = useContext(ThemeContext);
   const { user } = useContext(AuthContext);
+  const router = useRouter();
   return (
     <>
       <HeaderWrapper>
         <LogoFragment>
           <Logo />
-          {props.type === "post" && (
-            <SchoolHead>{user.school || ""}</SchoolHead>
+          {router.pathname === POST_PAGE_URL && user.school && (
+            <SchoolHead>{user.school}</SchoolHead>
           )}
         </LogoFragment>
         <HeaderComponentsBox>
           <ThemeToggleBox>
             <ThemeToggle isActive={id === "dark"} onToggle={setTheme} />
           </ThemeToggleBox>
-          <HeaderCondition type={props.type} />
+          <HeaderCondition />
         </HeaderComponentsBox>
       </HeaderWrapper>
       <MobileHeader />
@@ -34,7 +33,6 @@ const Header: React.FC<HeaderProps> = (props) => {
 };
 
 export default Header;
-export type { HeaderProps };
 
 const ThemeToggleBox = styled.div`
   margin: 1rem;

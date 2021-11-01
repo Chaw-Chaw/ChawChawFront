@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { SELECT_COLORS } from "../../../constants";
+import { divideMain } from "../../../utils";
 import { DropDownBox } from "../../common";
 
 const PostModalInfoList: React.FC<{
@@ -6,47 +8,47 @@ const PostModalInfoList: React.FC<{
   values: string[];
   mainValue: string;
 }> = (props) => {
-  // const valueLists = [props.mainValue, ...props.values];
-  const valueLists = new Set([props.mainValue, ...props.values]);
+  const valueLists = divideMain(props.mainValue, props.values);
 
-  const colors = ["#06C074", "#5A65E8", "#4BC6DA", "#A52929"];
+  const selectItemList = valueLists.map((item, index) => {
+    if (item === props.mainValue) {
+      return (
+        <DropDownMainBox key={item}>
+          <DropDownMainText>main</DropDownMainText>
+          <DropDownBox
+            fontWeight="900"
+            fontSize="0.5rem"
+            width="80px"
+            height="30px"
+            color="white"
+            value={item}
+            backgroundColor={SELECT_COLORS[index % 4]}
+            onClick={() => {}}
+          />
+        </DropDownMainBox>
+      );
+    } else {
+      return (
+        <DropDownOutline key={item}>
+          <DropDownBox
+            fontWeight="900"
+            fontSize="0.5rem"
+            width="80px"
+            height="30px"
+            color="white"
+            value={item}
+            backgroundColor={SELECT_COLORS[index % 4]}
+            onClick={() => {}}
+          />
+        </DropDownOutline>
+      );
+    }
+  });
+
   return (
     <PostModalInfoListBox>
       <PostModalInfoTitle>{props.title}</PostModalInfoTitle>
-      <PostModalInfoIconBox>
-        {Array.from(valueLists).map((item, index) => {
-          if (index === 0) {
-            return (
-              <DropDownMainBox key={index}>
-                <DropDownMainText>main</DropDownMainText>
-                <DropDownBox
-                  fontWeight="900"
-                  fontSize="0.5rem"
-                  width="80px"
-                  height="30px"
-                  color="white"
-                  value={item}
-                  backgroundColor={colors[index % 4]}
-                />
-              </DropDownMainBox>
-            );
-          } else {
-            return (
-              <DropDownOutline key={index}>
-                <DropDownBox
-                  fontWeight="900"
-                  fontSize="0.5rem"
-                  width="80px"
-                  height="30px"
-                  color="white"
-                  value={item}
-                  backgroundColor={colors[index % 4]}
-                />
-              </DropDownOutline>
-            );
-          }
-        })}
-      </PostModalInfoIconBox>
+      <PostModalInfoIconBox>{selectItemList}</PostModalInfoIconBox>
     </PostModalInfoListBox>
   );
 };

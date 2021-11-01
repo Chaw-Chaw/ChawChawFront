@@ -1,118 +1,56 @@
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { ManageLayout } from "../../../components/manage/ManageLayout";
-import { StatisticsContext } from "../../../store/StatisticsContext";
+import { useChart } from "../../../hooks/useChart";
 import { Line } from "react-chartjs-2";
-
-const initialChartData = {
-  labels: ["sun", "mon", "tue", "wed", "thur", "fri", "sat"],
-  datasets: [
-    {
-      label: "유저 수",
-      data: [65, 59, 80, 81, 56, 55, 40],
-      fill: false,
-      backgroundColor: "rgba(255, 175, 64, 0.5)",
-      borderColor: "#ffaf40",
-      tension: 0.1,
-    },
-  ],
-};
+import {
+  CHART_SUBJECT,
+  INIT_LINE_CHART_DATA,
+  SUBJECT_CONVERT,
+} from "../../../constants";
+import { LoadingSpinnerContainer } from "../../../components/home/StatisticsChartSection";
+import { LoadingSpinner } from "../../../components/common";
 
 export default function ManageStaticis() {
-  const {
-    getRankSchool,
-    getRankHopeLanguage,
-    getRankVisitedLanguage,
-    getRankLanguage,
-  } = useContext(StatisticsContext);
-
-  const [chartData, setChartData] = useState(initialChartData);
-  const [type, setType] = useState("");
-  const [title, setTitle] = useState("");
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+  const { getChartData, subtitle } = useChart();
+  const [chartData, setChartData] = useState(INIT_LINE_CHART_DATA);
+  const router = useRouter();
+
+  const changeChartData = async (subject: string) => {
+    setIsLoading(true);
+    const data = await getChartData(subject);
+    setChartData((pre) => {
+      const result = pre;
+      result.labels = data.labels;
+      result.datasets[0].data = data.datasets[0].data;
+      result.datasets[0].label = CHART_SUBJECT[subject].subtitle;
+      return result;
+    });
+    setIsLoading(false);
+  };
 
   useEffect(() => {
     if (JSON.stringify(router.query) === JSON.stringify({})) return;
     const tmpType = router.query.type;
-    const tmpTitle = router.query.title;
-
-    if (tmpType === undefined || tmpTitle === undefined) return;
-    setType(String(tmpType));
-    setTitle(String(tmpTitle));
-  }, [JSON.stringify(router.query)]);
-
-  useEffect(() => {
-    if (type === "") return;
+    if (tmpType === undefined) return;
     (async () => {
-      if (type === "rankSchool") {
-        const result = await getRankSchool();
-        if (!result) {
-          setIsLoading(true);
-          return;
-        }
-        const tmpChartData = JSON.parse(JSON.stringify(initialChartData));
-        tmpChartData.labels = result.labels;
-        tmpChartData.datasets[0].data = result.data;
-        tmpChartData.datasets[0].label = "유저 수";
-        setChartData(tmpChartData);
-        setIsLoading(false);
-        return;
-      }
-      if (type === "language") {
-        const result = await getRankLanguage();
-        if (!result) {
-          setIsLoading(true);
-          return;
-        }
-        const tmpChartData = JSON.parse(JSON.stringify(initialChartData));
-        tmpChartData.labels = result.labels;
-        tmpChartData.datasets[0].data = result.data;
-        tmpChartData.datasets[0].label = "해당 언어를 사용할 수 있는 유저 수";
-        setChartData(tmpChartData);
-        setIsLoading(false);
-        return;
-      }
-      if (type === "hopeLanguage") {
-        const result = await getRankHopeLanguage();
-        if (!result) {
-          setIsLoading(true);
-          return;
-        }
-        const tmpChartData = JSON.parse(JSON.stringify(initialChartData));
-        tmpChartData.labels = result.labels;
-        tmpChartData.datasets[0].data = result.data;
-        tmpChartData.datasets[0].label = "해당 언어 배우길 희망하는 유저 수";
-        setChartData(tmpChartData);
-        setIsLoading(false);
-        return;
-      }
-      if (type === "searchLanguage") {
-        const result = await getRankVisitedLanguage();
-        if (!result) {
-          setIsLoading(true);
-          return;
-        }
-        const tmpChartData = JSON.parse(JSON.stringify(initialChartData));
-        tmpChartData.labels = result.labels;
-        tmpChartData.datasets[0].data = result.data;
-        tmpChartData.datasets[0].label = "해당 언어를 검색한 유저 수";
-        setChartData(tmpChartData);
-        setIsLoading(false);
-        return;
-      }
-      console.log("타입이 존재하지 않음");
+      await changeChartData(String(tmpType));
     })();
-  }, [type]);
+  }, [JSON.stringify(router.query)]);
 
   return (
     <ManageLayout>
       <Container>
         <StatisticsHeader>
-          <StatisticsTitle>{title}</StatisticsTitle>
+          <StatisticsTitle>{subtitle}</StatisticsTitle>
         </StatisticsHeader>
-        {!isLoading && (
+        {isLoading ? (
+          <LoadingSpinnerContainer>
+            <LoadingSpinner />
+          </LoadingSpinnerContainer>
+        ) : (
           <StatisticsChart>
             <Line
               data={chartData}

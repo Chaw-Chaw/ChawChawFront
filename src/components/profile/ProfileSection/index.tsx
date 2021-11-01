@@ -5,19 +5,19 @@ import {
   LanguageLocale,
   LocaleLanguage,
 } from "../../common";
-import { MouseEventHandler, useContext, useState } from "react";
+import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useAlert } from "react-alert";
-import axios from "axios";
 import {
   DEFAULT_FACEBOOK_URL,
   DEFAULT_INSTAGRAM_URL,
+  DEFAULT_PROFILE_IMAGE,
 } from "../../../constants";
 import ProfileContent from "./ProfileContent";
 import ProfileImage from "./ProfileImage";
 import ProfileSocialUrl from "./ProfileSocialUrl";
 import ProfileSelectInfo from "./ProfileSelectInfo";
-import { divideMain, getSecureLocalStorage } from "../../../utils";
+import { useProfile } from "../../../hooks/api/profile/useProfile";
 
 interface ProfileSection {
   title?: string;
@@ -26,26 +26,23 @@ interface ProfileSection {
 
 const ProfileSection: React.FC = () => {
   const message = useAlert();
-  const { grantRefresh } = useContext(AuthContext);
+  const { uploadProfile } = useProfile();
   const { user, updateUser } = useContext(AuthContext);
+
   const [userCountries, setUserCountries] = useState<string[]>(
     user.country && user.repCountry
-      ? divideMain(user.repCountry, user.country)
+      ? [user.repCountry, ...user.country]
       : ["Select"]
   );
   const [userLanguages, setUserLanguages] = useState<string[]>(
     user.language && user.repLanguage
-      ? divideMain(
-          LocaleLanguage[user?.repLanguage],
-          user.language.map((item: string) => LocaleLanguage[item])
-        )
+      ? [user.repLanguage, ...user.language].map((item) => LocaleLanguage[item])
       : ["Select"]
   );
   const [userHopeLanguages, setUserHopeLanguages] = useState<string[]>(
     user.hopeLanguage && user.repHopeLanguage
-      ? divideMain(
-          LocaleLanguage[user.repHopeLanguage],
-          user.hopeLanguage.map((item: string) => LocaleLanguage[item])
+      ? [user.repHopeLanguage, ...user.hopeLanguage].map(
+          (item) => LocaleLanguage[item]
         )
       : ["Select"]
   );
@@ -59,27 +56,27 @@ const ProfileSection: React.FC = () => {
 
   const onSubmit = async () => {
     const country: string[] = [];
-    userCountries.forEach((item) => {
-      if (Object.keys(CountryLocale).includes(item)) country.push(item);
+    userCountries.forEach((item, index) => {
+      if (Object.keys(CountryLocale).includes(item) && index !== 0)
+        country.push(item);
     });
     const language: string[] = [];
-    userLanguages.forEach((item) => {
+    userLanguages.forEach((item, index) => {
       const convertedItem = LanguageLocale[item];
-      if (convertedItem) language.push(convertedItem);
+      if (convertedItem && index !== 0) language.push(convertedItem);
     });
     const hopeLanguage: string[] = [];
-    userHopeLanguages.forEach((item) => {
+    userHopeLanguages.forEach((item, index) => {
       const convertedItem = LanguageLocale[item];
-      if (convertedItem) hopeLanguage.push(convertedItem);
+      if (convertedItem && index !== 0) hopeLanguage.push(convertedItem);
     });
 
     if (
-      country.length === 0 ||
-      language.length === 0 ||
-      hopeLanguage.length === 0
+      userCountries.length === 0 ||
+      userLanguages.length === 0 ||
+      userHopeLanguages.length === 0
     ) {
-      message.error("나라와 언어들을 하나 이상 선택해주세요.");
-      return;
+      throw new Error("나라와 언어들을 하나 이상 선택해주세요.");
     }
 
     const userProfile = {
@@ -89,52 +86,19 @@ const ProfileSection: React.FC = () => {
       content: userContent,
       facebookUrl: userFaceBookUrl,
       instagramUrl: userInstagramUrl,
-      imageUrl: user?.imageUrl,
-      repCountry: country[0],
-      repLanguage: language[0],
-      repHopeLanguage: hopeLanguage[0],
+      imageUrl: user?.imageUrl || DEFAULT_PROFILE_IMAGE,
+      repCountry: userCountries[0],
+      repLanguage: LanguageLocale[userLanguages[0]],
+      repHopeLanguage: LanguageLocale[userHopeLanguages[0]],
     };
-    console.log(userProfile, "profileInfo");
-    const response = await axios
-      .post("/users/profile", userProfile, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getSecureLocalStorage("accessToken"),
-          Accept: "application/json",
-        },
-      })
-      .catch((err) => err.response);
 
-    if (response.status === 401) {
-      // access token 만료
-      // refresh token 전송
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      await onSubmit();
-      return false;
-    }
-
-    if (!response.data.isSuccess) {
-      console.log(response.data);
-      return false;
-    }
+    await uploadProfile(userProfile);
     return userProfile;
   };
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
     const userProfile = await onSubmit();
-    if (!userProfile) return;
     message.success("프로필이 업로드 되었습니다.");
     updateUser(userProfile);
   };
@@ -154,24 +118,24 @@ const ProfileSection: React.FC = () => {
       <ProfileInfoBox>
         <ProfileSelectInfo
           title="Mother Country"
-          description="자신의 국적을 추가해주세요. (최대 2개) 가장 첫 칸은 주 국적으로 표시됩니다. "
           type="country"
+          description="자신의 국적을 추가해주세요. (최대 2개) 가장 첫 칸은 주 국적으로 표시됩니다. "
           count={2}
           setValues={setUserCountries}
           values={userCountries}
         />
         <ProfileSelectInfo
           title="Language you can"
-          description="자신이 할 수 있는 언어를 추가해주세요. (최대 4개) 가장 첫 칸은 주 언어로 표시됩니다. "
           type="language"
+          description="자신이 할 수 있는 언어를 추가해주세요. (최대 4개) 가장 첫 칸은 주 언어로 표시됩니다. "
           count={4}
           setValues={setUserLanguages}
           values={userLanguages}
         />
         <ProfileSelectInfo
           title="Learning lanugage"
+          type="language"
           description="배우고 싶은 언어를 모두 추가해주세요. (최대 4개) 가장 첫 칸은 주 언어로 표시됩니다."
-          type="hopeLanguage"
           count={4}
           setValues={setUserHopeLanguages}
           values={userHopeLanguages}

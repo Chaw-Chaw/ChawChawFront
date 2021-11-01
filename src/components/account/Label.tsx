@@ -6,10 +6,12 @@ interface LabelProps {
 }
 
 const Label: React.FC<LabelProps> = (props) => {
+  const tag = props.tag ? <Tag>{props.tag}</Tag> : null;
+
   return (
     <Box>
       <MainLabel htmlFor={props.htmlFor}>{props.children}</MainLabel>
-      {props.tag ? <Tag>{props.tag}</Tag> : null}
+      {tag}
     </Box>
   );
 };

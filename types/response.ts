@@ -1,4 +1,8 @@
-export interface DefaultResponse {
-  responseMessage: string;
-  isSuccess: boolean;
+export interface DefaultResponseBody<T> extends NoDataResponseBody {
+  data: T;
+}
+
+export interface NoDataResponseBody {
+  status: string;
+  message: string;
 }

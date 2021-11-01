@@ -1,10 +1,18 @@
-import { MouseEventHandler, useEffect } from "react";
+import { MouseEventHandler, SetStateAction, useEffect } from "react";
 import { useAlert } from "react-alert";
 import styled from "styled-components";
-import { Button, SelectInfoDropDown } from "../../common";
-import { ListItemProps } from "../../common/ListItem";
-import { ListItem } from "../../common/ListItem";
+import {
+  Button,
+  CountryLocale,
+  LanguageLocale,
+  LocaleLanguage,
+  SelectInfoDropDown,
+} from "../../common";
+import { LanguageInfoDropDown } from "../../common/DropDown/LanguageInfoDropDown";
+import { ListItem, ListItemProps } from "../../common/ListItem";
 interface ProfileSelectInfoProps extends ListItemProps {
+  setValues: React.Dispatch<SetStateAction<string[]>>;
+  values: string[];
   type: string;
   count: number;
 }
@@ -19,9 +27,9 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
         props.setValues((preState) => {
           return [...preState, "Select"];
         });
-      } else {
-        message.info("값을 선택 후 추가 할 수 있습니다.");
+        return;
       }
+      message.info("값을 선택 후 추가 할 수 있습니다.");
     }
   };
 
@@ -33,7 +41,6 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
       props.setValues((preState) => {
         const result = [...preState];
         result.pop();
-        console.log(result, "removeButton");
         return [...result];
       });
     }
@@ -60,66 +67,118 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
     removeItem();
   };
 
+  const options = Object.keys(CountryLocale);
+  const selectItemListInfo = props.values.map((item, index) => {
+    return { value: item, id: index };
+  });
+  const selectCountryList = selectItemListInfo.map((item) => {
+    if (item.id === 0) {
+      return (
+        <DropDownMainBox key={item.id}>
+          <DropDownMainText>main</DropDownMainText>
+          <SelectInfoDropDown
+            index={item.id}
+            type="NORMAL"
+            backgroundColor={colors[item.id % 3]}
+            initialValue={item.value}
+            setValues={props.setValues}
+            value={item.value}
+            fontSize="0.5rem"
+            width="80px"
+            height="30px"
+            fontWeight="900"
+            options={options}
+            color="white"
+          />
+        </DropDownMainBox>
+      );
+    }
+    return (
+      <DropDownBox key={item.id}>
+        <SelectInfoDropDown
+          index={item.id}
+          type="NORMAL"
+          backgroundColor={colors[item.id % 3]}
+          initialValue={item.value}
+          setValues={props.setValues}
+          value={item.value}
+          fontSize="0.5rem"
+          width="80px"
+          height="30px"
+          fontWeight="900"
+          options={options}
+          color="white"
+        />
+      </DropDownBox>
+    );
+  });
+
+  const selectLanguageList = selectItemListInfo.map((item) => {
+    if (item.id === 0) {
+      return (
+        <DropDownMainBox key={item.id}>
+          <DropDownMainText>main</DropDownMainText>
+          <LanguageInfoDropDown
+            index={item.id}
+            backgroundColor={colors[item.id % 3]}
+            setValues={props.setValues}
+            value={item.value}
+            fontSize="0.5rem"
+            width="80px"
+            height="30px"
+            fontWeight="900"
+            color="white"
+            initialValue={item.value}
+          />
+        </DropDownMainBox>
+      );
+    }
+    return (
+      <DropDownBox key={item.id}>
+        <LanguageInfoDropDown
+          index={item.id}
+          backgroundColor={colors[item.id % 3]}
+          setValues={props.setValues}
+          value={item.value}
+          fontSize="0.5rem"
+          width="80px"
+          height="30px"
+          fontWeight="900"
+          color="white"
+          initialValue={item.value}
+        />
+      </DropDownBox>
+    );
+  });
+
+  const controlButtons = () => {
+    if (props.values) {
+      const valuesLength = Object.values(props.values).length;
+      // dropbox값이 없을때
+      if (valuesLength === 0)
+        return <AddButton onClick={handleClickAddButton}>+</AddButton>;
+      // dropbox 값이 있을때
+      if (valuesLength > 0 && valuesLength < props.count)
+        return (
+          <ControlBtnButtonContainer>
+            <ControlAddButton onClick={handleClickControlAddButton}>
+              +
+            </ControlAddButton>
+            <ControlRemoveButton onClick={handleClickControlRemoveButton}>
+              -
+            </ControlRemoveButton>
+          </ControlBtnButtonContainer>
+        );
+      // dropbox
+      return <RemoveButton onClick={handleClickRemoveButton}>-</RemoveButton>;
+    }
+  };
+
   return (
     <ListItem title={props.title} description={props.description}>
       <ButtonsBox>
-        {props.values &&
-          Object.values(props.values).map((item, index) => {
-            if (index === 0) {
-              return (
-                <DropDownMainBox key={index}>
-                  <DropDownMainText>main</DropDownMainText>
-                  <SelectInfoDropDown
-                    index={index}
-                    type={props.type}
-                    backgroundColor={colors[index % 3]}
-                    initialValue={item}
-                    setValues={props.setValues}
-                    value={item}
-                    fontSize="0.5rem"
-                  />
-                </DropDownMainBox>
-              );
-            }
-            return (
-              <DropDownBox key={index}>
-                <SelectInfoDropDown
-                  index={index}
-                  type={props.type}
-                  backgroundColor={colors[index % 3]}
-                  initialValue={item}
-                  setValues={props.setValues}
-                  value={item}
-                  fontSize="0.5rem"
-                />
-              </DropDownBox>
-            );
-          })}
-
-        {(() => {
-          if (props.values) {
-            const valuesLength = Object.values(props.values).length;
-            // dropbox값이 없을때
-            if (valuesLength === 0)
-              return <AddButton onClick={handleClickAddButton}>+</AddButton>;
-            // dropbox 값이 있을때
-            if (valuesLength > 0 && valuesLength < props.count)
-              return (
-                <ControlBtnButtonContainer>
-                  <ControlAddButton onClick={handleClickControlAddButton}>
-                    +
-                  </ControlAddButton>
-                  <ControlRemoveButton onClick={handleClickControlRemoveButton}>
-                    -
-                  </ControlRemoveButton>
-                </ControlBtnButtonContainer>
-              );
-            // dropbox
-            return (
-              <RemoveButton onClick={handleClickRemoveButton}>-</RemoveButton>
-            );
-          }
-        })()}
+        {props.type === "country" ? selectCountryList : selectLanguageList}
+        {controlButtons()}
       </ButtonsBox>
     </ListItem>
   );
@@ -128,7 +187,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
 export default ProfileSelectInfo;
 
 const DropDownBox = styled.div`
-  margin-right: 5px;
+  margin: 0px 2.5px;
 `;
 
 const DropDownMainBox = styled(DropDownBox)`
@@ -139,7 +198,7 @@ const DropDownMainBox = styled(DropDownBox)`
 `;
 
 const DropDownMainText = styled.div`
-  padding: 0px 10px;
+  padding: 0px 5px;
   color: ${(props) => props.theme.primaryColor};
   position: absolute;
   top: -15px;
@@ -152,6 +211,7 @@ const AddButton = styled(Button)`
   width: 80px;
   font-size: 1.5rem;
   text-align: center;
+  margin: 0px 2.5px;
 `;
 const RemoveButton = styled(AddButton)``;
 const ControlBtnButtonContainer = styled.div`
@@ -159,17 +219,19 @@ const ControlBtnButtonContainer = styled.div`
   width: 80px;
   height: 30px;
   display: flex;
-  margin: 0px 0px;
+  margin: 0px 2.5px;
 `;
 const ControlAddButton = styled(AddButton)`
   width: 100%;
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
+  margin: 0px;
 `;
 const ControlRemoveButton = styled(AddButton)`
   width: 100%;
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
+  margin: 0px;
 `;
 
 const ButtonsBox = styled.div`

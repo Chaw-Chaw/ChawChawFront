@@ -1,115 +1,68 @@
 import { Dispatch, SetStateAction } from "react";
-import { SelectInfoDropDown, universityList } from "../common";
+import { orderOptions, sortOptions } from "../../constants/order";
+// import { userOrderDropDownList } from "../../constants/order";
+import {
+  CountryLocale,
+  LanguageLocale,
+  SelectInfoDropDown,
+  universityList,
+} from "../common";
 import { PostOrderBox as UserOrderBox, SelectInfoBox } from "../post/PostOrder";
-
-const orderOptions: {
-  [index: string]: string;
-} = {
-  오름차순: "asc",
-  내림차순: "desc",
-};
-
-const sortOptions: {
-  [index: string]: string;
-} = {
-  등록일: "date",
-  이름: "name",
-  좋아요: "like",
-  조회수: "view",
-};
 
 const UserOrder: React.FC<{
   searchInfo: string[];
   setSearchInfo: Dispatch<SetStateAction<string[]>>;
 }> = (props) => {
-  return (
-    <UserOrderBox>
-      <SelectInfoBox>
+  const userOrderDropDownList = [
+    {
+      id: 0,
+      initialValue: "선택언어",
+      options: Object.keys(LanguageLocale),
+    },
+    {
+      id: 1,
+      initialValue: "선택희망언어",
+      options: Object.keys(LanguageLocale),
+    },
+    { id: 2, initialValue: "나라", options: Object.keys(CountryLocale) },
+    {
+      id: 3,
+      initialValue: "학교",
+      options: Object.keys(universityList).sort(),
+    },
+    {
+      id: 4,
+      initialValue: "정렬",
+      options: Object.keys(sortOptions),
+    },
+    {
+      id: 5,
+      initialValue: "순서",
+      options: Object.keys(orderOptions),
+    },
+  ];
+
+  const selectInfoDropDown = userOrderDropDownList.map((item) => {
+    return (
+      <SelectInfoBox key={item.id}>
         <SelectInfoDropDown
-          search
-          type="language"
+          initialValue={item.initialValue}
+          setValues={props.setSearchInfo}
+          index={item.id}
+          value={props.searchInfo[item.id]}
+          options={item.options}
+          height="30px"
+          fontWeight="900"
+          type="SEARCH"
           backgroundColor="white"
           width="100px"
           color="#FF8A00"
-          initialValue="선택언어"
           fontSize="0.9rem"
-          setValues={props.setSearchInfo}
-          index={0}
-          value={props.searchInfo[0]}
         />
       </SelectInfoBox>
-      <SelectInfoBox>
-        <SelectInfoDropDown
-          search
-          type="language"
-          backgroundColor="white"
-          width="100px"
-          color="#FF8A00"
-          initialValue="선택희망언어"
-          fontSize="0.9rem"
-          setValues={props.setSearchInfo}
-          index={1}
-          value={props.searchInfo[1]}
-        />
-      </SelectInfoBox>
-      <SelectInfoBox>
-        <SelectInfoDropDown
-          search
-          type="country"
-          backgroundColor="white"
-          width="100px"
-          color="#FF8A00"
-          initialValue="나라"
-          fontSize="0.9rem"
-          setValues={props.setSearchInfo}
-          index={2}
-          value={props.searchInfo[2]}
-        />
-      </SelectInfoBox>
-      <SelectInfoBox>
-        <SelectInfoDropDown
-          search
-          backgroundColor="white"
-          width="100px"
-          color="#FF8A00"
-          initialValue="학교"
-          options={Object.keys(universityList).sort()}
-          fontSize="0.9rem"
-          setValues={props.setSearchInfo}
-          index={3}
-          value={props.searchInfo[3]}
-        />
-      </SelectInfoBox>
-      <SelectInfoBox>
-        <SelectInfoDropDown
-          search
-          index={4}
-          value={props.searchInfo[4]}
-          setValues={props.setSearchInfo}
-          initialValue="정렬"
-          options={Object.keys(sortOptions)}
-          fontSize="0.9rem"
-          backgroundColor="white"
-          width="100px"
-          color="#FF8A00"
-        />
-      </SelectInfoBox>
-      <SelectInfoBox>
-        <SelectInfoDropDown
-          search
-          backgroundColor="white"
-          width="100px"
-          color="#FF8A00"
-          initialValue="순서"
-          fontSize="0.9rem"
-          setValues={props.setSearchInfo}
-          index={5}
-          options={Object.keys(orderOptions)}
-          value={props.searchInfo[5]}
-        />
-      </SelectInfoBox>
-    </UserOrderBox>
-  );
+    );
+  });
+  return <UserOrderBox>{selectInfoDropDown}</UserOrderBox>;
 };
 
-export { UserOrder, orderOptions, sortOptions };
+export { UserOrder };

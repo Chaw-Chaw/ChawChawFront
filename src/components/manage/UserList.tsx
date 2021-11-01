@@ -1,14 +1,25 @@
 import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
-import { pagenationInfoType, usersType } from "../../pages/manage/users";
+import { PagenationInfoType, UserListItemType } from "../../../types/manage";
 import { UserListItem } from "./UserListItem";
 
 const UserList: React.FC<{
-  usersList: usersType[];
-  pagenationInfo: pagenationInfoType;
+  usersList: UserListItemType[];
+  pagenationInfo: PagenationInfoType;
   selectedPageNumber: number;
   setSelectedPageNumber: Dispatch<SetStateAction<number>>;
 }> = (props) => {
+  const userList = props.usersList.map((item, index) => {
+    return (
+      <UserListItem
+        key={index}
+        index={index}
+        userItem={item}
+        currentPage={props.pagenationInfo.curPage}
+      />
+    );
+  });
+
   return (
     <UserListContainer>
       <UserListBox>
@@ -24,18 +35,7 @@ const UserList: React.FC<{
           <UserListHeaderItem width="6%">좋아요</UserListHeaderItem>
           <UserListHeaderItem width="12%">가입날짜</UserListHeaderItem>
         </UserListHeaderBox>
-        {props.usersList.length > 0
-          ? props.usersList.map((item, index) => {
-              return (
-                <UserListItem
-                  key={index}
-                  index={index}
-                  userItem={item}
-                  currentPage={props.pagenationInfo.curPage}
-                />
-              );
-            })
-          : null}
+        {props.usersList.length > 0 && userList}
       </UserListBox>
     </UserListContainer>
   );

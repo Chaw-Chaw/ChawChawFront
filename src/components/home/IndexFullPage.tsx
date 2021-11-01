@@ -24,6 +24,18 @@ const IndexFullPage: React.FC = () => {
       setSectionColor("#4b4b4b");
     }
   }, [id]);
+
+  const slideSection = USEAGE_INFO.map((item) => {
+    return (
+      <div key={item.title} className="slide">
+        <UsageSlide
+          title={item.title}
+          subtitle={item.subtitle}
+          src={item.src}
+        />
+      </div>
+    );
+  });
   return (
     <>
       <IntroduceHeader moveTop={moveTop} />
@@ -38,19 +50,7 @@ const IndexFullPage: React.FC = () => {
                 <Section className="section section1">
                   <Introduce />
                 </Section>
-                <Section className="section">
-                  {USEAGE_INFO.map((item, index) => {
-                    return (
-                      <div key={index} className="slide">
-                        <UsageSlide
-                          title={item.title}
-                          subtitle={item.subtitle}
-                          src={item.src}
-                        />
-                      </div>
-                    );
-                  })}
-                </Section>
+                <Section className="section">{slideSection}</Section>
                 <Section className="section">
                   <StatisticsChartSection />
                 </Section>

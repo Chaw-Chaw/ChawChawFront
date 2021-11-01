@@ -1,5 +1,3 @@
-import { DefaultResponse } from "./response";
-
 export interface LikeAlarmType {
   likeType: string; // LIKE, UNLIKE
   name: string;
@@ -25,4 +23,12 @@ export interface RoomType {
   participantImageUrls: string[];
 }
 
-export interface NoticeMainRoomResponse extends DefaultResponse {}
+export interface GetAlarmsType {
+  messages: MessageType[];
+  likes: LikeAlarmType[];
+}
+
+export interface MakeChatRoomType {
+  roomId: number;
+  roomName: string;
+}

@@ -1,11 +1,6 @@
 import { AiFillEye, AiFillHeart } from "react-icons/ai";
 import styled from "styled-components";
-
-interface PostModalHeadProps {
-  regDate: string;
-  likes: number;
-  views: number;
-}
+import { PostModalHeadProps } from "../../../../types/post";
 
 const PostModalInfo: React.FC<PostModalHeadProps> = (props) => {
   return (
@@ -25,7 +20,6 @@ const PostModalInfo: React.FC<PostModalHeadProps> = (props) => {
   );
 };
 export { PostModalInfo };
-export type { PostModalHeadProps };
 
 const PostModalInfoBox = styled.div`
   width: 100%;

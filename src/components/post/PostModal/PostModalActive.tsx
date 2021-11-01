@@ -3,12 +3,12 @@ import { Button } from "../../common";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { CgBlock, CgUnblock } from "react-icons/cg";
 import { useRouter } from "next/router";
-import axios from "axios";
 import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useAlert } from "react-alert";
-import { ChatContext } from "../../../store/ChatContext";
-import { getSecureLocalStorage } from "../../../utils";
+import { useBlock } from "../../../hooks/api/useBlock";
+import { CHAT_PAGE_URL } from "../../../constants";
+import { useLike } from "../../../hooks/api/useLike";
 
 interface PostModalActive {
   id: number;
@@ -17,137 +17,45 @@ interface PostModalActive {
 
 const PostModalActive: React.FC<PostModalActive> = (props) => {
   const router = useRouter();
-  const { grantRefresh, user } = useContext(AuthContext);
-  const { blockUser, unblockUser } = useContext(ChatContext);
+  const { user } = useContext(AuthContext);
+  const { blockUser, unblockUser } = useBlock();
+  const { like, unLike } = useLike();
   const [isActiveLike, setIsActiveLike] = useState(props.isLike);
   const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.id));
   const message = useAlert();
 
-  const tryChat: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleClickTryChat: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     if (user.blockIds?.includes(props.id)) {
       message.info("차단된 유저 입니다.");
       return;
     }
-    router.push({ pathname: "/chat", query: { userId: props.id } });
-  };
-
-  const like = async () => {
-    const response = await axios
-      .post(
-        "/like",
-        { userId: props.id },
-        {
-          headers: {
-            Authorization: getSecureLocalStorage("accessToken"),
-          },
-        }
-      )
-      .catch((err) => {
-        console.log(err, "좋아요 실패");
-        return err.response;
-      });
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      // access token 만료
-      // refresh token 전송
-      await grantRefresh();
-      await like();
-      return;
-    }
-
-    if (response.data.responseMessage === "차단한 또는 차단된 유저") {
-      message.info("유저로 부터 차단되어 좋아요를 할 수 없습니다.");
-    }
-
-    if (!response.data.isSuccess) {
-      console.log(response, "좋아요 실패");
-      return;
-    }
-
-    return true;
-  };
-
-  const unLike = async () => {
-    const response = await axios
-      .delete("/like", {
-        data: {
-          userId: props.id,
-        },
-        headers: {
-          "Content-type": "application/json",
-          Authorization: getSecureLocalStorage("accessToken"),
-          Accept: "application/json",
-        },
-      })
-      .catch((err) => err.response);
-
-    if (response.status === 401) {
-      if (response.data.responseMessage === "다른 곳에서 접속함") {
-        message.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중 입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.clear();
-              window.location.href = "/account/login";
-            },
-          }
-        );
-      }
-      await grantRefresh();
-      await unLike();
-      // access token 만료
-      // refresh token 전송
-      return;
-    }
-    if (!response.data.isSuccess) {
-      console.log(response, "좋아요 취소 실패");
-      return;
-    }
-
-    return true;
+    router.push({ pathname: CHAT_PAGE_URL, query: { userId: props.id } });
   };
 
   const handleClickUnBlock: MouseEventHandler<HTMLButtonElement> = async (
     e
   ) => {
     e.preventDefault();
-    const result = await unblockUser(props.id);
-    if (!result) return;
+    await unblockUser(props.id);
     setIsBlock(false);
   };
   const handleClickBlock: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
-    // message.info(
-    //   "차단하면 더이상 차단한 상대방의 메세지와 알람을 받을 수 없습니다. 차단하시겠습니까?"
-    // );
-    const result = await blockUser(props.id);
-    if (!result) return;
+    await blockUser(props.id);
     setIsBlock(true);
   };
 
   const handleClickUnLike: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
-    const result = await unLike();
-    if (!result) return;
+    await unLike(props.id);
+
     setIsActiveLike(false);
   };
 
   const handleClickLike: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
-    const result = await like();
-    if (!result) return;
+    await like(props.id);
     setIsActiveLike(true);
   };
 
@@ -156,38 +64,43 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
     setIsBlock(Boolean(blockConfirm));
   }, [user]);
 
+  const likeButton = isActiveLike ? (
+    <UnActionButton onClick={handleClickUnLike}>
+      <AiFillHeart />
+      취소
+    </UnActionButton>
+  ) : (
+    <ActionButton onClick={handleClickLike}>
+      <AiOutlineHeart />
+      좋아요
+    </ActionButton>
+  );
+
+  const blockButton = isBlock ? (
+    <UnActionButton onClick={handleClickUnBlock}>
+      <CgUnblock />
+      차단해제
+    </UnActionButton>
+  ) : (
+    <ActionButton onClick={handleClickBlock}>
+      <CgBlock />
+      차단
+    </ActionButton>
+  );
+
   return (
     <PostButtonBox>
-      <PostChatButton onClick={tryChat} secondary width="250px" height="45px">
+      <PostChatButton
+        onClick={handleClickTryChat}
+        secondary
+        width="250px"
+        height="45px"
+      >
         Try Chat
       </PostChatButton>
       <PostActionBox>
-        <PostLikeBox>
-          {isActiveLike ? (
-            <UnActionButton onClick={handleClickUnLike}>
-              <AiFillHeart />
-              취소
-            </UnActionButton>
-          ) : (
-            <ActionButton onClick={handleClickLike}>
-              <AiOutlineHeart />
-              좋아요
-            </ActionButton>
-          )}
-        </PostLikeBox>
-        <PostBlockBox>
-          {isBlock ? (
-            <UnActionButton onClick={handleClickUnBlock}>
-              <CgUnblock />
-              차단해제
-            </UnActionButton>
-          ) : (
-            <ActionButton onClick={handleClickBlock}>
-              <CgBlock />
-              차단
-            </ActionButton>
-          )}
-        </PostBlockBox>
+        <PostLikeBox>{likeButton}</PostLikeBox>
+        <PostBlockBox>{blockButton}</PostBlockBox>
       </PostActionBox>
     </PostButtonBox>
   );

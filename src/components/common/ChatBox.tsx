@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { MouseEventHandler, useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE, LIMIT_NEWALARM_SIZE } from "../../constants";
+import { CHAT_PAGE_URL } from "../../constants/pageUrls";
 import { ChatContext } from "../../store/ChatContext";
 import { MessageImage } from "../chat/Message/MessageImage";
 import { AlarmCount } from "./AlarmCount";
@@ -14,7 +15,6 @@ interface ChatBoxProps {
   context: string;
   senderId?: number;
   type: string;
-  // chatList?: boolean;
 }
 
 const ChatBox: React.FC<ChatBoxProps> = (props) => {
@@ -33,7 +33,7 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
     if (props.type === "CHATROOM") {
       if (isCurrentChat) return;
       router.push({
-        pathname: "/chat",
+        pathname: CHAT_PAGE_URL,
         query: { userId: props.senderId },
       });
       return;
@@ -41,7 +41,10 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
     if (props.type === "CHATALARM") {
       if (props.roomId && props.senderId) {
         setMainRoom({ id: props.roomId, userId: props.senderId });
-        router.push({ pathname: "/chat", query: { userId: props.senderId } });
+        router.push({
+          pathname: CHAT_PAGE_URL,
+          query: { userId: props.senderId },
+        });
       }
       return;
     }
@@ -50,6 +53,22 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
     }
     return;
   };
+
+  const alarmCount = props.type === "CHATROOM" &&
+    matchNewMessages.length !== 0 && (
+      <AlarmCount>
+        <span>
+          {matchNewMessages.length > LIMIT_NEWALARM_SIZE
+            ? LIMIT_NEWALARM_SIZE
+            : matchNewMessages.length}
+        </span>
+      </AlarmCount>
+    );
+
+  const sliceContext =
+    props.context.length > 20
+      ? props.context.substring(0, 15) + "..."
+      : props.context;
 
   useEffect(() => {
     if (!mainChatList.current) return;
@@ -69,23 +88,13 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
       <MessageImage
         src={props.imageUrl ? `${props.imageUrl}` : DEFAULT_PROFILE_IMAGE}
       >
-        {props.type === "CHATROOM" && matchNewMessages.length !== 0 && (
-          <AlarmCount>
-            <span>
-              {matchNewMessages.length > LIMIT_NEWALARM_SIZE
-                ? LIMIT_NEWALARM_SIZE
-                : matchNewMessages.length}
-            </span>
-          </AlarmCount>
-        )}
+        {alarmCount}
       </MessageImage>
       <ChatMessageBox isCurrentChat={isCurrentChat}>
         <ChatUserName isCurrentChat={isCurrentChat}>
           {props.sender}
         </ChatUserName>
-        {props.context.length > 20
-          ? props.context.substring(0, 15) + "..."
-          : props.context}
+        {sliceContext}
         <RegDateMessage>{regDate}</RegDateMessage>
       </ChatMessageBox>
     </ChatContainer>

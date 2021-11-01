@@ -5,7 +5,6 @@ import { Input, ListItem } from "../common";
 
 const SettingUserUniversity: React.FC = () => {
   const { user } = useContext(AuthContext);
-  console.log(user.school, "userSchool");
   return (
     <ListItem
       title="소속대학"

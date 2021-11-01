@@ -11,9 +11,14 @@ import AccountContainer from "../../../components/account/AccountContainer";
 import styled from "styled-components";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { AuthContext } from "../../../store/AuthContext";
-import SocialSection from "./SocialSection";
+import SocialSection from "../../../components/account/SocialSection";
 import Link from "next/link";
 import { useAlert } from "react-alert";
+import { useLogin } from "../../../hooks/api/account/useLogin";
+import {
+  POST_PAGE_URL,
+  SIGNUP_WEBMAIL_AUTH_PAGE_URL,
+} from "../../../constants";
 
 interface Inputs {
   email: string;
@@ -23,80 +28,90 @@ interface Inputs {
 export default function Login() {
   const router = useRouter();
   const message = useAlert();
-  const { login, isLogin } = useContext(AuthContext);
+  const { login } = useLogin();
+  const { isLogin } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (data.email === "" || data.password === "") {
       message.error("입력칸을 모두 입력해주세요.");
       return;
     }
-
-    login({ email: data.email, password: data.password, provider: "basic" });
+    await login({
+      email: data.email,
+      password: data.password,
+      provider: "basic",
+    });
   };
 
   useEffect(() => {
     if (isLogin) {
-      message.error("로그아웃 후 로그인 해주세요.", {
+      message.error("로그인 화면은 로그아웃 후 들어올 수 있습니다.", {
         onClose: () => {
-          router.push("/post");
+          router.push(POST_PAGE_URL);
         },
       });
     }
   }, []);
 
+  const emailSection = (
+    <InputSection>
+      <Label htmlFor="email" tag="필수">
+        이메일
+      </Label>
+      <Input
+        placeholder="example@address.com"
+        {...register("email", {
+          pattern:
+            /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i,
+        })}
+      />
+      {errors.email && <RequiredText>이메일 형식을 맞춰주세요.</RequiredText>}
+    </InputSection>
+  );
+
+  const passwordSection = (
+    <InputSection>
+      <Label htmlFor="password" tag="필수">
+        비밀번호
+      </Label>
+      <PasswordInput
+        name="password"
+        register={{
+          ...register("password", {
+            pattern:
+              /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/,
+          }),
+        }}
+      />
+      {errors.password && (
+        <RequiredText>
+          비밀번호 형식은 특수문자/문자/숫자 조합 8 ~ 15 글자 입니다.
+        </RequiredText>
+      )}
+    </InputSection>
+  );
+
   return (
-    <Layout type="login">
+    <Layout>
       <AccountContainer
         title="ChawChaw에`로그인 해주세요."
         subtitle="아이디와 비밀번호를 입력해주세요."
       >
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <InputSection>
-            <Label htmlFor="email" tag="필수">
-              이메일
-            </Label>
-            <Input
-              placeholder="example@address.com"
-              {...register("email", {
-                pattern:
-                  /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i,
-              })}
-            />
-            {errors.email && (
-              <RequiredText>이메일 형식을 맞춰주세요.</RequiredText>
-            )}
-          </InputSection>
-          <InputSection>
-            <Label htmlFor="password" tag="필수">
-              비밀번호
-            </Label>
-            <PasswordInput
-              name="password"
-              register={{
-                ...register("password", {
-                  pattern:
-                    /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/,
-                }),
-              }}
-            />
-            {errors.password && (
-              <RequiredText>
-                비밀번호 형식은 특수문자/문자/숫자 조합 8 ~ 15 글자 입니다.
-              </RequiredText>
-            )}
-          </InputSection>
+          {emailSection}
+          {passwordSection}
           <ButtonSection>
             <LoginButton type="submit">Login</LoginButton>
           </ButtonSection>
         </Form>
         <SignupBox>
           <SignupTitle>아직 회원이 아니신가요? </SignupTitle>
-          <Link href="/account/signup/webMailAuth">
+          <Link href={SIGNUP_WEBMAIL_AUTH_PAGE_URL}>
             <a>이메일 회원가입</a>
           </Link>
         </SignupBox>

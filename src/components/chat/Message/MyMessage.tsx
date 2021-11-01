@@ -1,8 +1,8 @@
-import axios from "axios";
 import Image from "next/image";
 import { MouseEventHandler, useEffect, useState } from "react";
 import styled from "styled-components";
-import { GOOGLE_TRANSLATE_API_KEY } from "../../../constants";
+
+import { useChat } from "../../../hooks/api/chat/useChat";
 import { LanguageLocale } from "../../common";
 import { MessageContext } from "./MessageContext";
 
@@ -19,28 +19,7 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [context, setContext] = useState(props.context);
   const selectLanguage = LanguageLocale[props.selectLanguage[0]];
-
-  const translateContext = async () => {
-    const url = `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_API_KEY}`;
-    const response: any = await axios
-      .get(url, {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        params: {
-          q: context,
-          source: "",
-          target: selectLanguage,
-        },
-      })
-      .catch((err) => err.response);
-    if (response.status !== 200) {
-      console.log(response, "번역 에러");
-      return;
-    }
-    return response;
-  };
+  const { translateContext } = useChat();
 
   const handleClickMsgBox: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
@@ -54,8 +33,8 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
   ) => {
     e.preventDefault();
     if (props.imageUrl) return;
-    const response = await translateContext();
-    const convertContext = response.data.data.translations[0].translatedText;
+    const convertContext = await translateContext(context, selectLanguage);
+    if (!convertContext) return;
     setContext(convertContext);
     return;
   };
