@@ -11,7 +11,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useRouter } from "next/router";
 import { LOGIN_PAGE_URL } from "../../../constants/pageUrls";
-import { universityList } from "../../../constants/UniversityList";
+import { UniversityList } from "../../../constants/UniversityList";
 
 export const useSignup = () => {
   const { sendPost, sendGet } = useApi();
@@ -57,9 +57,9 @@ export const useSignup = () => {
   const webmailVerify = (web_email: string) => {
     const domain = web_email?.split("@")[1];
     if (domain) {
-      if (Object.values(universityList).includes(domain)) {
-        const universityName = Object.keys(universityList).find(
-          (item: string) => universityList[item] === domain
+      if (Object.values(UniversityList).includes(domain)) {
+        const universityName = Object.keys(UniversityList).find(
+          (item: string) => UniversityList[item] === domain
         );
         updateUser({ school: universityName, web_email: web_email });
         return true;

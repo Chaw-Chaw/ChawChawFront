@@ -1,8 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ManageLayout } from "../../../../components/manage/ManageLayout";
-
-import { divideMain } from "../../../../utils";
 import {
   ProfileHeader,
   ProfileContent,
@@ -17,12 +15,7 @@ import {
   LanguageLocale,
   LocaleLanguage,
 } from "../../../../components/common";
-import {
-  DEFAULT_FACEBOOK_URL,
-  DEFAULT_INSTAGRAM_URL,
-  INITIAL_ID,
-} from "../../../../constants";
-
+import { INITIAL_ID } from "../../../../constants";
 import { ManageBlockList } from "../../../../components/manage/ManageBlockList";
 import { ManageUserDelete } from "../../../../components/manage/ManageUserDelete";
 import { ManageUserUniversity } from "../../../../components/manage/ManageUserUniversity";

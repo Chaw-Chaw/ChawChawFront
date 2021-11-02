@@ -27,22 +27,21 @@ const PostModalInfoList: React.FC<{
           />
         </DropDownMainBox>
       );
-    } else {
-      return (
-        <DropDownOutline key={item}>
-          <DropDownBox
-            fontWeight="900"
-            fontSize="0.5rem"
-            width="80px"
-            height="30px"
-            color="white"
-            value={item}
-            backgroundColor={SELECT_COLORS[index % 4]}
-            onClick={() => {}}
-          />
-        </DropDownOutline>
-      );
     }
+    return (
+      <DropDownOutline key={item}>
+        <DropDownBox
+          fontWeight="900"
+          fontSize="0.5rem"
+          width="80px"
+          height="30px"
+          color="white"
+          value={item}
+          backgroundColor={SELECT_COLORS[index % 4]}
+          onClick={() => {}}
+        />
+      </DropDownOutline>
+    );
   });
 
   return (

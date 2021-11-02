@@ -46,7 +46,7 @@ const ToggleItemTitle = styled.span`
   font-size: 20px;
 `;
 
-const ToggleListItemContainer = styled.div`
+const ToggleListItemContainer = styled.ul`
   display: flex;
   flex-direction: column;
   margin-left: 10px;

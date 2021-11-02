@@ -141,6 +141,7 @@ const PostCardBox = styled.div`
   user-select: none;
 `;
 const PostCardContentText = styled.textarea`
+  cursor: pointer;
   width: 100%;
   color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
   height: 220px;

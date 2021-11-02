@@ -3,10 +3,8 @@ import styled from "styled-components";
 import Image from "next/image";
 import { AuthContext } from "../../../store/AuthContext";
 import { Button } from "../../common";
-import axios from "axios";
 import { useAlert } from "react-alert";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
-import { getSecureLocalStorage } from "../../../utils";
 import { useSendImage } from "../../../hooks/api/useSendImage";
 
 const ProfileImage: React.FC = () => {

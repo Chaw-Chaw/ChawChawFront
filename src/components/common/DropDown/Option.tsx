@@ -5,7 +5,7 @@ const Option: React.FC<{
   saveInfo: (item: string) => void;
   item: string;
 }> = (props) => {
-  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
+  const handleClick: MouseEventHandler<HTMLLIElement> = (e) => {
     e.preventDefault();
     if (props.item) {
       props.saveInfo(props.item);
@@ -16,7 +16,7 @@ const Option: React.FC<{
 
 export { Option };
 
-const OptionBox = styled.div`
+const OptionBox = styled.li`
   border-radius: 10px;
   padding: 4px 8px;
   display: flex;

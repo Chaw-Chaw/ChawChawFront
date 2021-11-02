@@ -43,7 +43,7 @@ const UserList: React.FC<{
 
 export { UserList };
 
-const UserListContainer = styled.div`
+const UserListContainer = styled.ul`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -55,7 +55,7 @@ const UserListBox = styled.div`
   border: 1px solid ${(props) => props.theme.primaryColor};
 `;
 
-const UserListHeaderBox = styled.div`
+const UserListHeaderBox = styled.ul`
   display: flex;
   align-items: center;
   width: 100%;
@@ -64,7 +64,7 @@ const UserListHeaderBox = styled.div`
   border-bottom: 1px solid ${(props) => props.theme.primaryColor};
 `;
 
-const UserListHeaderItem = styled.div<{ width: string }>`
+const UserListHeaderItem = styled.li<{ width: string }>`
   text-align: center;
   width: ${(props) => props.width};
 `;

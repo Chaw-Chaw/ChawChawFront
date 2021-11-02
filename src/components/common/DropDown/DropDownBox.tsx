@@ -12,7 +12,6 @@ interface InitialBoxProps {
 
 interface DropDownBoxProps extends InitialBoxProps {
   onClick: React.MouseEventHandler<HTMLDivElement>;
-  // search?: boolean;
 }
 
 const DropDownBox: React.FC<DropDownBoxProps> = (props) => {

@@ -27,15 +27,16 @@ const IndexFullPage: React.FC = () => {
 
   const slideSection = USEAGE_INFO.map((item) => {
     return (
-      <div key={item.title} className="slide">
+      <ul key={item.title} className="slide">
         <UsageSlide
           title={item.title}
           subtitle={item.subtitle}
           src={item.src}
         />
-      </div>
+      </ul>
     );
   });
+
   return (
     <>
       <IntroduceHeader moveTop={moveTop} />

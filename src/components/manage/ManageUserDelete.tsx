@@ -1,12 +1,10 @@
-import axios from "axios";
 import { useRouter } from "next/router";
-import { MouseEventHandler, useState } from "react";
+import { MouseEventHandler } from "react";
 import { useAlert } from "react-alert";
 import styled from "styled-components";
 import { Button, ListItem } from "../common";
 import { useDeleteUser } from "../../hooks/api/account/useDeleteUser";
 import { MANAGE_MAIN_PAGE_URL } from "../../constants";
-import { ContfirmUserDelete } from "../setting/ConfirmUserDelete";
 
 const ManageUserDelete: React.FC<{ userId: number }> = (props) => {
   const { deleteManageUser } = useDeleteUser();

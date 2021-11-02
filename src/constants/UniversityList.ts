@@ -1,8 +1,8 @@
-interface universityListType {
+interface UniversityListType {
   [index: string]: string;
 }
 
-const universityList: universityListType = {
+const UniversityList: UniversityListType = {
   가천대학교: "gc.gachon.ac.kr",
   강남대학교: "kangnam.ac.kr",
   강릉원주대학교: "gwnu.ac.kr",
@@ -154,4 +154,4 @@ const universityList: universityListType = {
   한국체육대학교: "m365.knsu.ac.kr",
 };
 
-export { universityList };
+export { UniversityList };

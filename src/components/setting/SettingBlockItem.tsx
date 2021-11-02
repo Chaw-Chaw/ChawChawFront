@@ -3,7 +3,6 @@ import { MouseEventHandler, useContext, useState } from "react";
 import styled from "styled-components";
 import { useBlock } from "../../hooks/api/useBlock";
 import { AuthContext } from "../../store/AuthContext";
-import { ChatContext } from "../../store/ChatContext";
 import { Button } from "../common";
 import { BlockItem } from "./SettingBlockList";
 

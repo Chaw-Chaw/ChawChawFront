@@ -1,6 +1,5 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { AuthContext } from "../../../store/AuthContext";
 import { useLogin } from "../../../hooks/api/account/useLogin";
 
 interface OauthProps {

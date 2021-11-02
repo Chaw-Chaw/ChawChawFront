@@ -37,13 +37,13 @@ const DropDown: React.FC<DropDownProps> = (props) => {
     setIsActive((isActive) => !isActive);
   };
 
-  const handleMouseLeaveDropDown: MouseEventHandler<HTMLDivElement> = (e) => {
+  const handleMouseLeaveDropDown: MouseEventHandler<HTMLUListElement> = (e) => {
     e.preventDefault();
     setIsActive(false);
   };
 
-  const options = option.map((item: string, index: number) => {
-    return <Option key={index} item={item} saveInfo={saveInfo} />;
+  const options = option.map((item: string) => {
+    return <Option key={item} item={item} saveInfo={saveInfo} />;
   });
 
   return (
@@ -80,7 +80,7 @@ const DropDown: React.FC<DropDownProps> = (props) => {
 export { DropDown };
 export type { DropDownProps };
 
-const SelectMenu = styled.div<{ width: string; isActive: boolean }>`
+const SelectMenu = styled.ul<{ width: string; isActive: boolean }>`
   padding: 4px 0px;
   position: absolute;
   width: ${(props) => props.width};

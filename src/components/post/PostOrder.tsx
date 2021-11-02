@@ -1,27 +1,9 @@
 import styled from "styled-components";
 import { PostOrderProps } from "../../../types/post";
-import { LanguageLocale, LocaleLanguage, SelectInfoDropDown } from "../common";
-import { ORDER_OPTIONS } from "../../constants/post";
+import { SelectInfoDropDown } from "../common";
+import { selectItemInfoList } from "../../constants/order";
 
 const PostOrder: React.FC<PostOrderProps> = (props) => {
-  const selectItemInfoList = [
-    {
-      id: 0,
-      options: Object.keys(LanguageLocale),
-      initialValue: "선택언어",
-    },
-    {
-      id: 1,
-      options: Object.keys(LanguageLocale),
-      initialValue: "선택희망언어",
-    },
-    {
-      id: 2,
-      options: Object.keys(ORDER_OPTIONS),
-      initialValue: "순서",
-    },
-  ];
-
   const selectItemList = selectItemInfoList.map((item) => {
     return (
       <SelectInfoBox key={item.id}>
@@ -42,6 +24,7 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
       </SelectInfoBox>
     );
   });
+
   return (
     <PostOrderBox>
       <DropDownBox>{selectItemList}</DropDownBox>
@@ -77,7 +60,7 @@ const PostOrderBox = styled.div`
   justify-content: flex-start;
 `;
 
-const DropDownBox = styled.div`
+const DropDownBox = styled.ul`
   width: 450px;
   display: flex;
   justify-content: space-between;
@@ -88,6 +71,6 @@ const DropDownBox = styled.div`
   }
 `;
 
-const SelectInfoBox = styled.div`
+const SelectInfoBox = styled.li`
   margin: 2px 2px 2px 2px;
 `;

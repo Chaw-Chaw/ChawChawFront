@@ -59,7 +59,7 @@ const ManageBlockItem: React.FC<BlockItemProps> = (props) => {
 
 export { ManageBlockItem };
 
-const BlockBox = styled.div`
+const BlockBox = styled.li`
   display: flex;
   justify-content: center;
   align-items: center;

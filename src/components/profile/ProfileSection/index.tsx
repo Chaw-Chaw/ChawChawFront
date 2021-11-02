@@ -5,7 +5,7 @@ import {
   LanguageLocale,
   LocaleLanguage,
 } from "../../common";
-import { MouseEventHandler, useContext, useEffect, useState } from "react";
+import { MouseEventHandler, useContext, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useAlert } from "react-alert";
 import {

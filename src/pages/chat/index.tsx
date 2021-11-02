@@ -2,14 +2,12 @@ import { Layout } from "../../components/common";
 import ChatRoom from "../../components/chat/ChatRoom";
 import ChatList from "../../components/chat/ChatList";
 import styled from "styled-components";
-import axios from "axios";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import { useAlert } from "react-alert";
 import { INITIAL_ID, INITIAL_ROOMID, LOGIN_PAGE_URL } from "../../constants";
 import { ChatContext } from "../../store/ChatContext";
-import { getSecureLocalStorage, isExistRoom } from "../../utils";
 import { useChat } from "../../hooks/api/chat/useChat";
 
 export default function Chat() {

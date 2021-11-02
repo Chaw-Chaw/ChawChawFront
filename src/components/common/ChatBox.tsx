@@ -19,7 +19,7 @@ interface ChatBoxProps {
 
 const ChatBox: React.FC<ChatBoxProps> = (props) => {
   const { mainRoom, newMessages, setMainRoom } = useContext(ChatContext);
-  const mainChatList = useRef<HTMLDivElement>(null);
+  const mainChatList = useRef<HTMLLIElement>(null);
   const router = useRouter();
   const regDate = props.regDate.split("T").join(" ");
   const isCurrentChat = props.roomId === mainRoom.id;
@@ -28,7 +28,7 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
     return false;
   });
 
-  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
+  const handleClick: MouseEventHandler<HTMLLIElement> = (e) => {
     e.preventDefault();
     if (props.type === "CHATROOM") {
       if (isCurrentChat) return;
@@ -102,7 +102,7 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
 };
 
 export { ChatBox };
-const ChatContainer = styled.div<{ isCurrentChat: boolean }>`
+const ChatContainer = styled.li<{ isCurrentChat: boolean }>`
   cursor: pointer;
   display: flex;
   justify-content: space-between;
