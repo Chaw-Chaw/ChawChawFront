@@ -18,6 +18,7 @@ export default function Profile() {
           router.push(LOGIN_PAGE_URL);
         },
       });
+      return;
     }
   }, []);
 

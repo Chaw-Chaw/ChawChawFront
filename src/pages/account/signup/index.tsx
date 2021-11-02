@@ -118,14 +118,17 @@ export default function SignUp() {
           router.push(POST_PAGE_URL);
         },
       });
+      return;
     }
 
-    if (!userSchool)
+    if (!userSchool) {
       message.error("웹메일 인증을 먼저 진행해주세요.", {
         onClose: () => {
           router.push(SIGNUP_WEBMAIL_AUTH_PAGE_URL);
         },
       });
+      return;
+    }
   }, []);
 
   const emailSection = (

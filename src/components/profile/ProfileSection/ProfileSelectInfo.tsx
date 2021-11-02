@@ -1,13 +1,7 @@
 import { MouseEventHandler, SetStateAction, useEffect } from "react";
 import { useAlert } from "react-alert";
 import styled from "styled-components";
-import {
-  Button,
-  CountryLocale,
-  LanguageLocale,
-  LocaleLanguage,
-  SelectInfoDropDown,
-} from "../../common";
+import { Button, CountryLocale, SelectInfoDropDown } from "../../common";
 import { LanguageInfoDropDown } from "../../common/DropDown/LanguageInfoDropDown";
 import { ListItem, ListItemProps } from "../../common/ListItem";
 interface ProfileSelectInfoProps extends ListItemProps {

@@ -12,7 +12,7 @@ const UserList: React.FC<{
   const userList = props.usersList.map((item, index) => {
     return (
       <UserListItem
-        key={index}
+        key={item.id}
         index={index}
         userItem={item}
         currentPage={props.pagenationInfo.curPage}

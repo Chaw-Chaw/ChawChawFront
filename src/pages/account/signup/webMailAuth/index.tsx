@@ -129,6 +129,7 @@ export default function WebMailAuth() {
           router.push(POST_PAGE_URL);
         },
       });
+      return;
     }
   }, []);
 

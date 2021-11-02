@@ -111,12 +111,14 @@ export default function Post() {
   };
 
   useEffect(() => {
+    if (user.role === "ADMIN") return;
     if (!isLogin) {
       message.error("로그인 후에 서비스를 이용해주세요.", {
         onClose: () => {
           router.push(LOGIN_API_URL);
         },
       });
+      return;
     }
 
     const observer = new IntersectionObserver(onIntersect, {

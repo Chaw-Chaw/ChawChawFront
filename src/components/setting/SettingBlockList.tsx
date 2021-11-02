@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useBlock } from "../../hooks/api/useBlock";
+import { AuthContext } from "../../store/AuthContext";
 import { ListItem } from "../common";
 import { SettingBlockItem } from "./SettingBlockItem";
 
@@ -11,10 +12,14 @@ interface BlockItem {
 }
 
 const SettingBlockList: React.FC = () => {
+  const { user, isLogin } = useContext(AuthContext);
   const { getBlockList } = useBlock();
   const [blockList, setBlockList] = useState<BlockItem[]>([]);
 
   useEffect(() => {
+    if (user.role === "ADMIN" || !isLogin) {
+      return;
+    }
     (async () => {
       const data = await getBlockList();
       setBlockList(data);

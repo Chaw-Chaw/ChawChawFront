@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ManageLayout } from "../../../../components/manage/ManageLayout";
 import {
   ProfileHeader,
@@ -23,8 +23,10 @@ import ManageProfileImage from "../../../../components/manage/ManageProfileImage
 import { useProfile } from "../../../../hooks/api/profile/useProfile";
 import { ManageUserInfoType } from "../../../../../types/profile";
 import { INIT_USERINFO } from "../../../../constants/profile";
+import { AuthContext } from "../../../../store/AuthContext";
 
 export default function ManageUserDetail() {
+  const { user, isLogin } = useContext(AuthContext);
   const router = useRouter();
   const { getUserDetailInfo, manageUploadUserProfile } = useProfile();
   const [userId, setUserId] = useState(INITIAL_ID);
@@ -82,6 +84,9 @@ export default function ManageUserDetail() {
   };
 
   useEffect(() => {
+    if (user.role !== "ADMIN" || !isLogin) {
+      return;
+    }
     if (JSON.stringify(router.query) === JSON.stringify({})) return;
     const userId = router.query.userId
       ? Number(router.query.userId)

@@ -25,12 +25,16 @@ export default function Chat() {
   const message = useAlert();
 
   useEffect(() => {
+    if (user.role === "ADMIN") {
+      return;
+    }
     if (!isLogin) {
       message.error("로그인 후에 서비스를 이용해주세요.", {
         onClose: () => {
           router.push(LOGIN_PAGE_URL);
         },
       });
+      return;
     }
     // 채팅 페이지에서 나가면 메인 룸 넘버는 -1
     return () => {

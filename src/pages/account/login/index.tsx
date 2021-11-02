@@ -55,6 +55,7 @@ export default function Login() {
           router.push(POST_PAGE_URL);
         },
       });
+      return;
     }
   }, []);
 
