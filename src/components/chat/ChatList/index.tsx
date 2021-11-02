@@ -67,7 +67,7 @@ const Outline = styled.div`
   padding: 20px;
 `;
 
-const Inner = styled.ul`
+const Inner = styled.div`
   overflow: auto;
   border-left: 1px solid ${(props) => props.theme.secondaryColor};
   box-sizing: border-box;

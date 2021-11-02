@@ -43,27 +43,31 @@ export default function Post() {
       isFirst: isFirst,
     };
 
-    const data = await getPostCardList(searchCondition);
-
-    if (data.length === 0) {
-      setIsEnd(true);
-      if (isFirst && searchType.current === "SEARCH") {
-        message.info("조회 결과가 없습니다.");
+    try {
+      const data = await getPostCardList(searchCondition);
+      if (data.length === 0) {
+        setIsEnd(true);
+        if (isFirst && searchType.current === "SEARCH") {
+          message.info("조회 결과가 없습니다.");
+        }
+        return;
       }
+
+      if (postIds.current === "") {
+        postIds.current += data.map((item) => item.id).join("/");
+      } else {
+        postIds.current += "/" + data.map((item) => item.id).join("/");
+      }
+
+      setPostInfo((item) => {
+        const result = item;
+        if (isFirst === true) return data;
+        return result.concat(data);
+      });
+    } catch {
+      setIsEnd(true);
       return;
     }
-
-    if (postIds.current === "") {
-      postIds.current += data.map((item) => item.id).join("/");
-    } else {
-      postIds.current += "/" + data.map((item) => item.id).join("/");
-    }
-
-    setPostInfo((item) => {
-      const result = item;
-      if (isFirst === true) return data;
-      return result.concat(data);
-    });
   };
 
   const searchHandler = async (inputs: string) => {

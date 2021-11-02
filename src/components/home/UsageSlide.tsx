@@ -44,7 +44,7 @@ const UsageSlide: React.FC<{ title: string; subtitle: string; src: string }> = (
 
 export { UsageSlide };
 
-const Container = styled.li`
+const Container = styled.div`
   width: 100%;
   height: 100vh;
   box-sizing: border-box;

@@ -49,7 +49,7 @@ const MessageAlarm: React.FC = () => {
 
 export { MessageAlarm, PushAlarmBox, AlarmChatBox };
 
-const PushAlarmBox = styled.ul`
+const PushAlarmBox = styled.div`
   width: 100%;
   padding: 0px 5px 5px 5px;
   box-sizing: border-box;
@@ -57,7 +57,7 @@ const PushAlarmBox = styled.ul`
   max-height: calc(100vh - 250px);
 `;
 
-const AlarmChatBox = styled.li``;
+const AlarmChatBox = styled.div``;
 
 const Divider = styled.div`
   width: calc(100% - 10px);

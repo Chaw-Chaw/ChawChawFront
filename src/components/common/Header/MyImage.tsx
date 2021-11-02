@@ -22,20 +22,20 @@ const MyImage: React.FC<{ profileImage: string }> = (props) => {
     e.preventDefault();
     setIsActive((isActive) => !isActive);
   };
-  const handleClickProfile: MouseEventHandler<HTMLLIElement> = (e) => {
+  const handleClickProfile: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     router.push(PROFILE_PAGE_URL);
   };
-  const handleClickChat: MouseEventHandler<HTMLLIElement> = (e) => {
+  const handleClickChat: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     router.push({ pathname: CHAT_PAGE_URL, query: { userId: -1 } });
   };
 
-  const handleClickSetting: MouseEventHandler<HTMLLIElement> = (e) => {
+  const handleClickSetting: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     router.push(SETTING_PAGE_URL);
   };
-  const handleClickLogout: MouseEventHandler<HTMLLIElement> = (e) => {
+  const handleClickLogout: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     logout();
   };
@@ -119,7 +119,7 @@ const SelectMenu = styled.ul<{ isActive: boolean }>`
   }
 `;
 
-const Option = styled.li`
+const Option = styled.div`
   cursor: pointer;
   border-radius: 10px;
   padding: 4px 8px;

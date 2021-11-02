@@ -5,10 +5,7 @@ import { useAlert } from "react-alert";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE, MAIN_PAGE } from "../../constants";
 import { AuthContext } from "../../store/AuthContext";
-import {
-  getRefreshAccessTokenRemainingTime,
-  getSecureLocalStorage,
-} from "../../utils";
+import { getSecureLocalStorage } from "../../utils";
 import { TapList } from "./TapList";
 
 const ManageLayout: React.FC = (props) => {

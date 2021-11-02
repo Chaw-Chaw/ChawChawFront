@@ -60,7 +60,7 @@ const PostOrderBox = styled.div`
   justify-content: flex-start;
 `;
 
-const DropDownBox = styled.ul`
+const DropDownBox = styled.div`
   width: 450px;
   display: flex;
   justify-content: space-between;
@@ -71,6 +71,6 @@ const DropDownBox = styled.ul`
   }
 `;
 
-const SelectInfoBox = styled.li`
+const SelectInfoBox = styled.div`
   margin: 2px 2px 2px 2px;
 `;

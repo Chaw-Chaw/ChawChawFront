@@ -29,7 +29,8 @@ const PageButtonBox = styled.button<{ pageNum: number; currentNum: number }>`
   height: 30px;
   border: none;
   border-radius: 100%;
-  color: ${(props) => (props.currentNum === props.pageNum ? "white" : "black")};
+  color: ${(props) =>
+    props.currentNum === props.pageNum ? "white" : props.theme.bodyFontColor};
   font-family: "BMJUA";
   background: ${(props) =>
     props.currentNum === props.pageNum

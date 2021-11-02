@@ -6,7 +6,7 @@ import { MouseEventHandler } from "react";
 const ToggleListItem: React.FC<{ title: string; type: string; link: string }> =
   (props) => {
     const router = useRouter();
-    const handleClick: MouseEventHandler<HTMLLIElement> = (e) => {
+    const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
       e.preventDefault();
       if (props.type === "userSearch") {
         router.push(props.link);
@@ -27,7 +27,7 @@ const ToggleListItem: React.FC<{ title: string; type: string; link: string }> =
   };
 export { ToggleListItem };
 
-const ToggleListItemBox = styled.li`
+const ToggleListItemBox = styled.div`
   margin-top: 10px;
   cursor: pointer;
   display: flex;

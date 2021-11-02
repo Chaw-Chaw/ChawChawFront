@@ -36,7 +36,7 @@ const ManageBlockList: React.FC<{ blockList: BlockItem[] }> = (props) => {
 export { ManageBlockList };
 export type { BlockItem };
 
-const ManageBlockBox = styled.ul`
+const ManageBlockBox = styled.div`
   @media (max-width: 768px) {
     margin-top: 10px;
   }
