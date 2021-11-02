@@ -135,7 +135,7 @@ const PictureIconBox = styled.label`
     color: ${(props) =>
       props.theme.id === "light" ? "rgb(0, 0, 0, 0.5)" : "white"};
     transition: color 0.5s;
-    :hover {
+    &:hover {
       color: ${(props) => props.theme.primaryColor};
     }
   }
@@ -154,7 +154,7 @@ const SendIconBox = styled.div`
     color: ${(props) =>
       props.theme.id === "light" ? "rgb(0, 0, 0, 0.5)" : "white"};
     transition: color 0.5s;
-    :hover {
+    &:hover {
       color: ${(props) => props.theme.primaryColor};
     }
   }

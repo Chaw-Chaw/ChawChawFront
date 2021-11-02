@@ -137,7 +137,7 @@ const PageMoveButton = styled.button<{ disable: boolean }>`
     return props.theme.primaryColor;
   }};
   transition: background-color 0.5s;
-  :hover {
+  &:hover {
     background-color: ${(props) => props.theme.visitedColor};
     color: white;
   }

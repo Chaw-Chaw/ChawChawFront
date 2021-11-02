@@ -36,7 +36,7 @@ const PageButtonBox = styled.button<{ pageNum: number; currentNum: number }>`
       ? `${props.theme.primaryColor}`
       : "none"};
   transition: background-color 0.5s;
-  :hover {
+  &:hover {
     background-color: ${(props) => props.theme.visitedColor};
     color: white;
   }

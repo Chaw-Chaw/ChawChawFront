@@ -136,7 +136,7 @@ const Option = styled.div`
     font-size: 1rem;
   }
   transition: background-color 0.5s;
-  :hover {
+  &:hover {
     background-color: ${(props) => props.theme.primaryColor};
     color: white;
   }

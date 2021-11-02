@@ -64,7 +64,7 @@ const InitialBox = styled.div<InitialBoxProps>`
   }
   font-family: "BMJUA";
 
-  :hover {
+  &:hover {
     cursor: pointer;
   }
   // 드래그 방지

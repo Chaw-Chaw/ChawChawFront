@@ -116,7 +116,7 @@ const PostChatButton = styled(Button)`
     width: 150px;
   }
   transition: background-color 0.5s;
-  :hover {
+  &:hover {
     background-color: ${(props) => props.theme.primaryColor};
   }
 `;
@@ -146,7 +146,7 @@ const PostLikeBox = styled.div`
       transform-origin: top;
     }
   }
-  :hover {
+  &:hover {
     animation: kenburns-top 0.2s ease-out both;
   }
   @media (max-width: 500px) {
@@ -180,7 +180,7 @@ const UnActionButton = styled(Button)`
     margin-right: 5px;
   }
   transition: background-color 0.5s;
-  :hover {
+  &:hover {
     background-color: ${(props) => props.theme.primaryColor};
   }
 `;

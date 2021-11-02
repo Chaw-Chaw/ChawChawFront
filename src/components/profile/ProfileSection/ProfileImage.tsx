@@ -101,7 +101,7 @@ const InputFileButton = styled.label`
     color: ${(props) => props.theme.secondaryColor};
   }
   transition: background-color 0.5s;
-  :hover {
+  &:hover {
     background-color: ${(props) => props.theme.visitedColor};
     color: white;
   }

@@ -130,7 +130,7 @@ const PostCardBox = styled.div`
     }
   }
 
-  :hover {
+  &:hover {
     animation: kenburns-top 0.2s ease-out both;
   }
 

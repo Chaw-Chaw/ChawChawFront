@@ -39,7 +39,7 @@ const Button = styled.button<ButtonProps>`
 
   transition: background-color 0.5s;
 
-  :hover {
+  &:hover {
     background-color: ${(props) => props.theme.visitedColor};
     color: white;
   }
