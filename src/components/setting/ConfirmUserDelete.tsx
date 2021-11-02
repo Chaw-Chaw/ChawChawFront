@@ -12,7 +12,9 @@ const ContfirmUserDelete: React.FC<{
   const handleClickOK = async () => {
     await deleteUser();
     props.setOpen(false);
-    window.localStorage.clear();
+    window.localStorage.removeItem("accessToken");
+    window.localStorage.removeItem("expireAtAccessToken");
+    window.localStorage.removeItem("user");
     window.location.href = MAIN_PAGE;
   };
   const handleClickCancle = () => {

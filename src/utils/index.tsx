@@ -40,11 +40,6 @@ const avoidLocalStorageUndefined = (itemName: string, initialData: any) => {
   return localStorageData;
 };
 
-const getRefreshAccessTokenRemainingTime = () => {
-  const grantRefreshTime = avoidLocalStorageUndefined("grantRefreshTime", 0);
-  return grantRefreshTime - Date.now();
-};
-
 // 이후 다중 채팅 만들시 이러한 방법은 없어지고 userId로 mainRoomId 알아내는 api가 필요합니다.
 const isExistRoom = (totalMessage: RoomType[], userId: number) => {
   const room = totalMessage.filter((item) =>
@@ -62,7 +57,6 @@ export {
   saveSecureLocalStorage,
   getSecureLocalStorage,
   avoidLocalStorageUndefined,
-  getRefreshAccessTokenRemainingTime,
   divideMain,
   isExistRoom,
 };

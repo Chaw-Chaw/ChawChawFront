@@ -59,7 +59,9 @@ export const useLogin = () => {
 
   const logout = async () => {
     await sendGet<undefined>(LOGOUT_API_URL);
-    window.localStorage.clear();
+    window.localStorage.removeItem("accessToken");
+    window.localStorage.removeItem("expireAtAccessToken");
+    window.localStorage.removeItem("user");
     window.location.href = LOGIN_PAGE_URL;
     return;
   };

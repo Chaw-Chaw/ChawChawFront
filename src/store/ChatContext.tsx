@@ -85,6 +85,7 @@ const ChatContextProvider: React.FC = (props) => {
         // 모든 subscribe는 여기서 구독이 이루어집니다.
         alarmChannelSubscribe();
         likeChannelSubscribe();
+        loginChannelSubscribe();
       },
       onStompError: (frame) => {
         console.log(frame, "connect error");
@@ -102,22 +103,30 @@ const ChatContextProvider: React.FC = (props) => {
     chatClient.current.deactivate();
   };
 
-  const alarmChannelSubscribe = () => {
-    chatClient.current.subscribe(`/queue/chat/${user.id}`, (response: any) => {
-      const message: MessageType = JSON.parse(response.body);
-      console.log(message, "새로운 메세지 내용");
+  const loginChannelSubscribe = () => {
+    chatClient.current.subscribe(`/queue/login/${user.id}`, (response: any) => {
+      const message = response.body;
 
-      if (message.messageType === "CLOSE") {
+      if (message === "duplicated") {
         alertMessage.error(
           "현재 같은 아이디로 다른 곳에서 접속 중입니다. 계속 이용하시려면 다시 로그인 해주세요.",
           {
             onClose: () => {
-              window.localStorage.clear();
-              window.location.href = LOGIN_PAGE_URL;
+              window.localStorage.removeItem("accessToken");
+              window.localStorage.removeItem("expireAtAccessToken");
+              window.localStorage.removeItem("user");
+              window.localStorage.href = LOGIN_PAGE_URL;
             },
           }
         );
       }
+    });
+  };
+
+  const alarmChannelSubscribe = () => {
+    chatClient.current.subscribe(`/queue/chat/${user.id}`, (response: any) => {
+      const message: MessageType = JSON.parse(response.body);
+      console.log(message, "새로운 메세지 내용");
 
       // 블록 리스트에 추가된 메세지는 알람 받지 않음
       if (user.blockIds?.includes(message.senderId)) {

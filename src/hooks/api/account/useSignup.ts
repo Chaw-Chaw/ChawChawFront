@@ -21,7 +21,9 @@ export const useSignup = () => {
   const signup = async (body: SignupProps | SignupPropsSocial) => {
     await sendPost<undefined>(SIGNUP_API_URL, body);
     setUser({});
-    window.localStorage.clear();
+    window.localStorage.removeItem("accessToken");
+    window.localStorage.removeItem("expireAtAccessToken");
+    window.localStorage.removeItem("user");
     message.success("회원가입에 성공하셨습니다.", {
       onClose: () => {
         router.push(LOGIN_PAGE_URL);
