@@ -46,10 +46,9 @@ const grantRefresh = async () => {
         alert(ERROR_CODES[status].message);
         window.localStorage.clear();
         window.location.href = LOGIN_PAGE_URL;
-        throw err;
+        return;
       }
-      console.error(err);
-      throw err;
+      return;
     }
   }
 };

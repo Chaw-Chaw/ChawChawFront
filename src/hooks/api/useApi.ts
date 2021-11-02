@@ -23,6 +23,7 @@ export const useApi = () => {
 
     if (!ERROR_CODES[status]) {
       message.error(EXCEPT_ERRORCODES_MSG);
+      return;
     }
 
     if (status === "C401") {
