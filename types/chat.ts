@@ -32,3 +32,5 @@ export interface MakeChatRoomType {
   roomId: number;
   roomName: string;
 }
+
+export interface ConfirmChatRoomType extends MakeChatRoomType {}

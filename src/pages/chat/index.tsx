@@ -22,7 +22,7 @@ export default function Chat() {
     organizeChatMessages,
     organizeMainChat,
   } = useContext(ChatContext);
-  const { makeChatRoom } = useChat();
+  const { makeChatRoom, confirmChatRoom } = useChat();
   const router = useRouter();
   const message = useAlert();
 
@@ -73,12 +73,12 @@ export default function Chat() {
         let mainRoomId = INITIAL_ROOMID;
 
         // 여기에 새로운 api 도입
-        const existRoom = isExistRoom(totalMessage, userId);
+        const { roomId } = await confirmChatRoom(userId);
         // 채팅방이 없다면 채팅방 만들기
-        if (!existRoom) {
+        if (roomId === -1) {
           mainRoomId = await makeChatRoom(userId);
         } else {
-          mainRoomId = existRoom;
+          mainRoomId = roomId;
         }
 
         // 채팅방을 만들고 전체 메세지들을 받기
