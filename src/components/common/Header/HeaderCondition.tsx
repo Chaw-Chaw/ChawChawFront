@@ -12,10 +12,19 @@ import {
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
 } from "../../../constants/pageUrls";
 
-const HeaderCondition: React.FC = (props) => {
+const HeaderCondition: React.FC = () => {
   const { user, isLogin } = useContext(AuthContext);
+  const [viewUserImage, setViewUserImage] = useState(false);
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
   const router = useRouter();
+
+  useEffect(() => {
+    if (isLogin) {
+      setViewUserImage(true);
+    } else {
+      setViewUserImage(false);
+    }
+  }, [isLogin]);
 
   const userImage = (
     <HeaderInfoBox>
@@ -42,7 +51,7 @@ const HeaderCondition: React.FC = (props) => {
     </Link>
   );
 
-  return isLogin ? userImage : loginButton;
+  return viewUserImage ? userImage : loginButton;
 };
 
 export default HeaderCondition;
