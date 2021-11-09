@@ -1,5 +1,4 @@
 import React, {
-  MouseEvent,
   MouseEventHandler,
   useContext,
   useEffect,
@@ -22,7 +21,6 @@ import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
 import { useSignup } from "../../../hooks/api/account/useSignup";
 import {
-  DEFAULT_PROFILE_IMAGE,
   LOGIN_PAGE_URL,
   POST_PAGE_URL,
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
@@ -120,14 +118,17 @@ export default function SignUp() {
           router.push(POST_PAGE_URL);
         },
       });
+      return;
     }
 
-    if (!userSchool)
+    if (!userSchool) {
       message.error("웹메일 인증을 먼저 진행해주세요.", {
         onClose: () => {
           router.push(SIGNUP_WEBMAIL_AUTH_PAGE_URL);
         },
       });
+      return;
+    }
   }, []);
 
   const emailSection = (

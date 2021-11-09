@@ -18,6 +18,7 @@ export const LIKE_API_URL = "/like";
 export const UNLIKE_API_URL = "/like";
 export const GET_MESSAGES_API_URL = "/chat";
 export const NOTICE_MAINROOM_API_URL = "/chat/room/enter";
+export const CONFIRM_CHATROOM_API_URL = "/chat/room";
 export const MAKE_CHATROOM_API_URL = "/chat/room";
 export const LEAVE_CHATROOM_API_URL = "/chat/room";
 export const SEND_IMAGE_MSG_API_URL = "/chat/image";

@@ -11,7 +11,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useRouter } from "next/router";
 import { LOGIN_PAGE_URL } from "../../../constants/pageUrls";
-import { universityList } from "../../../constants/UniversityList";
+import { UniversityList } from "../../../constants/UniversityList";
 
 export const useSignup = () => {
   const { sendPost, sendGet } = useApi();
@@ -21,7 +21,9 @@ export const useSignup = () => {
   const signup = async (body: SignupProps | SignupPropsSocial) => {
     await sendPost<undefined>(SIGNUP_API_URL, body);
     setUser({});
-    window.localStorage.clear();
+    window.localStorage.removeItem("accessToken");
+    window.localStorage.removeItem("expireAtAccessToken");
+    window.localStorage.removeItem("user");
     message.success("회원가입에 성공하셨습니다.", {
       onClose: () => {
         router.push(LOGIN_PAGE_URL);
@@ -57,9 +59,9 @@ export const useSignup = () => {
   const webmailVerify = (web_email: string) => {
     const domain = web_email?.split("@")[1];
     if (domain) {
-      if (Object.values(universityList).includes(domain)) {
-        const universityName = Object.keys(universityList).find(
-          (item: string) => universityList[item] === domain
+      if (Object.values(UniversityList).includes(domain)) {
+        const universityName = Object.keys(UniversityList).find(
+          (item: string) => UniversityList[item] === domain
         );
         updateUser({ school: universityName, web_email: web_email });
         return true;

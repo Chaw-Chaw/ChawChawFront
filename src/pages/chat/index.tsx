@@ -2,14 +2,12 @@ import { Layout } from "../../components/common";
 import ChatRoom from "../../components/chat/ChatRoom";
 import ChatList from "../../components/chat/ChatList";
 import styled from "styled-components";
-import axios from "axios";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import { useAlert } from "react-alert";
 import { INITIAL_ID, INITIAL_ROOMID, LOGIN_PAGE_URL } from "../../constants";
 import { ChatContext } from "../../store/ChatContext";
-import { getSecureLocalStorage, isExistRoom } from "../../utils";
 import { useChat } from "../../hooks/api/chat/useChat";
 
 export default function Chat() {
@@ -22,17 +20,21 @@ export default function Chat() {
     organizeChatMessages,
     organizeMainChat,
   } = useContext(ChatContext);
-  const { makeChatRoom } = useChat();
+  const { makeChatRoom, confirmChatRoom } = useChat();
   const router = useRouter();
   const message = useAlert();
 
   useEffect(() => {
+    if (user.role === "ADMIN") {
+      return;
+    }
     if (!isLogin) {
       message.error("로그인 후에 서비스를 이용해주세요.", {
         onClose: () => {
           router.push(LOGIN_PAGE_URL);
         },
       });
+      return;
     }
     // 채팅 페이지에서 나가면 메인 룸 넘버는 -1
     return () => {
@@ -73,12 +75,12 @@ export default function Chat() {
         let mainRoomId = INITIAL_ROOMID;
 
         // 여기에 새로운 api 도입
-        const existRoom = isExistRoom(totalMessage, userId);
+        const { roomId } = await confirmChatRoom(userId);
         // 채팅방이 없다면 채팅방 만들기
-        if (!existRoom) {
+        if (roomId === -1) {
           mainRoomId = await makeChatRoom(userId);
         } else {
-          mainRoomId = existRoom;
+          mainRoomId = roomId;
         }
 
         // 채팅방을 만들고 전체 메세지들을 받기

@@ -1,8 +1,6 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ManageLayout } from "../../../../components/manage/ManageLayout";
-
-import { divideMain } from "../../../../utils";
 import {
   ProfileHeader,
   ProfileContent,
@@ -17,12 +15,7 @@ import {
   LanguageLocale,
   LocaleLanguage,
 } from "../../../../components/common";
-import {
-  DEFAULT_FACEBOOK_URL,
-  DEFAULT_INSTAGRAM_URL,
-  INITIAL_ID,
-} from "../../../../constants";
-
+import { INITIAL_ID } from "../../../../constants";
 import { ManageBlockList } from "../../../../components/manage/ManageBlockList";
 import { ManageUserDelete } from "../../../../components/manage/ManageUserDelete";
 import { ManageUserUniversity } from "../../../../components/manage/ManageUserUniversity";
@@ -30,8 +23,11 @@ import ManageProfileImage from "../../../../components/manage/ManageProfileImage
 import { useProfile } from "../../../../hooks/api/profile/useProfile";
 import { ManageUserInfoType } from "../../../../../types/profile";
 import { INIT_USERINFO } from "../../../../constants/profile";
+import { AuthContext } from "../../../../store/AuthContext";
+import { arrayRemovedItem } from "../../../../utils";
 
 export default function ManageUserDetail() {
+  const { user, isLogin } = useContext(AuthContext);
   const router = useRouter();
   const { getUserDetailInfo, manageUploadUserProfile } = useProfile();
   const [userId, setUserId] = useState(INITIAL_ID);
@@ -89,6 +85,9 @@ export default function ManageUserDetail() {
   };
 
   useEffect(() => {
+    if (user.role !== "ADMIN" || !isLogin) {
+      return;
+    }
     if (JSON.stringify(router.query) === JSON.stringify({})) return;
     const userId = router.query.userId
       ? Number(router.query.userId)
@@ -115,21 +114,29 @@ export default function ManageUserDetail() {
     setUserContent(userInfo.content);
     setUserCountries(
       userInfo.country && userInfo.repCountry
-        ? [userInfo.repCountry, ...userInfo.country]
+        ? [
+            userInfo.repCountry,
+            ...arrayRemovedItem(userInfo.repCountry, userInfo.country),
+          ]
         : ["Select"]
     );
     setUserLanguages(
       userInfo.language && userInfo.repLanguage
-        ? [userInfo.repLanguage, ...userInfo.language].map(
-            (item) => LocaleLanguage[item]
-          )
+        ? [
+            userInfo.repLanguage,
+            ...arrayRemovedItem(userInfo.repLanguage, userInfo.language),
+          ].map((item) => LocaleLanguage[item])
         : ["Select"]
     );
     setUserHopeLanguages(
       userInfo.hopeLanguage && userInfo.repHopeLanguage
-        ? [userInfo.repHopeLanguage, ...userInfo.hopeLanguage].map(
-            (item) => LocaleLanguage[item]
-          )
+        ? [
+            userInfo.repHopeLanguage,
+            ...arrayRemovedItem(
+              userInfo.repHopeLanguage,
+              userInfo.hopeLanguage
+            ),
+          ].map((item) => LocaleLanguage[item])
         : ["Select"]
     );
 

@@ -1,10 +1,7 @@
-import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { useAlert } from "react-alert";
 import styled from "styled-components";
 import { useBlock } from "../../hooks/api/useBlock";
 import { AuthContext } from "../../store/AuthContext";
-import { getSecureLocalStorage } from "../../utils";
 import { ListItem } from "../common";
 import { SettingBlockItem } from "./SettingBlockItem";
 
@@ -15,12 +12,14 @@ interface BlockItem {
 }
 
 const SettingBlockList: React.FC = () => {
-  const { isLogin } = useContext(AuthContext);
+  const { user, isLogin } = useContext(AuthContext);
   const { getBlockList } = useBlock();
   const [blockList, setBlockList] = useState<BlockItem[]>([]);
-  const message = useAlert();
 
   useEffect(() => {
+    if (user.role === "ADMIN" || !isLogin) {
+      return;
+    }
     (async () => {
       const data = await getBlockList();
       setBlockList(data);

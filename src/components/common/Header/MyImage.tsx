@@ -87,7 +87,7 @@ const MyImageBox = styled.div`
   }
 `;
 
-const SelectMenu = styled.div<{ isActive: boolean }>`
+const SelectMenu = styled.ul<{ isActive: boolean }>`
   padding: 4px 0px;
   position: absolute;
   width: 150px;
@@ -136,7 +136,7 @@ const Option = styled.div`
     font-size: 1rem;
   }
   transition: background-color 0.5s;
-  :hover {
+  &:hover {
     background-color: ${(props) => props.theme.primaryColor};
     color: white;
   }

@@ -29,14 +29,15 @@ const PageButtonBox = styled.button<{ pageNum: number; currentNum: number }>`
   height: 30px;
   border: none;
   border-radius: 100%;
-  color: ${(props) => (props.currentNum === props.pageNum ? "white" : "black")};
+  color: ${(props) =>
+    props.currentNum === props.pageNum ? "white" : props.theme.bodyFontColor};
   font-family: "BMJUA";
   background: ${(props) =>
     props.currentNum === props.pageNum
       ? `${props.theme.primaryColor}`
       : "none"};
   transition: background-color 0.5s;
-  :hover {
+  &:hover {
     background-color: ${(props) => props.theme.visitedColor};
     color: white;
   }

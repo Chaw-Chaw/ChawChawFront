@@ -84,7 +84,7 @@ const HeadLineStart = styled.div`
   align-items: center;
   cursor: pointer;
   transition: color 0.5s;
-  :hover {
+  &:hover {
     color: ${(props) => props.theme.visitedColor};
     text-decoration: underline;
   }

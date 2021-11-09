@@ -44,31 +44,33 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
     setContext(props.context);
   }, [props.context]);
 
+  const imageMessage = (
+    <MessageImageBox>
+      <Image
+        className="chat_image"
+        src={`${props.imageUrl}`}
+        alt="채팅 이미지"
+        layout="fill"
+        onLoad={props.scrollToBottom}
+      />
+    </MessageImageBox>
+  );
+
+  const contextMessage = (
+    <MyMessageBox onClick={handleClickMsgBox}>
+      <MessageContext
+        isActive={isActive}
+        setIsActive={setIsActive}
+        type="me"
+        onClick={handleClickMsgContext}
+      />
+      <MessageText>{context}</MessageText>
+    </MyMessageBox>
+  );
+
   return (
     <MyMessageContainer>
-      {props.messageType === "IMAGE" ? (
-        <MessageImageBox>
-          <Image
-            className="chat_image"
-            src={`${props.imageUrl}`}
-            alt="채팅 이미지"
-            layout="fill"
-            onLoad={props.scrollToBottom}
-          />
-        </MessageImageBox>
-      ) : (
-        <>
-          <MyMessageBox onClick={handleClickMsgBox}>
-            <MessageContext
-              isActive={isActive}
-              setIsActive={setIsActive}
-              type="me"
-              onClick={handleClickMsgContext}
-            />
-            <MessageText>{context}</MessageText>
-          </MyMessageBox>
-        </>
-      )}
+      {props.messageType === "IMAGE" ? imageMessage : contextMessage}
       <RegDateMessage>{props.regDate}</RegDateMessage>
     </MyMessageContainer>
   );

@@ -40,7 +40,9 @@ export const useGrantRefresh = () => {
         if (status === "T402" || "T403" || "T404" || "T405") {
           message.error(ERROR_CODES[status].message, {
             onClose: () => {
-              window.localStorage.clear();
+              window.localStorage.removeItem("accessToken");
+              window.localStorage.removeItem("expireAtAccessToken");
+              window.localStorage.removeItem("user");
               window.location.href = LOGIN_PAGE_URL;
             },
           });

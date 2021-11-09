@@ -16,7 +16,6 @@ const ChangeLanguageDropDown: React.FC<ChangeLanguageDropDownProps> = (
   const initialValue = LanguageLocale[props.selectLanguage[0]].toUpperCase();
   const Languages: string[] = Object.keys(LanguageLocale);
   const options = ["Korean", ...Languages];
-  // const options = myHopeLanguages.map((item) => LocaleLanguage[item]);
 
   return (
     <ChangeLanguageDropDownBox>

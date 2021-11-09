@@ -23,6 +23,7 @@ export const useApi = () => {
 
     if (!ERROR_CODES[status]) {
       message.error(EXCEPT_ERRORCODES_MSG);
+      return;
     }
 
     if (status === "C401") {
@@ -31,7 +32,9 @@ export const useApi = () => {
     if (status === "T401" || status === "G403") {
       message.error(ERROR_CODES[status].message, {
         onClose: () => {
-          window.localStorage.clear();
+          window.localStorage.removeItem("accessToken");
+          window.localStorage.removeItem("expireAtAccessToken");
+          window.localStorage.removeItem("user");
           window.location.href = LOGIN_PAGE_URL;
         },
       });

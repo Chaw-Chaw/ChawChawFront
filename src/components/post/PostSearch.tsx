@@ -9,6 +9,7 @@ interface PostSearchProps {
 
 const PostSearch: React.FC<PostSearchProps> = (props) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
+
   const handleKeyPress: KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -17,6 +18,7 @@ const PostSearch: React.FC<PostSearchProps> = (props) => {
       props.searchHandler(searchInput.value);
     }
   };
+
   const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     const searchInput = searchInputRef.current;

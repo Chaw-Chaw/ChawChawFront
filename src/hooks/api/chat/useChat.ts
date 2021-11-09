@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useContext } from "react";
 import { useAlert } from "react-alert";
 import {
+  ConfirmChatRoomType,
   GetAlarmsType,
   MakeChatRoomType,
   RoomType,
@@ -13,6 +14,7 @@ import {
   INITIAL_ID,
 } from "../../../constants";
 import {
+  CONFIRM_CHATROOM_API_URL,
   GET_ALARMS_API_URL,
   GET_MESSAGES_API_URL,
   LEAVE_CHATROOM_API_URL,
@@ -49,6 +51,13 @@ export const useChat = () => {
         message.error(EXCEPT_ERRORCODES_MSG);
       }
     }
+  };
+
+  const confirmChatRoom = async (userId: number) => {
+    const { data } = await sendGet<ConfirmChatRoomType>(
+      CONFIRM_CHATROOM_API_URL + `/${userId}`
+    );
+    return data;
   };
 
   const noticeMainRoom = async () => {
@@ -110,5 +119,6 @@ export const useChat = () => {
     leaveChat,
     translateContext,
     makeChatRoom,
+    confirmChatRoom,
   };
 };

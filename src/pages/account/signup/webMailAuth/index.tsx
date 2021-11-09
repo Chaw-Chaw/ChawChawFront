@@ -15,7 +15,6 @@ import { AuthContext } from "../../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
-import { useLogin } from "../../../../hooks/api/account/useLogin";
 import { useSignup } from "../../../../hooks/api/account/useSignup";
 import {
   MAIN_PAGE,
@@ -130,6 +129,7 @@ export default function WebMailAuth() {
           router.push(POST_PAGE_URL);
         },
       });
+      return;
     }
   }, []);
 

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useAlert } from "react-alert";
 import { Layout } from "../../../components/common";
 import ProfileSection from "../../../components/profile/ProfileSection";
@@ -18,6 +18,7 @@ export default function Profile() {
           router.push(LOGIN_PAGE_URL);
         },
       });
+      return;
     }
   }, []);
 

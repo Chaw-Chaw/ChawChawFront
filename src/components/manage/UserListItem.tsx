@@ -17,7 +17,7 @@ const UserListItem: React.FC<{
   const hopeLanguage = LocaleLanguage[props.userItem.repHopeLanguage];
   const joinDate = props.userItem.regDate.substring(2, 10);
 
-  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
+  const handleClick: MouseEventHandler<HTMLLIElement> = (e) => {
     e.preventDefault();
     router.push({
       pathname: MANAGE_USER_PAGE_URL,
@@ -43,7 +43,7 @@ const UserListItem: React.FC<{
 
 export { UserListItem };
 
-const UserListItemBox = styled.div<{ last: boolean }>`
+const UserListItemBox = styled.li<{ last: boolean }>`
   display: flex;
   align-items: center;
   width: 100%;

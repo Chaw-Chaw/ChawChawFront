@@ -20,6 +20,7 @@ import { useApi } from "./api/useApi";
 
 export const useChart = () => {
   const initChartData = BASIC_CHART_DATA;
+
   const [subtitle, setSubtitle] = useState(
     INIT_BAR_CHART_DATA.datasets[0].label
   );

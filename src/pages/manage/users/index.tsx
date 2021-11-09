@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { ManageLayout } from "../../../components/manage/ManageLayout";
 import { UserOrder } from "../../../components/manage/UserOrder";
@@ -9,8 +9,10 @@ import { orderOptions, sortOptions } from "../../../constants/order";
 import { PagenationInfoType, UserListItemType } from "../../../../types/manage";
 import { useManage } from "../../../hooks/api/account/manage/useManage";
 import { useAlert } from "react-alert";
+import { AuthContext } from "../../../store/AuthContext";
 
 export default function ManageUser() {
+  const { user, isLogin } = useContext(AuthContext);
   const message = useAlert();
   const { takeUserList } = useManage();
   const [isLoading, setIsLoading] = useState(true);
@@ -47,32 +49,43 @@ export default function ManageUser() {
       pageNo: selectedPageNumber,
     };
 
-    const data = await takeUserList(searchCondition);
-    setUsersList(data.contents);
-    if (data.contents.length === 0) {
-      message.info("조회 결과가 없습니다.");
-      setIsLoading(true);
+    try {
+      const data = await takeUserList(searchCondition);
+      setUsersList(data.contents);
+      if (data.contents.length === 0) {
+        message.info("조회 결과가 없습니다.");
+        setIsLoading(true);
+        return;
+      }
+      setPagenationInfo({
+        totalCnt: data.totalCnt,
+        startPage: data.startPage,
+        endPage: data.endPage,
+        curPage: data.curPage,
+        isNext: data.isNext,
+        isPrevious: data.isPrevious,
+      });
+
+      setIsLoading(false);
+    } catch {
       return;
     }
-    setPagenationInfo({
-      totalCnt: data.totalCnt,
-      startPage: data.startPage,
-      endPage: data.endPage,
-      curPage: data.curPage,
-      isNext: data.isNext,
-      isPrevious: data.isPrevious,
-    });
-
-    setIsLoading(false);
   };
 
   const userSearchHandler = async (inputs: string) => {
     searchName.current = inputs;
+
     await getUsersList();
   };
 
   useEffect(() => {
-    getUsersList();
+    if (!isLogin) {
+      return;
+    }
+    if (user.role === "ADMIN") {
+      getUsersList();
+      return;
+    }
   }, [selectedPageNumber]);
 
   return (

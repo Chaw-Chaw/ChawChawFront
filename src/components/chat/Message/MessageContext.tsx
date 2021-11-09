@@ -36,7 +36,7 @@ const MessageContextSelect = styled.div<{ isActive: boolean; type: string }>`
   width: 60px;
   height: 25px;
   border: 1px solid ${(props) => props.theme.primaryColor};
-  :hover {
+  &:hover {
     background-color: ${(props) => props.theme.primaryColor};
     color: white;
   }

@@ -20,8 +20,7 @@ interface LanguageInfoDropDownProps extends InitialBoxProps {
 }
 
 const LanguageInfoDropDown: React.FC<LanguageInfoDropDownProps> = (props) => {
-  const initialValue = LocaleLanguage[props.initialValue];
-  const options = [initialValue, ...Object.keys(LanguageLocale)];
+  const options = [props.initialValue, ...Object.keys(LanguageLocale)];
 
   return (
     <DropDown
@@ -32,7 +31,7 @@ const LanguageInfoDropDown: React.FC<LanguageInfoDropDownProps> = (props) => {
       options={options}
       backgroundColor={props.backgroundColor}
       color={props.color}
-      initialValue={initialValue}
+      initialValue={props.initialValue}
       index={props.index}
       type="NORMAL"
       setValues={props.setValues}

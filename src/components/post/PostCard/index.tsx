@@ -130,7 +130,7 @@ const PostCardBox = styled.div`
     }
   }
 
-  :hover {
+  &:hover {
     animation: kenburns-top 0.2s ease-out both;
   }
 
@@ -141,6 +141,7 @@ const PostCardBox = styled.div`
   user-select: none;
 `;
 const PostCardContentText = styled.textarea`
+  cursor: pointer;
   width: 100%;
   color: ${(props) => (props.theme.id === "light" ? "black" : "white")};
   height: 220px;

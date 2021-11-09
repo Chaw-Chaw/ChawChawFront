@@ -43,27 +43,31 @@ export default function Post() {
       isFirst: isFirst,
     };
 
-    const data = await getPostCardList(searchCondition);
-
-    if (data.length === 0) {
-      setIsEnd(true);
-      if (isFirst && searchType.current === "SEARCH") {
-        message.info("조회 결과가 없습니다.");
+    try {
+      const data = await getPostCardList(searchCondition);
+      if (data.length === 0) {
+        setIsEnd(true);
+        if (isFirst && searchType.current === "SEARCH") {
+          message.info("조회 결과가 없습니다.");
+        }
+        return;
       }
+
+      if (postIds.current === "") {
+        postIds.current += data.map((item) => item.id).join("/");
+      } else {
+        postIds.current += "/" + data.map((item) => item.id).join("/");
+      }
+
+      setPostInfo((item) => {
+        const result = item;
+        if (isFirst === true) return data;
+        return result.concat(data);
+      });
+    } catch {
+      setIsEnd(true);
       return;
     }
-
-    if (postIds.current === "") {
-      postIds.current += data.map((item) => item.id).join("/");
-    } else {
-      postIds.current += "/" + data.map((item) => item.id).join("/");
-    }
-
-    setPostInfo((item) => {
-      const result = item;
-      if (isFirst === true) return data;
-      return result.concat(data);
-    });
   };
 
   const searchHandler = async (inputs: string) => {
@@ -107,12 +111,14 @@ export default function Post() {
   };
 
   useEffect(() => {
+    if (user.role === "ADMIN") return;
     if (!isLogin) {
       message.error("로그인 후에 서비스를 이용해주세요.", {
         onClose: () => {
           router.push(LOGIN_API_URL);
         },
       });
+      return;
     }
 
     const observer = new IntersectionObserver(onIntersect, {

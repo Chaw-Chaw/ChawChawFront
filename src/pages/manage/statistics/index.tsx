@@ -4,11 +4,7 @@ import styled from "styled-components";
 import { ManageLayout } from "../../../components/manage/ManageLayout";
 import { useChart } from "../../../hooks/useChart";
 import { Line } from "react-chartjs-2";
-import {
-  CHART_SUBJECT,
-  INIT_LINE_CHART_DATA,
-  SUBJECT_CONVERT,
-} from "../../../constants";
+import { CHART_SUBJECT, INIT_LINE_CHART_DATA } from "../../../constants";
 import { LoadingSpinnerContainer } from "../../../components/home/StatisticsChartSection";
 import { LoadingSpinner } from "../../../components/common";
 

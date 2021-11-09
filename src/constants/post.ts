@@ -18,11 +18,3 @@ export const initialPostInfo = {
   views: 0,
   isLike: false,
 };
-
-export const ORDER_OPTIONS: {
-  [index: string]: string;
-} = {
-  최신: "date",
-  조회수: "view",
-  좋아요: "like",
-};

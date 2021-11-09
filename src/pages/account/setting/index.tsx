@@ -10,17 +10,21 @@ import { LOGIN_PAGE_URL } from "../../../constants";
 import { AuthContext } from "../../../store/AuthContext";
 
 export default function Setting() {
-  const { isLogin } = useContext(AuthContext);
+  const { isLogin, user } = useContext(AuthContext);
   const message = useAlert();
   const router = useRouter();
 
   useEffect(() => {
+    if (user.role === "ADMIN") {
+      return;
+    }
     if (!isLogin) {
       message.error("로그인 후 이용해주세요.", {
         onClose: () => {
           router.push(LOGIN_PAGE_URL);
         },
       });
+      return;
     }
   }, []);
 
