@@ -25,9 +25,9 @@ const ChatRoom: React.FC = () => {
 
   const userImageUrl = (senderId: number, imageUrl: string) => {
     if (user.id !== senderId) {
-      return undefined;
-    } else {
       return imageUrl;
+    } else {
+      return undefined;
     }
   };
 
@@ -96,14 +96,10 @@ const ChatRoom: React.FC = () => {
     </div>
   );
 
-  const messageBoxContent = () => {
-    if (mainRoom.id !== INITIAL_ROOMID && mainChatMessages.length > 0) {
-      return chatMessages;
-    } else {
-      return emptyChatRoom;
-    }
-  };
-
+  const messageBoxContent =
+    mainRoom.id !== INITIAL_ROOMID && mainChatMessages.length > 0
+      ? chatMessages
+      : emptyChatRoom;
   return (
     <Outline>
       <Inner>
@@ -117,7 +113,7 @@ const ChatRoom: React.FC = () => {
           </ChatListWrapper>
         ) : (
           <>
-            <MessageContainer>{messageBoxContent()}</MessageContainer>
+            <MessageContainer>{messageBoxContent}</MessageContainer>
             <MessageInput
               onChange={handleChangeInput}
               sendMessage={sendMessage}

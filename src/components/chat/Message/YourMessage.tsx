@@ -12,7 +12,7 @@ import {
 import { LanguageLocale, ModalLayout } from "../../common";
 
 import Image from "next/image";
-import ChatProfile from "../ChatProfile";
+import { ChatProfile } from "./ChatProfile";
 import { useChat } from "../../../hooks/api/chat/useChat";
 
 interface YourMessageProps extends MyMessageProps {

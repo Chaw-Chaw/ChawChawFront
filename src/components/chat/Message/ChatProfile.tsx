@@ -12,7 +12,6 @@ import {
 
 import { ChatContext } from "../../../store/ChatContext";
 import { AuthContext } from "../../../store/AuthContext";
-import { useChat } from "../../../hooks/api/chat/useChat";
 import { useBlock } from "../../../hooks/api/useBlock";
 
 interface ChatProfileProps {
@@ -49,22 +48,17 @@ const ChatProfile: React.FC<ChatProfileProps> = (props) => {
     setIsBlock(user.blockIds?.includes(props.userId));
   }, [JSON.stringify(user.blockIds)]);
 
-  const chatBlock = () => {
-    if (isBlock) {
-      return (
-        <ChatUnblockButton onClick={handleClickUnblockBtn}>
-          <CgUnblock />
-          <span>차단해제</span>
-        </ChatUnblockButton>
-      );
-    } else {
-      <ChatBlockButton onClick={handleClickBlockBtn}>
-        <CgBlock />
-        <span>차단하기</span>
-      </ChatBlockButton>;
-    }
-  };
-
+  const chatBlock = isBlock ? (
+    <ChatUnblockButton onClick={handleClickUnblockBtn}>
+      <CgUnblock />
+      <span>차단해제</span>
+    </ChatUnblockButton>
+  ) : (
+    <ChatBlockButton onClick={handleClickBlockBtn}>
+      <CgBlock />
+      <span>차단하기</span>
+    </ChatBlockButton>
+  );
   return (
     <ChatProfileBox>
       <ChatProfileImageSection>
@@ -86,7 +80,7 @@ const ChatProfile: React.FC<ChatProfileProps> = (props) => {
   );
 };
 
-export default ChatProfile;
+export { ChatProfile };
 
 const ChatProfileBox = styled.div`
   position: fixed;
