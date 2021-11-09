@@ -1,6 +1,5 @@
 import CryptoJS from "crypto-js";
 import { SECRET_KEY } from "../constants";
-import { RoomType } from "../store/ChatContext";
 
 const arrayRemovedItem = (item: any, array: any[]) => {
   const result = array;
@@ -40,23 +39,10 @@ const avoidLocalStorageUndefined = (itemName: string, initialData: any) => {
   return localStorageData;
 };
 
-// 이후 다중 채팅 만들시 이러한 방법은 없어지고 userId로 mainRoomId 알아내는 api가 필요합니다.
-const isExistRoom = (totalMessage: RoomType[], userId: number) => {
-  const room = totalMessage.filter((item) =>
-    item.participantIds.includes(userId)
-  );
-  if (room.length === 0) {
-    return false;
-  } else {
-    return room[0].roomId;
-  }
-};
-
 export {
   arrayRemovedItem,
   saveSecureLocalStorage,
   getSecureLocalStorage,
   avoidLocalStorageUndefined,
   divideMain,
-  isExistRoom,
 };

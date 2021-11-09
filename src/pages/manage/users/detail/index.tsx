@@ -24,6 +24,7 @@ import { useProfile } from "../../../../hooks/api/profile/useProfile";
 import { ManageUserInfoType } from "../../../../../types/profile";
 import { INIT_USERINFO } from "../../../../constants/profile";
 import { AuthContext } from "../../../../store/AuthContext";
+import { arrayRemovedItem } from "../../../../utils";
 
 export default function ManageUserDetail() {
   const { user, isLogin } = useContext(AuthContext);
@@ -113,21 +114,29 @@ export default function ManageUserDetail() {
     setUserContent(userInfo.content);
     setUserCountries(
       userInfo.country && userInfo.repCountry
-        ? [userInfo.repCountry, ...userInfo.country]
+        ? [
+            userInfo.repCountry,
+            ...arrayRemovedItem(userInfo.repCountry, userInfo.country),
+          ]
         : ["Select"]
     );
     setUserLanguages(
       userInfo.language && userInfo.repLanguage
-        ? [userInfo.repLanguage, ...userInfo.language].map(
-            (item) => LocaleLanguage[item]
-          )
+        ? [
+            userInfo.repLanguage,
+            ...arrayRemovedItem(userInfo.repLanguage, userInfo.language),
+          ].map((item) => LocaleLanguage[item])
         : ["Select"]
     );
     setUserHopeLanguages(
       userInfo.hopeLanguage && userInfo.repHopeLanguage
-        ? [userInfo.repHopeLanguage, ...userInfo.hopeLanguage].map(
-            (item) => LocaleLanguage[item]
-          )
+        ? [
+            userInfo.repHopeLanguage,
+            ...arrayRemovedItem(
+              userInfo.repHopeLanguage,
+              userInfo.hopeLanguage
+            ),
+          ].map((item) => LocaleLanguage[item])
         : ["Select"]
     );
 

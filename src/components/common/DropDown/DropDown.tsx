@@ -15,7 +15,7 @@ interface DropDownProps extends InitialBoxProps {
 const DropDown: React.FC<DropDownProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const index = props?.index;
-  const option = props.options;
+
   const message = useAlert();
 
   const saveInfo = (item: string) => {
@@ -42,8 +42,12 @@ const DropDown: React.FC<DropDownProps> = (props) => {
     setIsActive(false);
   };
 
-  const options = option.map((item: string) => {
-    return <Option key={item} item={item} saveInfo={saveInfo} />;
+  const selectOptionList = props.options.map((item, index) => {
+    return { value: item, id: index };
+  });
+
+  const options = selectOptionList.map((item) => {
+    return <Option key={item.id} item={item.value} saveInfo={saveInfo} />;
   });
 
   return (

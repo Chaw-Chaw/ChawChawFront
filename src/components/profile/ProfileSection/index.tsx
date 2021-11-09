@@ -18,6 +18,7 @@ import ProfileImage from "./ProfileImage";
 import ProfileSocialUrl from "./ProfileSocialUrl";
 import ProfileSelectInfo from "./ProfileSelectInfo";
 import { useProfile } from "../../../hooks/api/profile/useProfile";
+import { arrayRemovedItem } from "../../../utils";
 
 interface ProfileSection {
   title?: string;
@@ -31,19 +32,23 @@ const ProfileSection: React.FC = () => {
 
   const [userCountries, setUserCountries] = useState<string[]>(
     user.country && user.repCountry
-      ? [user.repCountry, ...user.country]
+      ? [user.repCountry, ...arrayRemovedItem(user.repCountry, user.country)]
       : ["Select"]
   );
   const [userLanguages, setUserLanguages] = useState<string[]>(
     user.language && user.repLanguage
-      ? [user.repLanguage, ...user.language].map((item) => LocaleLanguage[item])
+      ? [
+          user.repLanguage,
+          ...arrayRemovedItem(user.repLanguage, user.language),
+        ].map((item) => LocaleLanguage[item])
       : ["Select"]
   );
   const [userHopeLanguages, setUserHopeLanguages] = useState<string[]>(
     user.hopeLanguage && user.repHopeLanguage
-      ? [user.repHopeLanguage, ...user.hopeLanguage].map(
-          (item) => LocaleLanguage[item]
-        )
+      ? [
+          user.repHopeLanguage,
+          ...arrayRemovedItem(user.repHopeLanguage, user.hopeLanguage),
+        ].map((item) => LocaleLanguage[item])
       : ["Select"]
   );
   const [userContent, setUserContent] = useState<string>(user.content || "");
