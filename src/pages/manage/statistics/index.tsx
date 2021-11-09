@@ -10,7 +10,8 @@ import { LoadingSpinner } from "../../../components/common";
 
 export default function ManageStaticis() {
   const [isLoading, setIsLoading] = useState(true);
-  const { getChartData, subtitle } = useChart();
+  const [title, setTitle] = useState("");
+  const { getChartData } = useChart();
   const [chartData, setChartData] = useState(INIT_LINE_CHART_DATA);
   const router = useRouter();
 
@@ -30,7 +31,9 @@ export default function ManageStaticis() {
   useEffect(() => {
     if (JSON.stringify(router.query) === JSON.stringify({})) return;
     const tmpType = router.query.type;
-    if (tmpType === undefined) return;
+    const tmpTitle = String(router.query.title);
+    if (tmpType === undefined && tmpTitle === undefined) return;
+    setTitle(tmpTitle);
     (async () => {
       await changeChartData(String(tmpType));
     })();
@@ -40,7 +43,7 @@ export default function ManageStaticis() {
     <ManageLayout>
       <Container>
         <StatisticsHeader>
-          <StatisticsTitle>{subtitle}</StatisticsTitle>
+          <StatisticsTitle>{title}</StatisticsTitle>
         </StatisticsHeader>
         {isLoading ? (
           <LoadingSpinnerContainer>
