@@ -315,7 +315,7 @@ Repository : `Github`
 - ID : [admin0@chawchaw.kr](mailto:admin@chawchaw.kr)  ~ admin2@chawchaw.kr
 - PW  : admin123!@#
 
-## API 명세서
+## 📒 API 명세서
 
 [API 명세서](https://www.notion.so/API-62e9756e88b5422682e06d773d51c0f2)
 
