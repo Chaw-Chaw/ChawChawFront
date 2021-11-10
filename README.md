@@ -101,8 +101,8 @@ Repository : `Github`
     * 새로운 메세지
         + [ 프로필 사진, 이름, 보낸 메세지, 보낸 메세지 시간 ] 이 표시 됩니다.
         + 해당 메세지를 클릭하면 채팅방으로 이동합니다.
-                
-            ![새로운메세지 - 알림번호 변함](https://user-images.githubusercontent.com/57996756/137508394-7a69dc0e-79d5-4045-b6d4-4c390f269ef1.gif함.gif)
+            
+            ![새로운메세지 - 알림번호 변함](https://user-images.githubusercontent.com/57996756/141037533-b2dd4910-cc9b-46ec-93af-e3b299c206e2.gif)
     
             ![헤더-새로운메세지2](https://user-images.githubusercontent.com/57996756/137508429-1c5b700f-0565-42c9-b0f7-9a1ce3aae75e.gif)
                 
