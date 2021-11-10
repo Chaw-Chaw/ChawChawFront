@@ -45,20 +45,20 @@ export default function ManageStaticis() {
         <StatisticsHeader>
           <StatisticsTitle>{title}</StatisticsTitle>
         </StatisticsHeader>
-        {isLoading ? (
-          <LoadingSpinnerContainer>
-            <LoadingSpinner />
-          </LoadingSpinnerContainer>
-        ) : (
-          <StatisticsChart>
+        <StatisticsChart>
+          {isLoading ? (
+            <LoadingSpinnerContainer>
+              <LoadingSpinner />
+            </LoadingSpinnerContainer>
+          ) : (
             <Line
               data={chartData}
               width={300}
               height={300}
               options={{ maintainAspectRatio: false }}
             />
-          </StatisticsChart>
-        )}
+          )}
+        </StatisticsChart>
       </Container>
     </ManageLayout>
   );
@@ -87,4 +87,7 @@ const StatisticsChart = styled.div`
   margin-top: 60px;
   width: 100%;
   height: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center; ;
 `;
