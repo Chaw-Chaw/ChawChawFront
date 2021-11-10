@@ -15,11 +15,13 @@ import {
   MANAGE_MAIN_PAGE_URL,
   POST_PAGE_URL,
 } from "../../../constants/pageUrls";
+import { useAlert } from "react-alert";
 
 export const useLogin = () => {
   const { setIsLogin, updateUser } = useContext(AuthContext);
   const { sendPost, sendGet } = useApi();
   const router = useRouter();
+  const message = useAlert();
 
   const loginSuccess = (data: LoginResponseBody) => {
     // 일반 로그인 || 리프레시 로그인
@@ -52,7 +54,16 @@ export const useLogin = () => {
       }
       router.push(POST_PAGE_URL);
       return;
-    } catch {
+    } catch (err) {
+      if (err.response.data.status === "U402") {
+        updateUser(err.response.data.data);
+        message.error("회원 정보가 없습니다. 회원가입을 진행합니다.", {
+          onClose: () => {
+            router.push("/account/signup/webMailAuth");
+          },
+        });
+        return;
+      }
       return;
     }
   };

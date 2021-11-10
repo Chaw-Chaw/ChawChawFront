@@ -39,7 +39,8 @@ export default function WebMailAuth() {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-  const isSocialSignup = user?.provider !== undefined;
+  const isSocialSignup =
+    user.provider === "kakao" || user.provider === "facebook";
   const [activeVerificationNumber, setActiveVerificationNumber] =
     useState<boolean>(true);
 
