@@ -27,8 +27,12 @@ export const useApi = () => {
     }
 
     if (status === "C401") {
+      return;
     }
 
+    if (status === "U402") {
+      return;
+    }
     if (status === "T401" || status === "G403") {
       message.error(ERROR_CODES[status].message, {
         onClose: () => {
