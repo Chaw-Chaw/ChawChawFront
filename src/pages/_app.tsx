@@ -101,7 +101,8 @@ function MyApp({ Component, pageProps }: AppProps) {
               additionalMetaTags={[
                 {
                   name: "viewport",
-                  content: "width=device-width, initial-scale=1",
+                  content:
+                    "viewport-fit=cover, width=device-width, initial-scale=1",
                 },
               ]}
             />
