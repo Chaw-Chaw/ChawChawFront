@@ -4,13 +4,13 @@ module.exports = {
     return [
       {
         source: "/:path*",
-        destination: "https://mylifeforcoding.com/:path*", // Proxy to Backend
+        destination: "https://chawchaw.xyz/:path*", // Proxy to Backend
       },
     ];
   },
   images: {
     domains: [
-      "mylifeforcoding.com",
+      "chawchaw.xyz",
       "d2anzi03nvjlav.cloudfront.net",
       "k.kakaocdn.net",
       "platform-lookaside.fbsbx.com",
