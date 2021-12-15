@@ -21,28 +21,30 @@ const AlertMessage: React.FC = (props) => {
   };
   return (
     <AlertMessageContainer>
-      {alertList.map((item) => (
-        <AlertMessageBox key={item.id}>
-          <AlertMessageTitleBox>
-            <span>{item.name}</span>
-          </AlertMessageTitleBox>
-          <AlertMessageContent>{item.message}</AlertMessageContent>
-          <AlertMessageButtonBox>
-            <AlertMessageConfirmButton
-              onClick={(e) => handleClickConfirm(e, item.id)}
-            >
-              확인
-            </AlertMessageConfirmButton>
-            {item.confirmFunc && (
-              <AlertMessageCancelButton
-                onClick={(e) => handleClickCancle(e, item.id)}
+      <AlertMessageInner>
+        {alertList.map((item) => (
+          <AlertMessageBox key={item.id}>
+            <AlertMessageTitleBox>
+              <span>{item.name}</span>
+            </AlertMessageTitleBox>
+            <AlertMessageContent>{item.message}</AlertMessageContent>
+            <AlertMessageButtonBox>
+              <AlertMessageConfirmButton
+                onClick={(e) => handleClickConfirm(e, item.id)}
               >
-                취소
-              </AlertMessageCancelButton>
-            )}
-          </AlertMessageButtonBox>
-        </AlertMessageBox>
-      ))}
+                확인
+              </AlertMessageConfirmButton>
+              {item.confirmFunc && (
+                <AlertMessageCancelButton
+                  onClick={(e) => handleClickCancle(e, item.id)}
+                >
+                  취소
+                </AlertMessageCancelButton>
+              )}
+            </AlertMessageButtonBox>
+          </AlertMessageBox>
+        ))}
+      </AlertMessageInner>
     </AlertMessageContainer>
   );
 };
@@ -62,6 +64,7 @@ const AlertMessageContainer = styled.div`
   z-index: 30;
 `;
 const AlertMessageBox = styled.div`
+  position: absolute;
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   width: 500px;
   min-height: 200px;
@@ -124,4 +127,11 @@ const AlertMessageCancelButton = styled(AlertMessageConfirmButton)`
 const AlertMessageContent = styled.span`
   margin: 0px 20px;
   word-break: break-word;
+`;
+
+const AlertMessageInner = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

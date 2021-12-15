@@ -14,12 +14,25 @@ import Link from "next/link";
 import { AuthContext } from "../../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/router";
-import { useSignup } from "../../../../hooks/api/account/useSignup";
 import {
+  ERROR_ALERT,
+  FACEBOOK_PROVIDER,
+  KAKAO_PROVIDER,
+  LOGIN_PAGE_TITLE,
   MAIN_PAGE,
   POST_PAGE_URL,
   SIGNUP_PAGE_URL,
+  SUCCESS_ALERT,
+  SUCCESS_VERIFYNUM_MSG,
 } from "../../../../constants";
+import {
+  sendWebmail,
+  signup,
+  webmailVerify,
+  verificationNumber,
+} from "../../../../store/authSlice";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import { alertActions } from "../../../../store/alertSlice";
 type Inputs = {
   webmail: string;
   verificationNumber: number;
@@ -29,16 +42,15 @@ export default function WebMailAuth() {
   const router = useRouter();
   const webmailRef = useRef<HTMLInputElement>(null);
   const [webmailValidate, setWebmailValidate] = useState(false);
-  const { user, isLogin } = useContext(AuthContext);
-  const { signup, sendWebmail, verificationNumber, webmailVerify } =
-    useSignup();
+  const { user, isLogin } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
   const isSocialSignup =
-    user.provider === "kakao" || user.provider === "facebook";
+    user.provider === KAKAO_PROVIDER || user.provider === FACEBOOK_PROVIDER;
   const [activeVerificationNumber, setActiveVerificationNumber] =
     useState<boolean>(true);
 
@@ -56,13 +68,15 @@ export default function WebMailAuth() {
       if (validationWebmail) {
         setWebmailValidate(false);
         setActiveVerificationNumber(false);
-        sendWebmail({ email: webmail });
+        dispatch(sendWebmail(webmail));
       } else {
         setWebmailValidate(true);
         throw new Error("등록되지 않은 웹메일 입니다.");
       }
     } catch (err) {
-      // message.error(err.message);
+      dispatch(
+        alertActions.updateAlert({ name: ERROR_ALERT, message: err.message })
+      );
     }
   };
 
@@ -80,36 +94,40 @@ export default function WebMailAuth() {
       user.imageUrl &&
       user.provider
     ) {
-      signup({
-        email: user.email,
-        name: user.name,
-        web_email: user.web_email,
-        school: user.school,
-        imageUrl: user.imageUrl,
-        provider: user.provider,
-      });
+      dispatch(
+        signup({
+          email: user.email,
+          name: user.name,
+          web_email: user.web_email,
+          school: user.school,
+          imageUrl: user.imageUrl,
+          provider: user.provider,
+        })
+      );
     }
   };
 
   const verificationNumSubmit: SubmitHandler<Inputs> = async (data) => {
     if (!webmailRef.current) return;
     if (!(data.verificationNumber && !activeVerificationNumber)) {
-      // message.error("인증번호를 입력해주세요.");
-      return;
+      throw new Error("인증번호를 입력해주세요");
     }
 
     try {
-      await verificationNumber({
-        email: webmailRef.current.value,
-        verificationNumber: data.verificationNumber,
-      });
-    } catch {
-      return;
-    }
-
-    // message.success("인증번호 확인을 완료하였습니다.", {
-    //   onClose: verifyNumberSubsequent,
-    // });
+      await dispatch(
+        verificationNumber({
+          email: webmailRef.current.value,
+          verificationNumber: data.verificationNumber,
+        })
+      );
+    } catch (error) {}
+    dispatch(
+      alertActions.updateAlert({
+        name: SUCCESS_ALERT,
+        message: SUCCESS_VERIFYNUM_MSG,
+        confirmFunc: verifyNumberSubsequent,
+      })
+    );
   };
 
   const handleClickPublishBtn: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -123,14 +141,18 @@ export default function WebMailAuth() {
 
   useEffect(() => {
     if (isLogin) {
-      // message.error("로그아웃 후 회원가입을 진행해주세요.", {
-      //   onClose: () => {
-      //     router.push(POST_PAGE_URL);
-      //   },
-      // });
+      dispatch(
+        alertActions.updateAlert({
+          name: ERROR_ALERT,
+          message: "로그아웃 후 회원가입을 진행해주세요.",
+          confirmFunc: () => {
+            router.push(POST_PAGE_URL);
+          },
+        })
+      );
       return;
     }
-  }, []);
+  }, [isLogin, dispatch, router]);
 
   const webmailSection = (
     <InputSection>
@@ -177,7 +199,7 @@ export default function WebMailAuth() {
   return (
     <Layout>
       <AccountContainer
-        title="ChawChaw에`오신 것을 환영 해요."
+        title={LOGIN_PAGE_TITLE}
         subtitle="현재 재학중인 대학교의 웹메일을 입력해주세요.`웹 메일로 인증번호가 발송됩니다."
       >
         <SignupOrder activeType="1" />

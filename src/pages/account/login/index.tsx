@@ -10,16 +10,21 @@ import {
 import AccountContainer from "../../../components/account/AccountContainer";
 import styled from "styled-components";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { AuthContext } from "../../../store/AuthContext";
 import SocialSection from "../../../components/account/SocialSection";
 import Link from "next/link";
-import { useLogin } from "../../../hooks/api/account/useLogin";
 import {
+  BASIC_PROVIDER,
+  ERROR_ALERT,
+  ERROR_ENTER_LOGINPAGE_MSG,
+  LOGIN_PAGE_SUBTITLE,
+  LOGIN_PAGE_TITLE,
   POST_PAGE_URL,
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
+  WARNING_ALERT,
+  WARNING_LOGINFORM_MSG,
 } from "../../../constants";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { authActions, login } from "../../../store/authSlice";
+import { login } from "../../../store/authSlice";
 import { alertActions } from "../../../store/alertSlice";
 
 interface Inputs {
@@ -29,11 +34,8 @@ interface Inputs {
 
 export default function Login() {
   const router = useRouter();
-  // const message = useAlert();
   const dispatch = useAppDispatch();
   const isLogin = useAppSelector((state) => state.auth.isLogin);
-  // const { login } = useLogin();
-  // const { isLogin } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -42,19 +44,20 @@ export default function Login() {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (data.email === "" || data.password === "") {
-      dispatch(
-        alertActions.updateAlert({
-          name: "Warning",
-          message: "입력칸을 모두 입력해주세요.",
-        })
-      );
+      throw new Error(WARNING_LOGINFORM_MSG);
+      // dispatch(
+      //   alertActions.updateAlert({
+      //     name: WARNING_ALERT,
+      //     message: WARNING_LOGINFORM_MSG,
+      //   })
+      // );
       return;
     }
     dispatch(
       login({
         email: data.email,
         password: data.password,
-        provider: "basic",
+        provider: BASIC_PROVIDER,
       })
     );
   };
@@ -63,8 +66,8 @@ export default function Login() {
     if (isLogin) {
       dispatch(
         alertActions.updateAlert({
-          name: "Error",
-          message: "로그인 화면은 로그아웃 후 들어올 수 있습니다.",
+          name: ERROR_ALERT,
+          message: ERROR_ENTER_LOGINPAGE_MSG,
           confirmFunc: () => {
             router.push(POST_PAGE_URL);
           },
@@ -115,10 +118,7 @@ export default function Login() {
 
   return (
     <Layout>
-      <AccountContainer
-        title="ChawChaw에`로그인 해주세요."
-        subtitle="아이디와 비밀번호를 입력해주세요."
-      >
+      <AccountContainer title={LOGIN_PAGE_TITLE} subtitle={LOGIN_PAGE_SUBTITLE}>
         <Form onSubmit={handleSubmit(onSubmit)}>
           {emailSection}
           {passwordSection}

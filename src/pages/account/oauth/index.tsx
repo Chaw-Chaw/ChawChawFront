@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useLogin } from "../../../hooks/api/account/useLogin";
+import { useAppDispatch } from "../../../hooks/redux";
+import { authActions, login } from "../../../store/authSlice";
 
 interface OauthProps {
   provider: string;
@@ -8,7 +10,7 @@ interface OauthProps {
 export default function Oauth(props: OauthProps) {
   const router = useRouter();
   // 카카오에서 준 인증코드
-  const { login } = useLogin();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (JSON.stringify(router.query) === JSON.stringify({})) return;
@@ -21,7 +23,8 @@ export default function Oauth(props: OauthProps) {
   }, [JSON.stringify(router.query)]);
 
   const main = async (kakaoToken: string) => {
-    await login({ kakaoToken, provider: "kakao" });
+    dispatch(login({ kakaoToken, provider: "kakao" }));
+    // await login({ kakaoToken, provider: "kakao" });
   };
 
   return <div></div>;

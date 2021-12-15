@@ -33,7 +33,6 @@ class Errorboundary extends Component<Props, States> {
   }
   render() {
     const alert = this.props.alert;
-    console.log(this.state.notificationElement, alert, "Errorboundary");
     return (
       <>
         {alert.length !== 0 &&

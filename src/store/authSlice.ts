@@ -21,6 +21,14 @@ import {
   SENDMAIL_API_URL,
   SIGNUP_API_URL,
   VERIFY_WEBMAIL_API_URL,
+  INFO_ALERT,
+  ERROR_ALERT,
+  ADMIN_ROLE,
+  SUCCESS_ALERT,
+  SUCCESS_SIGNUP_MSG,
+  SUCCESS_EMAILCHECK_MSG,
+  SUCCESS_SENDEMAIL_MSG,
+  SUCCESS_VERIFYNUM_MSG,
 } from "../constants";
 import { UniversityList } from "../constants/UniversityList";
 import { saveSecureLocalStorage } from "../utils";
@@ -70,7 +78,7 @@ export const login = createAsyncThunk(
         body
       );
       thunkAPI.dispatch(authActions.loginSuccess(user));
-      if (user.profile.role === "ADMIN") {
+      if (user.profile.role === ADMIN_ROLE) {
         Router.push(MANAGE_MAIN_PAGE_URL);
         return;
       }
@@ -82,10 +90,16 @@ export const login = createAsyncThunk(
       if (status === "U402") {
         thunkAPI.dispatch(authActions.updateUser(newUserData));
         // 에러와 에러 함수를 전달해서 notification 컴포넌트를 띄워야 합니다.
+        thunkAPI.dispatch(
+          alertActions.updateAlert({
+            name: INFO_ALERT,
+            message: ERROR_CODES[status].message,
+          })
+        );
       }
       thunkAPI.dispatch(
         alertActions.updateAlert({
-          name: "Info",
+          name: ERROR_ALERT,
           message: ERROR_CODES[status].message,
         })
       );
@@ -99,13 +113,12 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
     window.localStorage.removeItem("accessToken");
     window.localStorage.removeItem("expireAtAccessToken");
     window.localStorage.removeItem("user");
-    // window.location.href = LOGIN_PAGE_URL;
     Router.push(LOGIN_PAGE_URL);
   } catch (error) {
     const status = error.response.data.status;
     thunkAPI.dispatch(
       alertActions.updateAlert({
-        name: "Error",
+        name: ERROR_ALERT,
         message: ERROR_CODES[status].message,
       })
     );
@@ -120,8 +133,8 @@ export const signup = createAsyncThunk(
       thunkAPI.dispatch(authActions.initUser());
       thunkAPI.dispatch(
         alertActions.updateAlert({
-          name: "Info",
-          message: "회원가입에 성공하셨습니다.",
+          name: INFO_ALERT,
+          message: SUCCESS_SIGNUP_MSG,
           confirmFunc: () => {
             Router.push(LOGIN_PAGE_URL);
           },
@@ -131,7 +144,7 @@ export const signup = createAsyncThunk(
       const status = error.response.data.status;
       thunkAPI.dispatch(
         alertActions.updateAlert({
-          name: "Error",
+          name: ERROR_ALERT,
           message: ERROR_CODES[status].message,
         })
       );
@@ -146,15 +159,15 @@ export const emailDupicationCheck = createAsyncThunk(
       await request.get(CONFIRM_DUP_EMAIL_API_URL + `/${email}`);
       thunkAPI.dispatch(
         alertActions.updateAlert({
-          name: "Info",
-          message: "사용가능한 아이디 입니다.",
+          name: INFO_ALERT,
+          message: SUCCESS_EMAILCHECK_MSG,
         })
       );
     } catch (error) {
       const status = error.response.data.status;
       thunkAPI.dispatch(
         alertActions.updateAlert({
-          name: "Error",
+          name: ERROR_ALERT,
           message: ERROR_CODES[status].message,
         })
       );
@@ -169,16 +182,15 @@ export const sendWebmail = createAsyncThunk(
       await request.post(SENDMAIL_API_URL, { email });
       thunkAPI.dispatch(
         alertActions.updateAlert({
-          name: "Success",
-          message:
-            "이메일 발송을 완료하였습니다. 인증번호의 만료시간은 3분 입니다.",
+          name: SUCCESS_ALERT,
+          message: SUCCESS_SENDEMAIL_MSG,
         })
       );
     } catch (error) {
       const status = error.response.data.status;
       thunkAPI.dispatch(
         alertActions.updateAlert({
-          name: "Error",
+          name: ERROR_ALERT,
           message: ERROR_CODES[status].message,
         })
       );
@@ -186,25 +198,20 @@ export const sendWebmail = createAsyncThunk(
   }
 );
 
-export const verifivationNumber = createAsyncThunk(
+export const verificationNumber = createAsyncThunk(
   "auth/verificationNumber",
   async (body: { email: string; verificationNumber: number }, thunkAPI) => {
     try {
       await request.post(VERIFY_WEBMAIL_API_URL, body);
-      thunkAPI.dispatch(
-        alertActions.updateAlert({
-          name: "Success",
-          message: "인증번호 확인을 완료하였습니다.",
-        })
-      );
     } catch (error) {
       const status = error.response.data.status;
       thunkAPI.dispatch(
         alertActions.updateAlert({
-          name: "Error",
+          name: ERROR_ALERT,
           message: ERROR_CODES[status].message,
         })
       );
+      throw error;
     }
   }
 );
