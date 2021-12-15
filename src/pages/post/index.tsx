@@ -6,7 +6,6 @@ import PostSection from "../../components/post/PostSection";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
-import { useAlert } from "react-alert";
 import { orderOptions } from "../../constants/order";
 import { usePost } from "../../hooks/api/post/usePost";
 import { PostCardProps } from "../../../types/post";
@@ -24,7 +23,6 @@ export default function Post() {
   const [isEnd, setIsEnd] = useState(false);
   const postIds = useRef("");
   const searchName = useRef("");
-  const message = useAlert();
   const router = useRouter();
   const blockIds = user.blockIds ? user.blockIds.join("/") : "";
   const searchType = useRef("BASIC");
@@ -48,7 +46,7 @@ export default function Post() {
       if (data.length === 0) {
         setIsEnd(true);
         if (isFirst && searchType.current === "SEARCH") {
-          message.info("조회 결과가 없습니다.");
+          // message.info("조회 결과가 없습니다.");
         }
         return;
       }
@@ -113,11 +111,11 @@ export default function Post() {
   useEffect(() => {
     if (user.role === "ADMIN") return;
     if (!isLogin) {
-      message.error("로그인 후에 서비스를 이용해주세요.", {
-        onClose: () => {
-          router.push(LOGIN_API_URL);
-        },
-      });
+      // message.error("로그인 후에 서비스를 이용해주세요.", {
+      //   onClose: () => {
+      //     router.push(LOGIN_API_URL);
+      //   },
+      // });
       return;
     }
 

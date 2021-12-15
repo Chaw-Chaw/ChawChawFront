@@ -7,7 +7,6 @@ import {
 } from "../../common";
 import { MouseEventHandler, useContext, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
-import { useAlert } from "react-alert";
 import {
   DEFAULT_FACEBOOK_URL,
   DEFAULT_INSTAGRAM_URL,
@@ -26,7 +25,6 @@ interface ProfileSection {
 }
 
 const ProfileSection: React.FC = () => {
-  const message = useAlert();
   const { uploadProfile } = useProfile();
   const { user, updateUser } = useContext(AuthContext);
 
@@ -104,7 +102,7 @@ const ProfileSection: React.FC = () => {
   const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
     const userProfile = await onSubmit();
-    message.success("프로필이 업로드 되었습니다.");
+    // message.success("프로필이 업로드 되었습니다.");
     updateUser(userProfile);
   };
 

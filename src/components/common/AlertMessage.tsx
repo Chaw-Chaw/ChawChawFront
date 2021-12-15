@@ -1,28 +1,48 @@
-import { ReactNode } from "react";
+import { MouseEvent, MouseEventHandler } from "react";
 import styled from "styled-components";
 import { Button } from ".";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { alertActions } from "../../store/alertSlice";
 
-interface AlertMessageProps {
-  onClick?: () => void;
-  message?: ReactNode;
-  type?: string;
-}
-
-const AlertMessage: React.FC<AlertMessageProps> = (props) => {
+const AlertMessage: React.FC = (props) => {
+  const dispatch = useAppDispatch();
+  const alertList = useAppSelector((state) => state.alert.alertList);
+  const handleClickConfirm = (e: MouseEvent<HTMLButtonElement>, id: number) => {
+    e.preventDefault();
+    const onConfirm = alertList.find((item) => item.id === id)?.confirmFunc;
+    if (onConfirm) {
+      onConfirm();
+    }
+    dispatch(alertActions.removeAlert(id));
+  };
+  const handleClickCancle = (e: MouseEvent<HTMLButtonElement>, id: number) => {
+    e.preventDefault();
+    dispatch(alertActions.removeAlert(id));
+  };
   return (
     <AlertMessageContainer>
-      <AlertMessageBox>
-        <AlertMessageTitleBox>
-          <span>{props.type}</span>
-        </AlertMessageTitleBox>
-        <AlertMessageContent>{props.message}</AlertMessageContent>
-        <AlertMessageButtonBox>
-          {props.children}
-          <AlertMessageConfirmButton onClick={props.onClick}>
-            확인
-          </AlertMessageConfirmButton>
-        </AlertMessageButtonBox>
-      </AlertMessageBox>
+      {alertList.map((item) => (
+        <AlertMessageBox key={item.id}>
+          <AlertMessageTitleBox>
+            <span>{item.name}</span>
+          </AlertMessageTitleBox>
+          <AlertMessageContent>{item.message}</AlertMessageContent>
+          <AlertMessageButtonBox>
+            <AlertMessageConfirmButton
+              onClick={(e) => handleClickConfirm(e, item.id)}
+            >
+              확인
+            </AlertMessageConfirmButton>
+            {item.confirmFunc && (
+              <AlertMessageCancelButton
+                onClick={(e) => handleClickCancle(e, item.id)}
+              >
+                취소
+              </AlertMessageCancelButton>
+            )}
+          </AlertMessageButtonBox>
+        </AlertMessageBox>
+      ))}
     </AlertMessageContainer>
   );
 };
@@ -30,13 +50,16 @@ const AlertMessage: React.FC<AlertMessageProps> = (props) => {
 export { AlertMessage };
 
 const AlertMessageContainer = styled.div`
-  width: 100vw;
-  height: 100vh;
-  pointer-events: all;
-  background-color: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.25);
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  z-index: 30;
 `;
 const AlertMessageBox = styled.div`
   background-color: ${(props) => props.theme.bodyBackgroundColor};
@@ -65,7 +88,6 @@ const AlertMessageBox = styled.div`
       opacity: 1;
     }
   }
-
   animation: slide-in-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 `;
 
@@ -94,6 +116,9 @@ const AlertMessageButtonBox = styled.div`
 
 const AlertMessageConfirmButton = styled(Button)`
   border-radius: 10px;
+`;
+const AlertMessageCancelButton = styled(AlertMessageConfirmButton)`
+  margin-left: 20px;
 `;
 
 const AlertMessageContent = styled.span`

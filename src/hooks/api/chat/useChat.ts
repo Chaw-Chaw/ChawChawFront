@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useContext } from "react";
-import { useAlert } from "react-alert";
 import {
   ConfirmChatRoomType,
   GetAlarmsType,
@@ -29,7 +28,6 @@ import { useApi } from "../useApi";
 
 export const useChat = () => {
   const { sendGet, sendPost, sendDelete } = useApi();
-  const message = useAlert();
   const { user } = useContext(AuthContext);
   const router = useRouter();
   const { setNewLikes, setNewMessages, setTotalMessage, mainRoom } =
@@ -48,7 +46,7 @@ export const useChat = () => {
     } catch (err) {
       const { status } = err.response.data;
       if (status !== "U406") {
-        message.error(EXCEPT_ERRORCODES_MSG);
+        // message.error(EXCEPT_ERRORCODES_MSG);
       }
     }
   };

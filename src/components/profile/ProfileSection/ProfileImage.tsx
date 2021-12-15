@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Image from "next/image";
 import { AuthContext } from "../../../store/AuthContext";
 import { Button } from "../../common";
-import { useAlert } from "react-alert";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
 import { useSendImage } from "../../../hooks/api/useSendImage";
 
@@ -11,14 +10,13 @@ const ProfileImage: React.FC = () => {
   const { user, updateUser } = useContext(AuthContext);
   const { sendProfileImage, deleteProfileImage, putImage } = useSendImage();
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
-  const message = useAlert();
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = async (
     e
   ) => {
     const image = putImage(e);
     const imageUrl = await sendProfileImage(image);
-    message.success("이미지 업로드 성공!");
+    // message.success("이미지 업로드 성공!");
     updateUser({ imageUrl });
   };
 

@@ -13,12 +13,14 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { AuthContext } from "../../../store/AuthContext";
 import SocialSection from "../../../components/account/SocialSection";
 import Link from "next/link";
-import { useAlert } from "react-alert";
 import { useLogin } from "../../../hooks/api/account/useLogin";
 import {
   POST_PAGE_URL,
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
 } from "../../../constants";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { authActions, login } from "../../../store/authSlice";
+import { alertActions } from "../../../store/alertSlice";
 
 interface Inputs {
   email: string;
@@ -27,9 +29,11 @@ interface Inputs {
 
 export default function Login() {
   const router = useRouter();
-  const message = useAlert();
-  const { login } = useLogin();
-  const { isLogin } = useContext(AuthContext);
+  // const message = useAlert();
+  const dispatch = useAppDispatch();
+  const isLogin = useAppSelector((state) => state.auth.isLogin);
+  // const { login } = useLogin();
+  // const { isLogin } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -38,26 +42,38 @@ export default function Login() {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (data.email === "" || data.password === "") {
-      message.error("입력칸을 모두 입력해주세요.");
+      dispatch(
+        alertActions.updateAlert({
+          name: "Warning",
+          message: "입력칸을 모두 입력해주세요.",
+        })
+      );
       return;
     }
-    await login({
-      email: data.email,
-      password: data.password,
-      provider: "basic",
-    });
+    dispatch(
+      login({
+        email: data.email,
+        password: data.password,
+        provider: "basic",
+      })
+    );
   };
 
   useEffect(() => {
     if (isLogin) {
-      message.error("로그인 화면은 로그아웃 후 들어올 수 있습니다.", {
-        onClose: () => {
-          router.push(POST_PAGE_URL);
-        },
-      });
+      dispatch(
+        alertActions.updateAlert({
+          name: "Error",
+          message: "로그인 화면은 로그아웃 후 들어올 수 있습니다.",
+          confirmFunc: () => {
+            router.push(POST_PAGE_URL);
+          },
+        })
+      );
+
       return;
     }
-  }, []);
+  }, [isLogin, dispatch, router]);
 
   const emailSection = (
     <InputSection>

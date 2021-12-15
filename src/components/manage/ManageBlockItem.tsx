@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { MouseEventHandler, useState } from "react";
-import { useAlert } from "react-alert";
+
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE } from "../../constants";
 import { useBlock } from "../../hooks/api/useBlock";

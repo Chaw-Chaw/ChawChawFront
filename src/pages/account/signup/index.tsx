@@ -17,7 +17,6 @@ import styled from "styled-components";
 import Link from "next/link";
 import { AuthContext } from "../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
 import { useSignup } from "../../../hooks/api/account/useSignup";
 import {
@@ -35,7 +34,6 @@ interface Inputs {
 
 export default function SignUp() {
   const [isEmailDupCheck, setIsEmailDupCheck] = useState(false);
-  const message = useAlert();
   const router = useRouter();
   const { signup, emailDuplicationCheck } = useSignup();
   const { updateUser, isLogin } = useContext(AuthContext);
@@ -58,15 +56,15 @@ export default function SignUp() {
       data.password === "" ||
       data.passwordConfirm === ""
     ) {
-      message.error("입력칸을 모두 입력해주세요.");
+      // message.error("입력칸을 모두 입력해주세요.");
       return;
     }
     if (!isEmailDupCheck) {
-      message.error("이메일 중복체크를 해주세요.");
+      // message.error("이메일 중복체크를 해주세요.");
       return;
     }
     if (userUniversity === "") {
-      message.error("웹메일 인증을 해주세요.");
+      // message.error("웹메일 인증을 해주세요.");
       router.push(LOGIN_PAGE_URL);
       return;
     }
@@ -87,7 +85,7 @@ export default function SignUp() {
         provider: "basic",
       });
     } else {
-      message.error("user data가 없습니다.");
+      // message.error("user data가 없습니다.");
     }
   };
 
@@ -102,7 +100,9 @@ export default function SignUp() {
       }
 
       // 중복된 이메일이 있으면 사용자가 회원가입이 불가능
-    } else message.error("이메일을 입력해주세요.");
+    } else {
+      // message.error("이메일을 입력해주세요.");
+    }
   };
 
   const handleClickEmailChkBtn: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -113,20 +113,20 @@ export default function SignUp() {
   useEffect(() => {
     const userSchool = user.school;
     if (isLogin) {
-      message.error("로그아웃 후 회원가입을 진행해주세요.", {
-        onClose: () => {
-          router.push(POST_PAGE_URL);
-        },
-      });
+      // message.error("로그아웃 후 회원가입을 진행해주세요.", {
+      //   onClose: () => {
+      //     router.push(POST_PAGE_URL);
+      //   },
+      // });
       return;
     }
 
     if (!userSchool) {
-      message.error("웹메일 인증을 먼저 진행해주세요.", {
-        onClose: () => {
-          router.push(SIGNUP_WEBMAIL_AUTH_PAGE_URL);
-        },
-      });
+      // message.error("웹메일 인증을 먼저 진행해주세요.", {
+      //   onClose: () => {
+      //     router.push(SIGNUP_WEBMAIL_AUTH_PAGE_URL);
+      //   },
+      // });
       return;
     }
   }, []);

@@ -1,5 +1,5 @@
 import React, { MouseEventHandler, SetStateAction, useState } from "react";
-import { useAlert } from "react-alert";
+
 import styled from "styled-components";
 import { DropDownBox, InitialBoxProps } from "./DropDownBox";
 import { Option } from "./Option";
@@ -16,14 +16,12 @@ const DropDown: React.FC<DropDownProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const index = props?.index;
 
-  const message = useAlert();
-
   const saveInfo = (item: string) => {
     if (props.setValues && index !== undefined) {
       props.setValues((preState) => {
         const result = preState;
         if (result.includes(item)) {
-          message.info("이미 같은 값을 선택하셨습니다.");
+          // message.info("이미 같은 값을 선택하셨습니다.");
           return result;
         }
         result[index] = item;

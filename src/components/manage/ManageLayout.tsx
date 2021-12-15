@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { useAlert } from "react-alert";
+
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE, MAIN_PAGE } from "../../constants";
 import { AuthContext } from "../../store/AuthContext";
@@ -10,17 +10,17 @@ import { TapList } from "./TapList";
 const ManageLayout: React.FC = (props) => {
   const { user, isLogin } = useContext(AuthContext);
   const router = useRouter();
-  const message = useAlert();
+
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
     if (user.role !== "ADMIN" || !isLogin) {
-      message.error("유저 아이디로 서비스를 이용할 수 없습니다.", {
-        onClose: () => {
-          router.push(MAIN_PAGE);
-        },
-      });
+      // message.error("유저 아이디로 서비스를 이용할 수 없습니다.", {
+      //   onClose: () => {
+      //     router.push(MAIN_PAGE);
+      //   },
+      // });
       return;
     }
     if (user.name) {

@@ -1,5 +1,4 @@
 import { MouseEventHandler, SetStateAction } from "react";
-import { useAlert } from "react-alert";
 import styled from "styled-components";
 import { Button } from "../../common";
 
@@ -8,8 +7,6 @@ const ProfileSelectControlButton: React.FC<{
   setValues: React.Dispatch<SetStateAction<string[]>>;
   count: number;
 }> = (props) => {
-  const message = useAlert();
-
   const addItem = () => {
     if (props.setValues && props.values) {
       if (props.values[props.values.length - 1] !== "Select") {
@@ -18,7 +15,7 @@ const ProfileSelectControlButton: React.FC<{
         });
         return;
       }
-      message.info("값을 선택 후 추가 할 수 있습니다.");
+      // message.info("값을 선택 후 추가 할 수 있습니다.");
     }
   };
 

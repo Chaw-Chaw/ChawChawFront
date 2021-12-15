@@ -13,7 +13,6 @@ import styled from "styled-components";
 import Link from "next/link";
 import { AuthContext } from "../../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
 import { useSignup } from "../../../../hooks/api/account/useSignup";
 import {
@@ -28,7 +27,6 @@ type Inputs = {
 
 export default function WebMailAuth() {
   const router = useRouter();
-  const message = useAlert();
   const webmailRef = useRef<HTMLInputElement>(null);
   const [webmailValidate, setWebmailValidate] = useState(false);
   const { user, isLogin } = useContext(AuthContext);
@@ -64,7 +62,7 @@ export default function WebMailAuth() {
         throw new Error("등록되지 않은 웹메일 입니다.");
       }
     } catch (err) {
-      message.error(err.message);
+      // message.error(err.message);
     }
   };
 
@@ -96,7 +94,7 @@ export default function WebMailAuth() {
   const verificationNumSubmit: SubmitHandler<Inputs> = async (data) => {
     if (!webmailRef.current) return;
     if (!(data.verificationNumber && !activeVerificationNumber)) {
-      message.error("인증번호를 입력해주세요.");
+      // message.error("인증번호를 입력해주세요.");
       return;
     }
 
@@ -109,9 +107,9 @@ export default function WebMailAuth() {
       return;
     }
 
-    message.success("인증번호 확인을 완료하였습니다.", {
-      onClose: verifyNumberSubsequent,
-    });
+    // message.success("인증번호 확인을 완료하였습니다.", {
+    //   onClose: verifyNumberSubsequent,
+    // });
   };
 
   const handleClickPublishBtn: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -125,11 +123,11 @@ export default function WebMailAuth() {
 
   useEffect(() => {
     if (isLogin) {
-      message.error("로그아웃 후 회원가입을 진행해주세요.", {
-        onClose: () => {
-          router.push(POST_PAGE_URL);
-        },
-      });
+      // message.error("로그아웃 후 회원가입을 진행해주세요.", {
+      //   onClose: () => {
+      //     router.push(POST_PAGE_URL);
+      //   },
+      // });
       return;
     }
   }, []);

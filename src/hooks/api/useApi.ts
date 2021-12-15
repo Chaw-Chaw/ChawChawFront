@@ -1,5 +1,4 @@
 import axios, { AxiosError } from "axios";
-import { useAlert } from "react-alert";
 import { LOGIN_PAGE_URL } from "../../constants/pageUrls";
 import { DefaultResponseBody } from "../../../types/response";
 
@@ -14,15 +13,13 @@ interface ErrorHandlingProps<T> {
   err: AxiosError<DefaultResponseBody<T>>;
 }
 export const useApi = () => {
-  const message = useAlert();
-
   const errorHandling = <T>({ err }: ErrorHandlingProps<T>) => {
     console.log(err.response, "errorHandling");
     if (!err.response) throw err;
     const { status } = err.response.data;
 
     if (!ERROR_CODES[status]) {
-      message.error(EXCEPT_ERRORCODES_MSG);
+      // message.error(EXCEPT_ERRORCODES_MSG);
       return;
     }
 
@@ -34,16 +31,16 @@ export const useApi = () => {
       return;
     }
     if (status === "T401" || status === "G403") {
-      message.error(ERROR_CODES[status].message, {
-        onClose: () => {
-          window.localStorage.removeItem("accessToken");
-          window.localStorage.removeItem("expireAtAccessToken");
-          window.localStorage.removeItem("user");
-          window.location.href = LOGIN_PAGE_URL;
-        },
-      });
+      // message.error(ERROR_CODES[status].message, {
+      //   onClose: () => {
+      //     window.localStorage.removeItem("accessToken");
+      //     window.localStorage.removeItem("expireAtAccessToken");
+      //     window.localStorage.removeItem("user");
+      //     window.location.href = LOGIN_PAGE_URL;
+      //   },
+      // });
     } else {
-      message.error(`${ERROR_CODES[status].message}`);
+      // message.error(`${ERROR_CODES[status].message}`);
     }
   };
 
@@ -51,7 +48,7 @@ export const useApi = () => {
     if (axios.isAxiosError(err)) {
       errorHandling({ err });
     } else {
-      message.error(EXCEPT_ERROR_MSG);
+      // message.error(EXCEPT_ERROR_MSG);
       console.error(err);
     }
   };

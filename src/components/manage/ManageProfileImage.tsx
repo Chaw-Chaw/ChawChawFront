@@ -2,7 +2,6 @@ import { MouseEventHandler, useEffect, useState } from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import { Button } from "../common";
-import { useAlert } from "react-alert";
 import { DEFAULT_PROFILE_IMAGE } from "../../constants";
 import { useSendImage } from "../../hooks/api/useSendImage";
 
@@ -12,7 +11,6 @@ const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
   const { putImage, sendManageProfileImage, deleteManageProfileImage } =
     useSendImage();
   const [profileImage, setProfileImage] = useState(props.userImage);
-  const message = useAlert();
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = async (
     e
@@ -23,9 +21,9 @@ const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
       image.append("userId", String(props.userId));
       const imageUrl = await sendManageProfileImage(image);
       setProfileImage(imageUrl);
-      message.success("이미지 업로드 성공!");
+      // message.success("이미지 업로드 성공!");
     } catch (err) {
-      message.error(err.message);
+      // message.error(err.message);
     }
   };
 

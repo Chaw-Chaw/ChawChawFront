@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
-import { useAlert } from "react-alert";
 import { INITIAL_ID, INITIAL_ROOMID, LOGIN_PAGE_URL } from "../../constants";
 import { ChatContext } from "../../store/ChatContext";
 import { useChat } from "../../hooks/api/chat/useChat";
@@ -22,18 +21,17 @@ export default function Chat() {
   } = useContext(ChatContext);
   const { makeChatRoom, confirmChatRoom } = useChat();
   const router = useRouter();
-  const message = useAlert();
 
   useEffect(() => {
     if (user.role === "ADMIN") {
       return;
     }
     if (!isLogin) {
-      message.error("로그인 후에 서비스를 이용해주세요.", {
-        onClose: () => {
-          router.push(LOGIN_PAGE_URL);
-        },
-      });
+      // message.error("로그인 후에 서비스를 이용해주세요.", {
+      //   onClose: () => {
+      //     router.push(LOGIN_PAGE_URL);
+      //   },
+      // });
       return;
     }
     // 채팅 페이지에서 나가면 메인 룸 넘버는 -1

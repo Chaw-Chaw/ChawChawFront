@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
-import { useAlert } from "react-alert";
 import styled from "styled-components";
 import { Layout } from "../../../components/common";
 import { SettingBlockList } from "../../../components/setting/SettingBlockList";
@@ -11,7 +10,6 @@ import { AuthContext } from "../../../store/AuthContext";
 
 export default function Setting() {
   const { isLogin, user } = useContext(AuthContext);
-  const message = useAlert();
   const router = useRouter();
 
   useEffect(() => {
@@ -19,11 +17,11 @@ export default function Setting() {
       return;
     }
     if (!isLogin) {
-      message.error("로그인 후 이용해주세요.", {
-        onClose: () => {
-          router.push(LOGIN_PAGE_URL);
-        },
-      });
+      // message.error("로그인 후 이용해주세요.", {
+      //   onClose: () => {
+      //     router.push(LOGIN_PAGE_URL);
+      //   },
+      // });
       return;
     }
   }, []);

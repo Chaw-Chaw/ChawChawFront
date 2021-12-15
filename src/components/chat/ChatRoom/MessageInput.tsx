@@ -9,7 +9,7 @@ import {
 } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../store/AuthContext";
-import { useAlert } from "react-alert";
+
 import { ChatContext } from "../../../store/ChatContext";
 import { INITIAL_ROOMID } from "../../../constants";
 import { useSendImage } from "../../../hooks/api/useSendImage";
@@ -23,7 +23,7 @@ interface MessageInputProps {
 const MessageInput: React.FC<MessageInputProps> = (props) => {
   const { mainRoom } = useContext(ChatContext);
   const { user } = useContext(AuthContext);
-  const message = useAlert();
+
   const { sendImageMessage } = useSendImage();
   const isNotActive = mainRoom.id === INITIAL_ROOMID ? true : false;
 
@@ -32,7 +32,7 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
     if (e.key === "Enter") {
       e.preventDefault();
       if (user.blockIds?.includes(mainRoom.userId)) {
-        message.error("차단한 사용자 입니다.");
+        // message.error("차단한 사용자 입니다.");
         return;
       }
       props.sendMessage();
@@ -42,7 +42,7 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
   const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     e.preventDefault();
     if (user.blockIds?.includes(mainRoom.userId)) {
-      message.error("차단한 사용자 입니다.");
+      // message.error("차단한 사용자 입니다.");
       return;
     }
     sendImageMessage(e);
@@ -54,7 +54,7 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
     e.preventDefault();
     if (isNotActive) return;
     if (user.blockIds?.includes(mainRoom.userId)) {
-      message.error("차단한 사용자 입니다.");
+      // message.error("차단한 사용자 입니다.");
       return;
     }
     props.sendMessage();

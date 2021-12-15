@@ -18,7 +18,6 @@ import { AuthContext } from "./AuthContext";
 import { getSecureLocalStorage } from "../utils";
 import { useChat } from "../hooks/api/chat/useChat";
 import { LikeAlarmType, MessageType, RoomType } from "../../types/chat";
-import { useAlert } from "react-alert";
 
 interface ChatContextObj {
   mainChatMessages: MessageType[];
@@ -68,7 +67,6 @@ const ChatContextProvider: React.FC = (props) => {
   const roomIdsRef = useRef<number[]>([]);
   const { user, isLogin } = useContext(AuthContext);
   const { noticeMainRoom, getNewAlarms, getMessageLog } = useChat();
-  const alertMessage = useAlert();
 
   const connect = () => {
     chatClient.current = new StompJs.Client({
@@ -108,17 +106,17 @@ const ChatContextProvider: React.FC = (props) => {
       const message = response.body;
 
       if (message === "duplicated") {
-        alertMessage.error(
-          "현재 같은 아이디로 다른 곳에서 접속 중입니다. 계속 이용하시려면 다시 로그인 해주세요.",
-          {
-            onClose: () => {
-              window.localStorage.removeItem("accessToken");
-              window.localStorage.removeItem("expireAtAccessToken");
-              window.localStorage.removeItem("user");
-              window.localStorage.href = LOGIN_PAGE_URL;
-            },
-          }
-        );
+        // alertMessage.error(
+        //   "현재 같은 아이디로 다른 곳에서 접속 중입니다. 계속 이용하시려면 다시 로그인 해주세요.",
+        //   {
+        //     onClose: () => {
+        //       window.localStorage.removeItem("accessToken");
+        //       window.localStorage.removeItem("expireAtAccessToken");
+        //       window.localStorage.removeItem("user");
+        //       window.localStorage.href = LOGIN_PAGE_URL;
+        //     },
+        //   }
+        // );
       }
     });
   };

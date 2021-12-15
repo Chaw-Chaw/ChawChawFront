@@ -5,7 +5,6 @@ import { CgBlock, CgUnblock } from "react-icons/cg";
 import { useRouter } from "next/router";
 import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
-import { useAlert } from "react-alert";
 import { useBlock } from "../../../hooks/api/useBlock";
 import { CHAT_PAGE_URL } from "../../../constants";
 import { useLike } from "../../../hooks/api/useLike";
@@ -22,12 +21,11 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
   const { like, unLike } = useLike();
   const [isActiveLike, setIsActiveLike] = useState(props.isLike);
   const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.id));
-  const message = useAlert();
 
   const handleClickTryChat: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     if (user.blockIds?.includes(props.id)) {
-      message.info("차단된 유저 입니다.");
+      // message.info("차단된 유저 입니다.");
       return;
     }
     router.push({ pathname: CHAT_PAGE_URL, query: { userId: props.id } });

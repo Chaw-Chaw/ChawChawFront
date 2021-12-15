@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
-import { useAlert } from "react-alert";
 import styled from "styled-components";
 import { Button, ListItem } from "../common";
 import { useDeleteUser } from "../../hooks/api/account/useDeleteUser";
@@ -9,18 +8,17 @@ import { MANAGE_MAIN_PAGE_URL } from "../../constants";
 const ManageUserDelete: React.FC<{ userId: number }> = (props) => {
   const { deleteManageUser } = useDeleteUser();
   const router = useRouter();
-  const message = useAlert();
   // 유저 삭제시 확인 메세지 alert 생성
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
 
     await deleteManageUser(props.userId);
-    message.success("유저삭제성공!", {
-      onClose: () => {
-        router.push(MANAGE_MAIN_PAGE_URL);
-      },
-    });
+    // message.success("유저삭제성공!", {
+    //   onClose: () => {
+    //     router.push(MANAGE_MAIN_PAGE_URL);
+    //   },
+    // });
   };
   return (
     <>

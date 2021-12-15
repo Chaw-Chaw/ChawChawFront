@@ -8,12 +8,10 @@ import { LanguageLocale, Pagenation } from "../../../components/common";
 import { orderOptions, sortOptions } from "../../../constants/order";
 import { PagenationInfoType, UserListItemType } from "../../../../types/manage";
 import { useManage } from "../../../hooks/api/account/manage/useManage";
-import { useAlert } from "react-alert";
 import { AuthContext } from "../../../store/AuthContext";
 
 export default function ManageUser() {
   const { user, isLogin } = useContext(AuthContext);
-  const message = useAlert();
   const { takeUserList } = useManage();
   const [isLoading, setIsLoading] = useState(true);
   const [searchInfo, setSearchInfo] = useState<string[]>([
@@ -53,7 +51,7 @@ export default function ManageUser() {
       const data = await takeUserList(searchCondition);
       setUsersList(data.contents);
       if (data.contents.length === 0) {
-        message.info("조회 결과가 없습니다.");
+        // message.info("조회 결과가 없습니다.");
         setIsLoading(true);
         return;
       }

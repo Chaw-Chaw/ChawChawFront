@@ -1,7 +1,6 @@
 import { MouseEventHandler, useState } from "react";
 import styled from "styled-components";
 import { Button, ListItem } from "../common";
-import { ContfirmUserDelete } from "./ConfirmUserDelete";
 
 const SettingUserDelete: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -9,6 +8,7 @@ const SettingUserDelete: React.FC = () => {
   const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
     setOpen(true);
+    //dispatch alert
   };
 
   return (
@@ -19,7 +19,6 @@ const SettingUserDelete: React.FC = () => {
       >
         <UserDeleteButton onClick={handleClick}>회원 탈퇴</UserDeleteButton>
       </ListItem>
-      {open && <ContfirmUserDelete setOpen={setOpen} />}
     </>
   );
 };

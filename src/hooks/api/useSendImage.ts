@@ -1,5 +1,4 @@
 import { ChangeEvent, useContext } from "react";
-import { useAlert } from "react-alert";
 import {
   DELETE_PROFILE_IMAGE_API_URL,
   MANAGE_DELETE_PROFILE_IMAGE_API_URL,
@@ -12,7 +11,6 @@ import { useApi } from "./useApi";
 
 export const useSendImage = () => {
   const { sendFormData, sendDelete } = useApi();
-  const message = useAlert();
   const { publish } = useContext(ChatContext);
 
   const putImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +25,7 @@ export const useSendImage = () => {
       image.append("file", file);
       return image;
     } catch (err) {
-      message.error(err.message);
+      // message.error(err.message);
       throw new Error(err);
     }
   };
@@ -45,7 +43,7 @@ export const useSendImage = () => {
       const imageUrl = await uploadChatImage(image);
       publish(imageUrl, "IMAGE");
     } catch (err) {
-      message.error(err.message);
+      // message.error(err.message);
       throw err;
     }
   };
