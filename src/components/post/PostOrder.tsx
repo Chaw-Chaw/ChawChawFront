@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { PostOrderProps } from "../../../types/post";
+import { PostOrderProps } from "../../types/post";
 import { SelectInfoDropDown } from "../common";
 import { selectItemInfoList } from "../../constants/order";
 

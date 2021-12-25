@@ -5,7 +5,7 @@ import {
   SIGNUP_API_URL,
   VERIFY_WEBMAIL_API_URL,
 } from "../../../constants/apiUrls";
-import { SignupProps, SignupPropsSocial } from "../../../../types/account";
+import { SignupProps, SignupPropsSocial } from "../../../types/account";
 import { useContext } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useRouter } from "next/router";

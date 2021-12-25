@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useLogin } from "../../../hooks/api/account/useLogin";
 import { useAppDispatch } from "../../../hooks/redux";
 import { authActions, login } from "../../../store/authSlice";
+import { KAKAO_PROVIDER } from "../../../constants";
 
 interface OauthProps {
   provider: string;
@@ -11,21 +12,24 @@ export default function Oauth(props: OauthProps) {
   const router = useRouter();
   // 카카오에서 준 인증코드
   const dispatch = useAppDispatch();
+  const routerQuery = JSON.stringify(router.query);
+
+  const main = useCallback(
+    async (kakaoToken: string) => {
+      dispatch(login({ kakaoToken, provider: KAKAO_PROVIDER }));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
-    if (JSON.stringify(router.query) === JSON.stringify({})) return;
+    if (routerQuery === JSON.stringify({})) return;
     const kakaoToken = router.query.code?.toString();
     if (kakaoToken !== undefined) {
       (async () => {
         await main(kakaoToken);
       })();
     }
-  }, [JSON.stringify(router.query)]);
-
-  const main = async (kakaoToken: string) => {
-    dispatch(login({ kakaoToken, provider: "kakao" }));
-    // await login({ kakaoToken, provider: "kakao" });
-  };
+  }, [routerQuery, main, router.query.code]);
 
   return <div></div>;
 }

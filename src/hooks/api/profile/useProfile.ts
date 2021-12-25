@@ -2,7 +2,7 @@ import {
   ManageUploadUserInfoType,
   ManageUserInfoType,
   UploadProfileType,
-} from "../../../../types/profile";
+} from "../../../types/profile";
 import {
   MANAGE_USER_API_URL,
   MANAGE_USER_PROFILE_API_URL,

@@ -6,7 +6,7 @@ import { PostModalInfo } from "./PostModalInfo";
 import { PostModalImage } from "./PostModalImage";
 import { PostModalActive } from "./PostModalActive";
 import { PostModalContent } from "./PostModalContent";
-import { PostModalProps } from "../../../../types/post";
+import { PostModalProps } from "../../../types/post";
 
 const PostModal: React.FC<PostModalProps> = (props) => {
   const now = new Date();

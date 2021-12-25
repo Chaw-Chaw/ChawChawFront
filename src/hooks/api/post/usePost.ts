@@ -2,7 +2,7 @@ import {
   PostCardProps,
   PostModalInfoProps,
   SearchPostCardProps,
-} from "../../../../types/post";
+} from "../../../types/post";
 import { GET_POSTMODAL_API_URL, SEARCH_POST_API_URL } from "../../../constants";
 import { useApi } from "../useApi";
 

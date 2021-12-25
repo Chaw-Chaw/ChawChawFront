@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { BlockListItemType } from "../../../types/block";
+import { BlockListItemType } from "../../types/block";
 import {
   BLOCK_API_URL,
   GET_BLOCKLIST_API_URL,

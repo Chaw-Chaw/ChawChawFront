@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ManageLayout } from "../../../../components/manage/ManageLayout";
 import {
   ProfileHeader,
@@ -21,12 +21,12 @@ import { ManageUserDelete } from "../../../../components/manage/ManageUserDelete
 import { ManageUserUniversity } from "../../../../components/manage/ManageUserUniversity";
 import ManageProfileImage from "../../../../components/manage/ManageProfileImage";
 import { useProfile } from "../../../../hooks/api/profile/useProfile";
-import { ManageUserInfoType } from "../../../../../types/profile";
+import { ManageUserInfoType } from "../../../../types/profile";
 import { INIT_USERINFO } from "../../../../constants/profile";
 import { AuthContext } from "../../../../store/AuthContext";
 import { arrayRemovedItem } from "../../../../utils";
 
-export default function ManageUserDetail() {
+function ManageUserDetail() {
   const { user, isLogin } = useContext(AuthContext);
   const router = useRouter();
   const { getUserDetailInfo, manageUploadUserProfile } = useProfile();
@@ -201,6 +201,7 @@ export default function ManageUserDetail() {
     </ManageLayout>
   );
 }
+export default React.memo(ManageUserDetail);
 
 const ManageDetailContainer = styled.div`
   width: calc(100% - 300px);

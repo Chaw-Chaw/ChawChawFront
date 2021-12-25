@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
-import { PagenationInfoType, UserListItemType } from "../../../types/manage";
+import { PagenationInfoType, UserListItemType } from "../../types/manage";
 import { UserListItem } from "./UserListItem";
 
 const UserList: React.FC<{

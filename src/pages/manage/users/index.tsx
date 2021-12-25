@@ -6,7 +6,7 @@ import { UserList } from "../../../components/manage/UserList";
 import { PostSearch as UserSearch } from "../../../components/post/PostSearch";
 import { LanguageLocale, Pagenation } from "../../../components/common";
 import { orderOptions, sortOptions } from "../../../constants/order";
-import { PagenationInfoType, UserListItemType } from "../../../../types/manage";
+import { PagenationInfoType, UserListItemType } from "../../../types/manage";
 import { useManage } from "../../../hooks/api/account/manage/useManage";
 import { AuthContext } from "../../../store/AuthContext";
 

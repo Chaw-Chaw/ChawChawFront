@@ -17,7 +17,7 @@ import {
 import { AuthContext } from "./AuthContext";
 import { getSecureLocalStorage } from "../utils";
 import { useChat } from "../hooks/api/chat/useChat";
-import { LikeAlarmType, MessageType, RoomType } from "../../types/chat";
+import { LikeAlarmType, MessageType, RoomType } from "../types/chat";
 
 interface ChatContextObj {
   mainChatMessages: MessageType[];
@@ -86,7 +86,6 @@ const ChatContextProvider: React.FC = (props) => {
         loginChannelSubscribe();
       },
       onStompError: (frame) => {
-        console.log(frame, "connect error");
         connect();
       },
       connectHeaders: {
@@ -289,4 +288,3 @@ const ChatContextProvider: React.FC = (props) => {
 };
 
 export { ChatContext, ChatContextProvider };
-export type { RoomType, MessageType, LikeAlarmType };

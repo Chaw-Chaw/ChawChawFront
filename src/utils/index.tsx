@@ -39,10 +39,23 @@ const avoidLocalStorageUndefined = (itemName: string, initialData: any) => {
   return localStorageData;
 };
 
+const isLogin = () => {
+  const loginCurrent = window.localStorage.getItem("accessToken");
+  return Boolean(loginCurrent);
+};
+
+const newError = (errorName: string, errorMessage: string) => {
+  const error = new Error(errorMessage);
+  error.name = errorName;
+  return error;
+};
+
 export {
   arrayRemovedItem,
   saveSecureLocalStorage,
   getSecureLocalStorage,
   avoidLocalStorageUndefined,
   divideMain,
+  isLogin,
+  newError,
 };

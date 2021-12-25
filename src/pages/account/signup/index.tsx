@@ -17,13 +17,33 @@ import styled from "styled-components";
 import Link from "next/link";
 import { AuthContext } from "../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useRouter } from "next/router";
+import Router from "next/router";
 import { useSignup } from "../../../hooks/api/account/useSignup";
 import {
+  BASIC_PROVIDER,
+  CONFIRM_PUSH_LOGINPAGE,
+  CONFIRM_PUSH_POSTPAGE,
+  CONFIRM_PUSH_SIGNUP_WEBMAIL,
+  ERROR_AFTERLOGOUT_SIGNUP_MSG,
+  ERROR_ALERT,
   LOGIN_PAGE_URL,
   POST_PAGE_URL,
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
+  WARNING_ALERT,
+  WARNING_WEBMAIL_VERIFY_MSG,
+  WARNING_FORM_MSG,
+  WARNING_ENTER_EMAIL_MSG,
+  WARNING_DUPEMAIL_CHECK_MSG,
+  ERROR_EMPTY_USERDATA_MSG,
 } from "../../../constants";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { alertActions } from "../../../store/alertSlice";
+import {
+  authActions,
+  signup,
+  emailDuplicationCheck,
+} from "../../../store/authSlice";
+import { isLogin, newError } from "../../../utils";
 
 interface Inputs {
   email: string;
@@ -34,10 +54,8 @@ interface Inputs {
 
 export default function SignUp() {
   const [isEmailDupCheck, setIsEmailDupCheck] = useState(false);
-  const router = useRouter();
-  const { signup, emailDuplicationCheck } = useSignup();
-  const { updateUser, isLogin } = useContext(AuthContext);
-  const { user } = useContext(AuthContext);
+  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
 
   const userUniversity = user.school;
   const {
@@ -48,44 +66,49 @@ export default function SignUp() {
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
-    console.log(isEmailDupCheck, "이메일 중복체크");
     if (
       data.email === "" ||
       data.username === "" ||
       data.password === "" ||
       data.passwordConfirm === ""
     ) {
-      // message.error("입력칸을 모두 입력해주세요.");
-      return;
+      throw newError(WARNING_ALERT, WARNING_FORM_MSG);
     }
     if (!isEmailDupCheck) {
-      // message.error("이메일 중복체크를 해주세요.");
-      return;
+      throw newError(WARNING_ALERT, WARNING_DUPEMAIL_CHECK_MSG);
     }
     if (userUniversity === "") {
-      // message.error("웹메일 인증을 해주세요.");
-      router.push(LOGIN_PAGE_URL);
+      dispatch(
+        alertActions.updateAlert({
+          name: WARNING_ALERT,
+          message: WARNING_WEBMAIL_VERIFY_MSG,
+          confirmFuncName: CONFIRM_PUSH_LOGINPAGE,
+        })
+      );
       return;
     }
 
-    updateUser({
-      email: data.email,
-      name: data.username,
-    });
+    dispatch(
+      authActions.updateUser({
+        email: data.email,
+        name: data.username,
+      })
+    );
 
     if (user.web_email && user.school) {
-      signup({
-        email: data.email,
-        password: data.password,
-        name: data.username,
-        web_email: user.web_email,
-        school: user.school,
-        imageUrl: "",
-        provider: "basic",
-      });
+      dispatch(
+        signup({
+          email: data.email,
+          password: data.password,
+          name: data.username,
+          web_email: user.web_email,
+          school: user.school,
+          imageUrl: "",
+          provider: BASIC_PROVIDER,
+        })
+      );
     } else {
-      // message.error("user data가 없습니다.");
+      throw new Error(ERROR_EMPTY_USERDATA_MSG);
     }
   };
 
@@ -93,7 +116,7 @@ export default function SignUp() {
     const email = watch("email");
     if (email !== "") {
       try {
-        await emailDuplicationCheck(email);
+        await dispatch(emailDuplicationCheck(email));
         setIsEmailDupCheck(true);
       } catch (err) {
         setIsEmailDupCheck(false);
@@ -101,7 +124,7 @@ export default function SignUp() {
 
       // 중복된 이메일이 있으면 사용자가 회원가입이 불가능
     } else {
-      // message.error("이메일을 입력해주세요.");
+      throw newError(WARNING_ALERT, WARNING_ENTER_EMAIL_MSG);
     }
   };
 
@@ -112,24 +135,28 @@ export default function SignUp() {
 
   useEffect(() => {
     const userSchool = user.school;
-    if (isLogin) {
-      // message.error("로그아웃 후 회원가입을 진행해주세요.", {
-      //   onClose: () => {
-      //     router.push(POST_PAGE_URL);
-      //   },
-      // });
+    if (isLogin()) {
+      dispatch(
+        alertActions.updateAlert({
+          name: ERROR_ALERT,
+          message: ERROR_AFTERLOGOUT_SIGNUP_MSG,
+          confirmFuncName: CONFIRM_PUSH_POSTPAGE,
+        })
+      );
       return;
     }
 
     if (!userSchool) {
-      // message.error("웹메일 인증을 먼저 진행해주세요.", {
-      //   onClose: () => {
-      //     router.push(SIGNUP_WEBMAIL_AUTH_PAGE_URL);
-      //   },
-      // });
+      dispatch(
+        alertActions.updateAlert({
+          name: ERROR_ALERT,
+          message: WARNING_WEBMAIL_VERIFY_MSG,
+          confirmFuncName: CONFIRM_PUSH_SIGNUP_WEBMAIL,
+        })
+      );
       return;
     }
-  }, []);
+  }, [dispatch, user.school]);
 
   const emailSection = (
     <InputSection>

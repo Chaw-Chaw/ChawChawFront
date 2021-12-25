@@ -1,4 +1,4 @@
-import { SearchConditionType, UserListType } from "../../../../../types/manage";
+import { SearchConditionType, UserListType } from "../../../../types/manage";
 import { MANAGE_USERLIST_API_URL } from "../../../../constants";
 import { useApi } from "../../useApi";
 

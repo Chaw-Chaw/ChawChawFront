@@ -5,7 +5,7 @@ import PostModal from "../PostModal";
 import { ModalLayout } from "../../common";
 import { usePost } from "../../../hooks/api/post/usePost";
 import { initialPostInfo } from "../../../constants/post";
-import { PostCardProps, PostModalInfoProps } from "../../../../types/post";
+import { PostCardProps, PostModalInfoProps } from "../../../types/post";
 import { PostCardImageInfo } from "./PostCardImageInfo";
 import { PostCardInfo } from "./PostCardInfo";
 

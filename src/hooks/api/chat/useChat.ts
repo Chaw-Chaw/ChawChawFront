@@ -6,7 +6,7 @@ import {
   GetAlarmsType,
   MakeChatRoomType,
   RoomType,
-} from "../../../../types/chat";
+} from "../../../types/chat";
 import {
   BACKEND_URL,
   EXCEPT_ERRORCODES_MSG,

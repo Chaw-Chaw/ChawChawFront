@@ -11,19 +11,25 @@ import AccountContainer from "../../../../components/account/AccountContainer";
 import SignupOrder from "../../../../components/account/SignupOrder";
 import styled from "styled-components";
 import Link from "next/link";
-import { AuthContext } from "../../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Router from "next/router";
 import {
+  CONFIRM_DISPATCH_SIGNUP,
+  CONFIRM_PUSH_POSTPAGE,
+  CONFIRM_PUSH_SIGNUP,
+  ERROR_AFTERLOGOUT_SIGNUP_MSG,
   ERROR_ALERT,
+  ERROR_NOTFOUND_WEBMAIL_MSG,
   FACEBOOK_PROVIDER,
   KAKAO_PROVIDER,
   LOGIN_PAGE_TITLE,
   MAIN_PAGE,
-  POST_PAGE_URL,
+  SELECT_TYPE,
   SIGNUP_PAGE_URL,
   SUCCESS_ALERT,
   SUCCESS_VERIFYNUM_MSG,
+  WARNING_ALERT,
+  WARNING_CHECK_WEBMAIL_MSG,
 } from "../../../../constants";
 import {
   sendWebmail,
@@ -33,15 +39,13 @@ import {
 } from "../../../../store/authSlice";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { alertActions } from "../../../../store/alertSlice";
-type Inputs = {
-  webmail: string;
-  verificationNumber: number;
-};
+import { isLogin, newError } from "../../../../utils/index";
+import { Inputs } from "../../../../types/account";
 
 export default function WebMailAuth() {
   const webmailRef = useRef<HTMLInputElement>(null);
   const [webmailValidate, setWebmailValidate] = useState(false);
-  const { user, isLogin } = useAppSelector((state) => state.auth);
+  const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
   const {
     register,
@@ -56,11 +60,11 @@ export default function WebMailAuth() {
   const publishSubmit = () => {
     try {
       if (!webmailRef.current) {
-        throw new SyntaxError("웹메일 칸이 없습니다.");
+        return;
       }
       const webmail = webmailRef.current.value;
       if (webmail === "") {
-        throw new Error("웹메일을 입력해주세요.");
+        throw newError(WARNING_ALERT, WARNING_CHECK_WEBMAIL_MSG);
       }
 
       const validationWebmail = webmailVerify(webmail);
@@ -70,42 +74,12 @@ export default function WebMailAuth() {
         dispatch(sendWebmail(webmail));
       } else {
         setWebmailValidate(true);
-        throw new Error("등록되지 않은 웹메일 입니다.");
+        throw new Error(ERROR_NOTFOUND_WEBMAIL_MSG);
       }
     } catch (err) {
-      dispatch(
-        alertActions.updateAlert({ name: ERROR_ALERT, message: err.message })
-      );
+      throw new Error(err.message);
     }
   };
-
-  const verifyNumberSubsequent = () => {
-    if (!isSocialSignup) {
-      Router.push(SIGNUP_PAGE_URL);
-      return;
-    }
-
-    if (
-      user.email &&
-      user.name &&
-      user.web_email &&
-      user.school &&
-      user.imageUrl &&
-      user.provider
-    ) {
-      dispatch(
-        signup({
-          email: user.email,
-          name: user.name,
-          web_email: user.web_email,
-          school: user.school,
-          imageUrl: user.imageUrl,
-          provider: user.provider,
-        })
-      );
-    }
-  };
-
   const verificationNumSubmit: SubmitHandler<Inputs> = async (data) => {
     if (!webmailRef.current) return;
     if (!(data.verificationNumber && !activeVerificationNumber)) {
@@ -124,8 +98,9 @@ export default function WebMailAuth() {
       alertActions.updateAlert({
         name: SUCCESS_ALERT,
         message: SUCCESS_VERIFYNUM_MSG,
-        type: "select",
-        // confirmFunc: verifyNumberSubsequent,
+        confirmFuncName: isSocialSignup
+          ? CONFIRM_DISPATCH_SIGNUP
+          : CONFIRM_PUSH_SIGNUP,
       })
     );
   };
@@ -140,20 +115,17 @@ export default function WebMailAuth() {
   };
 
   useEffect(() => {
-    if (isLogin) {
+    if (isLogin()) {
       dispatch(
         alertActions.updateAlert({
           name: ERROR_ALERT,
-          message: "로그아웃 후 회원가입을 진행해주세요.",
-          type: "select",
-          // confirmFunc: () => {
-          //   Router.push(POST_PAGE_URL);
-          // },
+          message: ERROR_AFTERLOGOUT_SIGNUP_MSG,
+          confirmFuncName: CONFIRM_PUSH_POSTPAGE,
         })
       );
       return;
     }
-  }, [isLogin, dispatch]);
+  }, [dispatch]);
 
   const webmailSection = (
     <InputSection>

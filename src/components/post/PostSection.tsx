@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { PostCard } from "./PostCard";
 import { CountryLocale, LocaleLanguage } from "../common";
-import { PostCardProps } from "../../../types/post";
+import { PostCardProps } from "../../types/post";
 
 interface PostSectionProps {
   postInfo: PostCardProps[];

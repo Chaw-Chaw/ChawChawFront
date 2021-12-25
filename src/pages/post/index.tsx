@@ -8,7 +8,7 @@ import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import { orderOptions } from "../../constants/order";
 import { usePost } from "../../hooks/api/post/usePost";
-import { PostCardProps } from "../../../types/post";
+import { PostCardProps } from "../../types/post";
 import { LOGIN_API_URL } from "../../constants";
 
 export default function Post() {

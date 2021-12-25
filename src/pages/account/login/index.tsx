@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import Router from "next/router";
 import {
   Layout,
@@ -18,14 +18,19 @@ import {
   ERROR_ENTER_LOGINPAGE_MSG,
   LOGIN_PAGE_SUBTITLE,
   LOGIN_PAGE_TITLE,
-  POST_PAGE_URL,
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
-  WARNING_ALERT,
-  WARNING_LOGINFORM_MSG,
+  WARNING_FORM_MSG,
 } from "../../../constants";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { login } from "../../../store/authSlice";
 import { alertActions } from "../../../store/alertSlice";
+import {
+  CONFIRM_PUSH_LOGINPAGE,
+  CONFIRM_PUSH_POSTPAGE,
+  CONFIRM_VOID,
+  SELECT_TYPE,
+} from "../../../constants/alert";
+import { avoidLocalStorageUndefined, isLogin } from "../../../utils";
 
 interface Inputs {
   email: string;
@@ -34,7 +39,6 @@ interface Inputs {
 
 export default function Login() {
   const dispatch = useAppDispatch();
-  const isLogin = useAppSelector((state) => state.auth.isLogin);
   const {
     register,
     handleSubmit,
@@ -43,7 +47,7 @@ export default function Login() {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (data.email === "" || data.password === "") {
-      throw new Error(WARNING_LOGINFORM_MSG);
+      throw new Error(WARNING_FORM_MSG);
     }
     dispatch(
       login({
@@ -55,30 +59,17 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (isLogin) {
-      /* 
-      두번쨰 방법 : alertActions updateAlert 자체가 createAsyncThunk가 되어서
-      확인을 누르면 true 취소를 누르면 false를 반환해서
-      dispatch 값을 반환하는 방법이 있다. 
-
-      이때는 alertSlice에 빌더로 등록해서 return true false를 해야하나?
-      해보자
-      */
-      const result = window.confirm("hey");
-      console.log(result, "confirm");
+    if (isLogin()) {
       dispatch(
         alertActions.updateAlert({
           name: ERROR_ALERT,
           message: ERROR_ENTER_LOGINPAGE_MSG,
-          type: "select",
-          // confirmFunc: () => {
-          //   Router.push(POST_PAGE_URL);
-          // },
+          confirmFuncName: CONFIRM_PUSH_POSTPAGE,
         })
       );
       return;
     }
-  }, [isLogin, dispatch]);
+  }, [dispatch]);
 
   const emailSection = (
     <InputSection>

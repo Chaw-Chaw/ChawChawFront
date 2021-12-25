@@ -3,7 +3,7 @@ import { useContext } from "react";
 import {
   GrantRefreshResponseType,
   RefreshResponseBody,
-} from "../../../../types/account";
+} from "../../../types/account";
 import {
   ERROR_CODES,
   EXCEPT_ERROR_MSG,

@@ -3,13 +3,15 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Router from "next/router";
 import store from ".";
 import {
+  AuthInitialStateProps,
   KakaoLoginProps,
   LoginProps,
   LoginResponseBody,
   SignupProps,
   SignupPropsSocial,
-} from "../../types/account";
-import { DefaultResponseBody } from "../../types/response";
+  UserPropertys,
+} from "../types/account";
+import { DefaultResponseBody } from "../types/response";
 import {
   CONFIRM_DUP_EMAIL_API_URL,
   ERROR_CODES,
@@ -30,41 +32,14 @@ import {
   SUCCESS_SENDEMAIL_MSG,
   SUCCESS_VERIFYNUM_MSG,
 } from "../constants";
+import { CONFIRM_PUSH_LOGINPAGE } from "../constants/alert";
 import { UniversityList } from "../constants/UniversityList";
 import { avoidLocalStorageUndefined, saveSecureLocalStorage } from "../utils";
 import { request } from "../utils/request";
 import { alertActions } from "./alertSlice";
 
-interface UserPropertys {
-  email?: string;
-  passoword?: string;
-  name?: string;
-  web_email?: string;
-  school?: string;
-  imageUrl?: string;
-  content?: string;
-  facebookUrl?: string;
-  instagramUrl?: string;
-  country?: string[];
-  language?: string[];
-  hopeLanguage?: string[];
-  repCountry?: string;
-  repLanguage?: string;
-  repHopeLanguage?: string;
-  id?: number;
-  blockIds?: number[];
-  role?: string;
-  provider?: string;
-}
-
-interface AuthInitialStateProps {
-  user: UserPropertys;
-  isLogin: boolean;
-}
-
 const initialState: AuthInitialStateProps = {
   user: avoidLocalStorageUndefined("user", {}),
-  isLogin: Boolean(avoidLocalStorageUndefined("accessToken", false)),
 };
 
 export const login = createAsyncThunk(
@@ -83,7 +58,6 @@ export const login = createAsyncThunk(
         return;
       }
       Router.push(POST_PAGE_URL);
-      return;
     } catch (error) {
       const status = error.response.data.status;
       const newUserData = error.response.data.data;
@@ -135,10 +109,7 @@ export const signup = createAsyncThunk(
         alertActions.updateAlert({
           name: INFO_ALERT,
           message: SUCCESS_SIGNUP_MSG,
-          type: "select",
-          //   confirmFunc: () => {
-          //     Router.push(LOGIN_PAGE_URL);
-          //   },
+          confirmFuncName: CONFIRM_PUSH_LOGINPAGE,
         })
       );
     } catch (error) {
@@ -153,7 +124,7 @@ export const signup = createAsyncThunk(
   }
 );
 
-export const emailDupicationCheck = createAsyncThunk(
+export const emailDuplicationCheck = createAsyncThunk(
   "auth/emailDuplicationCheck",
   async (email: string, thunkAPI) => {
     try {
@@ -246,7 +217,6 @@ const authSlice = createSlice({
 
       saveSecureLocalStorage("expireAtAccessToken", expireAtAccessToken);
       saveSecureLocalStorage("accessToken", accessToken);
-      state.isLogin = true;
 
       if (action.payload.profile) {
         const newData: UserPropertys = {

@@ -3,7 +3,7 @@ import { getSecureLocalStorage, saveSecureLocalStorage } from ".";
 import {
   GrantRefreshResponseType,
   RefreshResponseBody,
-} from "../../types/account";
+} from "../types/account";
 import {
   ERROR_CODES,
   GRANTREFRESH_API_URL,

@@ -5,7 +5,7 @@ import {
   RankLanguageType,
   RankSchoolType,
   RankVisitedLanguageType,
-} from "../../types/statistics";
+} from "../types/statistics";
 import { LocaleLanguage } from "../components/common";
 import {
   INIT_BAR_CHART_DATA,

@@ -1,6 +1,6 @@
 import { AiFillEye, AiFillHeart } from "react-icons/ai";
 import styled from "styled-components";
-import { PostModalHeadProps } from "../../../../types/post";
+import { PostModalHeadProps } from "../../../types/post";
 
 const PostModalInfo: React.FC<PostModalHeadProps> = (props) => {
   return (

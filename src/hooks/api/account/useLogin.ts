@@ -5,7 +5,7 @@ import {
   KakaoLoginProps,
   LoginProps,
   LoginResponseBody,
-} from "../../../../types/account";
+} from "../../../types/account";
 import { AuthContext, UserPropertys } from "../../../store/AuthContext";
 import { saveSecureLocalStorage } from "../../../utils";
 import { useApi } from "../useApi";

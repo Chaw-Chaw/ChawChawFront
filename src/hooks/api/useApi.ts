@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { LOGIN_PAGE_URL } from "../../constants/pageUrls";
-import { DefaultResponseBody } from "../../../types/response";
+import { DefaultResponseBody } from "../../types/response";
 
 import {
   ERROR_CODES,

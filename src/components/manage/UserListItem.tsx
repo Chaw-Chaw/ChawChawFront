@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
 import styled from "styled-components";
-import { UserListItemType } from "../../../types/manage";
+import { UserListItemType } from "../../types/manage";
 import { MANAGE_USER_PAGE_URL } from "../../constants";
 
 import { LocaleLanguage } from "../common";

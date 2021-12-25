@@ -5,12 +5,22 @@ import styled from "styled-components";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
-import { INITIAL_ID, INITIAL_ROOMID, LOGIN_PAGE_URL } from "../../constants";
+import {
+  CONFIRM_PUSH_LOGINPAGE,
+  ERROR_ALERT,
+  ERROR_ENTER_AFTERLOGIN_MSG,
+  INITIAL_ID,
+  INITIAL_ROOMID,
+  LOGIN_PAGE_URL,
+  ROLE_ADMIN,
+} from "../../constants";
 import { ChatContext } from "../../store/ChatContext";
 import { useChat } from "../../hooks/api/chat/useChat";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { isLogin } from "../../utils";
+import { alertActions } from "../../store/alertSlice";
 
 export default function Chat() {
-  const { isLogin, user } = useContext(AuthContext);
   const {
     mainRoom,
     setMainRoom,
@@ -21,24 +31,29 @@ export default function Chat() {
   } = useContext(ChatContext);
   const { makeChatRoom, confirmChatRoom } = useChat();
   const router = useRouter();
+  const routerQuery = JSON.stringify(router.query);
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
-    if (user.role === "ADMIN") {
+    if (user.role === ROLE_ADMIN) {
       return;
     }
-    if (!isLogin) {
-      // message.error("로그인 후에 서비스를 이용해주세요.", {
-      //   onClose: () => {
-      //     router.push(LOGIN_PAGE_URL);
-      //   },
-      // });
+    if (!isLogin()) {
+      dispatch(
+        alertActions.updateAlert({
+          name: ERROR_ALERT,
+          message: ERROR_ENTER_AFTERLOGIN_MSG,
+          confirmFuncName: CONFIRM_PUSH_LOGINPAGE,
+        })
+      );
       return;
     }
     // 채팅 페이지에서 나가면 메인 룸 넘버는 -1
     return () => {
       setMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID });
     };
-  }, []);
+  }, [dispatch, user.role]);
 
   // 채팅페이지에서 메인룸 변경시 메인채팅창 내용 수정
   useEffect(() => {
@@ -48,7 +63,7 @@ export default function Chat() {
 
   useEffect(() => {
     // 라우터가 빈 라우터일 경우 무시
-    if (JSON.stringify(router.query) === JSON.stringify({})) return;
+    if (routerQuery === JSON.stringify({})) return;
     const userId = router.query.userId
       ? Number(router.query.userId)
       : undefined;
@@ -103,7 +118,7 @@ export default function Chat() {
     // 채팅 페이지만 입장한 경우
     setMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID });
     organizeChatMessages(INITIAL_ROOMID);
-  }, [JSON.stringify(router.query)]);
+  }, [routerQuery, router.query]);
 
   return (
     <Layout>
