@@ -1,4 +1,4 @@
-import { MouseEvent, MouseEventHandler } from "react";
+import { MouseEvent, MouseEventHandler, useEffect } from "react";
 import styled from "styled-components";
 import { Button } from ".";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
@@ -9,16 +9,16 @@ const AlertMessage: React.FC = (props) => {
   const alertList = useAppSelector((state) => state.alert.alertList);
   const handleClickConfirm = (e: MouseEvent<HTMLButtonElement>, id: number) => {
     e.preventDefault();
-    const onConfirm = alertList.find((item) => item.id === id)?.confirmFunc;
-    if (onConfirm) {
-      onConfirm();
-    }
+    // 여기서 함수를 받아서 실행을 시켜야 하는데...
+    // 아니면 확인창 컴포넌트를 따로빼서 함수를 전달해서 실행시키거나..
+
     dispatch(alertActions.removeAlert(id));
   };
   const handleClickCancle = (e: MouseEvent<HTMLButtonElement>, id: number) => {
     e.preventDefault();
     dispatch(alertActions.removeAlert(id));
   };
+
   return (
     <AlertMessageContainer>
       <AlertMessageInner>
@@ -34,7 +34,7 @@ const AlertMessage: React.FC = (props) => {
               >
                 확인
               </AlertMessageConfirmButton>
-              {item.confirmFunc && (
+              {item.type === "select" && (
                 <AlertMessageCancelButton
                   onClick={(e) => handleClickCancle(e, item.id)}
                 >

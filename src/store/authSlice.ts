@@ -31,7 +31,7 @@ import {
   SUCCESS_VERIFYNUM_MSG,
 } from "../constants";
 import { UniversityList } from "../constants/UniversityList";
-import { saveSecureLocalStorage } from "../utils";
+import { avoidLocalStorageUndefined, saveSecureLocalStorage } from "../utils";
 import { request } from "../utils/request";
 import { alertActions } from "./alertSlice";
 
@@ -63,8 +63,8 @@ interface AuthInitialStateProps {
 }
 
 const initialState: AuthInitialStateProps = {
-  user: {},
-  isLogin: false,
+  user: avoidLocalStorageUndefined("user", {}),
+  isLogin: Boolean(avoidLocalStorageUndefined("accessToken", false)),
 };
 
 export const login = createAsyncThunk(
@@ -135,9 +135,10 @@ export const signup = createAsyncThunk(
         alertActions.updateAlert({
           name: INFO_ALERT,
           message: SUCCESS_SIGNUP_MSG,
-          confirmFunc: () => {
-            Router.push(LOGIN_PAGE_URL);
-          },
+          type: "select",
+          //   confirmFunc: () => {
+          //     Router.push(LOGIN_PAGE_URL);
+          //   },
         })
       );
     } catch (error) {

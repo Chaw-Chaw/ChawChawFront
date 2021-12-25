@@ -13,7 +13,7 @@ import styled from "styled-components";
 import Link from "next/link";
 import { AuthContext } from "../../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useRouter } from "next/router";
+import Router from "next/router";
 import {
   ERROR_ALERT,
   FACEBOOK_PROVIDER,
@@ -39,7 +39,6 @@ type Inputs = {
 };
 
 export default function WebMailAuth() {
-  const router = useRouter();
   const webmailRef = useRef<HTMLInputElement>(null);
   const [webmailValidate, setWebmailValidate] = useState(false);
   const { user, isLogin } = useAppSelector((state) => state.auth);
@@ -82,7 +81,7 @@ export default function WebMailAuth() {
 
   const verifyNumberSubsequent = () => {
     if (!isSocialSignup) {
-      router.push(SIGNUP_PAGE_URL);
+      Router.push(SIGNUP_PAGE_URL);
       return;
     }
 
@@ -125,7 +124,8 @@ export default function WebMailAuth() {
       alertActions.updateAlert({
         name: SUCCESS_ALERT,
         message: SUCCESS_VERIFYNUM_MSG,
-        confirmFunc: verifyNumberSubsequent,
+        type: "select",
+        // confirmFunc: verifyNumberSubsequent,
       })
     );
   };
@@ -145,14 +145,15 @@ export default function WebMailAuth() {
         alertActions.updateAlert({
           name: ERROR_ALERT,
           message: "로그아웃 후 회원가입을 진행해주세요.",
-          confirmFunc: () => {
-            router.push(POST_PAGE_URL);
-          },
+          type: "select",
+          // confirmFunc: () => {
+          //   Router.push(POST_PAGE_URL);
+          // },
         })
       );
       return;
     }
-  }, [isLogin, dispatch, router]);
+  }, [isLogin, dispatch]);
 
   const webmailSection = (
     <InputSection>

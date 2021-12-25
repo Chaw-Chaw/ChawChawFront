@@ -6,7 +6,7 @@ import { AlertMessage } from ".";
 import { RootState } from "../../store";
 
 type Props = {
-  children: any;
+  children: ReactNode;
 } & typeof mapDispatchToProps &
   ReturnType<typeof mapStateToProps>;
 
@@ -26,7 +26,6 @@ class Errorboundary extends Component<Props, States> {
   }
 
   componentDidMount() {
-    // console.log(document.getElementById("notification"));
     this.setState({
       notificationElement: document.getElementById("notification"),
     });

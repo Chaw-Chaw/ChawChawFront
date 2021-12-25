@@ -1,5 +1,5 @@
-import { useContext, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useCallback, useContext, useEffect } from "react";
+import Router from "next/router";
 import {
   Layout,
   Input,
@@ -33,7 +33,6 @@ interface Inputs {
 }
 
 export default function Login() {
-  const router = useRouter();
   const dispatch = useAppDispatch();
   const isLogin = useAppSelector((state) => state.auth.isLogin);
   const {
@@ -45,13 +44,6 @@ export default function Login() {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (data.email === "" || data.password === "") {
       throw new Error(WARNING_LOGINFORM_MSG);
-      // dispatch(
-      //   alertActions.updateAlert({
-      //     name: WARNING_ALERT,
-      //     message: WARNING_LOGINFORM_MSG,
-      //   })
-      // );
-      return;
     }
     dispatch(
       login({
@@ -64,19 +56,29 @@ export default function Login() {
 
   useEffect(() => {
     if (isLogin) {
+      /* 
+      두번쨰 방법 : alertActions updateAlert 자체가 createAsyncThunk가 되어서
+      확인을 누르면 true 취소를 누르면 false를 반환해서
+      dispatch 값을 반환하는 방법이 있다. 
+
+      이때는 alertSlice에 빌더로 등록해서 return true false를 해야하나?
+      해보자
+      */
+      const result = window.confirm("hey");
+      console.log(result, "confirm");
       dispatch(
         alertActions.updateAlert({
           name: ERROR_ALERT,
           message: ERROR_ENTER_LOGINPAGE_MSG,
-          confirmFunc: () => {
-            router.push(POST_PAGE_URL);
-          },
+          type: "select",
+          // confirmFunc: () => {
+          //   Router.push(POST_PAGE_URL);
+          // },
         })
       );
-
       return;
     }
-  }, [isLogin, dispatch, router]);
+  }, [isLogin, dispatch]);
 
   const emailSection = (
     <InputSection>
