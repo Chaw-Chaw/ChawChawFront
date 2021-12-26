@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { AlertMessage } from ".";
 import { RootState } from "../../store";
+import { RiContactsBookLine } from "react-icons/ri";
 
 type Props = {
   children: ReactNode;

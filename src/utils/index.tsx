@@ -1,5 +1,7 @@
 import CryptoJS from "crypto-js";
 import { SECRET_KEY } from "../constants";
+import store from "../store";
+import { alertActions } from "../store/alertSlice";
 
 const arrayRemovedItem = (item: any, array: any[]) => {
   const result = array;

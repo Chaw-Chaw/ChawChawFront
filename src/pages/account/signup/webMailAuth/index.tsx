@@ -30,6 +30,7 @@ import {
   SUCCESS_VERIFYNUM_MSG,
   WARNING_ALERT,
   WARNING_CHECK_WEBMAIL_MSG,
+  WARNING_ENTER_VERIFYNUM_MSG,
 } from "../../../../constants";
 import {
   sendWebmail,
@@ -64,7 +65,13 @@ export default function WebMailAuth() {
       }
       const webmail = webmailRef.current.value;
       if (webmail === "") {
-        throw newError(WARNING_ALERT, WARNING_CHECK_WEBMAIL_MSG);
+        dispatch(
+          alertActions.updateAlert({
+            name: WARNING_ALERT,
+            message: WARNING_CHECK_WEBMAIL_MSG,
+          })
+        );
+        return;
       }
 
       const validationWebmail = webmailVerify(webmail);
@@ -74,16 +81,31 @@ export default function WebMailAuth() {
         dispatch(sendWebmail(webmail));
       } else {
         setWebmailValidate(true);
-        throw new Error(ERROR_NOTFOUND_WEBMAIL_MSG);
+        dispatch(
+          alertActions.updateAlert({
+            name: ERROR_ALERT,
+            message: ERROR_NOTFOUND_WEBMAIL_MSG,
+          })
+        );
+        return;
       }
     } catch (err) {
-      throw new Error(err.message);
+      dispatch(
+        alertActions.updateAlert({ name: err.name, message: err.message })
+      );
+      return;
     }
   };
   const verificationNumSubmit: SubmitHandler<Inputs> = async (data) => {
     if (!webmailRef.current) return;
     if (!(data.verificationNumber && !activeVerificationNumber)) {
-      throw new Error("인증번호를 입력해주세요");
+      dispatch(
+        alertActions.updateAlert({
+          name: WARNING_ALERT,
+          message: WARNING_ENTER_VERIFYNUM_MSG,
+        })
+      );
+      return;
     }
 
     try {

@@ -72,10 +72,22 @@ export default function SignUp() {
       data.password === "" ||
       data.passwordConfirm === ""
     ) {
-      throw newError(WARNING_ALERT, WARNING_FORM_MSG);
+      dispatch(
+        alertActions.updateAlert({
+          name: WARNING_ALERT,
+          message: WARNING_FORM_MSG,
+        })
+      );
+      return;
     }
     if (!isEmailDupCheck) {
-      throw newError(WARNING_ALERT, WARNING_DUPEMAIL_CHECK_MSG);
+      dispatch(
+        alertActions.updateAlert({
+          name: WARNING_ALERT,
+          message: WARNING_DUPEMAIL_CHECK_MSG,
+        })
+      );
+      return;
     }
     if (userUniversity === "") {
       dispatch(
@@ -108,7 +120,13 @@ export default function SignUp() {
         })
       );
     } else {
-      throw new Error(ERROR_EMPTY_USERDATA_MSG);
+      dispatch(
+        alertActions.updateAlert({
+          name: ERROR_ALERT,
+          message: ERROR_EMPTY_USERDATA_MSG,
+        })
+      );
+      return;
     }
   };
 
@@ -124,7 +142,13 @@ export default function SignUp() {
 
       // 중복된 이메일이 있으면 사용자가 회원가입이 불가능
     } else {
-      throw newError(WARNING_ALERT, WARNING_ENTER_EMAIL_MSG);
+      dispatch(
+        alertActions.updateAlert({
+          name: WARNING_ALERT,
+          message: WARNING_ENTER_EMAIL_MSG,
+        })
+      );
+      return;
     }
   };
 

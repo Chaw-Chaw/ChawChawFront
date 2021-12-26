@@ -9,8 +9,10 @@ import { DefaultSeo } from "next-seo";
 import { ChatContextProvider } from "../store/ChatContext";
 import { avoidLocalStorageUndefined } from "../utils";
 import store, { wrapper } from "../store";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import Errorboundary from "../components/common/Errorboundary";
+import { useAppSelector } from "../hooks/redux";
+import ChatWrapper from "../components/common/ChatWrapper";
 
 const GlobalStyles = createGlobalStyle`
   @font-face {
@@ -53,6 +55,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Errorboundary>
           <GlobalStyles />
           <AuthContextProvider>
+            {/* <ChatWrapper> */}
             <ChatContextProvider>
               <DefaultSeo
                 title={"ChawChaw 언어를 교환합시다.🗣"}
@@ -100,6 +103,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               />
               <Component {...pageProps} />
             </ChatContextProvider>
+            {/* </ChatWrapper> */}
           </AuthContextProvider>
         </Errorboundary>
       </ThemeProvider>

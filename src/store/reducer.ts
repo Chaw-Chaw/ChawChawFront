@@ -3,8 +3,13 @@ import { AnyAction, combineReducers } from "redux";
 import { AppState } from ".";
 import alertReducer from "./alertSlice";
 import authReducer from "./authSlice";
+import chatReducer from "./chatSlice";
 
-const rootReducer = combineReducers({ alert: alertReducer, auth: authReducer });
+const rootReducer = combineReducers({
+  alert: alertReducer,
+  auth: authReducer,
+  chat: chatReducer,
+});
 
 export const reducer = (state: AppState, action: AnyAction) => {
   if (action.type === HYDRATE) {

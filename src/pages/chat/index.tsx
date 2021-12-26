@@ -18,25 +18,26 @@ import { ChatContext } from "../../store/ChatContext";
 import { useChat } from "../../hooks/api/chat/useChat";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { isLogin } from "../../utils";
-import { alertActions } from "../../store/alertSlice";
+import { alertActions, asyncErrorHandle } from "../../store/alertSlice";
+import { useSelector } from "react-redux";
+import {
+  chatActions,
+  confirmChatRoom,
+  makeChatRoom,
+  organizeChatMessages,
+} from "../../store/chatSlice";
 
 export default function Chat() {
-  const {
-    mainRoom,
-    setMainRoom,
-    totalMessage,
-    setNewMessages,
-    organizeChatMessages,
-    organizeMainChat,
-  } = useContext(ChatContext);
-  const { makeChatRoom, confirmChatRoom } = useChat();
+  const { mainRoom, totalMessages } = useAppSelector((state) => state.chat);
+  const mainRoomId = mainRoom.id;
   const router = useRouter();
   const routerQuery = JSON.stringify(router.query);
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
+  const userRole = user.role;
 
   useEffect(() => {
-    if (user.role === ROLE_ADMIN) {
+    if (userRole === ROLE_ADMIN) {
       return;
     }
     if (!isLogin()) {
@@ -51,74 +52,81 @@ export default function Chat() {
     }
     // 채팅 페이지에서 나가면 메인 룸 넘버는 -1
     return () => {
-      setMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID });
+      dispatch(
+        chatActions.updateMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID })
+      );
     };
-  }, [dispatch, user.role]);
+  }, [dispatch, userRole]);
 
   // 채팅페이지에서 메인룸 변경시 메인채팅창 내용 수정
   useEffect(() => {
-    if (mainRoom.id === -1) return;
-    organizeMainChat(totalMessage, mainRoom.id);
-  }, [JSON.stringify(mainRoom.id)]);
+    if (mainRoomId === -1) return;
+    dispatch(chatActions.organizeMainChat());
+  }, [mainRoomId, dispatch]);
 
   useEffect(() => {
     // 라우터가 빈 라우터일 경우 무시
-    if (routerQuery === JSON.stringify({})) return;
-    const userId = router.query.userId
-      ? Number(router.query.userId)
-      : undefined;
+    try {
+      if (routerQuery === JSON.stringify({})) return;
+      const userId = router.query.userId
+        ? Number(router.query.userId)
+        : undefined;
 
-    // 라우터 쿼리에 userId가 없으면 무시
-    if (userId === undefined) return;
+      // 라우터 쿼리에 userId가 없으면 무시
+      if (userId === undefined) return;
 
-    // 차단한 유저라면
-    if (user.blockIds?.includes(userId)) {
-      const blockedRoom = totalMessage.find((item) =>
-        item.participantIds.includes(userId)
+      // 차단한 유저라면
+      if (user.blockIds?.includes(userId)) {
+        const blockedRoom = totalMessages.find((item) =>
+          item.participantIds.includes(userId)
+        );
+        if (!blockedRoom) return;
+        dispatch(
+          chatActions.updateMainRoom({ id: blockedRoom.roomId, userId: userId })
+        );
+        dispatch(organizeChatMessages());
+        return;
+      }
+
+      // 채팅룸 입장인경우
+      if (userId !== INITIAL_ID) {
+        (async () => {
+          let mainRoomId = INITIAL_ROOMID;
+
+          const roomId = await dispatch(confirmChatRoom()).unwrap();
+
+          // 채팅방이 없다면 채팅방 만들기
+          if (roomId === -1) {
+            mainRoomId = await dispatch(makeChatRoom()).unwrap();
+          } else {
+            mainRoomId = roomId;
+          }
+
+          // 채팅방을 만들고 전체 메세지들을 받기
+          dispatch(
+            chatActions.updateMainRoom({ id: mainRoomId, userId: userId })
+          );
+          dispatch(organizeChatMessages());
+          // 메인룸에 해당하는 알림 메시지 거르기
+          dispatch(chatActions.filterNewMessages());
+        })();
+        return;
+      }
+      // 채팅 페이지만 입장한 경우
+      dispatch(
+        chatActions.updateMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID })
       );
-      if (!blockedRoom) return;
-      setMainRoom({ id: blockedRoom.roomId, userId: userId });
-      organizeChatMessages(blockedRoom.roomId);
-      return;
+      dispatch(organizeChatMessages());
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
     }
-
-    // 채팅룸 입장인경우
-    if (userId !== INITIAL_ID) {
-      (async () => {
-        let mainRoomId = INITIAL_ROOMID;
-
-        // 여기에 새로운 api 도입
-        const { roomId } = await confirmChatRoom(userId);
-        // 채팅방이 없다면 채팅방 만들기
-        if (roomId === -1) {
-          mainRoomId = await makeChatRoom(userId);
-        } else {
-          mainRoomId = roomId;
-        }
-
-        // 채팅방을 만들고 전체 메세지들을 받기
-        setMainRoom({ id: mainRoomId, userId: userId });
-        organizeChatMessages(mainRoomId);
-
-        // 메인룸에 해당하는 알림 메시지 거르기
-        setNewMessages((pre) => {
-          const result = pre;
-          const filteredNewMessages = result.filter((item: any) => {
-            if (item.roomId === undefined) return true;
-            if (item.roomId !== mainRoomId) return true;
-            return false;
-          });
-          return filteredNewMessages;
-        });
-      })();
-
-      return;
-    }
-
-    // 채팅 페이지만 입장한 경우
-    setMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID });
-    organizeChatMessages(INITIAL_ROOMID);
-  }, [routerQuery, router.query]);
+  }, [
+    routerQuery,
+    dispatch,
+    router.query.userId,
+    totalMessages,
+    user.blockIds,
+  ]);
 
   return (
     <Layout>

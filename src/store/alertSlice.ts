@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import axios, { AxiosError } from "axios";
 import Router from "next/router";
 import store from ".";
 import {
+  ERROR_CODES,
   LOGIN_PAGE_URL,
   POST_PAGE_URL,
   SIGNUP_PAGE_URL,
@@ -9,11 +11,13 @@ import {
 } from "../constants";
 import {
   CONFIRM_DISPATCH_SIGNUP,
+  CONFIRM_INIT_LOGOUT,
   CONFIRM_PUSH_LOGINPAGE,
   CONFIRM_PUSH_POSTPAGE,
   CONFIRM_PUSH_SIGNUP,
   CONFIRM_PUSH_SIGNUP_WEBMAIL,
   CONFIRM_VOID,
+  ERROR_ALERT,
 } from "../constants/alert";
 import { authActions, signup } from "./authSlice";
 
@@ -64,6 +68,25 @@ const alertSlice = createSlice({
   },
 });
 
+export const asyncErrorHandle = createAsyncThunk(
+  "alert/asyncErrorHandle",
+  (error: Error, thunkAPI) => {
+    if (axios.isAxiosError(error)) {
+      const { status } = error.response?.data;
+      thunkAPI.dispatch(
+        alertActions.updateAlert({
+          name: ERROR_ALERT,
+          message: ERROR_CODES[status].message,
+        })
+      );
+    } else {
+      thunkAPI.dispatch(
+        alertActions.updateAlert({ name: error.name, message: error.message })
+      );
+    }
+  }
+);
+
 export const confirmFunc = createAsyncThunk(
   "alert/confirmFunc",
   async (confirmFuncName: string, thunkAPI) => {
@@ -103,6 +126,12 @@ export const confirmFunc = createAsyncThunk(
             })
           );
         }
+        break;
+      case CONFIRM_INIT_LOGOUT:
+        window.localStorage.removeItem("accessToken");
+        window.localStorage.removeItem("expireAtAccessToken");
+        window.localStorage.removeItem("user");
+        window.localStorage.href = LOGIN_PAGE_URL;
         break;
       default:
         break;

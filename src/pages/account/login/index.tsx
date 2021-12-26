@@ -29,6 +29,7 @@ import {
   CONFIRM_PUSH_POSTPAGE,
   CONFIRM_VOID,
   SELECT_TYPE,
+  WARNING_ALERT,
 } from "../../../constants/alert";
 import { avoidLocalStorageUndefined, isLogin } from "../../../utils";
 
@@ -47,7 +48,13 @@ export default function Login() {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (data.email === "" || data.password === "") {
-      throw new Error(WARNING_FORM_MSG);
+      dispatch(
+        alertActions.updateAlert({
+          name: WARNING_ALERT,
+          message: WARNING_FORM_MSG,
+        })
+      );
+      return;
     }
     dispatch(
       login({

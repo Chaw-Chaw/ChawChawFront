@@ -36,7 +36,7 @@ import { CONFIRM_PUSH_LOGINPAGE } from "../constants/alert";
 import { UniversityList } from "../constants/UniversityList";
 import { avoidLocalStorageUndefined, saveSecureLocalStorage } from "../utils";
 import { request } from "../utils/request";
-import { alertActions } from "./alertSlice";
+import { alertActions, asyncErrorHandle } from "./alertSlice";
 
 const initialState: AuthInitialStateProps = {
   user: avoidLocalStorageUndefined("user", {}),
@@ -71,12 +71,7 @@ export const login = createAsyncThunk(
           })
         );
       }
-      thunkAPI.dispatch(
-        alertActions.updateAlert({
-          name: ERROR_ALERT,
-          message: ERROR_CODES[status].message,
-        })
-      );
+      thunkAPI.dispatch(asyncErrorHandle(error));
     }
   }
 );
@@ -89,13 +84,7 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
     window.localStorage.removeItem("user");
     Router.push(LOGIN_PAGE_URL);
   } catch (error) {
-    const status = error.response.data.status;
-    thunkAPI.dispatch(
-      alertActions.updateAlert({
-        name: ERROR_ALERT,
-        message: ERROR_CODES[status].message,
-      })
-    );
+    thunkAPI.dispatch(asyncErrorHandle(error));
   }
 });
 
@@ -113,13 +102,7 @@ export const signup = createAsyncThunk(
         })
       );
     } catch (error) {
-      const status = error.response.data.status;
-      thunkAPI.dispatch(
-        alertActions.updateAlert({
-          name: ERROR_ALERT,
-          message: ERROR_CODES[status].message,
-        })
-      );
+      thunkAPI.dispatch(asyncErrorHandle(error));
     }
   }
 );
@@ -136,13 +119,7 @@ export const emailDuplicationCheck = createAsyncThunk(
         })
       );
     } catch (error) {
-      const status = error.response.data.status;
-      thunkAPI.dispatch(
-        alertActions.updateAlert({
-          name: ERROR_ALERT,
-          message: ERROR_CODES[status].message,
-        })
-      );
+      thunkAPI.dispatch(asyncErrorHandle(error));
     }
   }
 );
@@ -159,13 +136,7 @@ export const sendWebmail = createAsyncThunk(
         })
       );
     } catch (error) {
-      const status = error.response.data.status;
-      thunkAPI.dispatch(
-        alertActions.updateAlert({
-          name: ERROR_ALERT,
-          message: ERROR_CODES[status].message,
-        })
-      );
+      thunkAPI.dispatch(asyncErrorHandle(error));
     }
   }
 );
@@ -176,14 +147,7 @@ export const verificationNumber = createAsyncThunk(
     try {
       await request.post(VERIFY_WEBMAIL_API_URL, body);
     } catch (error) {
-      const status = error.response.data.status;
-      thunkAPI.dispatch(
-        alertActions.updateAlert({
-          name: ERROR_ALERT,
-          message: ERROR_CODES[status].message,
-        })
-      );
-      throw error;
+      thunkAPI.dispatch(asyncErrorHandle(error));
     }
   }
 );
@@ -198,7 +162,6 @@ export const webmailVerify = (web_email: string) => {
       store.dispatch(
         authActions.updateUser({ school: universityName, web_email: web_email })
       );
-
       return true;
     }
     return false;
