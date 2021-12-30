@@ -1,15 +1,24 @@
-import { MouseEventHandler, useEffect, useState } from "react";
+import React, { MouseEventHandler, useEffect, useState } from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import { Button } from "../common";
-import { DEFAULT_PROFILE_IMAGE } from "../../constants";
-import { useSendImage } from "../../hooks/api/useSendImage";
+import {
+  DEFAULT_PROFILE_IMAGE,
+  SUCCESS_ALERT,
+  SUCCESS_IMAGE_UPLOAD_MSG,
+} from "../../constants";
+import { useAppDispatch } from "../../hooks/redux";
+import {
+  deleteManageProfileImage,
+  putImage,
+  sendManageProfileImage,
+} from "../../store/actions/profileActions";
+import { alertActions, asyncErrorHandle } from "../../store/alertSlice";
 
-const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
+const MManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
   props
 ) => {
-  const { putImage, sendManageProfileImage, deleteManageProfileImage } =
-    useSendImage();
+  const dispatch = useAppDispatch();
   const [profileImage, setProfileImage] = useState(props.userImage);
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = async (
@@ -17,19 +26,23 @@ const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
   ) => {
     try {
       const image = putImage(e);
-      if (!image) throw new Error("파일이 없습니다.");
       image.append("userId", String(props.userId));
-      const imageUrl = await sendManageProfileImage(image);
+      const imageUrl = await dispatch(sendManageProfileImage(image)).unwrap();
       setProfileImage(imageUrl);
-      // message.success("이미지 업로드 성공!");
-    } catch (err) {
-      // message.error(err.message);
+      dispatch(
+        alertActions.updateAlert({
+          name: SUCCESS_ALERT,
+          message: SUCCESS_IMAGE_UPLOAD_MSG,
+        })
+      );
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
     }
   };
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
-    await deleteManageProfileImage(props.userId);
+    await dispatch(deleteManageProfileImage(props.userId));
     setProfileImage(DEFAULT_PROFILE_IMAGE);
   };
 
@@ -61,6 +74,7 @@ const ManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
     </Container>
   );
 };
+const ManageProfileImage = React.memo(MManageProfileImage);
 export default ManageProfileImage;
 
 const Container = styled.div`

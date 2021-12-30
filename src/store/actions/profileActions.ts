@@ -22,7 +22,7 @@ import { request } from "../../utils/request";
 
 export const getUserDetailInfo = createAsyncThunk(
   "profile/getUserDetailInfo",
-  async (userId: number, thunkAPI) => {
+  async (userId: number) => {
     const response = await request.get<DefaultResponseBody<ManageUserInfoType>>(
       MANAGE_USER_API_URL + `/${userId}`
     );
@@ -32,14 +32,14 @@ export const getUserDetailInfo = createAsyncThunk(
 
 export const manageUploadUserProfile = createAsyncThunk(
   "profile/manageUploadUserProfile",
-  async (body: ManageUploadProfileType, thunkAPI) => {
+  async (body: ManageUploadProfileType) => {
     await request.post(MANAGE_USER_PROFILE_API_URL, body);
   }
 );
 
 export const sendManageProfileImage = createAsyncThunk(
   "profile/sendManageProfileImage",
-  async (image: FormData, thunkAPI) => {
+  async (image: FormData) => {
     const response = await request.post<DefaultResponseBody<string>>(
       UPLOAD_PROFILE_IMAGE_API_URL,
       image,
@@ -51,28 +51,23 @@ export const sendManageProfileImage = createAsyncThunk(
 
 export const deleteManageProfileImage = createAsyncThunk(
   "profile/deleteManageProfileImage",
-  async (userId: number, thunkAPI) => {
+  async (userId: number) => {
     const response = await request.delete<DefaultResponseBody<string>>(
       MANAGE_DELETE_PROFILE_IMAGE_API_URL,
-      { data: userId }
+      { data: { userId } }
     );
     return response.data.data;
   }
 );
 
 export const putImage = (e: ChangeEvent<HTMLInputElement>) => {
-  try {
-    const target = e.target as HTMLInputElement;
-    const file: File = (target.files as FileList)[0];
-    if (file === undefined) throw new Error("파일이 없습니다.");
-    if (file.size > 1024 * 1024 * 5) {
-      throw new Error("5MB 이상 파일을 업로드 할 수 없습니다.");
-    }
-    const image = new FormData();
-    image.append("file", file);
-    return image;
-  } catch (err) {
-    // message.error(err.message);
-    throw new Error(err);
+  const target = e.target as HTMLInputElement;
+  const file: File = (target.files as FileList)[0];
+  if (file === undefined) throw new Error("파일이 없습니다.");
+  if (file.size > 1024 * 1024 * 5) {
+    throw new Error("5MB 이상 파일을 업로드 할 수 없습니다.");
   }
+  const image = new FormData();
+  image.append("file", file);
+  return image;
 };

@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { GoPrimitiveDot } from "react-icons/go";
 import { useRouter } from "next/router";
-import { MouseEventHandler } from "react";
+import React, { MouseEventHandler } from "react";
 
-const ToggleListItem: React.FC<{ title: string; type: string; link: string }> =
+const MToggleListItem: React.FC<{ title: string; type: string; link: string }> =
   (props) => {
     const router = useRouter();
     const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
@@ -25,6 +25,8 @@ const ToggleListItem: React.FC<{ title: string; type: string; link: string }> =
       </ToggleListItemBox>
     );
   };
+
+const ToggleListItem = React.memo(MToggleListItem);
 export { ToggleListItem };
 
 const ToggleListItemBox = styled.div`

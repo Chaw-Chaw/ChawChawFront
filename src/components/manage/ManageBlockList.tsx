@@ -1,14 +1,10 @@
 import styled from "styled-components";
+import { BlockItem } from "../../types/manage";
 import { ListItem } from "../common";
 import { ManageBlockItem } from "./ManageBlockItem";
+import React from "react";
 
-interface BlockItem {
-  userId: number;
-  name: string;
-  imageUrl: string;
-}
-
-const ManageBlockList: React.FC<{ blockList: BlockItem[] }> = (props) => {
+const MManageBlockList: React.FC<{ blockList: BlockItem[] }> = (props) => {
   const manageBlockList = props.blockList.map((item) => {
     return (
       <ManageBlockItem
@@ -33,8 +29,8 @@ const ManageBlockList: React.FC<{ blockList: BlockItem[] }> = (props) => {
   );
 };
 
+const ManageBlockList = React.memo(MManageBlockList);
 export { ManageBlockList };
-export type { BlockItem };
 
 const ManageBlockBox = styled.div`
   @media (max-width: 768px) {

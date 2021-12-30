@@ -1,9 +1,10 @@
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { userOrderDropDownList } from "../../constants/order";
+import { SEARCH } from "../../constants/post";
 import { SelectInfoDropDown } from "../common";
 import { PostOrderBox as UserOrderBox, SelectInfoBox } from "../post/PostOrder";
 
-const UserOrder: React.FC<{
+const MUserOrder: React.FC<{
   searchInfo: string[];
   setSearchInfo: Dispatch<SetStateAction<string[]>>;
 }> = (props) => {
@@ -18,7 +19,7 @@ const UserOrder: React.FC<{
           options={item.options}
           height="30px"
           fontWeight="900"
-          type="SEARCH"
+          type={SEARCH}
           backgroundColor="white"
           width="100px"
           color="#FF8A00"
@@ -29,5 +30,5 @@ const UserOrder: React.FC<{
   });
   return <UserOrderBox>{selectInfoDropDown}</UserOrderBox>;
 };
-
+const UserOrder = React.memo(MUserOrder);
 export { UserOrder };

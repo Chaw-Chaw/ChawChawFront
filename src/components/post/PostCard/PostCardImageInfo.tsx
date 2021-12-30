@@ -1,14 +1,9 @@
+import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
+import { PostCardImageInfoProps } from "../../../types/post";
 
-interface PostCardImageInfoProps {
-  repCountry: string;
-  repLanguage: string;
-  repHopeLanguage: string;
-  name: string;
-}
-
-const PostCardImageInfo: React.FC<PostCardImageInfoProps> = (props) => {
+const MPostCardImageInfo: React.FC<PostCardImageInfoProps> = (props) => {
   return (
     <PostImageInfoBox>
       <PostImageName>
@@ -28,8 +23,8 @@ const PostCardImageInfo: React.FC<PostCardImageInfoProps> = (props) => {
   );
 };
 
+const PostCardImageInfo = React.memo(MPostCardImageInfo);
 export { PostCardImageInfo };
-export type { PostCardImageInfoProps };
 
 const PostImageInfoBox = styled.div`
   display: flex;

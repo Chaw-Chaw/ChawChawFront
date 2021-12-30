@@ -1,8 +1,9 @@
+import React from "react";
 import { AiFillEye, AiFillHeart } from "react-icons/ai";
 import styled from "styled-components";
 import { PostModalHeadProps } from "../../../types/post";
 
-const PostModalInfo: React.FC<PostModalHeadProps> = (props) => {
+const MPostModalInfo: React.FC<PostModalHeadProps> = (props) => {
   return (
     <PostModalInfoBox>
       <PostModalDateViewBox>
@@ -19,6 +20,8 @@ const PostModalInfo: React.FC<PostModalHeadProps> = (props) => {
     </PostModalInfoBox>
   );
 };
+
+const PostModalInfo = React.memo(MPostModalInfo);
 export { PostModalInfo };
 
 const PostModalInfoBox = styled.div`

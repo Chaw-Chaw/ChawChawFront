@@ -7,7 +7,7 @@ import React, {
 } from "react";
 
 import styled from "styled-components";
-import { INFO_ALERT, INFO_ALREADY_SAMEVALUE } from "../../../constants";
+import { INFO_ALERT, INFO_ALREADY_SAMEVALUE_MSG } from "../../../constants";
 import { SEARCH } from "../../../constants/post";
 import { useAppDispatch } from "../../../hooks/redux";
 import { alertActions } from "../../../store/alertSlice";
@@ -37,7 +37,7 @@ const MDropDown: React.FC<DropDownProps> = (props) => {
             dispatch(
               alertActions.updateAlert({
                 name: INFO_ALERT,
-                message: INFO_ALREADY_SAMEVALUE,
+                message: INFO_ALREADY_SAMEVALUE_MSG,
               })
             );
             return result;

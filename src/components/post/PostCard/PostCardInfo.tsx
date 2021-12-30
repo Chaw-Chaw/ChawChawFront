@@ -1,13 +1,9 @@
+import React from "react";
 import styled from "styled-components";
 import { AiFillEye, AiFillHeart } from "react-icons/ai";
+import { PostCardInfoProps } from "../../../types/post";
 
-interface PostCardInfoProps {
-  pastDate: number;
-  viewCount: number;
-  likeCount: number;
-}
-
-const PostCardInfo: React.FC<PostCardInfoProps> = (props) => {
+const MPostCardInfo: React.FC<PostCardInfoProps> = (props) => {
   return (
     <PostCardInfoBox>
       <DateViewBox>
@@ -25,8 +21,8 @@ const PostCardInfo: React.FC<PostCardInfoProps> = (props) => {
   );
 };
 
+const PostCardInfo = React.memo(MPostCardInfo);
 export { PostCardInfo };
-export type { PostCardInfoProps };
 
 const PostCardInfoBox = styled.div`
   width: 100%;

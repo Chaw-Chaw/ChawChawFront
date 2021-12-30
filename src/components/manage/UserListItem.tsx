@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
-import { MouseEventHandler } from "react";
+import React, { MouseEventHandler } from "react";
 import styled from "styled-components";
 import { UserListItemType } from "../../types/manage";
 import { MANAGE_USER_PAGE_URL } from "../../constants";
 
 import { LocaleLanguage } from "../common";
 
-const UserListItem: React.FC<{
+const MUserListItem: React.FC<{
   index: number;
   userItem: UserListItemType;
   currentPage: number;
@@ -41,6 +41,7 @@ const UserListItem: React.FC<{
   );
 };
 
+const UserListItem = React.memo(MUserListItem);
 export { UserListItem };
 
 const UserListItemBox = styled.li<{ last: boolean }>`

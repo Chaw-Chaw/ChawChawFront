@@ -1,30 +1,35 @@
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import { Input, Button } from "../common";
 import { IoIosSearch } from "react-icons/io";
 import { KeyboardEventHandler, MouseEventHandler, useRef } from "react";
+import { PostSearchProps } from "../../types/post";
+import { KEYTYPE_ENTER } from "../../constants";
 
-interface PostSearchProps {
-  searchHandler: (inputs: string) => void;
-}
-
-const PostSearch: React.FC<PostSearchProps> = (props) => {
+const MPostSearch: React.FC<PostSearchProps> = (props) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchHandler = props.searchHandler;
+  const handleKeyPress: KeyboardEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      if (e.key === KEYTYPE_ENTER) {
+        e.preventDefault();
+        const searchInput = searchInputRef.current;
+        if (!searchInput) return;
+        searchHandler(searchInput.value);
+      }
+    },
+    [searchHandler]
+  );
 
-  const handleKeyPress: KeyboardEventHandler<HTMLInputElement> = (e) => {
-    if (e.key === "Enter") {
+  const handleClick: MouseEventHandler<HTMLButtonElement> = useCallback(
+    (e) => {
       e.preventDefault();
       const searchInput = searchInputRef.current;
       if (!searchInput) return;
-      props.searchHandler(searchInput.value);
-    }
-  };
-
-  const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.preventDefault();
-    const searchInput = searchInputRef.current;
-    if (!searchInput) return;
-    props.searchHandler(searchInput.value);
-  };
+      searchHandler(searchInput.value);
+    },
+    [searchHandler]
+  );
   return (
     <PostSearchBox>
       <SearchIconBox>
@@ -38,6 +43,7 @@ const PostSearch: React.FC<PostSearchProps> = (props) => {
   );
 };
 
+const PostSearch = React.memo(MPostSearch);
 export { PostSearch };
 
 const PostSearchBox = styled.div`

@@ -2,65 +2,99 @@ import styled from "styled-components";
 import { Button } from "../../common";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { CgBlock, CgUnblock } from "react-icons/cg";
-import { useRouter } from "next/router";
-import { MouseEventHandler, useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../../store/AuthContext";
-import { useBlock } from "../../../hooks/api/useBlock";
-import { CHAT_PAGE_URL } from "../../../constants";
+import Router, { useRouter } from "next/router";
+import React, {
+  MouseEventHandler,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import {
+  CHAT_PAGE_URL,
+  INFO_ALERT,
+  INFO_BLOCKUSER_MSG,
+} from "../../../constants";
 import { useLike } from "../../../hooks/api/useLike";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { alertActions, asyncErrorHandle } from "../../../store/alertSlice";
+import {
+  blockUser,
+  like,
+  unBlockUser,
+  unLike,
+} from "../../../store/actions/postActions";
+import { PostModalActive } from "../../../types/post";
 
-interface PostModalActive {
-  id: number;
-  isLike: boolean;
-}
-
-const PostModalActive: React.FC<PostModalActive> = (props) => {
-  const router = useRouter();
-  const { user } = useContext(AuthContext);
-  const { blockUser, unblockUser } = useBlock();
-  const { like, unLike } = useLike();
+const MPostModalActive: React.FC<PostModalActive> = (props) => {
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
   const [isActiveLike, setIsActiveLike] = useState(props.isLike);
-  const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.id));
+  const isBlockId = user.blockIds?.includes(props.id);
+  const [isBlock, setIsBlock] = useState(isBlockId);
 
-  const handleClickTryChat: MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.preventDefault();
-    if (user.blockIds?.includes(props.id)) {
-      // message.info("차단된 유저 입니다.");
-      return;
-    }
-    router.push({ pathname: CHAT_PAGE_URL, query: { userId: props.id } });
-  };
+  const handleClickTryChat: MouseEventHandler<HTMLButtonElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (isBlockId) {
+        dispatch(
+          alertActions.updateAlert({
+            name: INFO_ALERT,
+            message: INFO_BLOCKUSER_MSG,
+          })
+        );
+        return;
+      }
+      Router.push({ pathname: CHAT_PAGE_URL, query: { userId: props.id } });
+    },
+    [dispatch, props.id, isBlockId]
+  );
 
   const handleClickUnBlock: MouseEventHandler<HTMLButtonElement> = async (
     e
   ) => {
-    e.preventDefault();
-    await unblockUser(props.id);
-    setIsBlock(false);
+    try {
+      e.preventDefault();
+      await dispatch(unBlockUser(props.id));
+      setIsBlock(false);
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
+
   const handleClickBlock: MouseEventHandler<HTMLButtonElement> = async (e) => {
-    e.preventDefault();
-    await blockUser(props.id);
-    setIsBlock(true);
+    try {
+      e.preventDefault();
+      await dispatch(blockUser(props.id));
+      setIsBlock(true);
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   const handleClickUnLike: MouseEventHandler<HTMLButtonElement> = async (e) => {
-    e.preventDefault();
-    await unLike(props.id);
-
-    setIsActiveLike(false);
+    try {
+      e.preventDefault();
+      await dispatch(unLike(props.id));
+      setIsActiveLike(false);
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   const handleClickLike: MouseEventHandler<HTMLButtonElement> = async (e) => {
-    e.preventDefault();
-    await like(props.id);
-    setIsActiveLike(true);
+    try {
+      e.preventDefault();
+      await dispatch(like(props.id));
+      setIsActiveLike(true);
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   useEffect(() => {
-    const blockConfirm = user.blockIds?.includes(props.id);
-    setIsBlock(Boolean(blockConfirm));
-  }, [user]);
+    setIsBlock(Boolean(isBlockId));
+  }, [isBlockId]);
 
   const likeButton = isActiveLike ? (
     <UnActionButton onClick={handleClickUnLike}>
@@ -104,6 +138,7 @@ const PostModalActive: React.FC<PostModalActive> = (props) => {
   );
 };
 
+const PostModalActive = React.memo(MPostModalActive);
 export { PostModalActive };
 
 const PostChatButton = styled(Button)`

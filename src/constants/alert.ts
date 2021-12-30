@@ -2,6 +2,7 @@ export const CONFIRM_PUSH_LOGINPAGE = "로그인 페이지로 이동";
 export const CONFIRM_PUSH_POSTPAGE = "포스트 페이지로 이동";
 export const CONFIRM_PUSH_SIGNUP = "회원가입 페이지로 이동";
 export const CONFIRM_PUSH_SIGNUP_WEBMAIL = "웹메일 인증 페이지로 이동";
+export const CONFIRM_PUSH_MAIN_PAGE = "메인 페이지로 이동";
 export const CONFIRM_PUSH_MANAGE_MAINPAGE = "괸리자 메인페이지로 이동";
 export const CONFIRM_VOID = "";
 export const CONFIRM_DISPATCH_SIGNUP = "회원정보 기입 확인 후 회원가입";
@@ -21,10 +22,11 @@ export const SUCCESS_SENDEMAIL_MSG =
   "이메일 발송을 완료하였습니다. 인증번호의 만료시간은 3분 입니다.";
 export const SUCCESS_VERIFYNUM_MSG = "인증번호 확인을 완료하였습니다.";
 export const SUCCESS_IMAGE_UPLOAD_MSG = "이미지 업로드 성공!";
+export const SUCCESS_DELETE_USER_MSG = "유저 삭제 성공!";
 
 export const INFO_NOTRESULT_MSG = "조회 결과가 없습니다.";
 export const INFO_BLOCKUSER_MSG = "차단한 사용자 입니다.";
-export const INFO_ALREADY_SAMEVALUE = "이미 같은 값을 선택하셨습니다.";
+export const INFO_ALREADY_SAMEVALUE_MSG = "이미 같은 값을 선택하셨습니다.";
 
 export const WARNING_CHECK_WEBMAIL_MSG = "웹메일을 입력해주세요.";
 export const WARNING_FORM_MSG = "입력칸을 모두 입력해주세요.";
@@ -46,3 +48,5 @@ export const ERROR_NOFILE_MSG = "파일이 없습니다.";
 export const ERROR_FILE_OVERSIZE_MSG = "5MB 이상 파일을 업로드 할 수 없습니다.";
 export const ERROR_MANAGMENT_NOTACCESS_MSG =
   "관리자 아이디로 서비스를 이용할 수 없습니다.";
+export const ERROR_USER_NOTACCESS_MSG =
+  "유저 아이디로 서비스를 이용할 수 없습니다.";

@@ -1,5 +1,4 @@
-import { BlockItem } from "../components/manage/ManageBlockList";
-import { ProfileType } from "./account";
+import { BlockItem } from "./manage";
 
 export interface UploadProfileType {
   country: string[];

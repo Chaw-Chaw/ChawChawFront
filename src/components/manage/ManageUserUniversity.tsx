@@ -1,7 +1,8 @@
+import React from "react";
 import styled from "styled-components";
 import { Input, ListItem } from "../common";
 
-const ManageUserUniversity: React.FC<{ userSchool: string }> = (props) => {
+const MManageUserUniversity: React.FC<{ userSchool: string }> = (props) => {
   return (
     <ListItem
       title="소속대학"
@@ -12,6 +13,7 @@ const ManageUserUniversity: React.FC<{ userSchool: string }> = (props) => {
   );
 };
 
+const ManageUserUniversity = React.memo(MManageUserUniversity);
 export { ManageUserUniversity };
 
 const UserUniversity = styled(Input)`
