@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { saveSecureLocalStorage } from "../../utils";
 
-const ThemeToggle: React.FC = (props) => {
+const MThemeToggle: React.FC = () => {
   const { id, setTheme } = useContext(ThemeContext);
   const handleClick = () => {
     setTheme();
@@ -15,6 +15,9 @@ const ThemeToggle: React.FC = (props) => {
     </ToggleWrapper>
   );
 };
+
+const ThemeToggle = React.memo(MThemeToggle);
+export { ThemeToggle };
 
 const ToggleWrapper = styled.div`
   width: 50px;
@@ -41,5 +44,3 @@ const Notch = styled.div<{ isActive?: boolean }>`
   background: ${(props) =>
     props.theme.id === "light" ? props.theme.primaryColor : "white"};
 `;
-
-export { ThemeToggle };

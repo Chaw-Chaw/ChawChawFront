@@ -1,9 +1,10 @@
-import { SetStateAction } from "react";
+import { SetStateAction, useMemo } from "react";
 import {
   CountryLocale,
   LanguageLocale,
   LocaleLanguage,
 } from "../../../constants/LocaleList";
+import { NOMAL_TYPE } from "../../../constants/profile";
 import { DropDown } from "./DropDown";
 import { InitialBoxProps } from "./DropDownBox";
 
@@ -20,7 +21,10 @@ interface LanguageInfoDropDownProps extends InitialBoxProps {
 }
 
 const LanguageInfoDropDown: React.FC<LanguageInfoDropDownProps> = (props) => {
-  const options = [props.initialValue, ...Object.keys(LanguageLocale)];
+  const options = useMemo(
+    () => [props.initialValue, ...Object.keys(LanguageLocale)],
+    [props.initialValue]
+  );
 
   return (
     <DropDown
@@ -33,7 +37,7 @@ const LanguageInfoDropDown: React.FC<LanguageInfoDropDownProps> = (props) => {
       color={props.color}
       initialValue={props.initialValue}
       index={props.index}
-      type="NORMAL"
+      type={NOMAL_TYPE}
       setValues={props.setValues}
       value={props.value}
     />

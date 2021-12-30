@@ -1,5 +1,5 @@
 import {
-  ManageUploadUserInfoType,
+  ManageUploadProfileType,
   ManageUserInfoType,
   UploadProfileType,
 } from "../../../types/profile";
@@ -22,7 +22,7 @@ export const useProfile = () => {
     );
     return data;
   };
-  const manageUploadUserProfile = async (body: ManageUploadUserInfoType) => {
+  const manageUploadUserProfile = async (body: ManageUploadProfileType) => {
     await sendPost<undefined>(MANAGE_USER_PROFILE_API_URL, body);
     // message.success("프로필이 수정 되었습니다.");
   };

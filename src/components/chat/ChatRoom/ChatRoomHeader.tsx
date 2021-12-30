@@ -1,5 +1,10 @@
 import { useRouter } from "next/router";
-import { Dispatch, MouseEventHandler, SetStateAction, useContext } from "react";
+import React, {
+  Dispatch,
+  MouseEventHandler,
+  SetStateAction,
+  useContext,
+} from "react";
 import styled from "styled-components";
 import { LIMIT_NEWALARM_SIZE } from "../../../constants";
 import { ChatContext } from "../../../store/ChatContext";
@@ -8,16 +13,19 @@ import { BsBoxArrowRight, BsChatDots } from "react-icons/bs";
 import { AlarmCount, ChangeLanguageDropDown } from "../../common";
 import { POST_PAGE_URL } from "../../../constants/pageUrls";
 import { useChat } from "../../../hooks/api/chat/useChat";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { chatActions, leaveChat } from "../../../store/chatSlice";
+import { asyncErrorHandle } from "../../../store/alertSlice";
 
 interface ChatRoomHeaderType {
   selectLanguage: string[];
   setSelectLanguage: Dispatch<SetStateAction<string[]>>;
 }
 
-const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
+const MChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
   const router = useRouter();
-  const { setIsViewChatList, newMessages } = useContext(ChatContext);
-  const { leaveChat } = useChat();
+  const dispatch = useAppDispatch();
+  const newMessages = useAppSelector((state) => state.chat.newMessages);
 
   const handleClickBackHomeBtn: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
@@ -28,14 +36,18 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
     e
   ) => {
     e.preventDefault();
-    setIsViewChatList((pre) => !pre);
+    dispatch(chatActions.updateIsViewChatList());
   };
 
   const handleClickLeaveChatBtn: MouseEventHandler<HTMLButtonElement> = async (
     e
   ) => {
     e.preventDefault();
-    await leaveChat();
+    try {
+      await dispatch(leaveChat());
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   const newMessageNumber = newMessages.length !== 0 && (
@@ -71,6 +83,8 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
     </Header>
   );
 };
+
+const ChatRoomHeader = React.memo(MChatRoomHeader);
 
 export { ChatRoomHeader };
 

@@ -1,13 +1,13 @@
 import styled, { ThemeContext } from "styled-components";
 import { FaArrowCircleRight } from "react-icons/fa";
 import { ThemeToggle } from "../common";
-import { MouseEventHandler, useContext, useRef } from "react";
+import React, { MouseEventHandler, useContext, useRef } from "react";
 import { useRouter } from "next/router";
 import { AuthContext } from "../../store/AuthContext";
 import { LOGIN_PAGE_URL, POST_PAGE_URL } from "../../constants/pageUrls";
+import { isLogin } from "../../utils";
 
-const IntroduceHeader: React.FC<{ moveTop: () => void }> = (props) => {
-  const { isLogin } = useContext(AuthContext);
+const MIntroduceHeader: React.FC<{ moveTop: () => void }> = (props) => {
   const router = useRouter();
 
   const handleClickLogo: MouseEventHandler<HTMLDivElement> = (e) => {
@@ -17,7 +17,7 @@ const IntroduceHeader: React.FC<{ moveTop: () => void }> = (props) => {
 
   const handleClickMoveStart: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
-    if (isLogin) {
+    if (isLogin()) {
       router.push(POST_PAGE_URL);
     } else {
       router.push(LOGIN_PAGE_URL);
@@ -43,7 +43,7 @@ const IntroduceHeader: React.FC<{ moveTop: () => void }> = (props) => {
     </IntroduceHeadLine>
   );
 };
-
+const IntroduceHeader = React.memo(MIntroduceHeader);
 export { IntroduceHeader };
 
 const IntroduceHeadLine = styled.div`

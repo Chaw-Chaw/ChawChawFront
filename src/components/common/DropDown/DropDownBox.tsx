@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import React, { ReactNode } from "react";
 
 interface InitialBoxProps {
   fontWeight: string;
@@ -8,13 +9,14 @@ interface InitialBoxProps {
   backgroundColor: string;
   value: string;
   color: string;
+  children?: ReactNode;
 }
 
 interface DropDownBoxProps extends InitialBoxProps {
   onClick: React.MouseEventHandler<HTMLDivElement>;
 }
 
-const DropDownBox: React.FC<DropDownBoxProps> = (props) => {
+const MDropDownBox: React.FC<DropDownBoxProps> = (props) => {
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     if (props.onClick) {
@@ -38,6 +40,7 @@ const DropDownBox: React.FC<DropDownBoxProps> = (props) => {
   );
 };
 
+const DropDownBox = React.memo(MDropDownBox);
 export { DropDownBox };
 export type { DropDownBoxProps, InitialBoxProps };
 

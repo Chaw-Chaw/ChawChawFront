@@ -1,31 +1,24 @@
-import { MouseEventHandler, useState } from "react";
+import React, { MouseEventHandler, useCallback, useState } from "react";
 import styled from "styled-components";
 import { MessageContext } from "./MessageContext";
 import { MessageImage } from "./MessageImage";
 
-import {
-  MyMessageProps,
-  MessageImageBox,
-  RegDateMessage,
-  MessageText,
-} from "./MyMessage";
+import { MessageImageBox, RegDateMessage, MessageText } from "./MyMessage";
 import { LanguageLocale, ModalLayout } from "../../common";
 
 import Image from "next/image";
 import { ChatProfile } from "./ChatProfile";
-import { useChat } from "../../../hooks/api/chat/useChat";
+import { YourMessageProps } from "../../../types/chat";
+import { useAppDispatch } from "../../../hooks/redux";
+import { translateContext } from "../../../store/chatSlice";
+import { asyncErrorHandle } from "../../../store/alertSlice";
+import { IMAGE_TYPE, MESSAGE_TYPE_YOURS } from "../../../constants";
 
-interface YourMessageProps extends MyMessageProps {
-  src: string;
-  userName?: string;
-  userId: number;
-}
-
-const YourMessage: React.FC<YourMessageProps> = (props) => {
+const MYourMessage: React.FC<YourMessageProps> = (props) => {
   const [open, setOpen] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [context, setContext] = useState(props.context);
-  const { translateContext } = useChat();
+  const dispatch = useAppDispatch();
   const selectLanguage = LanguageLocale[props.selectLanguage[0]];
 
   const handleClickMsgBox: MouseEventHandler<HTMLDivElement> = (e) => {
@@ -40,19 +33,28 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
     setOpen(true);
   };
 
-  const handleClickChatProfile: MouseEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault();
-    setOpen(false);
-  };
+  const handleClickChatProfile: MouseEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+      setOpen(false);
+    },
+    []
+  );
 
   const handleClickMsgContext: React.MouseEventHandler<HTMLDivElement> = async (
     e
   ) => {
-    e.preventDefault();
-    if (props.imageUrl) return;
-    const convertContext = await translateContext(context, selectLanguage);
-    setContext(convertContext);
-    return;
+    try {
+      e.preventDefault();
+      if (props.imageUrl) return;
+      const convertContext = await dispatch(
+        translateContext({ context, selectLanguage })
+      ).unwrap();
+      setContext(convertContext);
+      return;
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   const chatProfileModal = (
@@ -83,7 +85,7 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
       <MessageContext
         isActive={isActive}
         setIsActive={setIsActive}
-        type="you"
+        type={MESSAGE_TYPE_YOURS}
         onClick={handleClickMsgContext}
       />
       <MessageText>{context}</MessageText>
@@ -98,7 +100,7 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
           </MsgUserImageWrap>
           <YourMessageContent>
             <MessageUserName>{props.userName}</MessageUserName>
-            {props.messageType === "IMAGE" ? messageImage : messageText}
+            {props.messageType === IMAGE_TYPE ? messageImage : messageText}
           </YourMessageContent>
         </YourMessageInfo>
         <RegDateMessage>{props.regDate}</RegDateMessage>
@@ -108,6 +110,7 @@ const YourMessage: React.FC<YourMessageProps> = (props) => {
   );
 };
 
+const YourMessage = React.memo(MYourMessage);
 export { YourMessage };
 
 const MsgUserImageWrap = styled.div`

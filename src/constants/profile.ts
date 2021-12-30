@@ -1,22 +1,27 @@
+import { ManageUploadProfileType, ManageUserInfoType } from "../types/profile";
 import {
   DEFAULT_FACEBOOK_URL,
   DEFAULT_INSTAGRAM_URL,
   DEFAULT_PROFILE_IMAGE,
 } from "./urls";
 
-export const INIT_USERINFO = {
+export const SELECT = "Select";
+export const COUNTRY_TYPE = "country";
+export const LANGUAGE_TYPE = "language";
+export const NOMAL_TYPE = "NORMAL";
+
+export const INIT_USERINFO: ManageUserInfoType = {
   name: "",
   imageUrl: DEFAULT_PROFILE_IMAGE,
   content: "",
-  country: ["Select"],
-  language: ["Select"],
-  hopeLanguage: ["Select"],
+  country: [SELECT],
+  language: [SELECT],
+  hopeLanguage: [SELECT],
   repCountry: "",
   repLanguage: "",
   repHopeLanguage: "",
   facebookUrl: DEFAULT_FACEBOOK_URL,
   instagramUrl: DEFAULT_INSTAGRAM_URL,
-  school: "",
   days: "",
   views: 0,
   likes: 0,

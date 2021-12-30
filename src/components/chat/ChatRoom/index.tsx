@@ -1,53 +1,65 @@
 import styled from "styled-components";
-import {
+import React, {
   ChangeEventHandler,
+  useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
 import MessageInput from "./MessageInput";
 import ChatMessage from "../Message/ChatMessage";
 import { RiWechat2Line } from "react-icons/ri";
-import { AuthContext } from "../../../store/AuthContext";
-import { ChatContext } from "../../../store/ChatContext";
 import ChatList from "../ChatList";
-import { INITIAL_ROOMID } from "../../../constants";
+import {
+  IMAGE_TYPE,
+  INITIAL_ROOMID,
+  MESSAGE_TYPE_TALK,
+} from "../../../constants";
 import { ChatRoomHeader } from "./ChatRoomHeader";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { publish } from "../../../store/chatSlice";
 
 const ChatRoom: React.FC = () => {
-  const { mainRoom, mainChatMessages, isViewChatList, publish } =
-    useContext(ChatContext);
-  const { user } = useContext(AuthContext);
+  const dispatch = useAppDispatch();
+  const { mainRoom, mainChatMessages, isViewChatList } = useAppSelector(
+    (state) => state.chat
+  );
+  const user = useAppSelector((state) => state.auth.user);
   const [message, setMessage] = useState<string>("");
   const [selectLanguage, setSelectLanguage] = useState<string[]>(["Korean"]);
   const chatMessageBox = useRef<HTMLDivElement>(null);
 
-  const userImageUrl = (senderId: number, imageUrl: string) => {
-    if (user.id !== senderId) {
-      return imageUrl;
-    } else {
-      return undefined;
-    }
-  };
+  const userImageUrl = useCallback(
+    (senderId: number, imageUrl: string) => {
+      if (user.id !== senderId) {
+        return imageUrl;
+      } else {
+        return undefined;
+      }
+    },
+    [user.id]
+  );
 
-  const chatImageUrl = (type: string, message: string) => {
-    if (type === "IMAGE") {
+  const chatImageUrl = useCallback((type: string, message: string) => {
+    if (type === IMAGE_TYPE) {
       return message;
     } else {
       return undefined;
     }
-  };
+  }, []);
 
-  const handleChangeInput: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
-    setMessage(e.target.value);
-  };
+  const handleChangeInput: ChangeEventHandler<HTMLTextAreaElement> =
+    useCallback((e) => {
+      setMessage(e.target.value);
+    }, []);
 
-  const sendMessage = () => {
+  const sendMessage = useCallback(() => {
     if (message === "") return;
-    publish(message, "TALK");
+    dispatch(publish({ message, messageType: MESSAGE_TYPE_TALK }));
     setMessage("");
-  };
+  }, [dispatch, message]);
 
   const scrollToBottom = () => {
     if (!chatMessageBox.current) return;
@@ -60,7 +72,7 @@ const ChatRoom: React.FC = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [JSON.stringify(mainChatMessages)]);
+  }, [mainChatMessages.length]);
 
   const emptyChatRoom = (
     <EmptyChatRoom>
@@ -126,7 +138,7 @@ const ChatRoom: React.FC = () => {
   );
 };
 
-export default ChatRoom;
+export default React.memo(ChatRoom);
 
 const Outline = styled.div`
   border: none;

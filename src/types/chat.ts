@@ -34,3 +34,18 @@ export interface MakeChatRoomType {
 }
 
 export interface ConfirmChatRoomType extends MakeChatRoomType {}
+
+export interface MyMessageProps {
+  regDate: string;
+  context: string;
+  selectLanguage: string[];
+  imageUrl?: string;
+  messageType: string;
+  scrollToBottom: () => void;
+}
+
+export interface YourMessageProps extends MyMessageProps {
+  src: string;
+  userName?: string;
+  userId: number;
+}

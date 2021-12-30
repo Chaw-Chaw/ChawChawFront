@@ -26,15 +26,21 @@ import {
   makeChatRoom,
   organizeChatMessages,
 } from "../../store/chatSlice";
+import { RoomType } from "../../types/chat";
 
 export default function Chat() {
   const { mainRoom, totalMessages } = useAppSelector((state) => state.chat);
   const mainRoomId = mainRoom.id;
   const router = useRouter();
   const routerQuery = JSON.stringify(router.query);
+  const routerQueryUserId = Number(router.query.userId);
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
   const userRole = user.role;
+  const isBlockUser = user.blockIds?.includes(routerQueryUserId);
+  const blockedRoomId = totalMessages.find((item) =>
+    item.participantIds.includes(routerQueryUserId)
+  )?.roomId;
 
   useEffect(() => {
     if (userRole === ROLE_ADMIN) {
@@ -68,21 +74,16 @@ export default function Chat() {
     // 라우터가 빈 라우터일 경우 무시
     try {
       if (routerQuery === JSON.stringify({})) return;
-      const userId = router.query.userId
-        ? Number(router.query.userId)
-        : undefined;
+      const userId = routerQueryUserId || undefined;
 
       // 라우터 쿼리에 userId가 없으면 무시
       if (userId === undefined) return;
 
       // 차단한 유저라면
-      if (user.blockIds?.includes(userId)) {
-        const blockedRoom = totalMessages.find((item) =>
-          item.participantIds.includes(userId)
-        );
-        if (!blockedRoom) return;
+      if (isBlockUser) {
+        if (!blockedRoomId) return;
         dispatch(
-          chatActions.updateMainRoom({ id: blockedRoom.roomId, userId: userId })
+          chatActions.updateMainRoom({ id: blockedRoomId, userId: userId })
         );
         dispatch(organizeChatMessages());
         return;
@@ -92,9 +93,7 @@ export default function Chat() {
       if (userId !== INITIAL_ID) {
         (async () => {
           let mainRoomId = INITIAL_ROOMID;
-
           const roomId = await dispatch(confirmChatRoom()).unwrap();
-
           // 채팅방이 없다면 채팅방 만들기
           if (roomId === -1) {
             mainRoomId = await dispatch(makeChatRoom()).unwrap();
@@ -120,13 +119,7 @@ export default function Chat() {
     } catch (error) {
       dispatch(asyncErrorHandle(error));
     }
-  }, [
-    routerQuery,
-    dispatch,
-    router.query.userId,
-    totalMessages,
-    user.blockIds,
-  ]);
+  }, [routerQuery, dispatch, routerQueryUserId, isBlockUser, blockedRoomId]);
 
   return (
     <Layout>

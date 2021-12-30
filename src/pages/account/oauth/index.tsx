@@ -10,9 +10,9 @@ interface OauthProps {
 }
 export default function Oauth(props: OauthProps) {
   const router = useRouter();
+  const routerQuery = JSON.stringify(router.query);
   // 카카오에서 준 인증코드
   const dispatch = useAppDispatch();
-  const routerQuery = JSON.stringify(router.query);
 
   const main = useCallback(
     async (kakaoToken: string) => {

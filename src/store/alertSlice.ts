@@ -5,6 +5,7 @@ import store from ".";
 import {
   ERROR_CODES,
   LOGIN_PAGE_URL,
+  MANAGE_MAIN_PAGE_URL,
   POST_PAGE_URL,
   SIGNUP_PAGE_URL,
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
@@ -13,6 +14,7 @@ import {
   CONFIRM_DISPATCH_SIGNUP,
   CONFIRM_INIT_LOGOUT,
   CONFIRM_PUSH_LOGINPAGE,
+  CONFIRM_PUSH_MANAGE_MAINPAGE,
   CONFIRM_PUSH_POSTPAGE,
   CONFIRM_PUSH_SIGNUP,
   CONFIRM_PUSH_SIGNUP_WEBMAIL,
@@ -68,6 +70,9 @@ const alertSlice = createSlice({
   },
 });
 
+export default alertSlice.reducer;
+export const alertActions = alertSlice.actions;
+
 export const asyncErrorHandle = createAsyncThunk(
   "alert/asyncErrorHandle",
   (error: Error, thunkAPI) => {
@@ -105,6 +110,9 @@ export const confirmFunc = createAsyncThunk(
       case CONFIRM_PUSH_SIGNUP_WEBMAIL:
         Router.push(SIGNUP_WEBMAIL_AUTH_PAGE_URL);
         break;
+      case CONFIRM_PUSH_MANAGE_MAINPAGE:
+        Router.push(MANAGE_MAIN_PAGE_URL);
+        break;
       case CONFIRM_DISPATCH_SIGNUP:
         const user = store.getState().auth.user;
         if (
@@ -138,6 +146,3 @@ export const confirmFunc = createAsyncThunk(
     }
   }
 );
-
-export default alertSlice.reducer;
-export const alertActions = alertSlice.actions;

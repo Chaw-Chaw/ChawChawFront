@@ -55,6 +55,7 @@ interface Inputs {
 export default function SignUp() {
   const [isEmailDupCheck, setIsEmailDupCheck] = useState(false);
   const user = useAppSelector((state) => state.auth.user);
+  const userSchool = user.school;
   const dispatch = useAppDispatch();
 
   const userUniversity = user.school;
@@ -158,7 +159,6 @@ export default function SignUp() {
   };
 
   useEffect(() => {
-    const userSchool = user.school;
     if (isLogin()) {
       dispatch(
         alertActions.updateAlert({
@@ -180,7 +180,7 @@ export default function SignUp() {
       );
       return;
     }
-  }, [dispatch, user.school]);
+  }, [dispatch, userSchool]);
 
   const emailSection = (
     <InputSection>

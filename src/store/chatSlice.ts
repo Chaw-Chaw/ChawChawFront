@@ -11,24 +11,34 @@ import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import {
   BACKEND_URL,
+  CHAT_PAGE_URL,
   CONFIRM_CHATROOM_API_URL,
   CONFIRM_INIT_LOGOUT,
   DEFAULT_PROFILE_IMAGE,
   ERROR_ALERT,
   ERROR_CODES,
   ERROR_DUPLOGIN_MSG,
+  ERROR_FILE_OVERSIZE_MSG,
+  ERROR_NOFILE_MSG,
   EXCEPT_ERRORCODES_MSG,
   GET_ALARMS_API_URL,
   GET_MESSAGES_API_URL,
+  IMAGE_TYPE,
   INITIAL_ID,
+  LEAVE_CHATROOM_API_URL,
   MAKE_CHATROOM_API_URL,
   NOTICE_MAINROOM_API_URL,
+  SEND_IMAGE_MSG_API_URL,
+  TRANSLATE_CONTEXT,
 } from "../constants";
 import store, { RootState } from ".";
 import { getSecureLocalStorage } from "../utils";
 import { alertActions, asyncErrorHandle } from "./alertSlice";
 import { request } from "../utils/request";
 import { DefaultResponseBody } from "../types/response";
+import Router from "next/router";
+import { ChangeEvent } from "react";
+import axios from "axios";
 
 const initialState: {
   mainChatMessages: MessageType[];
@@ -49,6 +59,145 @@ const initialState: {
   chatClient: {},
   roomIds: [],
 };
+
+const chatSlice = createSlice({
+  name: "chat",
+  initialState,
+  reducers: {
+    connect(state) {
+      state.chatClient = new StompJs.Client({
+        // brokerURL: "ws://localhost:8080/ws-stomp/websocket", // 웹소켓 서버로 직접 접속
+        webSocketFactory: () => new SockJS(BACKEND_URL + "/ws"), // proxy를 통한 접속
+        debug: function (str) {
+          console.log(str);
+        },
+        reconnectDelay: 5000,
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+        //   onConnect: () => {
+        //     // 모든 subscribe는 여기서 구독이 이루어집니다.
+        //     alarmChannelSubscribe();
+        //     likeChannelSubscribe();
+        //     loginChannelSubscribe();
+        //   },
+        connectHeaders: {
+          Authorization: getSecureLocalStorage("accessToken"),
+        },
+      });
+    },
+    disconnect(state) {
+      state.chatClient.deactivate();
+    },
+    publish(
+      state,
+      action: PayloadAction<{ message: string; messageType: string }>
+    ) {
+      if (!state.chatClient.connected) return;
+      const messageType = action.payload.messageType;
+      const message = action.payload.message;
+      const timezoneOffset = new Date().getTimezoneOffset() * 60000;
+      const now = new Date(Date.now() - timezoneOffset);
+      const user = store.getState().auth.user;
+
+      state.chatClient.publish({
+        destination: "/message",
+        body: JSON.stringify({
+          messageType,
+          roomId: state.mainRoom.id,
+          senderId: user.id,
+          sender: user.name,
+          regDate: now.toISOString().substring(0, 19),
+          message,
+          imageUrl: user.imageUrl,
+          isRead: true,
+        }),
+      });
+    },
+    stackupMainChatMessages(state, action: PayloadAction<MessageType>) {
+      state.mainChatMessages.push(action.payload);
+    },
+    stackupNewChatList(state, action: PayloadAction<RoomType>) {
+      const roomIds: number[] = [];
+      state.totalMessages.push(action.payload);
+      state.totalMessages.forEach((item) => roomIds.push(item.roomId));
+      state.roomIds = roomIds;
+    },
+    stackupTotalMessages(state, action: PayloadAction<MessageType>) {
+      const result: RoomType[] = [];
+      const newMessage = action.payload;
+      const preState = state.totalMessages;
+      preState.forEach((item) => {
+        if (newMessage.roomId === item.roomId) {
+          result.push({
+            ...item,
+            messages: [...item.messages, newMessage],
+          });
+        } else {
+          result.push(item);
+        }
+      });
+      state.totalMessages = result;
+    },
+    stackupNewLikes(state, action: PayloadAction<LikeAlarmType>) {
+      state.newLikes.push(action.payload);
+    },
+    unShiftupNewMessages(state, action: PayloadAction<MessageType>) {
+      state.newMessages.unshift(action.payload);
+    },
+    updateTotalMessages(state, action: PayloadAction<RoomType[]>) {
+      state.totalMessages = action.payload;
+    },
+    updateMainRoom(
+      state,
+      action: PayloadAction<{ id: number; userId: number }>
+    ) {
+      state.mainRoom = action.payload;
+    },
+    updateIsViewChatList(state) {
+      const preState = state.isViewChatList;
+      state.isViewChatList = !preState;
+    },
+    updateNewLikes(state, action: PayloadAction<LikeAlarmType[]>) {
+      state.newLikes = action.payload;
+    },
+    updateNewMessages(state, action: PayloadAction<MessageType[]>) {
+      state.newMessages = action.payload;
+    },
+    updateRoomIds(state) {
+      const newRoomIds: number[] = [];
+      state.totalMessages.forEach((item) => newRoomIds.push(item.roomId));
+      state.roomIds = newRoomIds;
+    },
+    filterNewMessages(state) {
+      const filteredNewMessages = state.newMessages.filter((item) => {
+        if (item.roomId === undefined || item.roomId !== state.mainRoom.id) {
+          return true;
+        }
+        return false;
+      });
+      state.newMessages = filteredNewMessages;
+    },
+    filterTotalMessages(state) {
+      const preState = state.totalMessages;
+      const result = preState.filter(
+        (item) => item.roomId !== state.mainRoom.id
+      );
+      state.totalMessages = result;
+    },
+    organizeMainChat(state) {
+      const { totalMessages, mainRoom } = state;
+      const mainChatLog = totalMessages.find(
+        (item) => item.roomId === mainRoom.id
+      );
+      if (!mainChatLog) return;
+      state.mainChatMessages = [...mainChatLog.messages];
+    },
+  },
+  extraReducers: (builder) => {},
+});
+
+export default chatSlice.reducer;
+export const chatActions = chatSlice.actions;
 
 export const likeChannelSubscribe = createAsyncThunk(
   "chat/likeChannelSubscribe",
@@ -236,133 +385,58 @@ export const confirmChatRoom = createAsyncThunk(
   }
 );
 
-const chatSlice = createSlice({
-  name: "chat",
-  initialState,
-  reducers: {
-    connect(state) {
-      state.chatClient = new StompJs.Client({
-        // brokerURL: "ws://localhost:8080/ws-stomp/websocket", // 웹소켓 서버로 직접 접속
-        webSocketFactory: () => new SockJS(BACKEND_URL + "/ws"), // proxy를 통한 접속
-        debug: function (str) {
-          console.log(str);
-        },
-        reconnectDelay: 5000,
-        heartbeatIncoming: 4000,
-        heartbeatOutgoing: 4000,
-        //   onConnect: () => {
-        //     // 모든 subscribe는 여기서 구독이 이루어집니다.
-        //     alarmChannelSubscribe();
-        //     likeChannelSubscribe();
-        //     loginChannelSubscribe();
-        //   },
-        connectHeaders: {
-          Authorization: getSecureLocalStorage("accessToken"),
-        },
-      });
-    },
-    disconnect(state) {
-      state.chatClient.deactivate();
-    },
-    publish(
-      state,
-      action: PayloadAction<{ message: string; messageType: string }>
-    ) {
-      if (!state.chatClient.connected) return;
-      const messageType = action.payload.messageType;
-      const message = action.payload.message;
-      const timezoneOffset = new Date().getTimezoneOffset() * 60000;
-      const now = new Date(Date.now() - timezoneOffset);
-      const user = store.getState().auth.user;
+export const leaveChat = createAsyncThunk(
+  "chat/leaveChat",
+  async (_, thunkAPI) => {
+    const state = thunkAPI.getState() as RootState;
+    const roomId = state.chat.mainRoom.id;
+    await request.delete(LEAVE_CHATROOM_API_URL, { data: { roomId } });
 
-      state.chatClient.publish({
-        destination: "/message",
-        body: JSON.stringify({
-          messageType,
-          roomId: state.mainRoom.id,
-          senderId: user.id,
-          sender: user.name,
-          regDate: now.toISOString().substring(0, 19),
-          message,
-          imageUrl: user.imageUrl,
-          isRead: true,
-        }),
-      });
-    },
-    stackupMainChatMessages(state, action: PayloadAction<MessageType>) {
-      state.mainChatMessages.push(action.payload);
-    },
-    stackupNewChatList(state, action: PayloadAction<RoomType>) {
-      const roomIds: number[] = [];
-      state.totalMessages.push(action.payload);
-      state.totalMessages.forEach((item) => roomIds.push(item.roomId));
-      state.roomIds = roomIds;
-    },
-    stackupTotalMessages(state, action: PayloadAction<MessageType>) {
-      const result: RoomType[] = [];
-      const newMessage = action.payload;
-      const preState = state.totalMessages;
-      preState.forEach((item) => {
-        if (newMessage.roomId === item.roomId) {
-          result.push({
-            ...item,
-            messages: [...item.messages, newMessage],
-          });
-        } else {
-          result.push(item);
-        }
-      });
-      state.totalMessages = result;
-    },
-    stackupNewLikes(state, action: PayloadAction<LikeAlarmType>) {
-      state.newLikes.push(action.payload);
-    },
-    unShiftupNewMessages(state, action: PayloadAction<MessageType>) {
-      state.newMessages.unshift(action.payload);
-    },
-    updateTotalMessages(state, action: PayloadAction<RoomType[]>) {
-      state.totalMessages = action.payload;
-    },
-    updateMainRoom(
-      state,
-      action: PayloadAction<{ id: number; userId: number }>
-    ) {
-      state.mainRoom = action.payload;
-    },
-    updateIsViewChatList(state, action: PayloadAction<boolean>) {
-      state.isViewChatList = action.payload;
-    },
-    updateNewLikes(state, action: PayloadAction<LikeAlarmType[]>) {
-      state.newLikes = action.payload;
-    },
-    updateNewMessages(state, action: PayloadAction<MessageType[]>) {
-      state.newMessages = action.payload;
-    },
-    updateRoomIds(state) {
-      const newRoomIds: number[] = [];
-      state.totalMessages.forEach((item) => newRoomIds.push(item.roomId));
-      state.roomIds = newRoomIds;
-    },
-    filterNewMessages(state) {
-      const filteredNewMessages = state.newMessages.filter((item) => {
-        if (item.roomId === undefined || item.roomId !== state.mainRoom.id) {
-          return true;
-        }
-        return false;
-      });
-      state.newMessages = filteredNewMessages;
-    },
-    organizeMainChat(state) {
-      const { totalMessages, mainRoom } = state;
-      const mainChatLog = totalMessages.find(
-        (item) => item.roomId === mainRoom.id
-      );
-      if (!mainChatLog) return;
-      state.mainChatMessages = [...mainChatLog.messages];
-    },
-  },
-  extraReducers: (builder) => {},
-});
+    thunkAPI.dispatch(chatActions.filterTotalMessages);
+    Router.push({
+      pathname: CHAT_PAGE_URL,
+      query: { userId: INITIAL_ID },
+    });
+  }
+);
 
-export default chatSlice.reducer;
-export const chatActions = chatSlice.actions;
+export const sendImageMessage = createAsyncThunk(
+  "chat/sendImageMessage",
+  async (e: ChangeEvent<HTMLInputElement>, thunkAPI) => {
+    const target = e.target as HTMLInputElement;
+    const file: File = (target.files as FileList)[0];
+    if (file === undefined) throw new Error(ERROR_NOFILE_MSG);
+    if (file.size > 1024 * 1024 * 5) {
+      throw new Error(ERROR_FILE_OVERSIZE_MSG);
+    }
+    const image = new FormData();
+    image.append("file", file);
+
+    const response = await request.post<DefaultResponseBody<string>>(
+      SEND_IMAGE_MSG_API_URL,
+      image,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+
+    const imageUrl = response.data.data;
+    thunkAPI.dispatch(publish({ message: imageUrl, messageType: IMAGE_TYPE }));
+  }
+);
+
+export const translateContext = createAsyncThunk(
+  "chat/translateContext",
+  async (
+    contextInfo: { context: string; selectLanguage: string },
+    thunkAPI
+  ) => {
+    const response = await axios.get(TRANSLATE_CONTEXT, {
+      params: {
+        q: contextInfo.context,
+        source: "",
+        target: contextInfo.selectLanguage,
+      },
+    });
+
+    return response.data.data.translations[0].translatedText;
+  }
+);

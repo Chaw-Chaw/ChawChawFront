@@ -13,6 +13,9 @@ export interface UploadProfileType {
   repLanguage: string;
   repHopeLanguage: string;
 }
+export interface ManageUploadProfileType extends UploadProfileType {
+  userId: number;
+}
 
 export interface ManageUserInfoType {
   name: string;
@@ -30,18 +33,4 @@ export interface ManageUserInfoType {
   views: number;
   likes: number;
   blockUsers: BlockItem[];
-}
-
-export interface ManageUploadUserInfoType {
-  userId: number;
-  country: string[];
-  language: string[];
-  hopeLanguage: string[];
-  content: string;
-  facebookUrl: string;
-  instagramUrl: string;
-  imageUrl: string;
-  repCountry: string;
-  repLanguage: string;
-  repHopeLanguage: string;
 }

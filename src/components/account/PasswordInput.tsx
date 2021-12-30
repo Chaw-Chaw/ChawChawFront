@@ -10,7 +10,7 @@ interface PasswordInputProps {
   register?: object;
 }
 
-const PasswordInput: React.FC<PasswordInputProps> = (props) => {
+const MPasswordInput: React.FC<PasswordInputProps> = (props) => {
   const [showPassword, setShowPassword] = useState(false);
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
@@ -32,6 +32,9 @@ const PasswordInput: React.FC<PasswordInputProps> = (props) => {
     </>
   );
 };
+
+const PasswordInput = React.memo(MPasswordInput);
+
 export { PasswordInput };
 
 const PasswordWrapper = styled.div`

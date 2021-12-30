@@ -21,17 +21,11 @@ import {
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
   WARNING_FORM_MSG,
 } from "../../../constants";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { useAppDispatch } from "../../../hooks/redux";
 import { login } from "../../../store/authSlice";
 import { alertActions } from "../../../store/alertSlice";
-import {
-  CONFIRM_PUSH_LOGINPAGE,
-  CONFIRM_PUSH_POSTPAGE,
-  CONFIRM_VOID,
-  SELECT_TYPE,
-  WARNING_ALERT,
-} from "../../../constants/alert";
-import { avoidLocalStorageUndefined, isLogin } from "../../../utils";
+import { CONFIRM_PUSH_POSTPAGE, WARNING_ALERT } from "../../../constants/alert";
+import { isLogin } from "../../../utils";
 
 interface Inputs {
   email: string;

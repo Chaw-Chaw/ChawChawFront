@@ -1,9 +1,9 @@
-import { FacebookLoginProps } from "@greatsumini/react-facebook-login";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Router from "next/router";
 import store from ".";
 import {
   AuthInitialStateProps,
+  FacebookLoginProps,
   KakaoLoginProps,
   LoginProps,
   LoginResponseBody,
@@ -41,6 +41,46 @@ import { alertActions, asyncErrorHandle } from "./alertSlice";
 const initialState: AuthInitialStateProps = {
   user: avoidLocalStorageUndefined("user", {}),
 };
+
+const authSlice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {
+    loginSuccess(state, action: PayloadAction<LoginResponseBody>) {
+      const { token, profile, blockIds } = action.payload;
+      const accessToken = "Bearer " + token.accessToken;
+      const expireAtAccessToken = Date.now() + token.expiresIn;
+
+      saveSecureLocalStorage("expireAtAccessToken", expireAtAccessToken);
+      saveSecureLocalStorage("accessToken", accessToken);
+
+      if (action.payload.profile) {
+        const newData: UserPropertys = {
+          ...profile,
+          blockIds,
+        };
+        const newUser = { ...state.user, ...newData };
+        state.user = newUser;
+        saveSecureLocalStorage("user", newUser);
+      }
+    },
+    updateUser(state, action: PayloadAction<UserPropertys>) {
+      const newUser = { ...state.user, ...action.payload };
+      state.user = newUser;
+      saveSecureLocalStorage("user", newUser);
+    },
+    initUser(state) {
+      state.user = {};
+      window.localStorage.removeItem("accessToken");
+      window.localStorage.removeItem("expireAtAccessToken");
+      window.localStorage.removeItem("user");
+    },
+  },
+  extraReducers: (builder) => {},
+});
+
+export default authSlice.reducer;
+export const authActions = authSlice.actions;
 
 export const login = createAsyncThunk(
   "auth/login",
@@ -168,43 +208,3 @@ export const webmailVerify = (web_email: string) => {
   }
   return false;
 };
-
-const authSlice = createSlice({
-  name: "auth",
-  initialState,
-  reducers: {
-    loginSuccess(state, action: PayloadAction<LoginResponseBody>) {
-      const { token, profile, blockIds } = action.payload;
-      const accessToken = "Bearer " + token.accessToken;
-      const expireAtAccessToken = Date.now() + token.expiresIn;
-
-      saveSecureLocalStorage("expireAtAccessToken", expireAtAccessToken);
-      saveSecureLocalStorage("accessToken", accessToken);
-
-      if (action.payload.profile) {
-        const newData: UserPropertys = {
-          ...profile,
-          blockIds,
-        };
-        const newUser = { ...state.user, ...newData };
-        state.user = newUser;
-        saveSecureLocalStorage("user", newUser);
-      }
-    },
-    updateUser(state, action: PayloadAction<UserPropertys>) {
-      const newUser = { ...state.user, ...action.payload };
-      state.user = newUser;
-      saveSecureLocalStorage("user", newUser);
-    },
-    initUser(state) {
-      state.user = {};
-      window.localStorage.removeItem("accessToken");
-      window.localStorage.removeItem("expireAtAccessToken");
-      window.localStorage.removeItem("user");
-    },
-  },
-  extraReducers: (builder) => {},
-});
-
-export default authSlice.reducer;
-export const authActions = authSlice.actions;

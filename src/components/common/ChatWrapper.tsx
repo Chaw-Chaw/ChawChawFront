@@ -14,8 +14,7 @@ import {
 const ChatWrapper: React.FC = (props) => {
   const dispatch = useAppDispatch();
   const { role: userRole } = useAppSelector((state) => state.auth.user);
-  const { mainRoom } = useAppSelector((state) => state.chat);
-  const mainRoomId = mainRoom.id;
+  const { id: mainRoomId } = useAppSelector((state) => state.chat.mainRoom);
 
   useEffect(() => {
     if (!isLogin()) return;

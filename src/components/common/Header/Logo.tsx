@@ -7,14 +7,14 @@ import Chaw from "../../../../public/Layout/chaw.png";
 import { useRouter } from "next/router";
 import { AuthContext } from "../../../store/AuthContext";
 import { MAIN_PAGE, POST_PAGE_URL } from "../../../constants/pageUrls";
+import { isLogin } from "../../../utils";
 
-const Logo: React.FC = () => {
+const MLogo: React.FC = () => {
   const router = useRouter();
-  const { isLogin } = useContext(AuthContext);
 
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
-    if (isLogin && router.pathname !== POST_PAGE_URL) {
+    if (isLogin() && router.pathname !== POST_PAGE_URL) {
       router.push(POST_PAGE_URL);
     } else {
       router.push(MAIN_PAGE);
@@ -32,7 +32,9 @@ const Logo: React.FC = () => {
   );
 };
 
+const Logo = React.memo(MLogo);
 export { Logo };
+
 const MobileLogo = styled.div`
   cursor: pointer;
   display: none;

@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../../store/AuthContext";
+import React, { useContext, useEffect, useState } from "react";
 import { Button } from "../Button/Button";
 import MyImage from "./MyImage";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
@@ -11,20 +10,22 @@ import {
   LOGIN_PAGE_URL,
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
 } from "../../../constants/pageUrls";
+import { useAppSelector } from "../../../hooks/redux";
+import { isLogin } from "../../../utils";
 
 const HeaderCondition: React.FC = () => {
-  const { user, isLogin } = useContext(AuthContext);
+  const user = useAppSelector((state) => state.auth.user);
   const [viewUserImage, setViewUserImage] = useState(false);
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
   const router = useRouter();
 
   useEffect(() => {
-    if (isLogin) {
+    if (isLogin()) {
       setViewUserImage(true);
     } else {
       setViewUserImage(false);
     }
-  }, [isLogin]);
+  }, []);
 
   const userImage = (
     <HeaderInfoBox>
@@ -54,7 +55,7 @@ const HeaderCondition: React.FC = () => {
   return viewUserImage ? userImage : loginButton;
 };
 
-export default HeaderCondition;
+export default React.memo(HeaderCondition);
 
 const HeaderInfoBox = styled.div`
   display: flex;

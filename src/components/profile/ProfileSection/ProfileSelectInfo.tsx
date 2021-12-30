@@ -1,10 +1,11 @@
-import { SetStateAction } from "react";
-
+import React, { SetStateAction } from "react";
 import styled from "styled-components";
+import { COUNTRY_TYPE, NOMAL_TYPE } from "../../../constants/profile";
 import { CountryLocale, SelectInfoDropDown } from "../../common";
 import { LanguageInfoDropDown } from "../../common/DropDown/LanguageInfoDropDown";
 import { ListItem, ListItemProps } from "../../common/ListItem";
 import { ProfileSelectControlButton } from "./ProfileSelectControlButton";
+
 interface ProfileSelectInfoProps extends ListItemProps {
   setValues: React.Dispatch<SetStateAction<string[]>>;
   values: string[];
@@ -26,7 +27,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
           <DropDownMainText>main</DropDownMainText>
           <SelectInfoDropDown
             index={item.id}
-            type="NORMAL"
+            type={NOMAL_TYPE}
             backgroundColor={colors[item.id % 3]}
             initialValue={item.value}
             setValues={props.setValues}
@@ -45,7 +46,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
       <DropDownBox key={item.id}>
         <SelectInfoDropDown
           index={item.id}
-          type="NORMAL"
+          type={NOMAL_TYPE}
           backgroundColor={colors[item.id % 3]}
           initialValue={item.value}
           setValues={props.setValues}
@@ -102,7 +103,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
   return (
     <ListItem title={props.title} description={props.description}>
       <ButtonsBox>
-        {props.type === "country" ? selectCountryList : selectLanguageList}
+        {props.type === COUNTRY_TYPE ? selectCountryList : selectLanguageList}
         <ProfileSelectControlButton
           values={props.values}
           setValues={props.setValues}
@@ -113,7 +114,7 @@ const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
   );
 };
 
-export default ProfileSelectInfo;
+export default React.memo(ProfileSelectInfo);
 
 const DropDownBox = styled.div`
   margin: 0px 2.5px;

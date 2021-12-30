@@ -4,7 +4,7 @@ import { Logo } from "./Logo";
 import { ThemeToggle } from "../ThemeToggle";
 import HeaderCondition from "./HeaderCondition";
 
-const MobileHeader: React.FC = () => {
+const MMobileHeader: React.FC = () => {
   return (
     <MobileHeaderContainer>
       <ThemeToggleBox>
@@ -16,6 +16,7 @@ const MobileHeader: React.FC = () => {
   );
 };
 
+const MobileHeader = React.memo(MMobileHeader);
 export { MobileHeader };
 
 const MobileHeaderContainer = styled.div`

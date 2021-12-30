@@ -9,3 +9,4 @@ export * from "./statistics";
 export * from "./alert";
 
 export const SELECT_COLORS = ["#06C074", "#5A65E8", "#4BC6DA", "#A52929"];
+export const KEYTYPE_ENTER = "ENTER";

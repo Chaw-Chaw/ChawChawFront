@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { CgProfile } from "react-icons/cg";
 import { BsChat } from "react-icons/bs";
 import { AiOutlineLogout, AiOutlineSetting } from "react-icons/ai";
-import { MouseEventHandler, useContext, useState } from "react";
+import React, { MouseEventHandler, useContext, useState } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -12,10 +12,12 @@ import {
   SETTING_PAGE_URL,
 } from "../../../constants/pageUrls";
 import { useLogin } from "../../../hooks/api/account/useLogin";
+import { useAppDispatch } from "../../../hooks/redux";
+import { logout } from "../../../store/authSlice";
 
 const MyImage: React.FC<{ profileImage: string }> = (props) => {
   const [isActive, setIsActive] = useState(false);
-  const { logout } = useLogin();
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const handleClickImage: MouseEventHandler<HTMLImageElement> = (e) => {
@@ -37,7 +39,7 @@ const MyImage: React.FC<{ profileImage: string }> = (props) => {
   };
   const handleClickLogout: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
-    logout();
+    dispatch(logout());
   };
   return (
     <MyImageBox>
@@ -71,7 +73,7 @@ const MyImage: React.FC<{ profileImage: string }> = (props) => {
   );
 };
 
-export default MyImage;
+export default React.memo(MyImage);
 
 const MyImageBox = styled.div`
   margin-left: 10px;

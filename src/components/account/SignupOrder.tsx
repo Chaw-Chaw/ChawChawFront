@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import React from "react";
 import { FIRST_STAGE, SECOND_STAGE } from "../../constants";
 
 interface ActiveProps {
@@ -22,7 +23,7 @@ const SignupOrder: React.FC<ActiveProps> = (props) => {
   );
 };
 
-export default SignupOrder;
+export default React.memo(SignupOrder);
 
 const StageCircle = styled.div<IsActiveProps>`
   width: 70px;

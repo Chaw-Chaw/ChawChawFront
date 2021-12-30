@@ -1,11 +1,11 @@
-import { MouseEvent, MouseEventHandler, useEffect } from "react";
+import React, { MouseEvent, MouseEventHandler, useEffect } from "react";
 import styled from "styled-components";
 import { Button } from ".";
 import { SELECT_TYPE } from "../../constants/alert";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { alertActions, confirmFunc } from "../../store/alertSlice";
 
-const AlertMessage: React.FC = (props) => {
+const MAlertMessage: React.FC = () => {
   const dispatch = useAppDispatch();
   const alertList = useAppSelector((state) => state.alert.alertList);
   const handleClickConfirm = (
@@ -56,6 +56,7 @@ const AlertMessage: React.FC = (props) => {
   );
 };
 
+const AlertMessage = React.memo(MAlertMessage);
 export { AlertMessage };
 
 const AlertMessageContainer = styled.div`

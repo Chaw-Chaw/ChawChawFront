@@ -1,0 +1,78 @@
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { ChangeEvent } from "react";
+import {
+  MANAGE_DELETE_PROFILE_IMAGE_API_URL,
+  MANAGE_USER_API_URL,
+  MANAGE_USER_PROFILE_API_URL,
+  UPLOAD_PROFILE_IMAGE_API_URL,
+} from "../../constants";
+import {
+  CountryLocale,
+  LanguageLocale,
+  LocaleLanguage,
+} from "../../constants/LocaleList";
+import { SELECT } from "../../constants/profile";
+import {
+  ManageUploadProfileType,
+  ManageUserInfoType,
+} from "../../types/profile";
+import { DefaultResponseBody } from "../../types/response";
+import { arrayRemovedItem } from "../../utils";
+import { request } from "../../utils/request";
+
+export const getUserDetailInfo = createAsyncThunk(
+  "profile/getUserDetailInfo",
+  async (userId: number, thunkAPI) => {
+    const response = await request.get<DefaultResponseBody<ManageUserInfoType>>(
+      MANAGE_USER_API_URL + `/${userId}`
+    );
+    return response.data.data;
+  }
+);
+
+export const manageUploadUserProfile = createAsyncThunk(
+  "profile/manageUploadUserProfile",
+  async (body: ManageUploadProfileType, thunkAPI) => {
+    await request.post(MANAGE_USER_PROFILE_API_URL, body);
+  }
+);
+
+export const sendManageProfileImage = createAsyncThunk(
+  "profile/sendManageProfileImage",
+  async (image: FormData, thunkAPI) => {
+    const response = await request.post<DefaultResponseBody<string>>(
+      UPLOAD_PROFILE_IMAGE_API_URL,
+      image,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return response.data.data;
+  }
+);
+
+export const deleteManageProfileImage = createAsyncThunk(
+  "profile/deleteManageProfileImage",
+  async (userId: number, thunkAPI) => {
+    const response = await request.delete<DefaultResponseBody<string>>(
+      MANAGE_DELETE_PROFILE_IMAGE_API_URL,
+      { data: userId }
+    );
+    return response.data.data;
+  }
+);
+
+export const putImage = (e: ChangeEvent<HTMLInputElement>) => {
+  try {
+    const target = e.target as HTMLInputElement;
+    const file: File = (target.files as FileList)[0];
+    if (file === undefined) throw new Error("파일이 없습니다.");
+    if (file.size > 1024 * 1024 * 5) {
+      throw new Error("5MB 이상 파일을 업로드 할 수 없습니다.");
+    }
+    const image = new FormData();
+    image.append("file", file);
+    return image;
+  } catch (err) {
+    // message.error(err.message);
+    throw new Error(err);
+  }
+};

@@ -1,24 +1,29 @@
-import { useContext } from "react";
 import styled from "styled-components";
+import React from "react";
 import { ChatBox } from "../../common";
-import { ChatContext } from "../../../store/ChatContext";
-import { AuthContext } from "../../../store/AuthContext";
 import { arrayRemovedItem } from "../../../utils";
+import { useAppSelector } from "../../../hooks/redux";
+import {
+  CHATROOM_TYPE,
+  IMAGE_MSG,
+  IMAGE_TYPE,
+  NEW_CHATROOM_MSG,
+} from "../../../constants";
 
-const ChatList: React.FC = (props) => {
-  const { totalMessage } = useContext(ChatContext);
-  const { user } = useContext(AuthContext);
+const ChatList: React.FC = () => {
+  const user = useAppSelector((state) => state.auth.user);
+  const totalMessages = useAppSelector((state) => state.chat.totalMessages);
 
-  const manufactureMessages = totalMessage.map((item) => {
+  const manufactureMessages = totalMessages.map((item) => {
     const limitMessageWord = 20;
     const isNewChatRoom = item.messages.length <= 0;
     const lastMessageInfo = item.messages[item.messages.length - 1];
     const lastMessage = (() => {
       if (isNewChatRoom) {
-        return "새로운 채팅방이 생성되었습니다.";
+        return NEW_CHATROOM_MSG;
       }
-      if (lastMessageInfo.messageType === "IMAGE") {
-        return "🏞 사진";
+      if (lastMessageInfo.messageType === IMAGE_TYPE) {
+        return IMAGE_MSG;
       }
       return lastMessageInfo.message;
     })();
@@ -43,19 +48,19 @@ const ChatList: React.FC = (props) => {
         roomId={item.roomId}
         senderId={senderId}
         context={limitMessage}
-        type="CHATROOM"
+        type={CHATROOM_TYPE}
       />
     );
   });
 
   return (
     <Outline>
-      <Inner>{totalMessage.length !== 0 && manufactureMessages}</Inner>
+      <Inner>{totalMessages.length !== 0 && manufactureMessages}</Inner>
     </Outline>
   );
 };
 
-export default ChatList;
+export default React.memo(ChatList);
 
 const Outline = styled.div`
   border: none;

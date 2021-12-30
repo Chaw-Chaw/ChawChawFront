@@ -1,7 +1,7 @@
-import { MouseEventHandler } from "react";
+import React, { MouseEventHandler } from "react";
 import styled from "styled-components";
 
-const Option: React.FC<{
+const MOption: React.FC<{
   saveInfo: (item: string) => void;
   item: string;
 }> = (props) => {
@@ -14,6 +14,7 @@ const Option: React.FC<{
   return <OptionBox onClick={handleClick}>{props.item}</OptionBox>;
 };
 
+const Option = React.memo(MOption);
 export { Option };
 
 const OptionBox = styled.div`

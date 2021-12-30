@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
+import { MESSAGE_TYPE_YOURS, MESSAGE_TYPE_MINE } from "../../../constants";
 
 interface MessageContextProps {
   isActive: boolean;
@@ -8,7 +9,7 @@ interface MessageContextProps {
   onClick: React.MouseEventHandler<HTMLDivElement>;
 }
 
-const MessageContext: React.FC<MessageContextProps> = (props) => {
+const MMessageContext: React.FC<MessageContextProps> = (props) => {
   return (
     <MessageContextSelect
       onClick={props.onClick}
@@ -19,15 +20,16 @@ const MessageContext: React.FC<MessageContextProps> = (props) => {
     </MessageContextSelect>
   );
 };
-
+const MessageContext = React.memo(MMessageContext);
 export { MessageContext };
 
 const MessageContextSelect = styled.div<{ isActive: boolean; type: string }>`
   cursor: pointer;
   position: absolute;
   top: 0px;
-  right: ${(props) => (props.type === "you" ? "-70px" : "initial")};
-  left: ${(props) => (props.type === "me" ? "-70px" : "initial")};
+  right: ${(props) =>
+    props.type === MESSAGE_TYPE_YOURS ? "-70px" : "initial"};
+  left: ${(props) => (props.type === MESSAGE_TYPE_MINE ? "-70px" : "initial")};
   display: ${(props) => (props.isActive ? "flex" : "none")};
   justify-content: center;
   align-items: center;

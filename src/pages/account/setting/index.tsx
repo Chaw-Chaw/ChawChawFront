@@ -9,12 +9,10 @@ import {
   CONFIRM_PUSH_LOGINPAGE,
   ERROR_ALERT,
   ERROR_ENTER_AFTERLOGIN_MSG,
-  LOGIN_PAGE_URL,
   ROLE_ADMIN,
 } from "../../../constants";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { alertActions } from "../../../store/alertSlice";
-import { AuthContext } from "../../../store/AuthContext";
 import { isLogin } from "../../../utils";
 
 export default function Setting() {
