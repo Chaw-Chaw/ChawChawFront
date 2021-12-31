@@ -1,24 +1,49 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { ChangeEvent } from "react";
 import {
+  DELETE_PROFILE_IMAGE_API_URL,
   MANAGE_DELETE_PROFILE_IMAGE_API_URL,
   MANAGE_USER_API_URL,
   MANAGE_USER_PROFILE_API_URL,
+  UPLOAD_PROFILE_API_URL,
   UPLOAD_PROFILE_IMAGE_API_URL,
 } from "../../constants";
 import {
-  CountryLocale,
-  LanguageLocale,
-  LocaleLanguage,
-} from "../../constants/LocaleList";
-import { SELECT } from "../../constants/profile";
-import {
   ManageUploadProfileType,
   ManageUserInfoType,
+  UploadProfileType,
 } from "../../types/profile";
 import { DefaultResponseBody } from "../../types/response";
-import { arrayRemovedItem } from "../../utils";
 import { request } from "../../utils/request";
+
+export const deleteProfileImage = createAsyncThunk(
+  "profile/deleteProfileImage",
+  async () => {
+    const response = await request.delete<DefaultResponseBody<string>>(
+      DELETE_PROFILE_IMAGE_API_URL
+    );
+    return response.data.data;
+  }
+);
+
+export const sendProfileImage = createAsyncThunk(
+  "profile/sendProfileImage",
+  async (image: FormData) => {
+    const response = await request.post<DefaultResponseBody<string>>(
+      UPLOAD_PROFILE_IMAGE_API_URL,
+      image,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return response.data.data;
+  }
+);
+
+export const uploadProfile = createAsyncThunk(
+  "profile/uploadProfile",
+  async (profile: UploadProfileType) => {
+    await request.post(UPLOAD_PROFILE_API_URL, profile);
+  }
+);
 
 export const getUserDetailInfo = createAsyncThunk(
   "profile/getUserDetailInfo",

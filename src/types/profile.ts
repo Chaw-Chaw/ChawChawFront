@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+import { ListItemProps } from "./common";
 import { BlockItem } from "./manage";
 
 export interface UploadProfileType {
@@ -32,4 +34,30 @@ export interface ManageUserInfoType {
   views: number;
   likes: number;
   blockUsers: BlockItem[];
+}
+
+export interface ProfileSection {
+  title?: string;
+  content?: string;
+}
+
+export interface ProfileContentProps {
+  placeholder?: string;
+  title?: string;
+  setValues: Dispatch<SetStateAction<string>>;
+  values: string;
+  name?: string;
+}
+
+export interface ProfileSelectInfoProps extends ListItemProps {
+  setValues: React.Dispatch<SetStateAction<string[]>>;
+  values: string[];
+  type: string;
+  count: number;
+}
+
+export interface ProfileSocialUrlFragmentProps {
+  type?: string;
+  url?: string;
+  setUrl?: Dispatch<SetStateAction<string>>;
 }

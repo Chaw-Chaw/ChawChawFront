@@ -1,4 +1,4 @@
-import {
+import React, {
   useState,
   useRef,
   useCallback,
@@ -8,30 +8,21 @@ import {
   MouseEventHandler,
 } from "react";
 import styled from "styled-components";
+import { ProfileContentProps } from "../../../types/profile";
 import { TextArea, Label, UpdateButton } from "../../common";
 
-interface ProfileContentProps {
-  placeholder?: string;
-  title?: string;
-  setValues: Dispatch<SetStateAction<string>>;
-  values: string;
-  name?: string;
-}
-
 const ProfileContent: React.FC<ProfileContentProps> = (props) => {
-  const textAreaResizHandle = () => {
+  const [isActive, setIsActive] = useState(false);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [content, setContent] = useState<string>(
+    props.values ? props.values : ""
+  );
+  const textAreaResize = useCallback(() => {
     if (textAreaRef === null || textAreaRef.current === null) return;
     setContent(textAreaRef.current.value);
     textAreaRef.current.style.height = "110px";
     textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
-  };
-
-  const [isActive, setIsActive] = useState(false);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const textAreaResize = useCallback(textAreaResizHandle, []);
-  const [content, setContent] = useState<string>(
-    props.values ? props.values : ""
-  );
+  }, []);
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
@@ -46,16 +37,15 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
   };
 
   useEffect(() => {
-    textAreaResizHandle();
+    textAreaResize();
     setContent(props.values);
-  }, [props.values]);
+  }, [props.values, textAreaResize]);
 
   return (
     <Container>
       <h1>{props.name}</h1>
       <Title htmlFor="content">{props.title}</Title>
       <Content
-        // type="text"
         id="content"
         isActive={isActive}
         disabled={!isActive}
@@ -71,7 +61,7 @@ const ProfileContent: React.FC<ProfileContentProps> = (props) => {
   );
 };
 
-export default ProfileContent;
+export default React.memo(ProfileContent);
 
 const Container = styled.div`
   display: flex;

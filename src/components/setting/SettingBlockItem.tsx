@@ -1,29 +1,28 @@
 import Image from "next/image";
-import { MouseEventHandler, useContext, useState } from "react";
+import React, { MouseEventHandler, useContext, useState } from "react";
 import styled from "styled-components";
-import { useBlock } from "../../hooks/api/useBlock";
-import { AuthContext } from "../../store/AuthContext";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { blockUser, unBlockUser } from "../../store/actions/postActions";
+import { BlockItem } from "../../types/manage";
 import { Button } from "../common";
-import { BlockItem } from "./SettingBlockList";
 
-interface BlockItemProps extends BlockItem {}
-
-const SettingBlockItem: React.FC<BlockItemProps> = (props) => {
-  const { unblockUser, blockUser } = useBlock();
-  const { user } = useContext(AuthContext);
-  const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.userId));
+const MSettingBlockItem: React.FC<BlockItem> = (props) => {
+  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
+  const isBlockUser = user.blockIds?.includes(props.userId);
+  const [isBlock, setIsBlock] = useState(isBlockUser);
 
   const handleClickUnblock: MouseEventHandler<HTMLButtonElement> = async (
     e
   ) => {
     e.preventDefault();
-    await unblockUser(props.userId);
+    await dispatch(unBlockUser(props.userId));
     setIsBlock(false);
   };
 
   const handleClickBlock: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
-    await blockUser(props.userId);
+    await dispatch(blockUser(props.userId));
     setIsBlock(true);
   };
 
@@ -54,6 +53,7 @@ const SettingBlockItem: React.FC<BlockItemProps> = (props) => {
   );
 };
 
+const SettingBlockItem = React.memo(MSettingBlockItem);
 export { SettingBlockItem };
 
 const BlockBox = styled.div`

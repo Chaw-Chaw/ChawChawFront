@@ -1,21 +1,15 @@
-import React, { SetStateAction } from "react";
+import React, { SetStateAction, useMemo } from "react";
 import styled from "styled-components";
 import { COUNTRY_TYPE, NOMAL_TYPE } from "../../../constants/profile";
+import { ProfileSelectInfoProps } from "../../../types/profile";
 import { CountryLocale, SelectInfoDropDown } from "../../common";
 import { LanguageInfoDropDown } from "../../common/DropDown/LanguageInfoDropDown";
-import { ListItem, ListItemProps } from "../../common/ListItem";
+import { ListItem } from "../../common/ListItem";
 import { ProfileSelectControlButton } from "./ProfileSelectControlButton";
-
-interface ProfileSelectInfoProps extends ListItemProps {
-  setValues: React.Dispatch<SetStateAction<string[]>>;
-  values: string[];
-  type: string;
-  count: number;
-}
 
 const ProfileSelectInfo: React.FC<ProfileSelectInfoProps> = (props) => {
   const colors = ["#06C074", "#5A65E8", "#4BC6DA"];
-  const options = Object.keys(CountryLocale);
+  const options = useMemo(() => Object.keys(CountryLocale), []);
   const selectItemListInfo = props.values.map((item, index) => {
     return { value: item, id: index };
   });

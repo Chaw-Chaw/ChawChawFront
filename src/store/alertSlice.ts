@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 import Router from "next/router";
 import store from ".";
+import { SettingUserDelete } from "../components/setting/SettingUserDelete";
 import {
   ERROR_CODES,
   LOGIN_PAGE_URL,
@@ -12,6 +13,7 @@ import {
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
 } from "../constants";
 import {
+  CONFIRM_DELETE_USER,
   CONFIRM_DISPATCH_SIGNUP,
   CONFIRM_INIT_LOGOUT,
   CONFIRM_PUSH_LOGINPAGE,
@@ -23,6 +25,7 @@ import {
   CONFIRM_VOID,
   ERROR_ALERT,
 } from "../constants/alert";
+import { deleteUser } from "./actions/manageActions";
 import { authActions, signup } from "./authSlice";
 
 interface AlertType {
@@ -117,6 +120,13 @@ export const confirmFunc = createAsyncThunk(
         break;
       case CONFIRM_PUSH_MANAGE_MAINPAGE:
         Router.push(MANAGE_MAIN_PAGE_URL);
+        break;
+      case CONFIRM_DELETE_USER:
+        try {
+          await thunkAPI.dispatch(deleteUser());
+        } catch (error) {
+          thunkAPI.dispatch(asyncErrorHandle(error));
+        }
         break;
       case CONFIRM_DISPATCH_SIGNUP:
         const user = store.getState().auth.user;

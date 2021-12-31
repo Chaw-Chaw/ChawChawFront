@@ -1,14 +1,28 @@
-import { MouseEventHandler, useState } from "react";
+import React, { MouseEventHandler, useState } from "react";
 import styled from "styled-components";
+import {
+  CONFIRM_DELETE_USER,
+  SELECT_TYPE,
+  WARNING_ALERT,
+  WARNING_USER_DELETE_MSG,
+} from "../../constants";
+import { useAppDispatch } from "../../hooks/redux";
+import { alertActions } from "../../store/alertSlice";
 import { Button, ListItem } from "../common";
 
-const SettingUserDelete: React.FC = () => {
-  const [open, setOpen] = useState(false);
+const MSettingUserDelete: React.FC = () => {
+  const dispatch = useAppDispatch();
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
-    setOpen(true);
-    //dispatch alert
+    dispatch(
+      alertActions.updateAlert({
+        name: WARNING_ALERT,
+        message: WARNING_USER_DELETE_MSG,
+        type: SELECT_TYPE,
+        confirmFuncName: CONFIRM_DELETE_USER,
+      })
+    );
   };
 
   return (
@@ -23,6 +37,7 @@ const SettingUserDelete: React.FC = () => {
   );
 };
 
+const SettingUserDelete = React.memo(MSettingUserDelete);
 export { SettingUserDelete };
 
 const UserDeleteButton = styled(Button)`

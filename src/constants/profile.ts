@@ -9,6 +9,8 @@ export const SELECT = "Select";
 export const COUNTRY_TYPE = "country";
 export const LANGUAGE_TYPE = "language";
 export const NOMAL_TYPE = "NORMAL";
+export const TYPE_FACEBOOK = "facebook";
+export const TYPE_INSTAGRAM = "instagram";
 
 export const INIT_USERINFO: ManageUserInfoType = {
   name: "",

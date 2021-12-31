@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
+  DELETE_USER_API_URL,
   MANAGE_DELETE_USER_API_URL,
   MANAGE_UNBLOCK_API_URL,
   MANAGE_USERLIST_API_URL,
@@ -39,3 +40,7 @@ export const deleteManagerUser = createAsyncThunk(
     await request.delete(MANAGE_DELETE_USER_API_URL, { data: { userId } });
   }
 );
+
+export const deleteUser = createAsyncThunk("manage/deleteUser", async () => {
+  await request.delete(DELETE_USER_API_URL);
+});

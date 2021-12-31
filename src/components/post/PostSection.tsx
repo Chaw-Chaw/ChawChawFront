@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { PostCard } from "./PostCard";
 import { CountryLocale, LocaleLanguage } from "../common";
-import { PostCardProps, PostSectionProps } from "../../types/post";
+import { PostSectionProps } from "../../types/post";
 
 const PostSection: React.FC<PostSectionProps> = (props) => {
   const postCardList =

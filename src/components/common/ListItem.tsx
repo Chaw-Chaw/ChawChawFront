@@ -1,11 +1,6 @@
 import styled from "styled-components";
 import React from "react";
-
-interface ListItemProps {
-  title: string;
-  description?: string;
-  children?: React.ReactNode;
-}
+import { ListItemProps } from "../../types/common";
 
 const MListItem: React.FC<ListItemProps> = (props) => {
   return (
@@ -20,7 +15,6 @@ const MListItem: React.FC<ListItemProps> = (props) => {
 };
 const ListItem = React.memo(MListItem);
 export { ListItem };
-export type { ListItemProps };
 
 const Container = styled.div`
   display: flex;

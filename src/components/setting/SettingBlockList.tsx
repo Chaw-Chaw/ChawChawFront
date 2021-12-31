@@ -1,15 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+import { ADMIN_ROLE } from "../../constants";
 import { useBlock } from "../../hooks/api/useBlock";
 import { AuthContext } from "../../store/AuthContext";
+import { BlockItem } from "../../types/manage";
 import { ListItem } from "../common";
 import { SettingBlockItem } from "./SettingBlockItem";
-
-interface BlockItem {
-  userId: number;
-  name: string;
-  imageUrl: string;
-}
 
 const SettingBlockList: React.FC = () => {
   const { user, isLogin } = useContext(AuthContext);
@@ -17,7 +13,7 @@ const SettingBlockList: React.FC = () => {
   const [blockList, setBlockList] = useState<BlockItem[]>([]);
 
   useEffect(() => {
-    if (user.role === "ADMIN" || !isLogin) {
+    if (user.role === ADMIN_ROLE || !isLogin) {
       return;
     }
     (async () => {
@@ -53,7 +49,6 @@ const SettingBlockList: React.FC = () => {
 };
 
 export { SettingBlockList };
-export type { BlockItem };
 
 const SettingBlockBox = styled.div`
   @media (max-width: 768px) {

@@ -5,33 +5,33 @@ import {
   LanguageLocale,
   LocaleLanguage,
 } from "../../common";
-import { MouseEventHandler, useContext, useState } from "react";
-import { AuthContext } from "../../../store/AuthContext";
+import React, { MouseEventHandler, useState } from "react";
 import {
   DEFAULT_FACEBOOK_URL,
   DEFAULT_INSTAGRAM_URL,
   DEFAULT_PROFILE_IMAGE,
+  SUCCESS_ALERT,
+  SUCCESS_UPLOAD_PROFILE_MSG,
 } from "../../../constants";
 import ProfileContent from "./ProfileContent";
 import ProfileImage from "./ProfileImage";
 import ProfileSocialUrl from "./ProfileSocialUrl";
 import ProfileSelectInfo from "./ProfileSelectInfo";
-import { useProfile } from "../../../hooks/api/profile/useProfile";
 import { arrayRemovedItem } from "../../../utils";
-
-interface ProfileSection {
-  title?: string;
-  content?: string;
-}
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { SELECT } from "../../../constants/profile";
+import { authActions } from "../../../store/authSlice";
+import { uploadProfile } from "../../../store/actions/profileActions";
+import { alertActions } from "../../../store/alertSlice";
 
 const ProfileSection: React.FC = () => {
-  const { uploadProfile } = useProfile();
-  const { user, updateUser } = useContext(AuthContext);
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
 
   const [userCountries, setUserCountries] = useState<string[]>(
     user.country && user.repCountry
       ? [user.repCountry, ...arrayRemovedItem(user.repCountry, user.country)]
-      : ["Select"]
+      : [SELECT]
   );
   const [userLanguages, setUserLanguages] = useState<string[]>(
     user.language && user.repLanguage
@@ -39,7 +39,7 @@ const ProfileSection: React.FC = () => {
           user.repLanguage,
           ...arrayRemovedItem(user.repLanguage, user.language),
         ].map((item) => LocaleLanguage[item])
-      : ["Select"]
+      : [SELECT]
   );
   const [userHopeLanguages, setUserHopeLanguages] = useState<string[]>(
     user.hopeLanguage && user.repHopeLanguage
@@ -47,7 +47,7 @@ const ProfileSection: React.FC = () => {
           user.repHopeLanguage,
           ...arrayRemovedItem(user.repHopeLanguage, user.hopeLanguage),
         ].map((item) => LocaleLanguage[item])
-      : ["Select"]
+      : [SELECT]
   );
   const [userContent, setUserContent] = useState<string>(user.content || "");
   const [userFaceBookUrl, setUserFaceBookUrl] = useState<string>(
@@ -95,15 +95,21 @@ const ProfileSection: React.FC = () => {
       repHopeLanguage: LanguageLocale[userHopeLanguages[0]],
     };
 
-    await uploadProfile(userProfile);
+    await dispatch(uploadProfile(userProfile));
     return userProfile;
   };
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
     const userProfile = await onSubmit();
-    // message.success("프로필이 업로드 되었습니다.");
-    updateUser(userProfile);
+
+    dispatch(authActions.updateUser(userProfile));
+    dispatch(
+      alertActions.updateAlert({
+        name: SUCCESS_ALERT,
+        message: SUCCESS_UPLOAD_PROFILE_MSG,
+      })
+    );
   };
 
   return (
@@ -157,7 +163,8 @@ const ProfileSection: React.FC = () => {
   );
 };
 
-export default ProfileSection;
+export default React.memo(ProfileSection);
+
 export {
   ProfileHeader,
   ProfileImage,

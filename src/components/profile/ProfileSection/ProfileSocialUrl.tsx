@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
+import { TYPE_FACEBOOK, TYPE_INSTAGRAM } from "../../../constants/profile";
 import { ListItem } from "../../common/ListItem";
 import ProfileSocialUrlFragment from "./ProfileSocialUrlFragment";
 
@@ -16,12 +17,12 @@ const ProfileSocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
         style={{ display: "flex", flexDirection: "column", marginTop: "20px" }}
       >
         <ProfileSocialUrlFragment
-          type="facebook"
+          type={TYPE_FACEBOOK}
           setUrl={props.setFaceBookUrl}
           url={props.faceBookUrl}
         />
         <ProfileSocialUrlFragment
-          type="instagram"
+          type={TYPE_INSTAGRAM}
           setUrl={props.setInstagramUrl}
           url={props.instagramUrl}
         />
@@ -30,4 +31,4 @@ const ProfileSocialUrl: React.FC<ProfileSocialUrlProps> = (props) => {
   );
 };
 
-export default ProfileSocialUrl;
+export default React.memo(ProfileSocialUrl);
