@@ -95,7 +95,7 @@ export default function Chat() {
           let mainRoomId = INITIAL_ROOMID;
           const roomId = await dispatch(confirmChatRoom()).unwrap();
           // 채팅방이 없다면 채팅방 만들기
-          if (roomId === -1) {
+          if (roomId === INITIAL_ROOMID) {
             mainRoomId = await dispatch(makeChatRoom()).unwrap();
           } else {
             mainRoomId = roomId;

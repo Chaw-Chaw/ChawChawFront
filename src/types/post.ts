@@ -65,7 +65,7 @@ export interface PostCardImageInfoProps {
   name: string;
 }
 
-export interface PostModalActive {
+export interface PostModalActiveProps {
   id: number;
   isLike: boolean;
 }

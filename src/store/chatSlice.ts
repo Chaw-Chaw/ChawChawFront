@@ -327,36 +327,28 @@ export const organizeChatMessages = createAsyncThunk(
 export const getNewAlarms = createAsyncThunk(
   "chat/getNewAlarms",
   async (_, thunkAPI) => {
-    try {
-      const state = thunkAPI.getState() as RootState;
-      const user = state.auth.user;
-      const response = await request.get<DefaultResponseBody<GetAlarmsType>>(
-        GET_ALARMS_API_URL
-      );
-      const likeMessages = response.data.data.likes;
-      const newMessages = response.data.data.messages.filter(
-        (item) => !user.blockIds?.includes(item.senderId)
-      );
-      thunkAPI.dispatch(chatActions.updateNewLikes(likeMessages));
-      thunkAPI.dispatch(chatActions.updateNewMessages(newMessages));
-    } catch (error) {
-      thunkAPI.dispatch(asyncErrorHandle(error));
-    }
+    const state = thunkAPI.getState() as RootState;
+    const user = state.auth.user;
+    const response = await request.get<DefaultResponseBody<GetAlarmsType>>(
+      GET_ALARMS_API_URL
+    );
+    const likeMessages = response.data.data.likes;
+    const newMessages = response.data.data.messages.filter(
+      (item) => !user.blockIds?.includes(item.senderId)
+    );
+    thunkAPI.dispatch(chatActions.updateNewLikes(likeMessages));
+    thunkAPI.dispatch(chatActions.updateNewMessages(newMessages));
   }
 );
 
 export const noticeMainRoom = createAsyncThunk(
   "chat/noticeMainRoom",
   async (_, thunkAPI) => {
-    try {
-      const state = thunkAPI.getState() as RootState;
-      const mainRoomId = state.chat.mainRoom.id;
-      await request.post(NOTICE_MAINROOM_API_URL, {
-        roomId: mainRoomId,
-      });
-    } catch (error) {
-      thunkAPI.dispatch(asyncErrorHandle(error));
-    }
+    const state = thunkAPI.getState() as RootState;
+    const mainRoomId = state.chat.mainRoom.id;
+    await request.post(NOTICE_MAINROOM_API_URL, {
+      roomId: mainRoomId,
+    });
   }
 );
 
@@ -369,6 +361,7 @@ export const makeChatRoom = createAsyncThunk(
       MAKE_CHATROOM_API_URL,
       { userId }
     );
+    console.log(response);
     return response.data.data.roomId;
   }
 );
@@ -378,7 +371,7 @@ export const confirmChatRoom = createAsyncThunk(
   async (_, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
     const userId = state.auth.user.id;
-    const response = await request.post<
+    const response = await request.get<
       DefaultResponseBody<ConfirmChatRoomType>
     >(CONFIRM_CHATROOM_API_URL + `/${userId}`);
     return response.data.data.roomId;

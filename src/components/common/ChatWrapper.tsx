@@ -10,6 +10,7 @@ import {
   loginChannelSubscribe,
   noticeMainRoom,
 } from "../../store/chatSlice";
+import { asyncErrorHandle } from "../../store/alertSlice";
 
 const ChatWrapper: React.FC = (props) => {
   const dispatch = useAppDispatch();
@@ -19,24 +20,32 @@ const ChatWrapper: React.FC = (props) => {
   useEffect(() => {
     if (!isLogin()) return;
     if (userRole === ROLE_ADMIN) return;
-    (async () => {
-      await dispatch(getNewAlarms());
-      dispatch(chatActions.connect());
-      dispatch(likeChannelSubscribe());
-      dispatch(loginChannelSubscribe());
-      dispatch(alarmChannelSubscribe());
-    })();
+    try {
+      (async () => {
+        await dispatch(getNewAlarms());
+        dispatch(chatActions.connect());
+        dispatch(likeChannelSubscribe());
+        dispatch(loginChannelSubscribe());
+        dispatch(alarmChannelSubscribe());
+      })();
 
-    return () => {
-      dispatch(chatActions.disconnect());
-    };
+      return () => {
+        dispatch(chatActions.disconnect());
+      };
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   }, [userRole, dispatch]);
 
   useEffect(() => {
     if (mainRoomId === -2) return;
-    (async () => {
-      await dispatch(noticeMainRoom());
-    })();
+    try {
+      (async () => {
+        await dispatch(noticeMainRoom());
+      })();
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
 
     if (mainRoomId === -1) return;
     dispatch(chatActions.filterNewMessages());

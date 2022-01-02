@@ -24,9 +24,9 @@ import {
   unBlockUser,
   unLike,
 } from "../../../store/actions/postActions";
-import { PostModalActive } from "../../../types/post";
+import { PostModalActiveProps } from "../../../types/post";
 
-const MPostModalActive: React.FC<PostModalActive> = (props) => {
+const MPostModalActive: React.FC<PostModalActiveProps> = (props) => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
   const [isActiveLike, setIsActiveLike] = useState(props.isLike);
