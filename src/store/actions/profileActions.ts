@@ -2,12 +2,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { ChangeEvent } from "react";
 import {
   DELETE_PROFILE_IMAGE_API_URL,
+  GET_BLOCKLIST_API_URL,
   MANAGE_DELETE_PROFILE_IMAGE_API_URL,
   MANAGE_USER_API_URL,
   MANAGE_USER_PROFILE_API_URL,
   UPLOAD_PROFILE_API_URL,
   UPLOAD_PROFILE_IMAGE_API_URL,
 } from "../../constants";
+import { BlockListItemType } from "../../types/block";
 import {
   ManageUploadProfileType,
   ManageUserInfoType,
@@ -84,6 +86,13 @@ export const deleteManageProfileImage = createAsyncThunk(
     return response.data.data;
   }
 );
+
+export const getBlockList = createAsyncThunk("profile/getBlock", async () => {
+  const response = await request.get<DefaultResponseBody<BlockListItemType[]>>(
+    GET_BLOCKLIST_API_URL
+  );
+  return response.data.data;
+});
 
 export const putImage = (e: ChangeEvent<HTMLInputElement>) => {
   const target = e.target as HTMLInputElement;

@@ -1,14 +1,12 @@
 import React, { MouseEventHandler, useContext } from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import { AuthContext } from "../../../store/AuthContext";
 import { Button } from "../../common";
 import {
   DEFAULT_PROFILE_IMAGE,
   SUCCESS_ALERT,
   SUCCESS_IMAGE_UPLOAD_MSG,
 } from "../../../constants";
-import { useSendImage } from "../../../hooks/api/useSendImage";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import {
   deleteProfileImage,
@@ -29,6 +27,7 @@ const ProfileImage: React.FC = () => {
     try {
       const image = putImage(e);
       const imageUrl = await dispatch(sendProfileImage(image)).unwrap();
+      console.log(imageUrl, "imageUrl");
       dispatch(authActions.updateUser({ imageUrl }));
       dispatch(
         alertActions.updateAlert({

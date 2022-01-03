@@ -1,6 +1,5 @@
 import { useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useLogin } from "../../../hooks/api/account/useLogin";
 import { useAppDispatch } from "../../../hooks/redux";
 import { authActions, login } from "../../../store/authSlice";
 import { KAKAO_PROVIDER } from "../../../constants";

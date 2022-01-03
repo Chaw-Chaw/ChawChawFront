@@ -15,7 +15,6 @@ import {
   INFO_ALERT,
   INFO_BLOCKUSER_MSG,
 } from "../../../constants";
-import { useLike } from "../../../hooks/api/useLike";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { alertActions, asyncErrorHandle } from "../../../store/alertSlice";
 import {

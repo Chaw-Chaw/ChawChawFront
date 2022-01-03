@@ -2,7 +2,6 @@ import Image from "next/image";
 import React, { MouseEventHandler, useState } from "react";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE } from "../../constants";
-import { useBlock } from "../../hooks/api/useBlock";
 import { useAppDispatch } from "../../hooks/redux";
 import { manageUnBlockUser } from "../../store/actions/manageActions";
 import { asyncErrorHandle } from "../../store/alertSlice";

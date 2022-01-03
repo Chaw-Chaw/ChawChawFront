@@ -7,7 +7,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { AuthContext } from "../../store/AuthContext";
 import { FaFacebookF } from "react-icons/fa";
 import { BiMessageRounded } from "react-icons/bi";
 import { AiOutlineLogin } from "react-icons/ai";
@@ -17,9 +16,10 @@ import { Button } from "../common";
 import Typed from "react-typed";
 import { LOGIN_PAGE_URL, POST_PAGE_URL } from "../../constants/pageUrls";
 import { FacebookLoginWrap } from "../common/FacebookLoginWrap";
-import { isLogin } from "../../utils";
+import { useAppSelector } from "../../hooks/redux";
 
 const MIntroduce: React.FC = () => {
+  const isLogin = useAppSelector((state) => state.auth.isLogin);
   const [viewLoginSection, setViewLoginSection] = useState(false);
   const router = useRouter();
 
@@ -44,9 +44,9 @@ const MIntroduce: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isLogin()) setViewLoginSection(false);
+    if (isLogin) setViewLoginSection(false);
     else setViewLoginSection(true);
-  }, []);
+  }, [isLogin]);
 
   const loginSection = (
     <LoginIconContainer>

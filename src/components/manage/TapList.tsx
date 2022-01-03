@@ -6,7 +6,6 @@ import {
   RANK_SCHOOL,
   SEARCH_LANGUAGE,
 } from "../../constants/chart";
-import { useLogin } from "../../hooks/api/account/useLogin";
 import { useAppDispatch } from "../../hooks/redux";
 import { logout } from "../../store/authSlice";
 import { Button } from "../common";

@@ -7,15 +7,14 @@ import {
   ERROR_ALERT,
   ERROR_ENTER_AFTERLOGIN_MSG,
 } from "../../../constants/alert";
-import { useAppDispatch } from "../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { alertActions } from "../../../store/alertSlice";
-import { AuthContext } from "../../../store/AuthContext";
-import { isLogin } from "../../../utils";
 
 export default function Profile() {
   const dispatch = useAppDispatch();
+  const isLogin = useAppSelector((state) => state.auth.isLogin);
   useEffect(() => {
-    if (!isLogin()) {
+    if (!isLogin) {
       dispatch(
         alertActions.updateAlert({
           name: ERROR_ALERT,
@@ -25,7 +24,7 @@ export default function Profile() {
       );
       return;
     }
-  }, [dispatch]);
+  }, [dispatch, isLogin]);
 
   return (
     <Layout>

@@ -2,7 +2,6 @@ import Image from "next/image";
 import React, { MouseEventHandler, useEffect, useState } from "react";
 import styled from "styled-components";
 import { MyMessageProps } from "../../../types/chat";
-import { useChat } from "../../../hooks/api/chat/useChat";
 import { useAppDispatch } from "../../../hooks/redux";
 import { asyncErrorHandle } from "../../../store/alertSlice";
 import { translateContext } from "../../../store/chatSlice";

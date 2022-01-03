@@ -4,7 +4,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -18,14 +17,14 @@ import {
   MESSAGE_TYPE_TALK,
 } from "../../../constants";
 import { ChatRoomHeader } from "./ChatRoomHeader";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { publish } from "../../../store/chatSlice";
+import { useAppSelector } from "../../../hooks/redux";
+import { ChatContext } from "../../../store/ChatContext";
 
 const ChatRoom: React.FC = () => {
-  const dispatch = useAppDispatch();
   const { mainRoom, mainChatMessages, isViewChatList } = useAppSelector(
     (state) => state.chat
   );
+  const { publish } = useContext(ChatContext);
   const user = useAppSelector((state) => state.auth.user);
   const [message, setMessage] = useState<string>("");
   const [selectLanguage, setSelectLanguage] = useState<string[]>(["Korean"]);
@@ -57,9 +56,9 @@ const ChatRoom: React.FC = () => {
 
   const sendMessage = useCallback(() => {
     if (message === "") return;
-    dispatch(publish({ message, messageType: MESSAGE_TYPE_TALK }));
+    publish(message, MESSAGE_TYPE_TALK);
     setMessage("");
-  }, [dispatch, message]);
+  }, [message, publish]);
 
   const scrollToBottom = () => {
     if (!chatMessageBox.current) return;

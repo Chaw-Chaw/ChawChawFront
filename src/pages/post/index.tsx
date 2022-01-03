@@ -26,10 +26,9 @@ import { BASIC, SEARCH } from "../../constants/post";
 
 import { getPostCardList } from "../../store/actions/postActions";
 import { alertActions, asyncErrorHandle } from "../../store/alertSlice";
-import { isLogin } from "../../utils";
 
 export default function Post() {
-  const user = useAppSelector((state) => state.auth.user);
+  const { user, isLogin } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const [postInfo, setPostInfo] = useState<PostCardProps[]>([]);
   const [sortInfo, setSortInfo] = useState<string[]>([
@@ -143,7 +142,7 @@ export default function Post() {
 
   useEffect(() => {
     if (user.role === ADMIN_ROLE) return;
-    if (!isLogin()) {
+    if (!isLogin) {
       dispatch(
         alertActions.updateAlert({
           name: ERROR_ALERT,
@@ -159,7 +158,7 @@ export default function Post() {
     });
     target.current && observer.observe(target.current);
     return () => observer.disconnect();
-  }, [user.role, dispatch, onIntersect]);
+  }, [user.role, dispatch, onIntersect, isLogin]);
 
   return (
     <Layout>

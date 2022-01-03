@@ -13,17 +13,16 @@ import {
 } from "../../../constants";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { alertActions } from "../../../store/alertSlice";
-import { isLogin } from "../../../utils";
 
 export default function Setting() {
-  const user = useAppSelector((state) => state.auth.user);
+  const { user, isLogin } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (user.role === ROLE_ADMIN) {
       return;
     }
-    if (!isLogin()) {
+    if (!isLogin) {
       dispatch(
         alertActions.updateAlert({
           name: ERROR_ALERT,
@@ -33,7 +32,7 @@ export default function Setting() {
       );
       return;
     }
-  }, [user.role, dispatch]);
+  }, [user.role, dispatch, isLogin]);
 
   return (
     <Layout>

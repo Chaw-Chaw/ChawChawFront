@@ -14,7 +14,6 @@ import {
   SUBJECT_CONVERT,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { useChart } from "../../hooks/useChart";
 import { asyncErrorHandle } from "../../store/alertSlice";
 import { getChartData } from "../../store/chartSlice";
 import { LoadingSpinner, SelectInfoDropDown } from "../common";

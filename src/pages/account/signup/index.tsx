@@ -15,10 +15,7 @@ import AccountContainer from "../../../components/account/AccountContainer";
 import SignupOrder from "../../../components/account/SignupOrder";
 import styled from "styled-components";
 import Link from "next/link";
-import { AuthContext } from "../../../store/AuthContext";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Router from "next/router";
-import { useSignup } from "../../../hooks/api/account/useSignup";
 import {
   BASIC_PROVIDER,
   CONFIRM_PUSH_LOGINPAGE,

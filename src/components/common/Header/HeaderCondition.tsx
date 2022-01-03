@@ -11,21 +11,20 @@ import {
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
 } from "../../../constants/pageUrls";
 import { useAppSelector } from "../../../hooks/redux";
-import { isLogin } from "../../../utils";
 
 const HeaderCondition: React.FC = () => {
-  const user = useAppSelector((state) => state.auth.user);
+  const { user, isLogin } = useAppSelector((state) => state.auth);
   const [viewUserImage, setViewUserImage] = useState(false);
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
   const router = useRouter();
 
   useEffect(() => {
-    if (isLogin()) {
+    if (isLogin) {
       setViewUserImage(true);
     } else {
       setViewUserImage(false);
     }
-  }, []);
+  }, [isLogin]);
 
   const userImage = (
     <HeaderInfoBox>

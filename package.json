@@ -44,6 +44,7 @@
     "@types/react-icons": "^3.0.0",
     "@types/selenium-webdriver": "^4.0.15",
     "@types/sockjs-client": "^1.5.1",
+    "@types/stompjs": "^2.3.5",
     "@types/styled-components": "^5.1.10",
     "babel-plugin-styled-components": "^1.13.2",
     "eslint": "7.28.0",

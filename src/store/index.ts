@@ -1,15 +1,5 @@
-import {
-  Action,
-  AnyAction,
-  combineReducers,
-  configureStore,
-  EnhancedStore,
-  Store,
-  ThunkAction,
-} from "@reduxjs/toolkit";
-import { createWrapper, HYDRATE, MakeStore } from "next-redux-wrapper";
-import alertReducer from "./alertSlice";
-import authReducer from "./authSlice";
+import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
+import { createWrapper } from "next-redux-wrapper";
 import rootReducer from "./reducer";
 
 const store = configureStore({

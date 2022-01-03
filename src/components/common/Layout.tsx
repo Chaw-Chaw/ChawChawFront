@@ -7,11 +7,12 @@ import {
   CONFIRM_PUSH_MANAGE_MAINPAGE,
   ERROR_ALERT,
   ERROR_MANAGMENT_NOTACCESS_MSG,
+  ROLE_ADMIN,
+  ROLE_USER,
 } from "../../constants";
-import { MANAGE_MAIN_PAGE_URL } from "../../constants/pageUrls";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { alertActions } from "../../store/alertSlice";
-import { AuthContext } from "../../store/AuthContext";
+import { ChatContextProvider } from "../../store/ChatContext";
 import Header from "./Header";
 
 const Layout: React.FC = (props) => {
@@ -20,7 +21,7 @@ const Layout: React.FC = (props) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (user.role === ADMIN_ROLE) {
+    if (user.role === ROLE_ADMIN) {
       dispatch(
         alertActions.updateAlert({
           name: ERROR_ALERT,
@@ -33,10 +34,10 @@ const Layout: React.FC = (props) => {
   }, [user.role, dispatch]);
 
   return (
-    <>
+    <ChatContextProvider>
       {router.pathname !== "/" && <Header />}
       <Inner>{props.children}</Inner>
-    </>
+    </ChatContextProvider>
   );
 };
 

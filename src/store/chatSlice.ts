@@ -7,23 +7,14 @@ import {
   MessageType,
   RoomType,
 } from "../types/chat";
-import * as StompJs from "@stomp/stompjs";
-import SockJS from "sockjs-client";
 import {
   BACKEND_URL,
   CHAT_PAGE_URL,
   CONFIRM_CHATROOM_API_URL,
-  CONFIRM_INIT_LOGOUT,
-  DEFAULT_PROFILE_IMAGE,
-  ERROR_ALERT,
-  ERROR_CODES,
-  ERROR_DUPLOGIN_MSG,
   ERROR_FILE_OVERSIZE_MSG,
   ERROR_NOFILE_MSG,
-  EXCEPT_ERRORCODES_MSG,
   GET_ALARMS_API_URL,
   GET_MESSAGES_API_URL,
-  IMAGE_TYPE,
   INITIAL_ID,
   LEAVE_CHATROOM_API_URL,
   MAKE_CHATROOM_API_URL,
@@ -31,9 +22,7 @@ import {
   SEND_IMAGE_MSG_API_URL,
   TRANSLATE_CONTEXT,
 } from "../constants";
-import store, { RootState } from ".";
-import { getSecureLocalStorage } from "../utils";
-import { alertActions, asyncErrorHandle } from "./alertSlice";
+import { RootState } from ".";
 import { request } from "../utils/request";
 import { DefaultResponseBody } from "../types/response";
 import Router from "next/router";
@@ -41,22 +30,22 @@ import { ChangeEvent } from "react";
 import axios from "axios";
 
 const initialState: {
+  isConnect: boolean;
   mainChatMessages: MessageType[];
   totalMessages: RoomType[];
   mainRoom: { id: number; userId: number };
   newMessages: MessageType[];
   newLikes: LikeAlarmType[];
   isViewChatList: boolean;
-  chatClient: any;
   roomIds: number[];
 } = {
+  isConnect: false,
   mainChatMessages: [],
   totalMessages: [],
-  mainRoom: { id: -1, userId: -1 },
+  mainRoom: { id: -2, userId: -1 },
   newMessages: [],
   newLikes: [],
   isViewChatList: false,
-  chatClient: {},
   roomIds: [],
 };
 
@@ -64,55 +53,6 @@ const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    connect(state) {
-      state.chatClient = new StompJs.Client({
-        // brokerURL: "ws://localhost:8080/ws-stomp/websocket", // 웹소켓 서버로 직접 접속
-        webSocketFactory: () => new SockJS(BACKEND_URL + "/ws"), // proxy를 통한 접속
-        debug: function (str) {
-          console.log(str);
-        },
-        reconnectDelay: 5000,
-        heartbeatIncoming: 4000,
-        heartbeatOutgoing: 4000,
-        //   onConnect: () => {
-        //     // 모든 subscribe는 여기서 구독이 이루어집니다.
-        //     alarmChannelSubscribe();
-        //     likeChannelSubscribe();
-        //     loginChannelSubscribe();
-        //   },
-        connectHeaders: {
-          Authorization: getSecureLocalStorage("accessToken"),
-        },
-      });
-    },
-    disconnect(state) {
-      state.chatClient.deactivate();
-    },
-    publish(
-      state,
-      action: PayloadAction<{ message: string; messageType: string }>
-    ) {
-      if (!state.chatClient.connected) return;
-      const messageType = action.payload.messageType;
-      const message = action.payload.message;
-      const timezoneOffset = new Date().getTimezoneOffset() * 60000;
-      const now = new Date(Date.now() - timezoneOffset);
-      const user = store.getState().auth.user;
-
-      state.chatClient.publish({
-        destination: "/message",
-        body: JSON.stringify({
-          messageType,
-          roomId: state.mainRoom.id,
-          senderId: user.id,
-          sender: user.name,
-          regDate: now.toISOString().substring(0, 19),
-          message,
-          imageUrl: user.imageUrl,
-          isRead: true,
-        }),
-      });
-    },
     stackupMainChatMessages(state, action: PayloadAction<MessageType>) {
       state.mainChatMessages.push(action.payload);
     },
@@ -168,6 +108,12 @@ const chatSlice = createSlice({
       state.totalMessages.forEach((item) => newRoomIds.push(item.roomId));
       state.roomIds = newRoomIds;
     },
+    updateConnect(state) {
+      state.isConnect = true;
+    },
+    updateDisConnect(state) {
+      state.isConnect = false;
+    },
     filterNewMessages(state) {
       const filteredNewMessages = state.newMessages.filter((item) => {
         if (item.roomId === undefined || item.roomId !== state.mainRoom.id) {
@@ -198,117 +144,6 @@ const chatSlice = createSlice({
 
 export default chatSlice.reducer;
 export const chatActions = chatSlice.actions;
-
-export const likeChannelSubscribe = createAsyncThunk(
-  "chat/likeChannelSubscribe",
-  (_, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
-    const chatClient = state.chat.chatClient;
-    const user = state.auth.user;
-    chatClient.subscribe(`/queue/like/${user.id}`, (response: any) => {
-      const message: LikeAlarmType = JSON.parse(response.body);
-      thunkAPI.dispatch(chatActions.stackupNewLikes(message));
-    });
-  }
-);
-
-export const loginChannelSubscribe = createAsyncThunk(
-  "chat/loginChannelSubscribe",
-  (_, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
-    const chatClient = state.chat.chatClient;
-    const userId = state.auth.user.id;
-    chatClient.subscribe(`/queue/login/${userId}`, (response: any) => {
-      const message = response.body;
-      // 중복 접속했다는 메세지.
-      if (message === "duplicated") {
-        thunkAPI.dispatch(
-          alertActions.updateAlert({
-            name: ERROR_ALERT,
-            message: ERROR_DUPLOGIN_MSG,
-            confirmFuncName: CONFIRM_INIT_LOGOUT,
-          })
-        );
-      }
-    });
-  }
-);
-
-export const alarmChannelSubscribe = createAsyncThunk(
-  "chat/alarmChannelSubscribe",
-  (_, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
-    const chatClient = state.chat.chatClient;
-    const user = state.auth.user;
-    const { mainRoom, roomIds } = state.chat;
-
-    chatClient.subscribe(`/queue/chat/${user.id}`, (response: any) => {
-      const message: MessageType = JSON.parse(response.body);
-      console.log(message, mainRoom, roomIds, "새로운 메세지 내용");
-
-      // 블록 리스트에 추가된 메세지는 알람 받지 않음
-      if (user.blockIds?.includes(message.senderId)) {
-        return;
-      }
-
-      // 메인 채팅룸 메세지 누적 : 메세지 룸 넘버가 메인 룸넘버인 경우
-      if (message.roomId === mainRoom.id) {
-        thunkAPI.dispatch(chatActions.stackupMainChatMessages(message));
-      }
-
-      // 메인채팅방의 메세지가 아닐시 에만 알람 메세지 누적
-      if (message.roomId !== mainRoom.id) {
-        thunkAPI.dispatch(chatActions.unShiftupNewMessages(message));
-      }
-
-      // 채팅룸 개설 : 메시지의 룸 넘버가 기존에 없던 룸넘버라면
-      if (!roomIds.includes(message.roomId)) {
-        const myImage = user.imageUrl || DEFAULT_PROFILE_IMAGE;
-        const myName = user.name || "";
-        const myId = user.id || INITIAL_ID;
-        const newChatList: RoomType = {
-          participantImageUrls: [message.imageUrl, myImage],
-          messages: [message],
-          roomId: message.roomId,
-          participantNames: [message.sender, myName],
-          participantIds: [message.senderId, myId],
-        };
-        thunkAPI.dispatch(chatActions.stackupNewChatList(newChatList));
-        return;
-      }
-
-      // 기존 채팅방에 들어오는 메세지일 경우
-      thunkAPI.dispatch(chatActions.stackupTotalMessages(message));
-    });
-  }
-);
-
-export const publish = createAsyncThunk(
-  "chat/publish",
-  (messageInfo: { message: string; messageType: string }, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
-    const { message, messageType } = messageInfo;
-    const { chatClient, mainRoom } = state.chat;
-    const user = state.auth.user;
-    if (!chatClient.connected) return;
-    const timezoneOffset = new Date().getTimezoneOffset() * 60000;
-    const now = new Date(Date.now() - timezoneOffset);
-
-    chatClient.current.publish({
-      destination: "/message",
-      body: JSON.stringify({
-        messageType,
-        roomId: mainRoom.id,
-        senderId: user.id,
-        sender: user.name,
-        regDate: now.toISOString().substring(0, 19),
-        message,
-        imageUrl: user.imageUrl,
-        isRead: true,
-      }),
-    });
-  }
-);
 
 export const organizeChatMessages = createAsyncThunk(
   "chat/organizeChatMessages",
@@ -345,32 +180,27 @@ export const noticeMainRoom = createAsyncThunk(
   "chat/noticeMainRoom",
   async (_, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
-    const mainRoomId = state.chat.mainRoom.id;
+    const roomId = state.chat.mainRoom.id;
     await request.post(NOTICE_MAINROOM_API_URL, {
-      roomId: mainRoomId,
+      roomId,
     });
   }
 );
 
 export const makeChatRoom = createAsyncThunk(
   "chat/makeChatRoom",
-  async (_, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
-    const userId = state.auth.user.id;
+  async (userId: number) => {
     const response = await request.post<DefaultResponseBody<MakeChatRoomType>>(
       MAKE_CHATROOM_API_URL,
       { userId }
     );
-    console.log(response);
     return response.data.data.roomId;
   }
 );
 
 export const confirmChatRoom = createAsyncThunk(
   "chat/confirmChatRoom",
-  async (_, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
-    const userId = state.auth.user.id;
+  async (userId: number) => {
     const response = await request.get<
       DefaultResponseBody<ConfirmChatRoomType>
     >(CONFIRM_CHATROOM_API_URL + `/${userId}`);
@@ -384,7 +214,6 @@ export const leaveChat = createAsyncThunk(
     const state = thunkAPI.getState() as RootState;
     const roomId = state.chat.mainRoom.id;
     await request.delete(LEAVE_CHATROOM_API_URL, { data: { roomId } });
-
     thunkAPI.dispatch(chatActions.filterTotalMessages);
     Router.push({
       pathname: CHAT_PAGE_URL,
@@ -412,16 +241,13 @@ export const sendImageMessage = createAsyncThunk(
     );
 
     const imageUrl = response.data.data;
-    thunkAPI.dispatch(publish({ message: imageUrl, messageType: IMAGE_TYPE }));
+    return imageUrl;
   }
 );
 
 export const translateContext = createAsyncThunk(
   "chat/translateContext",
-  async (
-    contextInfo: { context: string; selectLanguage: string },
-    thunkAPI
-  ) => {
+  async (contextInfo: { context: string; selectLanguage: string }) => {
     const response = await axios.get(TRANSLATE_CONTEXT, {
       params: {
         q: contextInfo.context,

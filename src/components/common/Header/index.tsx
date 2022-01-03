@@ -4,7 +4,6 @@ import styled, { ThemeContext } from "styled-components";
 import { Logo, ThemeToggle } from "..";
 import { POST_PAGE_URL } from "../../../constants/pageUrls";
 import { useAppSelector } from "../../../hooks/redux";
-import { AuthContext } from "../../../store/AuthContext";
 import HeaderCondition from "./HeaderCondition";
 import { MobileHeader } from "./MobileHeader";
 

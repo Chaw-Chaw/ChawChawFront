@@ -8,17 +8,14 @@ import React, {
   useCallback,
   useContext,
 } from "react";
-import axios from "axios";
-import { AuthContext } from "../../../store/AuthContext";
-
 import { ChatContext } from "../../../store/ChatContext";
 import {
+  IMAGE_TYPE,
   INFO_ALERT,
   INFO_BLOCKUSER_MSG,
   INITIAL_ROOMID,
   KEYTYPE_ENTER,
 } from "../../../constants";
-import { useSendImage } from "../../../hooks/api/useSendImage";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { alertActions, asyncErrorHandle } from "../../../store/alertSlice";
 import { sendImageMessage } from "../../../store/chatSlice";
@@ -30,6 +27,7 @@ interface MessageInputProps {
 }
 
 const MessageInput: React.FC<MessageInputProps> = (props) => {
+  const { publish } = useContext(ChatContext);
   const dispatch = useAppDispatch();
   const mainRoom = useAppSelector((state) => state.chat.mainRoom);
   const user = useAppSelector((state) => state.auth.user);
@@ -66,7 +64,8 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
         );
         return;
       }
-      await dispatch(sendImageMessage(e));
+      const imageUrl = await dispatch(sendImageMessage(e)).unwrap();
+      publish(imageUrl, IMAGE_TYPE);
       // 같은 이미지 한번더 보낼수 있도록 이벤트 타겟 값 초기화
       e.target.value = "";
     } catch (error) {

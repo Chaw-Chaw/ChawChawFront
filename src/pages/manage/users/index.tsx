@@ -11,10 +11,9 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { takeUserList } from "../../../store/actions/manageActions";
 import { alertActions, asyncErrorHandle } from "../../../store/alertSlice";
 import { ADMIN_ROLE, INFO_ALERT, INFO_NOTRESULT_MSG } from "../../../constants";
-import { isLogin } from "../../../utils";
 
 export default function ManageUser() {
-  const user = useAppSelector((state) => state.auth.user);
+  const { user, isLogin } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const [searchInfo, setSearchInfo] = useState<string[]>([
@@ -85,14 +84,14 @@ export default function ManageUser() {
   };
 
   useEffect(() => {
-    if (!isLogin()) {
+    if (!isLogin) {
       return;
     }
     if (user.role === ADMIN_ROLE) {
       getUsersList();
       return;
     }
-  }, [user.role, getUsersList]);
+  }, [user.role, getUsersList, isLogin]);
 
   return (
     <ManageLayout>

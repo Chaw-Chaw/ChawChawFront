@@ -6,6 +6,7 @@ import {
   PasswordInput,
   Label,
   Button,
+  AlertMessage,
 } from "../../../components/common/";
 import AccountContainer from "../../../components/account/AccountContainer";
 import styled from "styled-components";
@@ -18,14 +19,19 @@ import {
   ERROR_ENTER_LOGINPAGE_MSG,
   LOGIN_PAGE_SUBTITLE,
   LOGIN_PAGE_TITLE,
+  POST_PAGE_URL,
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
   WARNING_FORM_MSG,
 } from "../../../constants";
-import { useAppDispatch } from "../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { login } from "../../../store/authSlice";
 import { alertActions } from "../../../store/alertSlice";
-import { CONFIRM_PUSH_POSTPAGE, WARNING_ALERT } from "../../../constants/alert";
-import { isLogin } from "../../../utils";
+import {
+  CONFIRM_PUSH_MAIN_PAGE,
+  CONFIRM_PUSH_POSTPAGE,
+  WARNING_ALERT,
+} from "../../../constants/alert";
+import { authRoute, isLogin } from "../../../utils";
 
 interface Inputs {
   email: string;
@@ -58,19 +64,6 @@ export default function Login() {
       })
     );
   };
-
-  useEffect(() => {
-    if (isLogin()) {
-      dispatch(
-        alertActions.updateAlert({
-          name: ERROR_ALERT,
-          message: ERROR_ENTER_LOGINPAGE_MSG,
-          confirmFuncName: CONFIRM_PUSH_POSTPAGE,
-        })
-      );
-      return;
-    }
-  }, [dispatch]);
 
   const emailSection = (
     <InputSection>
@@ -109,6 +102,18 @@ export default function Login() {
       )}
     </InputSection>
   );
+
+  useEffect(() => {
+    if (isLogin()) {
+      dispatch(
+        alertActions.updateAlert({
+          name: ERROR_ALERT,
+          message: ERROR_ENTER_LOGINPAGE_MSG,
+          confirmFuncName: CONFIRM_PUSH_POSTPAGE,
+        })
+      );
+    }
+  }, [dispatch]);
 
   return (
     <Layout>

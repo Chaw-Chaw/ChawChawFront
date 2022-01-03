@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import React, { MouseEventHandler } from "react";
 import styled from "styled-components";
 import { Button, ListItem } from "../common";
-import { useDeleteUser } from "../../hooks/api/account/useDeleteUser";
 import {
   CONFIRM_PUSH_MANAGE_MAINPAGE,
   MANAGE_MAIN_PAGE_URL,

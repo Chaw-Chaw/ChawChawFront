@@ -3,12 +3,12 @@ import { FaArrowCircleRight } from "react-icons/fa";
 import { ThemeToggle } from "../common";
 import React, { MouseEventHandler, useContext, useRef } from "react";
 import { useRouter } from "next/router";
-import { AuthContext } from "../../store/AuthContext";
 import { LOGIN_PAGE_URL, POST_PAGE_URL } from "../../constants/pageUrls";
-import { isLogin } from "../../utils";
+import { useAppSelector } from "../../hooks/redux";
 
 const MIntroduceHeader: React.FC<{ moveTop: () => void }> = (props) => {
   const router = useRouter();
+  const isLogin = useAppSelector((state) => state.auth.isLogin);
 
   const handleClickLogo: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
@@ -17,7 +17,7 @@ const MIntroduceHeader: React.FC<{ moveTop: () => void }> = (props) => {
 
   const handleClickMoveStart: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
-    if (isLogin()) {
+    if (isLogin) {
       router.push(POST_PAGE_URL);
     } else {
       router.push(LOGIN_PAGE_URL);

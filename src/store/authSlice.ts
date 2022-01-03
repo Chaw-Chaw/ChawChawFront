@@ -40,6 +40,7 @@ import { alertActions, asyncErrorHandle } from "./alertSlice";
 
 const initialState: AuthInitialStateProps = {
   user: avoidLocalStorageUndefined("user", {}),
+  isLogin: avoidLocalStorageUndefined("accessToken", false),
 };
 
 const authSlice = createSlice({
@@ -63,6 +64,7 @@ const authSlice = createSlice({
         state.user = newUser;
         saveSecureLocalStorage("user", newUser);
       }
+      state.isLogin = true;
     },
     updateUser(state, action: PayloadAction<UserPropertys>) {
       const newUser = { ...state.user, ...action.payload };
@@ -71,6 +73,7 @@ const authSlice = createSlice({
     },
     initUser(state) {
       state.user = {};
+      state.isLogin = false;
       window.localStorage.removeItem("accessToken");
       window.localStorage.removeItem("expireAtAccessToken");
       window.localStorage.removeItem("user");
@@ -122,7 +125,7 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
     window.localStorage.removeItem("accessToken");
     window.localStorage.removeItem("expireAtAccessToken");
     window.localStorage.removeItem("user");
-    Router.push(LOGIN_PAGE_URL);
+    window.location.href = LOGIN_PAGE_URL;
   } catch (error) {
     thunkAPI.dispatch(asyncErrorHandle(error));
   }

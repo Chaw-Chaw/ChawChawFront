@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { useAppSelector } from "../../hooks/redux";
-import { AuthContext } from "../../store/AuthContext";
 import { Input, ListItem } from "../common";
 
 const MSettingUserUniversity: React.FC = () => {

@@ -1,18 +1,11 @@
 import { useRouter } from "next/router";
-import React, {
-  Dispatch,
-  MouseEventHandler,
-  SetStateAction,
-  useContext,
-} from "react";
+import React, { Dispatch, MouseEventHandler, SetStateAction } from "react";
 import styled from "styled-components";
 import { LIMIT_NEWALARM_SIZE } from "../../../constants";
-import { ChatContext } from "../../../store/ChatContext";
 import { RiHome2Line } from "react-icons/ri";
 import { BsBoxArrowRight, BsChatDots } from "react-icons/bs";
 import { AlarmCount, ChangeLanguageDropDown } from "../../common";
 import { POST_PAGE_URL } from "../../../constants/pageUrls";
-import { useChat } from "../../../hooks/api/chat/useChat";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { chatActions, leaveChat } from "../../../store/chatSlice";
 import { asyncErrorHandle } from "../../../store/alertSlice";

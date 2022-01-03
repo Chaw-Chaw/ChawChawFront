@@ -9,20 +9,19 @@ import {
   ERROR_ALERT,
   ERROR_USER_NOTACCESS_MSG,
   MAIN_PAGE,
+  USER_ROLE,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { alertActions } from "../../store/alertSlice";
-import { AuthContext } from "../../store/AuthContext";
-import { isLogin } from "../../utils";
 import { TapList } from "./TapList";
 
 const MManageLayout: React.FC<{ children: React.ReactNode }> = (props) => {
-  const user = useAppSelector((state) => state.auth.user);
+  const { user, isLogin } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
 
   useEffect(() => {
-    if (user.role !== ADMIN_ROLE || !isLogin()) {
+    if (user.role === USER_ROLE || !isLogin) {
       dispatch(
         alertActions.updateAlert({
           name: ERROR_ALERT,
@@ -32,7 +31,7 @@ const MManageLayout: React.FC<{ children: React.ReactNode }> = (props) => {
       );
       return;
     }
-  }, [user.role, dispatch]);
+  }, [user.role, dispatch, isLogin]);
 
   return (
     <>

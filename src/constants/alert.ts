@@ -55,3 +55,4 @@ export const ERROR_MANAGMENT_NOTACCESS_MSG =
   "관리자 아이디로 서비스를 이용할 수 없습니다.";
 export const ERROR_USER_NOTACCESS_MSG =
   "유저 아이디로 서비스를 이용할 수 없습니다.";
+export const ERROR_ACCESS_MSG = "페이지 접근 권한이 없습니다.";

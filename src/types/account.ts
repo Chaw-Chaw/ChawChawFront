@@ -90,6 +90,7 @@ export interface UserPropertys {
 
 export interface AuthInitialStateProps {
   user: UserPropertys;
+  isLogin: boolean;
 }
 
 export type Inputs = {

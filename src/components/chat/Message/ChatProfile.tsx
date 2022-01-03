@@ -8,9 +8,9 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { useBlock } from "../../../hooks/api/useBlock";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { organizeChatMessages } from "../../../store/chatSlice";
+import { blockUser, unBlockUser } from "../../../store/actions/postActions";
 
 interface ChatProfileProps {
   name: string;
@@ -21,22 +21,20 @@ interface ChatProfileProps {
 
 const MChatProfile: React.FC<ChatProfileProps> = (props) => {
   const dispatch = useAppDispatch();
-  const mainRoom = useAppSelector((state) => state.chat.mainRoom);
   const user = useAppSelector((state) => state.auth.user);
   const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.userId));
-  const { blockUser, unblockUser } = useBlock();
   const isBlockUser = user.blockIds?.includes(props.userId);
 
-  const handleClickBlockBtn: MouseEventHandler<HTMLDivElement> = (e) => {
+  const handleClickBlockBtn: MouseEventHandler<HTMLDivElement> = async (e) => {
     e.preventDefault();
-    blockUser(props.userId);
+    await dispatch(blockUser(props.userId));
     setIsBlock(true);
   };
   const handleClickUnblockBtn: MouseEventHandler<HTMLDivElement> = async (
     e
   ) => {
     e.preventDefault();
-    await unblockUser(props.userId);
+    await dispatch(unBlockUser(props.userId));
     setIsBlock(false);
     dispatch(organizeChatMessages());
     // 새로고침
