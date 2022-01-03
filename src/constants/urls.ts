@@ -1,7 +1,7 @@
 import { KAKAO_CLIENT_ID } from "./login";
 
 export const DEFAULT_PROFILE_IMAGE =
-  "https://d2anzi03nvjlav.cloudfront.net/default.png";
+  "https://d33npzp50pk5wn.cloudfront.net/default.png";
 
 export const DEFAULT_FACEBOOK_URL = "https://www.facebook.com";
 export const DEFAULT_INSTAGRAM_URL = "https://www.instagram.com";
