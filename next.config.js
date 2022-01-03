@@ -11,7 +11,7 @@ module.exports = {
   images: {
     domains: [
       "chawchaw.xyz",
-      "d2anzi03nvjlav.cloudfront.net",
+      "d33npzp50pk5wn.cloudfront.net",
       "k.kakaocdn.net",
       "platform-lookaside.fbsbx.com",
     ],
