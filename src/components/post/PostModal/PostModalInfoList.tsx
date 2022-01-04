@@ -1,15 +1,16 @@
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import { SELECT_COLORS } from "../../../constants";
 import { divideMain } from "../../../utils";
 import { DropDownBox } from "../../common";
 
-const PostModalInfoList: React.FC<{
+const MPostModalInfoList: React.FC<{
   title: string;
   values: string[];
   mainValue: string;
 }> = (props) => {
   const valueLists = divideMain(props.mainValue, props.values);
-
+  const voidFunc = useCallback(() => {}, []);
   const selectItemList = valueLists.map((item, index) => {
     if (item === props.mainValue) {
       return (
@@ -23,7 +24,7 @@ const PostModalInfoList: React.FC<{
             color="white"
             value={item}
             backgroundColor={SELECT_COLORS[index % 4]}
-            onClick={() => {}}
+            onClick={voidFunc}
           />
         </DropDownMainBox>
       );
@@ -38,7 +39,7 @@ const PostModalInfoList: React.FC<{
           color="white"
           value={item}
           backgroundColor={SELECT_COLORS[index % 4]}
-          onClick={() => {}}
+          onClick={voidFunc}
         />
       </DropDownOutline>
     );
@@ -52,6 +53,7 @@ const PostModalInfoList: React.FC<{
   );
 };
 
+const PostModalInfoList = React.memo(MPostModalInfoList);
 export { PostModalInfoListBox, PostModalInfoList, PostModalInfoTitle };
 
 const PostModalInfoTitle = styled.h2`

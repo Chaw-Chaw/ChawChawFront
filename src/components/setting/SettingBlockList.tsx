@@ -1,30 +1,25 @@
+import { unwrapResult } from "@reduxjs/toolkit";
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import { useBlock } from "../../hooks/api/useBlock";
-import { AuthContext } from "../../store/AuthContext";
+import { ADMIN_ROLE, USER_ROLE } from "../../constants";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { getBlockList } from "../../store/actions/profileActions";
+import { BlockItem } from "../../types/manage";
 import { ListItem } from "../common";
 import { SettingBlockItem } from "./SettingBlockItem";
 
-interface BlockItem {
-  userId: number;
-  name: string;
-  imageUrl: string;
-}
-
 const SettingBlockList: React.FC = () => {
-  const { user, isLogin } = useContext(AuthContext);
-  const { getBlockList } = useBlock();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
   const [blockList, setBlockList] = useState<BlockItem[]>([]);
 
   useEffect(() => {
-    if (user.role === "ADMIN" || !isLogin) {
-      return;
-    }
+    if (user.role === ADMIN_ROLE) return;
     (async () => {
-      const data = await getBlockList();
+      const data = await dispatch(getBlockList()).unwrap();
       setBlockList(data);
     })();
-  }, []);
+  }, [dispatch, user.role]);
 
   const emptyBlockList = (
     <EmptyBlockList>
@@ -53,7 +48,6 @@ const SettingBlockList: React.FC = () => {
 };
 
 export { SettingBlockList };
-export type { BlockItem };
 
 const SettingBlockBox = styled.div`
   @media (max-width: 768px) {

@@ -1,9 +1,10 @@
+import React from "react";
 import styled from "styled-components";
 import { PostModalInfoListBox, PostModalInfoTitle } from "./PostModalInfoList";
 import { FaFacebook } from "react-icons/fa";
 import { AiFillInstagram } from "react-icons/ai";
 
-const PostModalSocialList: React.FC<{
+const MPostModalSocialList: React.FC<{
   title: string;
   faceBookUrl: string;
   instagramUrl: string;
@@ -29,6 +30,7 @@ const PostModalSocialList: React.FC<{
   );
 };
 
+const PostModalSocialList = React.memo(MPostModalSocialList);
 export { PostModalSocialList };
 
 const PostModalSocialUrlBox = styled.div<{ type: string }>`

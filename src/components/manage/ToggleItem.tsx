@@ -1,11 +1,13 @@
-import { MouseEventHandler, useState } from "react";
+import React, { MouseEventHandler, useState } from "react";
 import {
   IoIosArrowDroprightCircle,
   IoIosArrowDropdownCircle,
 } from "react-icons/io";
 import styled from "styled-components";
 
-const ToggleItem: React.FC<{ title: string }> = (props) => {
+const MToggleItem: React.FC<{ title: string; children: React.ReactNode }> = (
+  props
+) => {
   const [isopen, setIsopen] = useState(true);
   const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
@@ -25,6 +27,7 @@ const ToggleItem: React.FC<{ title: string }> = (props) => {
   );
 };
 
+const ToggleItem = React.memo(MToggleItem);
 export { ToggleItem };
 const ToggleItemContainer = styled.div`
   margin-top: 15px;

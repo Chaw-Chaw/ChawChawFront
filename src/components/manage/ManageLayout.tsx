@@ -1,32 +1,37 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
-
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import { DEFAULT_PROFILE_IMAGE, MAIN_PAGE } from "../../constants";
-import { AuthContext } from "../../store/AuthContext";
+import {
+  ADMIN_ROLE,
+  CONFIRM_PUSH_MAIN_PAGE,
+  DEFAULT_PROFILE_IMAGE,
+  ERROR_ALERT,
+  ERROR_USER_NOTACCESS_MSG,
+  MAIN_PAGE,
+  USER_ROLE,
+} from "../../constants";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { alertActions } from "../../store/alertSlice";
 import { TapList } from "./TapList";
 
-const ManageLayout: React.FC = (props) => {
-  const { user, isLogin } = useContext(AuthContext);
-  const router = useRouter();
-
+const MManageLayout: React.FC<{ children: React.ReactNode }> = (props) => {
+  const { user, isLogin } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
-  const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    if (user.role !== "ADMIN" || !isLogin) {
-      // message.error("유저 아이디로 서비스를 이용할 수 없습니다.", {
-      //   onClose: () => {
-      //     router.push(MAIN_PAGE);
-      //   },
-      // });
+    if (user.role === USER_ROLE || !isLogin) {
+      dispatch(
+        alertActions.updateAlert({
+          name: ERROR_ALERT,
+          message: ERROR_USER_NOTACCESS_MSG,
+          confirmFuncName: CONFIRM_PUSH_MAIN_PAGE,
+        })
+      );
       return;
     }
-    if (user.name) {
-      setUserName(user.name);
-    }
-  }, []);
+  }, [user.role, dispatch, isLogin]);
 
   return (
     <>
@@ -45,7 +50,7 @@ const ManageLayout: React.FC = (props) => {
                 objectFit="cover"
               />
             </ProfileImageBox>
-            <ProfileName>{userName}</ProfileName>
+            <ProfileName>{user.name}</ProfileName>
           </ProfileBox>
           <TapList />
         </Tap>
@@ -57,6 +62,8 @@ const ManageLayout: React.FC = (props) => {
     </>
   );
 };
+
+const ManageLayout = React.memo(MManageLayout);
 export { ManageLayout };
 
 const Container = styled.div`

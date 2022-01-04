@@ -4,9 +4,10 @@ import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { AlertMessage } from ".";
 import { RootState } from "../../store";
+import { RiContactsBookLine } from "react-icons/ri";
 
 type Props = {
-  children: any;
+  children: ReactNode;
 } & typeof mapDispatchToProps &
   ReturnType<typeof mapStateToProps>;
 
@@ -26,14 +27,12 @@ class Errorboundary extends Component<Props, States> {
   }
 
   componentDidMount() {
-    // console.log(document.getElementById("notification"));
     this.setState({
       notificationElement: document.getElementById("notification"),
     });
   }
   render() {
     const alert = this.props.alert;
-    console.log(this.state.notificationElement, alert, "Errorboundary");
     return (
       <>
         {alert.length !== 0 &&

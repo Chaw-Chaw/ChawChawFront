@@ -5,13 +5,12 @@ import Image from "next/image";
 import ChawLogo from "../../../../public/Layout/ChawChawLogo.png";
 import Chaw from "../../../../public/Layout/chaw.png";
 import { useRouter } from "next/router";
-import { AuthContext } from "../../../store/AuthContext";
 import { MAIN_PAGE, POST_PAGE_URL } from "../../../constants/pageUrls";
+import { useAppSelector } from "../../../hooks/redux";
 
-const Logo: React.FC = () => {
+const MLogo: React.FC = () => {
   const router = useRouter();
-  const { isLogin } = useContext(AuthContext);
-
+  const isLogin = useAppSelector((state) => state.auth.isLogin);
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     if (isLogin && router.pathname !== POST_PAGE_URL) {
@@ -32,7 +31,9 @@ const Logo: React.FC = () => {
   );
 };
 
+const Logo = React.memo(MLogo);
 export { Logo };
+
 const MobileLogo = styled.div`
   cursor: pointer;
   display: none;

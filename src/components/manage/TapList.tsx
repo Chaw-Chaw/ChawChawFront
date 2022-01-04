@@ -1,15 +1,22 @@
-import { MouseEventHandler, useContext } from "react";
+import React, { MouseEventHandler, useContext } from "react";
 import styled from "styled-components";
-import { useLogin } from "../../hooks/api/account/useLogin";
+import {
+  HOPE_LANGUAGE,
+  LANGUAGE,
+  RANK_SCHOOL,
+  SEARCH_LANGUAGE,
+} from "../../constants/chart";
+import { useAppDispatch } from "../../hooks/redux";
+import { logout } from "../../store/authSlice";
 import { Button } from "../common";
 import { ToggleItem } from "./ToggleItem";
 import { ToggleListItem } from "./ToggleListItem";
 
-const TapList: React.FC = () => {
-  const { logout } = useLogin();
-  const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+const MTapList: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
-    logout();
+    await dispatch(logout());
   };
   return (
     <TapContainter>
@@ -23,22 +30,22 @@ const TapList: React.FC = () => {
       <ToggleItem title="통계">
         <ToggleListItem
           title="학교 활성도 순위"
-          type="RANK_SCHOOL"
+          type={RANK_SCHOOL}
           link="/manage/statistics"
         />
         <ToggleListItem
           title="희망 언어 순위"
-          type="HOPE_LANGUAGE"
+          type={HOPE_LANGUAGE}
           link="/manage/statistics"
         />
         <ToggleListItem
           title="할 수 있는 언어 순위"
-          type="LANGUAGE"
+          type={LANGUAGE}
           link="/manage/statistics"
         />
         <ToggleListItem
           title="인기 검색 언어 순위"
-          type="SEARCH_LANGUAGE"
+          type={SEARCH_LANGUAGE}
           link="/manage/statistics"
         />
       </ToggleItem>
@@ -47,6 +54,7 @@ const TapList: React.FC = () => {
   );
 };
 
+const TapList = React.memo(MTapList);
 export { TapList };
 
 const TapContainter = styled.div`

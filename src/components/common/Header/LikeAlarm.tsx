@@ -1,11 +1,12 @@
-import { useContext } from "react";
-import { ChatContext } from "../../../store/ChatContext";
+import React from "react";
+import { LIKEALARM_TYPE } from "../../../constants";
+import { useAppSelector } from "../../../hooks/redux";
 import { ChatBox } from "../ChatBox";
 import { EmptyAlarm } from "./EmptyAlarm";
 import { AlarmChatBox, PushAlarmBox } from "./MessageAlarm";
 
-const LikeAlarm: React.FC = () => {
-  const { newLikes } = useContext(ChatContext);
+const MLikeAlarm: React.FC = () => {
+  const newLikes = useAppSelector((state) => state.chat.newLikes);
 
   const alarmlikeMessages = newLikes.map((item) => {
     return (
@@ -18,7 +19,7 @@ const LikeAlarm: React.FC = () => {
             0,
             20
           )}
-          type="LIKEALARM"
+          type={LIKEALARM_TYPE}
         />
       </AlarmChatBox>
     );
@@ -34,4 +35,6 @@ const LikeAlarm: React.FC = () => {
     </PushAlarmBox>
   );
 };
+
+const LikeAlarm = React.memo(MLikeAlarm);
 export { LikeAlarm };

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { ManageLayout } from "../../../../components/manage/ManageLayout";
 import {
   ProfileHeader,
@@ -15,24 +15,37 @@ import {
   LanguageLocale,
   LocaleLanguage,
 } from "../../../../components/common";
-import { INITIAL_ID } from "../../../../constants";
+import { ADMIN_ROLE, INITIAL_ID } from "../../../../constants";
 import { ManageBlockList } from "../../../../components/manage/ManageBlockList";
 import { ManageUserDelete } from "../../../../components/manage/ManageUserDelete";
 import { ManageUserUniversity } from "../../../../components/manage/ManageUserUniversity";
 import ManageProfileImage from "../../../../components/manage/ManageProfileImage";
-import { useProfile } from "../../../../hooks/api/profile/useProfile";
-import { ManageUserInfoType } from "../../../../../types/profile";
-import { INIT_USERINFO } from "../../../../constants/profile";
-import { AuthContext } from "../../../../store/AuthContext";
-import { arrayRemovedItem } from "../../../../utils";
 
-export default function ManageUserDetail() {
-  const { user, isLogin } = useContext(AuthContext);
+import { ManageUserInfoType } from "../../../../types/profile";
+import {
+  COUNTRY_TYPE,
+  INIT_USERINFO,
+  LANGUAGE_TYPE,
+  SELECT,
+} from "../../../../constants/profile";
+import { arrayRemovedItem, isLogin } from "../../../../utils";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import {
+  getUserDetailInfo,
+  manageUploadUserProfile,
+} from "../../../../store/actions/profileActions";
+import { asyncErrorHandle } from "../../../../store/alertSlice";
+
+function ManageUserDetail() {
+  const user = useAppSelector((state) => state.auth.user);
+  const userRole = user.role;
+  const dispatch = useAppDispatch();
   const router = useRouter();
-  const { getUserDetailInfo, manageUploadUserProfile } = useProfile();
+  const routerQueryJSON = JSON.stringify(router.query);
+
   const [userId, setUserId] = useState(INITIAL_ID);
   const [userInfo, setUserInfo] = useState<ManageUserInfoType>(INIT_USERINFO);
-  const [userSchool, setUserSchool] = useState<string>(INIT_USERINFO.school);
+  const [userSchool, setUserSchool] = useState<string>("");
   const [userCountries, setUserCountries] = useState<string[]>(
     INIT_USERINFO.country
   );
@@ -51,83 +64,104 @@ export default function ManageUserDetail() {
   );
 
   const onSubmit: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
-    e.preventDefault();
-    const country: string[] = [];
-    userCountries.forEach((item) => {
-      if (Object.keys(CountryLocale).includes(item)) country.push(item);
-    });
-    const language: string[] = [];
-    userLanguages.forEach((item) => {
-      const convertedItem = LanguageLocale[item];
-      if (convertedItem) language.push(convertedItem);
-    });
-    const hopeLanguage: string[] = [];
-    userHopeLanguages.forEach((item) => {
-      const convertedItem = LanguageLocale[item];
-      if (convertedItem) hopeLanguage.push(convertedItem);
-    });
+    try {
+      e.preventDefault();
+      const country: string[] = [];
+      userCountries.forEach((item) => {
+        if (Object.keys(CountryLocale).includes(item)) country.push(item);
+      });
+      const language: string[] = [];
+      userLanguages.forEach((item) => {
+        const convertedItem = LanguageLocale[item];
+        if (convertedItem) language.push(convertedItem);
+      });
+      const hopeLanguage: string[] = [];
+      userHopeLanguages.forEach((item) => {
+        const convertedItem = LanguageLocale[item];
+        if (convertedItem) hopeLanguage.push(convertedItem);
+      });
 
-    const body = {
-      userId: Number(router.query.userId),
-      country,
-      language,
-      hopeLanguage,
-      content: userContent,
-      facebookUrl: userFaceBookUrl,
-      instagramUrl: userInstagramUrl,
-      imageUrl: userInfo.imageUrl,
-      repCountry: country[0],
-      repLanguage: language[0],
-      repHopeLanguage: hopeLanguage[0],
-    };
-
-    await manageUploadUserProfile(body);
+      const body = {
+        userId: Number(router.query.userId),
+        country,
+        language,
+        hopeLanguage,
+        content: userContent,
+        facebookUrl: userFaceBookUrl,
+        instagramUrl: userInstagramUrl,
+        imageUrl: userInfo.imageUrl,
+        repCountry: country[0],
+        repLanguage: language[0],
+        repHopeLanguage: hopeLanguage[0],
+      };
+      await dispatch(manageUploadUserProfile(body));
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   useEffect(() => {
-    if (user.role !== "ADMIN" || !isLogin) {
-      return;
+    try {
+      if (userRole !== ADMIN_ROLE || !isLogin()) {
+        return;
+      }
+      if (routerQueryJSON === JSON.stringify({})) return;
+      const userId = router.query.userId
+        ? Number(router.query.userId)
+        : undefined;
+      const userSchool = router.query.school
+        ? String(router.query.school)
+        : undefined;
+
+      // 라우터 쿼리에 userId가 없으면 무시
+      if (userId === undefined) return;
+      setUserId(userId);
+
+      (async () => {
+        const data = await dispatch(getUserDetailInfo(userId)).unwrap();
+        setUserInfo(data);
+      })();
+
+      if (userSchool === undefined) return;
+      setUserSchool(userSchool);
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
     }
-    if (JSON.stringify(router.query) === JSON.stringify({})) return;
-    const userId = router.query.userId
-      ? Number(router.query.userId)
-      : undefined;
-    const userSchool = router.query.userSchool
-      ? String(router.query.userSchool)
-      : undefined;
-
-    // 라우터 쿼리에 userId가 없으면 무시
-    if (userId === undefined) return;
-    setUserId(userId);
-
-    (async () => {
-      const data = await getUserDetailInfo(userId);
-      setUserInfo(data);
-    })();
-
-    if (userSchool === undefined) return;
-    setUserSchool(userSchool);
-  }, [JSON.stringify(router.query)]);
+  }, [
+    routerQueryJSON,
+    userRole,
+    dispatch,
+    router.query.school,
+    router.query.userId,
+  ]);
 
   useEffect(() => {
-    if (userInfo === INIT_USERINFO) return;
     setUserContent(userInfo.content);
-    setUserCountries(
-      userInfo.country && userInfo.repCountry
-        ? [
-            userInfo.repCountry,
-            ...arrayRemovedItem(userInfo.repCountry, userInfo.country),
-          ]
-        : ["Select"]
-    );
+  }, [userInfo.content]);
+
+  useEffect(() => {
     setUserLanguages(
       userInfo.language && userInfo.repLanguage
         ? [
             userInfo.repLanguage,
             ...arrayRemovedItem(userInfo.repLanguage, userInfo.language),
           ].map((item) => LocaleLanguage[item])
-        : ["Select"]
+        : [SELECT]
     );
+  }, [userInfo.language, userInfo.repLanguage]);
+
+  useEffect(() => {
+    setUserCountries(
+      userInfo.country && userInfo.repCountry
+        ? [
+            userInfo.repCountry,
+            ...arrayRemovedItem(userInfo.repCountry, userInfo.country),
+          ]
+        : [SELECT]
+    );
+  }, [userInfo.country, userInfo.repCountry]);
+
+  useEffect(() => {
     setUserHopeLanguages(
       userInfo.hopeLanguage && userInfo.repHopeLanguage
         ? [
@@ -137,12 +171,17 @@ export default function ManageUserDetail() {
               userInfo.hopeLanguage
             ),
           ].map((item) => LocaleLanguage[item])
-        : ["Select"]
+        : [SELECT]
     );
+  }, [userInfo.hopeLanguage, userInfo.repHopeLanguage]);
 
+  useEffect(() => {
     setUserFaceBookUrl(userInfo.facebookUrl);
+  }, [userInfo.facebookUrl]);
+
+  useEffect(() => {
     setUserInstagramUrl(userInfo.instagramUrl);
-  }, [JSON.stringify(userInfo)]);
+  }, [userInfo.instagramUrl]);
 
   return (
     <ManageLayout>
@@ -161,7 +200,7 @@ export default function ManageUserDetail() {
           <ProfileSelectInfo
             title="국적"
             description="유저의 국적을 관리합니다. (최대 2개) 가장 첫 칸은 대표 국적으로 표시됩니다. "
-            type="country"
+            type={COUNTRY_TYPE}
             count={2}
             setValues={setUserCountries}
             values={userCountries}
@@ -169,7 +208,7 @@ export default function ManageUserDetail() {
           <ProfileSelectInfo
             title="유저의 선택 언어"
             description="유저의 선택언어를 관리합니다. (최대 4개) 가장 첫 칸은 대표 언어로 표시됩니다. "
-            type="language"
+            type={LANGUAGE_TYPE}
             count={4}
             setValues={setUserLanguages}
             values={userLanguages}
@@ -177,7 +216,7 @@ export default function ManageUserDetail() {
           <ProfileSelectInfo
             title="유저의 선택 희망 언어"
             description="유저의 선택 희망언어를 관리합니다. (최대 4개) 가장 첫 칸은 주 언어로 표시됩니다."
-            type="language"
+            type={LANGUAGE_TYPE}
             count={4}
             setValues={setUserHopeLanguages}
             values={userHopeLanguages}
@@ -201,6 +240,7 @@ export default function ManageUserDetail() {
     </ManageLayout>
   );
 }
+export default React.memo(ManageUserDetail);
 
 const ManageDetailContainer = styled.div`
   width: calc(100% - 300px);

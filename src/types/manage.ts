@@ -34,3 +34,9 @@ export interface PagenationInfoType {
 export interface UserListType extends PagenationInfoType {
   contents: UserListItemType[];
 }
+
+export interface BlockItem {
+  userId: number;
+  name: string;
+  imageUrl: string;
+}

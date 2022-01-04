@@ -1,11 +1,11 @@
-import { MouseEventHandler, useState } from "react";
+import React, { MouseEventHandler, useState } from "react";
 import styled from "styled-components";
 import { AiFillBell } from "react-icons/ai";
 import { ViewAlarmCount } from "./ViewAlarmCount";
 import { MessageAlarm } from "./MessageAlarm";
 import { LikeAlarm } from "./LikeAlarm";
 
-const PushAlarm: React.FC = () => {
+const MPushAlarm: React.FC = () => {
   const [isActive, setIsActive] = useState(false);
 
   const controlPushAlarm: MouseEventHandler<HTMLDivElement> = (e) => {
@@ -26,6 +26,7 @@ const PushAlarm: React.FC = () => {
   );
 };
 
+const PushAlarm = React.memo(MPushAlarm);
 export { PushAlarm };
 
 const AlarmBell = styled.div`

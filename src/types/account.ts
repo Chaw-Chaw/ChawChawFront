@@ -65,3 +65,35 @@ export interface SignupPropsSocial {
 export interface SignupProps extends SignupPropsSocial {
   password: string;
 }
+
+export interface UserPropertys {
+  email?: string;
+  passoword?: string;
+  name?: string;
+  web_email?: string;
+  school?: string;
+  imageUrl?: string;
+  content?: string;
+  facebookUrl?: string;
+  instagramUrl?: string;
+  country?: string[];
+  language?: string[];
+  hopeLanguage?: string[];
+  repCountry?: string;
+  repLanguage?: string;
+  repHopeLanguage?: string;
+  id?: number;
+  blockIds?: number[];
+  role?: string;
+  provider?: string;
+}
+
+export interface AuthInitialStateProps {
+  user: UserPropertys;
+  isLogin: boolean;
+}
+
+export type Inputs = {
+  webmail: string;
+  verificationNumber: number;
+};

@@ -1,17 +1,23 @@
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
-import { CHAT_PAGE_URL } from "../../../constants";
+import {
+  CHAT_PAGE_URL,
+  IMAGE_MSG,
+  IMAGE_TYPE,
+  CHATALARM_TYPE,
+} from "../../../constants";
+import { useAppSelector } from "../../../hooks/redux";
 import { ChatContext } from "../../../store/ChatContext";
 import { ChatBox } from "../ChatBox";
 import { EmptyAlarm } from "./EmptyAlarm";
 
-const MessageAlarm: React.FC = () => {
+const MMessageAlarm: React.FC = () => {
   const router = useRouter();
-  const { newMessages } = useContext(ChatContext);
+  const newMessages = useAppSelector((state) => state.chat.newMessages);
 
   const alarmMessages = newMessages.map((item) => {
-    const context = item.messageType === "IMAGE" ? "🏞 사진" : item.message;
+    const context = item.messageType === IMAGE_TYPE ? IMAGE_MSG : item.message;
     return (
       <AlarmChatBox key={item.regDate}>
         <ChatBox
@@ -22,7 +28,7 @@ const MessageAlarm: React.FC = () => {
             context.length > 20 ? context.substring(0, 20) + "..." : context
           }
           roomId={item.roomId}
-          type="CHATALARM"
+          type={CHATALARM_TYPE}
           senderId={item.senderId}
         />
       </AlarmChatBox>
@@ -47,6 +53,7 @@ const MessageAlarm: React.FC = () => {
   );
 };
 
+const MessageAlarm = React.memo(MMessageAlarm);
 export { MessageAlarm, PushAlarmBox, AlarmChatBox };
 
 const PushAlarmBox = styled.div`

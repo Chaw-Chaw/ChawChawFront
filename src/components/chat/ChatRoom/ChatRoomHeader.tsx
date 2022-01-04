@@ -1,23 +1,24 @@
 import { useRouter } from "next/router";
-import { Dispatch, MouseEventHandler, SetStateAction, useContext } from "react";
+import React, { Dispatch, MouseEventHandler, SetStateAction } from "react";
 import styled from "styled-components";
 import { LIMIT_NEWALARM_SIZE } from "../../../constants";
-import { ChatContext } from "../../../store/ChatContext";
 import { RiHome2Line } from "react-icons/ri";
 import { BsBoxArrowRight, BsChatDots } from "react-icons/bs";
 import { AlarmCount, ChangeLanguageDropDown } from "../../common";
 import { POST_PAGE_URL } from "../../../constants/pageUrls";
-import { useChat } from "../../../hooks/api/chat/useChat";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { chatActions, leaveChat } from "../../../store/chatSlice";
+import { asyncErrorHandle } from "../../../store/alertSlice";
 
 interface ChatRoomHeaderType {
   selectLanguage: string[];
   setSelectLanguage: Dispatch<SetStateAction<string[]>>;
 }
 
-const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
+const MChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
   const router = useRouter();
-  const { setIsViewChatList, newMessages } = useContext(ChatContext);
-  const { leaveChat } = useChat();
+  const dispatch = useAppDispatch();
+  const newMessages = useAppSelector((state) => state.chat.newMessages);
 
   const handleClickBackHomeBtn: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
@@ -28,14 +29,18 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
     e
   ) => {
     e.preventDefault();
-    setIsViewChatList((pre) => !pre);
+    dispatch(chatActions.updateIsViewChatList());
   };
 
   const handleClickLeaveChatBtn: MouseEventHandler<HTMLButtonElement> = async (
     e
   ) => {
     e.preventDefault();
-    await leaveChat();
+    try {
+      await dispatch(leaveChat());
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   const newMessageNumber = newMessages.length !== 0 && (
@@ -72,12 +77,15 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
   );
 };
 
+const ChatRoomHeader = React.memo(MChatRoomHeader);
+
 export { ChatRoomHeader };
 
 const Header = styled.div`
   align-items: center;
-  position: sticky;
+  position: absolute;
   top: 0px;
+  left: 0px;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -88,10 +96,37 @@ const Header = styled.div`
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   height: 50px;
   z-index: 20;
+  @media (max-width: 1024px) {
+    align-items: center;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: ${(props) =>
+      props.theme.id === "light"
+        ? "1px solid rgb(0, 0, 0, 0.2)"
+        : "1px solid rgb(255, 255, 255, 0.2)"};
+    background-color: ${(props) => props.theme.bodyBackgroundColor};
+    height: 50px;
+    z-index: 20;
+  }
   @media (max-width: 768px) {
     top: 70px;
     position: fixed;
     left: 0px;
+    align-items: center;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: ${(props) =>
+      props.theme.id === "light"
+        ? "1px solid rgb(0, 0, 0, 0.2)"
+        : "1px solid rgb(255, 255, 255, 0.2)"};
+    background-color: ${(props) => props.theme.bodyBackgroundColor};
+    height: 50px;
+    z-index: 20;
   }
 `;
 
@@ -113,6 +148,7 @@ const MessageHeaderButton = styled.button`
 `;
 
 const ChatListViewButtonBox = styled.div`
+  position: relative;
   display: none;
   @media (max-width: 1024px) {
     display: flex;

@@ -2,30 +2,42 @@ import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 
 import styled from "styled-components";
-import { MANAGE_MAIN_PAGE_URL } from "../../constants/pageUrls";
-import { AuthContext } from "../../store/AuthContext";
+import {
+  ADMIN_ROLE,
+  CONFIRM_PUSH_MANAGE_MAINPAGE,
+  ERROR_ALERT,
+  ERROR_MANAGMENT_NOTACCESS_MSG,
+  ROLE_ADMIN,
+  ROLE_USER,
+} from "../../constants";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { alertActions } from "../../store/alertSlice";
+import { ChatContextProvider } from "../../store/ChatContext";
 import Header from "./Header";
 
 const Layout: React.FC = (props) => {
-  const { user } = useContext(AuthContext);
+  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   useEffect(() => {
-    if (user.role === "ADMIN") {
-      // message.error("관리자 아이디로 서비스를 이용할 수 없습니다.", {
-      //   onClose: () => {
-      //     router.push(MANAGE_MAIN_PAGE_URL);
-      //   },
-      // });
+    if (user.role === ROLE_ADMIN) {
+      dispatch(
+        alertActions.updateAlert({
+          name: ERROR_ALERT,
+          message: ERROR_MANAGMENT_NOTACCESS_MSG,
+          confirmFuncName: CONFIRM_PUSH_MANAGE_MAINPAGE,
+        })
+      );
       return;
     }
-  }, []);
+  }, [user.role, dispatch]);
 
   return (
-    <>
+    <ChatContextProvider>
       {router.pathname !== "/" && <Header />}
       <Inner>{props.children}</Inner>
-    </>
+    </ChatContextProvider>
   );
 };
 

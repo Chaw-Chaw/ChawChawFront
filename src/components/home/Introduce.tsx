@@ -1,40 +1,31 @@
 import styled from "styled-components";
 import CSS from "csstype";
 import { useRouter } from "next/router";
-import { MouseEventHandler, useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../store/AuthContext";
+import React, {
+  MouseEventHandler,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { FaFacebookF } from "react-icons/fa";
 import { BiMessageRounded } from "react-icons/bi";
 import { AiOutlineLogin } from "react-icons/ai";
-import {
-  FACEBOOK_APP_ID,
-  KAKAO_CLIENT_ID,
-  KAKAO_OAUTH_REDIRECT_URL,
-  KAKAO_OAUTH_URL,
-  REDIRECT_URL,
-} from "../../constants";
+import { KAKAO_OAUTH_REDIRECT_URL } from "../../constants";
 import FacebookLogin from "@greatsumini/react-facebook-login";
 import { Button } from "../common";
 import Typed from "react-typed";
 import { LOGIN_PAGE_URL, POST_PAGE_URL } from "../../constants/pageUrls";
 import { FacebookLoginWrap } from "../common/FacebookLoginWrap";
+import { useAppSelector } from "../../hooks/redux";
 
-const Introduce: React.FC = () => {
-  const { isLogin } = useContext(AuthContext);
+const MIntroduce: React.FC = () => {
+  const isLogin = useAppSelector((state) => state.auth.isLogin);
   const [viewLoginSection, setViewLoginSection] = useState(false);
   const router = useRouter();
 
   const callKakaoLogin = () => {
     // next js 공식 문서에 따르면 외부 페이지 이용시 router를 사용할 필요가 없다.
     window.location.href = KAKAO_OAUTH_REDIRECT_URL;
-    // router.push({
-    //   pathname: KAKAO_OAUTH_URL,
-    //   query: {
-    //     response_type: "code",
-    //     client_id: KAKAO_CLIENT_ID,
-    //     redirect_uri: REDIRECT_URL,
-    //   },
-    // });
   };
 
   const handleClickKakaoBtn: MouseEventHandler<HTMLDivElement> = (e) => {
@@ -111,7 +102,7 @@ const Introduce: React.FC = () => {
     </>
   );
 };
-
+const Introduce = React.memo(MIntroduce);
 export { Introduce };
 
 const IntroduceContainer = styled.div`

@@ -5,26 +5,34 @@ import { Layout } from "../../../components/common";
 import { SettingBlockList } from "../../../components/setting/SettingBlockList";
 import { SettingUserDelete } from "../../../components/setting/SettingUserDelete";
 import { SettingUserUniversity } from "../../../components/setting/SettingUserUniversity";
-import { LOGIN_PAGE_URL } from "../../../constants";
-import { AuthContext } from "../../../store/AuthContext";
+import {
+  CONFIRM_PUSH_LOGINPAGE,
+  ERROR_ALERT,
+  ERROR_ENTER_AFTERLOGIN_MSG,
+  ROLE_ADMIN,
+} from "../../../constants";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { alertActions } from "../../../store/alertSlice";
 
 export default function Setting() {
-  const { isLogin, user } = useContext(AuthContext);
-  const router = useRouter();
+  const { user, isLogin } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (user.role === "ADMIN") {
+    if (user.role === ROLE_ADMIN) {
       return;
     }
     if (!isLogin) {
-      // message.error("로그인 후 이용해주세요.", {
-      //   onClose: () => {
-      //     router.push(LOGIN_PAGE_URL);
-      //   },
-      // });
+      dispatch(
+        alertActions.updateAlert({
+          name: ERROR_ALERT,
+          message: ERROR_ENTER_AFTERLOGIN_MSG,
+          confirmFuncName: CONFIRM_PUSH_LOGINPAGE,
+        })
+      );
       return;
     }
-  }, []);
+  }, [user.role, dispatch, isLogin]);
 
   return (
     <Layout>

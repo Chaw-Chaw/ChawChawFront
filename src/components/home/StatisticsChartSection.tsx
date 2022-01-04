@@ -1,4 +1,10 @@
-import { Component, useEffect, useState } from "react";
+import React, {
+  Component,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Bar } from "react-chartjs-2";
 import styled from "styled-components";
 import {
@@ -7,24 +13,28 @@ import {
   SUBJECT_OPTIONS,
   SUBJECT_CONVERT,
 } from "../../constants";
-import { useChart } from "../../hooks/useChart";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { asyncErrorHandle } from "../../store/alertSlice";
+import { getChartData } from "../../store/chartSlice";
 import { LoadingSpinner, SelectInfoDropDown } from "../common";
 
-const typeOptions = Object.values(SUBJECT_OPTIONS);
-
-const StatisticsChartSection: React.FC = () => {
+const MStatisticsChartSection: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const subtitle = useAppSelector((state) => state.chart.subtitle);
   const [isLoading, setIsLoading] = useState(true);
   const [chartData, setChartData] = useState(INIT_BAR_CHART_DATA);
   const [subject, setSubject] = useState<string[]>(["학교 활성도 순위"]);
-  const { getChartData, subtitle } = useChart();
+  const subjectData = subject[0];
 
-  const changeChartData = async () => {
+  const typeOptions = useMemo(() => Object.values(SUBJECT_OPTIONS), []);
+
+  const changeChartData = useCallback(async () => {
     setIsLoading(true);
-    const subjectKey = SUBJECT_CONVERT[subject[0]];
+    const subjectKey = SUBJECT_CONVERT[subjectData];
     if (!SUBJECT_OPTIONS[subjectKey]) {
       return;
     }
-    const data = await getChartData(subjectKey);
+    const data = await dispatch(getChartData(subjectKey)).unwrap();
     setChartData((pre) => {
       const result = pre;
       result.labels = data.labels;
@@ -33,15 +43,18 @@ const StatisticsChartSection: React.FC = () => {
       return result;
     });
     setIsLoading(false);
-  };
+  }, [dispatch, subjectData]);
 
   useEffect(() => {
     //첫 렌더링시에는 서버에서 아래 코드를 실행시켜버리는구나
-
     (async () => {
-      await changeChartData();
+      try {
+        await changeChartData();
+      } catch (error) {
+        dispatch(asyncErrorHandle(error));
+      }
     })();
-  }, [subject[0]]);
+  }, [subjectData, dispatch, changeChartData]);
 
   const lazyChart = isLoading ? (
     <LoadingSpinnerContainer>
@@ -82,7 +95,7 @@ const StatisticsChartSection: React.FC = () => {
     <Container>
       <ChartSection>
         <StatisticsHeader>
-          <StatisticsTitle>{subject[0]}</StatisticsTitle>
+          <StatisticsTitle>{subjectData}</StatisticsTitle>
           <StatisticsSubHeader>
             <StatisticsSubtitle>{"기준 : " + subtitle}</StatisticsSubtitle>
             <SelectTypeWrapper>
@@ -108,7 +121,7 @@ const StatisticsChartSection: React.FC = () => {
     </Container>
   );
 };
-
+const StatisticsChartSection = React.memo(MStatisticsChartSection);
 export { StatisticsChartSection, LoadingSpinnerContainer };
 
 const Container = styled.div`

@@ -1,10 +1,10 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
-import { AuthContext } from "../../store/AuthContext";
+import { useAppSelector } from "../../hooks/redux";
 import { Input, ListItem } from "../common";
 
-const SettingUserUniversity: React.FC = () => {
-  const { user } = useContext(AuthContext);
+const MSettingUserUniversity: React.FC = () => {
+  const user = useAppSelector((state) => state.auth.user);
   return (
     <ListItem
       title="소속대학"
@@ -15,6 +15,7 @@ const SettingUserUniversity: React.FC = () => {
   );
 };
 
+const SettingUserUniversity = React.memo(MSettingUserUniversity);
 export { SettingUserUniversity };
 
 const UserUniversity = styled(Input)`

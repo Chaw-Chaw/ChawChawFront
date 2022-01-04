@@ -1,47 +1,47 @@
 import Image from "next/image";
-import { useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { LoadingSpinner } from "../common";
 
-const UsageSlide: React.FC<{ title: string; subtitle: string; src: string }> = (
-  props
-) => {
-  const subtitleArr = props.subtitle.split("/n");
-  const [isLoading, setIsLoading] = useState(true);
+const MUsageSlide: React.FC<{ title: string; subtitle: string; src: string }> =
+  (props) => {
+    const subtitleArr = props.subtitle.split("/n");
+    const [isLoading, setIsLoading] = useState(true);
 
-  const handleLoad = () => {
-    setIsLoading(false);
+    const handleLoad = () => {
+      setIsLoading(false);
+    };
+
+    const subtitle = subtitleArr.map((item) => {
+      return <SubTitle key={item}>{item}</SubTitle>;
+    });
+
+    return (
+      <Container>
+        <Inner>
+          <Title>{props.title}</Title>
+          <SubTitleBox>{subtitle}</SubTitleBox>
+          <ImageWrapper>
+            <Image
+              src={props.src}
+              alt="사용소개 이미지"
+              width="800"
+              height="450"
+              objectFit="contain"
+              onLoad={handleLoad}
+            />
+            {isLoading && (
+              <LoadingWrapper>
+                <LoadingSpinner />
+              </LoadingWrapper>
+            )}
+          </ImageWrapper>
+        </Inner>
+      </Container>
+    );
   };
 
-  const subtitle = subtitleArr.map((item) => {
-    return <SubTitle key={item}>{item}</SubTitle>;
-  });
-
-  return (
-    <Container>
-      <Inner>
-        <Title>{props.title}</Title>
-        <SubTitleBox>{subtitle}</SubTitleBox>
-        <ImageWrapper>
-          <Image
-            src={props.src}
-            alt="사용소개 이미지"
-            width="800"
-            height="450"
-            objectFit="contain"
-            onLoad={handleLoad}
-          />
-          {isLoading && (
-            <LoadingWrapper>
-              <LoadingSpinner />
-            </LoadingWrapper>
-          )}
-        </ImageWrapper>
-      </Inner>
-    </Container>
-  );
-};
-
+const UsageSlide = React.memo(MUsageSlide);
 export { UsageSlide };
 
 const Container = styled.div`

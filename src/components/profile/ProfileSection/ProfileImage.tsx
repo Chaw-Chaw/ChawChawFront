@@ -1,29 +1,53 @@
-import { MouseEventHandler, useContext } from "react";
+import React, { MouseEventHandler, useContext } from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import { AuthContext } from "../../../store/AuthContext";
 import { Button } from "../../common";
-import { DEFAULT_PROFILE_IMAGE } from "../../../constants";
-import { useSendImage } from "../../../hooks/api/useSendImage";
+import {
+  DEFAULT_PROFILE_IMAGE,
+  SUCCESS_ALERT,
+  SUCCESS_IMAGE_UPLOAD_MSG,
+} from "../../../constants";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import {
+  deleteProfileImage,
+  putImage,
+  sendProfileImage,
+} from "../../../store/actions/profileActions";
+import { alertActions, asyncErrorHandle } from "../../../store/alertSlice";
+import { authActions } from "../../../store/authSlice";
 
 const ProfileImage: React.FC = () => {
-  const { user, updateUser } = useContext(AuthContext);
-  const { sendProfileImage, deleteProfileImage, putImage } = useSendImage();
+  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
   const profileImage = user?.imageUrl || DEFAULT_PROFILE_IMAGE;
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = async (
     e
   ) => {
-    const image = putImage(e);
-    const imageUrl = await sendProfileImage(image);
-    // message.success("이미지 업로드 성공!");
-    updateUser({ imageUrl });
+    try {
+      const image = putImage(e);
+      const imageUrl = await dispatch(sendProfileImage(image)).unwrap();
+      console.log(imageUrl, "imageUrl");
+      dispatch(authActions.updateUser({ imageUrl }));
+      dispatch(
+        alertActions.updateAlert({
+          name: SUCCESS_ALERT,
+          message: SUCCESS_IMAGE_UPLOAD_MSG,
+        })
+      );
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
-    e.preventDefault();
-    const imageUrl = await deleteProfileImage();
-    updateUser({ imageUrl });
+    try {
+      e.preventDefault();
+      const imageUrl = await dispatch(deleteProfileImage()).unwrap();
+      dispatch(authActions.updateUser({ imageUrl }));
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   return (
@@ -50,7 +74,7 @@ const ProfileImage: React.FC = () => {
     </Container>
   );
 };
-export default ProfileImage;
+export default React.memo(ProfileImage);
 
 const Container = styled.div`
   display: flex;

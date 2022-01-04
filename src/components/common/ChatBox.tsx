@@ -1,9 +1,17 @@
 import { useRouter } from "next/router";
-import { MouseEventHandler, useContext, useEffect, useRef } from "react";
+import React, { MouseEventHandler, useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { DEFAULT_PROFILE_IMAGE, LIMIT_NEWALARM_SIZE } from "../../constants";
+import {
+  LIKEALARM_TYPE,
+  CHATALARM_TYPE,
+  CHATROOM_TYPE,
+  DEFAULT_PROFILE_IMAGE,
+  LIMIT_NEWALARM_SIZE,
+} from "../../constants";
 import { CHAT_PAGE_URL } from "../../constants/pageUrls";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { ChatContext } from "../../store/ChatContext";
+import { chatActions } from "../../store/chatSlice";
 import { MessageImage } from "../chat/Message/MessageImage";
 import { AlarmCount } from "./AlarmCount";
 
@@ -17,20 +25,21 @@ interface ChatBoxProps {
   type: string;
 }
 
-const ChatBox: React.FC<ChatBoxProps> = (props) => {
-  const { mainRoom, newMessages, setMainRoom } = useContext(ChatContext);
+const MChatBox: React.FC<ChatBoxProps> = (props) => {
+  const { mainRoom, newMessages } = useAppSelector((state) => state.chat);
+  const dispatch = useAppDispatch();
   const mainChatList = useRef<HTMLLIElement>(null);
   const router = useRouter();
   const regDate = props.regDate.split("T").join(" ");
   const isCurrentChat = props.roomId === mainRoom.id;
-  const matchNewMessages = newMessages.filter((item: any) => {
+  const matchNewMessages = newMessages.filter((item) => {
     if (item.roomId === props.roomId) return true;
     return false;
   });
 
   const handleClick: MouseEventHandler<HTMLLIElement> = (e) => {
     e.preventDefault();
-    if (props.type === "CHATROOM") {
+    if (props.type === CHATROOM_TYPE) {
       if (isCurrentChat) return;
       router.push({
         pathname: CHAT_PAGE_URL,
@@ -38,9 +47,14 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
       });
       return;
     }
-    if (props.type === "CHATALARM") {
+    if (props.type === CHATALARM_TYPE) {
       if (props.roomId && props.senderId) {
-        setMainRoom({ id: props.roomId, userId: props.senderId });
+        dispatch(
+          chatActions.updateMainRoom({
+            id: props.roomId,
+            userId: props.senderId,
+          })
+        );
         router.push({
           pathname: CHAT_PAGE_URL,
           query: { userId: props.senderId },
@@ -48,13 +62,13 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
       }
       return;
     }
-    if (props.type === "LIKEALARM") {
+    if (props.type === LIKEALARM_TYPE) {
       return;
     }
     return;
   };
 
-  const alarmCount = props.type === "CHATROOM" &&
+  const alarmCount = props.type === CHATROOM_TYPE &&
     matchNewMessages.length !== 0 && (
       <AlarmCount>
         <span>
@@ -77,7 +91,7 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
       block: "center",
       inline: "nearest",
     });
-  }, [JSON.stringify(mainRoom.id)]);
+  }, [mainRoom.id]);
 
   return (
     <ChatContainer
@@ -101,7 +115,9 @@ const ChatBox: React.FC<ChatBoxProps> = (props) => {
   );
 };
 
+const ChatBox = React.memo(MChatBox);
 export { ChatBox };
+
 const ChatContainer = styled.li<{ isCurrentChat: boolean }>`
   cursor: pointer;
   display: flex;

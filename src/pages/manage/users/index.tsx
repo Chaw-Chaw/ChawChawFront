@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { ManageLayout } from "../../../components/manage/ManageLayout";
 import { UserOrder } from "../../../components/manage/UserOrder";
@@ -6,13 +6,15 @@ import { UserList } from "../../../components/manage/UserList";
 import { PostSearch as UserSearch } from "../../../components/post/PostSearch";
 import { LanguageLocale, Pagenation } from "../../../components/common";
 import { orderOptions, sortOptions } from "../../../constants/order";
-import { PagenationInfoType, UserListItemType } from "../../../../types/manage";
-import { useManage } from "../../../hooks/api/account/manage/useManage";
-import { AuthContext } from "../../../store/AuthContext";
+import { PagenationInfoType, UserListItemType } from "../../../types/manage";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { takeUserList } from "../../../store/actions/manageActions";
+import { alertActions, asyncErrorHandle } from "../../../store/alertSlice";
+import { ADMIN_ROLE, INFO_ALERT, INFO_NOTRESULT_MSG } from "../../../constants";
 
 export default function ManageUser() {
-  const { user, isLogin } = useContext(AuthContext);
-  const { takeUserList } = useManage();
+  const { user, isLogin } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const [searchInfo, setSearchInfo] = useState<string[]>([
     "선택언어",
@@ -34,23 +36,29 @@ export default function ManageUser() {
   const [selectedPageNumber, setSelectedPageNumber] = useState<number>(1);
   const searchName = useRef("");
 
-  const getUsersList = async () => {
-    setIsLoading(true);
-    const searchCondition = {
-      name: searchName.current,
-      language: LanguageLocale[searchInfo[0]] || "",
-      hopeLanguage: LanguageLocale[searchInfo[1]] || "",
-      country: searchInfo[2] === "나라" ? "" : searchInfo[2],
-      school: searchInfo[3] === "학교" ? "" : searchInfo[3],
-      sort: sortOptions[searchInfo[4]] || "",
-      order: orderOptions[searchInfo[5]] || "",
-      pageNo: selectedPageNumber,
-    };
-
+  const getUsersList = useCallback(async () => {
     try {
-      const data = await takeUserList(searchCondition);
+      setIsLoading(true);
+      const searchCondition = {
+        name: searchName.current,
+        language: LanguageLocale[searchInfo[0]] || "",
+        hopeLanguage: LanguageLocale[searchInfo[1]] || "",
+        country: searchInfo[2] === "나라" ? "" : searchInfo[2],
+        school: searchInfo[3] === "학교" ? "" : searchInfo[3],
+        sort: sortOptions[searchInfo[4]] || "",
+        order: orderOptions[searchInfo[5]] || "",
+        pageNo: selectedPageNumber,
+      };
+
+      const data = await dispatch(takeUserList(searchCondition)).unwrap();
       setUsersList(data.contents);
       if (data.contents.length === 0) {
+        dispatch(
+          alertActions.updateAlert({
+            name: INFO_ALERT,
+            message: INFO_NOTRESULT_MSG,
+          })
+        );
         // message.info("조회 결과가 없습니다.");
         setIsLoading(true);
         return;
@@ -63,12 +71,11 @@ export default function ManageUser() {
         isNext: data.isNext,
         isPrevious: data.isPrevious,
       });
-
       setIsLoading(false);
-    } catch {
-      return;
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
     }
-  };
+  }, [dispatch, searchInfo, selectedPageNumber]);
 
   const userSearchHandler = async (inputs: string) => {
     searchName.current = inputs;
@@ -80,11 +87,11 @@ export default function ManageUser() {
     if (!isLogin) {
       return;
     }
-    if (user.role === "ADMIN") {
+    if (user.role === ADMIN_ROLE) {
       getUsersList();
       return;
     }
-  }, [selectedPageNumber]);
+  }, [user.role, getUsersList, isLogin]);
 
   return (
     <ManageLayout>

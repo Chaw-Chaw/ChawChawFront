@@ -1,4 +1,4 @@
-import {
+import React, {
   Dispatch,
   MouseEventHandler,
   SetStateAction,
@@ -13,12 +13,8 @@ import { FaFacebook } from "react-icons/fa";
 import { AiFillInstagram } from "react-icons/ai";
 import styled from "styled-components";
 import { Input, UpdateButton } from "../../common";
-
-interface ProfileSocialUrlFragmentProps {
-  type?: string;
-  url?: string;
-  setUrl?: Dispatch<SetStateAction<string>>;
-}
+import { ProfileSocialUrlFragmentProps } from "../../../types/profile";
+import { TYPE_FACEBOOK } from "../../../constants/profile";
 
 const ProfileSocialUrlFragment: React.FC<ProfileSocialUrlFragmentProps> = (
   props
@@ -26,7 +22,7 @@ const ProfileSocialUrlFragment: React.FC<ProfileSocialUrlFragmentProps> = (
   const [isActive, setIsActive] = useState(false);
   const urlRef = useRef<HTMLInputElement>(null);
   const defaultUrl =
-    props.type === "facebook" ? DEFAULT_FACEBOOK_URL : DEFAULT_INSTAGRAM_URL;
+    props.type === TYPE_FACEBOOK ? DEFAULT_FACEBOOK_URL : DEFAULT_INSTAGRAM_URL;
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
@@ -42,7 +38,7 @@ const ProfileSocialUrlFragment: React.FC<ProfileSocialUrlFragmentProps> = (
 
   return (
     <ProfileSocialUrlBox key={props.url} type={props.type}>
-      {props.type === "facebook" ? <FaFacebook /> : <AiFillInstagram />}
+      {props.type === TYPE_FACEBOOK ? <FaFacebook /> : <AiFillInstagram />}
       <ProfileSocialUrlInput
         isActive={isActive}
         disabled={!isActive}
@@ -56,8 +52,7 @@ const ProfileSocialUrlFragment: React.FC<ProfileSocialUrlFragmentProps> = (
   );
 };
 
-export default ProfileSocialUrlFragment;
-export type { ProfileSocialUrlFragmentProps };
+export default React.memo(ProfileSocialUrlFragment);
 
 const ProfileSocialUrlBox = styled.div<{ type?: string }>`
   display: flex;

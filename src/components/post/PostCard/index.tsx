@@ -1,16 +1,18 @@
 import styled from "styled-components";
-import { MouseEventHandler, useState } from "react";
+import React, { MouseEventHandler, useCallback, useState } from "react";
 import Image from "next/image";
 import PostModal from "../PostModal";
 import { ModalLayout } from "../../common";
-import { usePost } from "../../../hooks/api/post/usePost";
 import { initialPostInfo } from "../../../constants/post";
-import { PostCardProps, PostModalInfoProps } from "../../../../types/post";
+
 import { PostCardImageInfo } from "./PostCardImageInfo";
 import { PostCardInfo } from "./PostCardInfo";
+import { useAppDispatch } from "../../../hooks/redux";
+import { getPostModalData } from "../../../store/actions/postActions";
+import { PostCardProps, PostModalInfoProps } from "../../../types/post";
 
-const PostCard: React.FC<PostCardProps> = (props) => {
-  const { getPostModalData } = usePost();
+const MPostCard: React.FC<PostCardProps> = (props) => {
+  const dispatch = useAppDispatch();
   const postCardContentArr = props.content.split("\n");
   const postCardContentTmp =
     postCardContentArr.length > 11
@@ -27,16 +29,20 @@ const PostCard: React.FC<PostCardProps> = (props) => {
 
   const handleClickPostCard: MouseEventHandler<HTMLDivElement> = async (e) => {
     e.preventDefault();
-    const data = await getPostModalData(props.id);
+    const data = await dispatch(getPostModalData(props.id)).unwrap();
     setPostModalInfo((pre) => {
       return { ...pre, ...data };
     });
     setOpen((open) => !open);
   };
-  const handleClickModalLayout: MouseEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault();
-    setOpen(false);
-  };
+
+  const handleClickModalLayout: MouseEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+      setOpen(false);
+    },
+    []
+  );
 
   const postModal = open && (
     <>
@@ -89,8 +95,8 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           </PostCardContent>
           <PostCardInfo
             pastDate={props.pastDate}
-            viewCount={props.viewCount}
-            likeCount={props.likeCount}
+            views={props.views}
+            likes={props.likes}
           />
         </PostCardBox>
       </PostCardContainer>
@@ -99,6 +105,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   );
 };
 
+const PostCard = React.memo(MPostCard);
 export { PostCard };
 
 const PostCardBox = styled.div`

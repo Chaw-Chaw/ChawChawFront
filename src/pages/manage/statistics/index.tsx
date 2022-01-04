@@ -1,43 +1,49 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { ManageLayout } from "../../../components/manage/ManageLayout";
-import { useChart } from "../../../hooks/useChart";
 import { Line } from "react-chartjs-2";
 import { CHART_SUBJECT, INIT_LINE_CHART_DATA } from "../../../constants";
 import { LoadingSpinnerContainer } from "../../../components/home/StatisticsChartSection";
 import { LoadingSpinner } from "../../../components/common";
+import { useAppDispatch } from "../../../hooks/redux";
+import { getChartData } from "../../../store/chartSlice";
 
 export default function ManageStaticis() {
   const [isLoading, setIsLoading] = useState(true);
   const [title, setTitle] = useState("");
-  const { getChartData } = useChart();
+  const dispatch = useAppDispatch();
   const [chartData, setChartData] = useState(INIT_LINE_CHART_DATA);
   const router = useRouter();
+  const routerQuery = JSON.stringify(router.query);
+  const tmpType = router.query.type?.toString();
+  const tmpTitle = router.query.title?.toString();
 
-  const changeChartData = async (subject: string) => {
-    setIsLoading(true);
-    const data = await getChartData(subject);
-    setChartData((pre) => {
-      const result = pre;
-      result.labels = data.labels;
-      result.datasets[0].data = data.datasets[0].data;
-      result.datasets[0].label = CHART_SUBJECT[subject].subtitle;
-      return result;
-    });
-    setIsLoading(false);
-  };
+  const changeChartData = useCallback(
+    async (subject: string) => {
+      setIsLoading(true);
+      const data = await dispatch(getChartData(subject)).unwrap();
+      setChartData((pre) => {
+        const result = pre;
+        result.labels = data.labels;
+        result.datasets[0].data = data.datasets[0].data;
+        result.datasets[0].label = CHART_SUBJECT[subject].subtitle;
+        return result;
+      });
+      setIsLoading(false);
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
-    if (JSON.stringify(router.query) === JSON.stringify({})) return;
-    const tmpType = router.query.type;
-    const tmpTitle = String(router.query.title);
-    if (tmpType === undefined && tmpTitle === undefined) return;
-    setTitle(tmpTitle);
-    (async () => {
-      await changeChartData(String(tmpType));
-    })();
-  }, [JSON.stringify(router.query)]);
+    if (routerQuery === JSON.stringify({})) return;
+    if (tmpType && tmpTitle) {
+      setTitle(tmpTitle);
+      (async () => {
+        await changeChartData(tmpType);
+      })();
+    }
+  }, [routerQuery, changeChartData, tmpType, tmpTitle]);
 
   return (
     <ManageLayout>

@@ -1,26 +1,37 @@
-import { useContext, useEffect } from "react";
-import { useRouter } from "next/router";
+import React, { useCallback, useContext, useEffect } from "react";
+import Router from "next/router";
 import {
   Layout,
   Input,
   PasswordInput,
   Label,
   Button,
+  AlertMessage,
 } from "../../../components/common/";
 import AccountContainer from "../../../components/account/AccountContainer";
 import styled from "styled-components";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { AuthContext } from "../../../store/AuthContext";
 import SocialSection from "../../../components/account/SocialSection";
 import Link from "next/link";
-import { useLogin } from "../../../hooks/api/account/useLogin";
 import {
+  BASIC_PROVIDER,
+  ERROR_ALERT,
+  ERROR_ENTER_LOGINPAGE_MSG,
+  LOGIN_PAGE_SUBTITLE,
+  LOGIN_PAGE_TITLE,
   POST_PAGE_URL,
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
+  WARNING_FORM_MSG,
 } from "../../../constants";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { authActions, login } from "../../../store/authSlice";
+import { login } from "../../../store/authSlice";
 import { alertActions } from "../../../store/alertSlice";
+import {
+  CONFIRM_PUSH_MAIN_PAGE,
+  CONFIRM_PUSH_POSTPAGE,
+  WARNING_ALERT,
+} from "../../../constants/alert";
+import { authRoute, isLogin } from "../../../utils";
 
 interface Inputs {
   email: string;
@@ -28,12 +39,7 @@ interface Inputs {
 }
 
 export default function Login() {
-  const router = useRouter();
-  // const message = useAlert();
   const dispatch = useAppDispatch();
-  const isLogin = useAppSelector((state) => state.auth.isLogin);
-  // const { login } = useLogin();
-  // const { isLogin } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -44,8 +50,8 @@ export default function Login() {
     if (data.email === "" || data.password === "") {
       dispatch(
         alertActions.updateAlert({
-          name: "Warning",
-          message: "입력칸을 모두 입력해주세요.",
+          name: WARNING_ALERT,
+          message: WARNING_FORM_MSG,
         })
       );
       return;
@@ -54,26 +60,10 @@ export default function Login() {
       login({
         email: data.email,
         password: data.password,
-        provider: "basic",
+        provider: BASIC_PROVIDER,
       })
     );
   };
-
-  useEffect(() => {
-    if (isLogin) {
-      dispatch(
-        alertActions.updateAlert({
-          name: "Error",
-          message: "로그인 화면은 로그아웃 후 들어올 수 있습니다.",
-          confirmFunc: () => {
-            router.push(POST_PAGE_URL);
-          },
-        })
-      );
-
-      return;
-    }
-  }, [isLogin, dispatch, router]);
 
   const emailSection = (
     <InputSection>
@@ -113,12 +103,21 @@ export default function Login() {
     </InputSection>
   );
 
+  useEffect(() => {
+    if (isLogin()) {
+      dispatch(
+        alertActions.updateAlert({
+          name: ERROR_ALERT,
+          message: ERROR_ENTER_LOGINPAGE_MSG,
+          confirmFuncName: CONFIRM_PUSH_POSTPAGE,
+        })
+      );
+    }
+  }, [dispatch]);
+
   return (
     <Layout>
-      <AccountContainer
-        title="ChawChaw에`로그인 해주세요."
-        subtitle="아이디와 비밀번호를 입력해주세요."
-      >
+      <AccountContainer title={LOGIN_PAGE_TITLE} subtitle={LOGIN_PAGE_SUBTITLE}>
         <Form onSubmit={handleSubmit(onSubmit)}>
           {emailSection}
           {passwordSection}

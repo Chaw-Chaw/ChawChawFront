@@ -1,24 +1,33 @@
 import { useRouter } from "next/router";
-import { MouseEventHandler } from "react";
+import React, { MouseEventHandler } from "react";
 import styled from "styled-components";
 import { Button, ListItem } from "../common";
-import { useDeleteUser } from "../../hooks/api/account/useDeleteUser";
-import { MANAGE_MAIN_PAGE_URL } from "../../constants";
+import {
+  CONFIRM_PUSH_MANAGE_MAINPAGE,
+  MANAGE_MAIN_PAGE_URL,
+  SUCCESS_ALERT,
+  SUCCESS_DELETE_USER_MSG,
+} from "../../constants";
+import { useAppDispatch } from "../../hooks/redux";
+import { deleteManagerUser } from "../../store/actions/manageActions";
+import { alertActions, asyncErrorHandle } from "../../store/alertSlice";
 
-const ManageUserDelete: React.FC<{ userId: number }> = (props) => {
-  const { deleteManageUser } = useDeleteUser();
-  const router = useRouter();
-  // 유저 삭제시 확인 메세지 alert 생성
-
+const MManageUserDelete: React.FC<{ userId: number }> = (props) => {
+  const dispatch = useAppDispatch();
   const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
-    e.preventDefault();
-
-    await deleteManageUser(props.userId);
-    // message.success("유저삭제성공!", {
-    //   onClose: () => {
-    //     router.push(MANAGE_MAIN_PAGE_URL);
-    //   },
-    // });
+    try {
+      e.preventDefault();
+      await dispatch(deleteManagerUser(props.userId));
+      dispatch(
+        alertActions.updateAlert({
+          name: SUCCESS_ALERT,
+          message: SUCCESS_DELETE_USER_MSG,
+          confirmFuncName: CONFIRM_PUSH_MANAGE_MAINPAGE,
+        })
+      );
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
   return (
     <>
@@ -32,6 +41,7 @@ const ManageUserDelete: React.FC<{ userId: number }> = (props) => {
   );
 };
 
+const ManageUserDelete = React.memo(MManageUserDelete);
 export { ManageUserDelete };
 
 const UserDeleteButton = styled(Button)`

@@ -9,3 +9,15 @@ export const SECRET_KEY = "HOLYBANG1!";
 
 export const MIN_1 = 60000;
 export const MIN_30 = 180000;
+
+export const ADMIN_ROLE = "ADMIN";
+export const USER_ROLE = "USER";
+
+export const BASIC_PROVIDER = "basic";
+export const KAKAO_PROVIDER = "kakao";
+export const FACEBOOK_PROVIDER = "facebook";
+
+export const LOGIN_PAGE_TITLE = "ChawChaw에`로그인 해주세요.";
+export const LOGIN_PAGE_SUBTITLE = "아이디와 비밀번호를 입력해주세요.";
+export const ROLE_ADMIN = "ADMIN";
+export const ROLE_USER = "USER";

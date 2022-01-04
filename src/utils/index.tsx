@@ -1,8 +1,13 @@
 import CryptoJS from "crypto-js";
+import React from "react";
+import Router from "next/router";
 import { SECRET_KEY } from "../constants";
+import store, { RootState } from "../store";
+import { alertActions } from "../store/alertSlice";
 
 const arrayRemovedItem = (item: any, array: any[]) => {
-  const result = array;
+  const result = [...array];
+
   const removeItemIndex = array.findIndex((atom) => atom === item);
   if (removeItemIndex !== -1) {
     result.splice(removeItemIndex, 1);
@@ -39,10 +44,31 @@ const avoidLocalStorageUndefined = (itemName: string, initialData: any) => {
   return localStorageData;
 };
 
+const isLogin = () => {
+  const loginCurrent = avoidLocalStorageUndefined("accessToken", false);
+  return Boolean(loginCurrent);
+};
+
+const newError = (errorName: string, errorMessage: string) => {
+  const error = new Error(errorMessage);
+  error.name = errorName;
+  return error;
+};
+
+const authRoute = (condition: boolean, redirectUrl: string) => {
+  if (condition) {
+    Router.push(redirectUrl);
+    return <div></div>;
+  }
+};
+
 export {
   arrayRemovedItem,
   saveSecureLocalStorage,
   getSecureLocalStorage,
   avoidLocalStorageUndefined,
   divideMain,
+  isLogin,
+  newError,
+  authRoute,
 };

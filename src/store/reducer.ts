@@ -3,8 +3,17 @@ import { AnyAction, combineReducers } from "redux";
 import { AppState } from ".";
 import alertReducer from "./alertSlice";
 import authReducer from "./authSlice";
+import chatReducer from "./chatSlice";
+import chartReducer from "./chartSlice";
+import profileReducer from "./profileSlice";
 
-const rootReducer = combineReducers({ alert: alertReducer, auth: authReducer });
+const rootReducer = combineReducers({
+  alert: alertReducer,
+  auth: authReducer,
+  chat: chatReducer,
+  chart: chartReducer,
+  profile: profileReducer,
+});
 
 export const reducer = (state: AppState, action: AnyAction) => {
   if (action.type === HYDRATE) {

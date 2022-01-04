@@ -1,9 +1,9 @@
-import { SetStateAction } from "react";
+import React, { SetStateAction } from "react";
 
 export interface PostCardInfoProps {
   pastDate: number;
-  viewCount: number;
-  likeCount: number;
+  views: number;
+  likes: number;
 }
 
 export interface PostCardImageInfoProps {
@@ -19,6 +19,7 @@ export interface PostCardProps
   imageUrl: string;
   id: number;
   content: string;
+  regDate?: string;
 }
 
 export interface PostModalHeadProps {
@@ -42,7 +43,9 @@ export interface PostModalInfoProps extends PostModalHeadProps {
   repLanguage: string;
   isLike: boolean;
 }
-export interface PostModalProps extends PostModalInfoProps {}
+export interface PostModalProps extends PostModalInfoProps {
+  children?: React.ReactNode;
+}
 
 export interface PostOrderProps {
   sortInfo: string[];
@@ -54,4 +57,23 @@ export interface SearchPostCardProps {
   hopeLanguage: string;
   order: string;
   isFirst: boolean;
+}
+export interface PostCardImageInfoProps {
+  repCountry: string;
+  repLanguage: string;
+  repHopeLanguage: string;
+  name: string;
+}
+
+export interface PostModalActiveProps {
+  id: number;
+  isLike: boolean;
+}
+
+export interface PostSearchProps {
+  searchHandler: (inputs: string) => void;
+}
+
+export interface PostSectionProps {
+  postInfo: PostCardProps[];
 }

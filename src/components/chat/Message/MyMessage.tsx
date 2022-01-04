@@ -1,25 +1,19 @@
 import Image from "next/image";
-import { MouseEventHandler, useEffect, useState } from "react";
+import React, { MouseEventHandler, useEffect, useState } from "react";
 import styled from "styled-components";
-
-import { useChat } from "../../../hooks/api/chat/useChat";
+import { MyMessageProps } from "../../../types/chat";
+import { useAppDispatch } from "../../../hooks/redux";
+import { asyncErrorHandle } from "../../../store/alertSlice";
+import { translateContext } from "../../../store/chatSlice";
 import { LanguageLocale } from "../../common";
 import { MessageContext } from "./MessageContext";
+import { IMAGE_TYPE, MESSAGE_TYPE_MINE } from "../../../constants";
 
-interface MyMessageProps {
-  regDate: string;
-  context: string;
-  selectLanguage: string[];
-  imageUrl?: string;
-  messageType: string;
-  scrollToBottom: () => void;
-}
-
-const MyMessage: React.FC<MyMessageProps> = (props) => {
+const MMyMessage: React.FC<MyMessageProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [context, setContext] = useState(props.context);
   const selectLanguage = LanguageLocale[props.selectLanguage[0]];
-  const { translateContext } = useChat();
+  const dispatch = useAppDispatch();
 
   const handleClickMsgBox: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
@@ -31,12 +25,18 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
   const handleClickMsgContext: React.MouseEventHandler<HTMLDivElement> = async (
     e
   ) => {
-    e.preventDefault();
-    if (props.imageUrl) return;
-    const convertContext = await translateContext(context, selectLanguage);
-    if (!convertContext) return;
-    setContext(convertContext);
-    return;
+    try {
+      e.preventDefault();
+      if (props.imageUrl) return;
+      const convertContext = await dispatch(
+        translateContext({ context, selectLanguage })
+      ).unwrap();
+      if (!convertContext) return;
+      setContext(convertContext);
+      return;
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   // 새로운 메세지 가 props 로 들어오면 context 재설정
@@ -61,7 +61,7 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
       <MessageContext
         isActive={isActive}
         setIsActive={setIsActive}
-        type="me"
+        type={MESSAGE_TYPE_MINE}
         onClick={handleClickMsgContext}
       />
       <MessageText>{context}</MessageText>
@@ -70,12 +70,13 @@ const MyMessage: React.FC<MyMessageProps> = (props) => {
 
   return (
     <MyMessageContainer>
-      {props.messageType === "IMAGE" ? imageMessage : contextMessage}
+      {props.messageType === IMAGE_TYPE ? imageMessage : contextMessage}
       <RegDateMessage>{props.regDate}</RegDateMessage>
     </MyMessageContainer>
   );
 };
 
+const MyMessage = React.memo(MMyMessage);
 export { MyMessage, MessageImageBox, RegDateMessage, MessageText };
 export type { MyMessageProps };
 

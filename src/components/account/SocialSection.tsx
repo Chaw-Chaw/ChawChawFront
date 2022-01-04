@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import React, { MouseEventHandler } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import CSS from "csstype";
@@ -47,7 +47,7 @@ const SocialSection: React.FC = () => {
   );
 };
 
-export default SocialSection;
+export default React.memo(SocialSection);
 
 const FacebookIconBox = styled.div`
   cursor: pointer;

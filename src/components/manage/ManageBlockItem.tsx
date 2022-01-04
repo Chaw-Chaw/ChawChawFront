@@ -1,33 +1,39 @@
 import Image from "next/image";
-import { MouseEventHandler, useState } from "react";
-
+import React, { MouseEventHandler, useState } from "react";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE } from "../../constants";
-import { useBlock } from "../../hooks/api/useBlock";
-import { getSecureLocalStorage } from "../../utils";
+import { useAppDispatch } from "../../hooks/redux";
+import { manageUnBlockUser } from "../../store/actions/manageActions";
+import { asyncErrorHandle } from "../../store/alertSlice";
+import { BlockItem } from "../../types/manage";
 import { Button } from "../common";
-import { BlockItem } from "./ManageBlockList";
 
-interface BlockItemProps extends BlockItem {}
-
-const ManageBlockItem: React.FC<BlockItemProps> = (props) => {
-  const { manageBlockUser, manageUnBlockUser } = useBlock();
+const MManageBlockItem: React.FC<BlockItem> = (props) => {
+  const dispatch = useAppDispatch();
   const [isBlock, setIsBlock] = useState(true);
 
   const handleClickUnblock: MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.preventDefault();
-    (async () => {
-      await manageUnBlockUser(props.userId);
-      setIsBlock(false);
-    })();
+    try {
+      e.preventDefault();
+      (async () => {
+        await dispatch(manageUnBlockUser(props.userId));
+        setIsBlock(false);
+      })();
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   const handleClickblock: MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.preventDefault();
-    (async () => {
-      await manageBlockUser(props.userId);
-      setIsBlock(true);
-    })();
+    try {
+      e.preventDefault();
+      (async () => {
+        await dispatch(manageUnBlockUser(props.userId));
+        setIsBlock(true);
+      })();
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   const blockButton = isBlock ? (
@@ -57,6 +63,7 @@ const ManageBlockItem: React.FC<BlockItemProps> = (props) => {
   );
 };
 
+const ManageBlockItem = React.memo(MManageBlockItem);
 export { ManageBlockItem };
 
 const BlockBox = styled.div`

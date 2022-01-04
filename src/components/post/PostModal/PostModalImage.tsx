@@ -1,7 +1,8 @@
+import React from "react";
 import Image from "next/image";
 import styled from "styled-components";
 
-const PostModalImage: React.FC<{ src: string }> = (props) => {
+const MPostModalImage: React.FC<{ src: string }> = (props) => {
   return (
     <PostModalImageSection>
       <PostModalImageHeadSection />
@@ -19,6 +20,7 @@ const PostModalImage: React.FC<{ src: string }> = (props) => {
   );
 };
 
+const PostModalImage = React.memo(MPostModalImage);
 export { PostModalImage };
 
 const PostModalImageSection = styled.div`

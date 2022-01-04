@@ -1,3 +1,4 @@
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { LocaleLanguage } from "../../common";
 import { PostModalInfoList } from "./PostModalInfoList";
@@ -6,7 +7,7 @@ import { PostModalInfo } from "./PostModalInfo";
 import { PostModalImage } from "./PostModalImage";
 import { PostModalActive } from "./PostModalActive";
 import { PostModalContent } from "./PostModalContent";
-import { PostModalProps } from "../../../../types/post";
+import { PostModalProps } from "../../../types/post";
 
 const PostModal: React.FC<PostModalProps> = (props) => {
   const now = new Date();
@@ -27,10 +28,12 @@ const PostModal: React.FC<PostModalProps> = (props) => {
   const repLanguage = LocaleLanguage[props.repLanguage] || "";
   const repHopeLanguage = LocaleLanguage[props.repHopeLanguage] || "";
   const country = props.country;
-  const language = props.language.map((item) => LocaleLanguage[item] || "");
-  const hopeLanguage = props.hopeLanguage.map(
-    (item) => LocaleLanguage[item] || ""
-  );
+  const language = useMemo(() => {
+    return props.language.map((item) => LocaleLanguage[item] || "");
+  }, [props.language]);
+  const hopeLanguage = useMemo(() => {
+    return props.hopeLanguage.map((item) => LocaleLanguage[item] || "");
+  }, [props.hopeLanguage]);
 
   return (
     <PostModalBox>
@@ -67,7 +70,7 @@ const PostModal: React.FC<PostModalProps> = (props) => {
   );
 };
 
-export default PostModal;
+export default React.memo(PostModal);
 
 const PostModalBox = styled.div`
   position: fixed;

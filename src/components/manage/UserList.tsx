@@ -1,9 +1,9 @@
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
-import { PagenationInfoType, UserListItemType } from "../../../types/manage";
+import { PagenationInfoType, UserListItemType } from "../../types/manage";
 import { UserListItem } from "./UserListItem";
 
-const UserList: React.FC<{
+const MUserList: React.FC<{
   usersList: UserListItemType[];
   pagenationInfo: PagenationInfoType;
   selectedPageNumber: number;
@@ -41,6 +41,7 @@ const UserList: React.FC<{
   );
 };
 
+const UserList = React.memo(MUserList);
 export { UserList };
 
 const UserListContainer = styled.div`

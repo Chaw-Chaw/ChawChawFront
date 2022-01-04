@@ -1,19 +1,16 @@
+import React from "react";
 import styled from "styled-components";
 import { PostCard } from "./PostCard";
 import { CountryLocale, LocaleLanguage } from "../common";
-import { PostCardProps } from "../../../types/post";
-
-interface PostSectionProps {
-  postInfo: PostCardProps[];
-}
+import { PostSectionProps } from "../../types/post";
 
 const PostSection: React.FC<PostSectionProps> = (props) => {
   const postCardList =
     props.postInfo &&
-    props.postInfo.map((item: any, index) => {
+    props.postInfo.map((item, index) => {
       const now = new Date();
-      const dateArr = item.regDate.substring(0, 10).split("-");
-      const stDate = new Date(dateArr[0], dateArr[1], dateArr[2]);
+      const dateArr = item.regDate?.substring(0, 10).split("-") || "";
+      const stDate = new Date(+dateArr[0], +dateArr[1], +dateArr[2]);
       const endDate = new Date(
         now.getFullYear(),
         now.getMonth() + 1,
@@ -30,8 +27,8 @@ const PostSection: React.FC<PostSectionProps> = (props) => {
           id={item.id}
           name={item.name}
           key={index}
-          viewCount={item.views}
-          likeCount={item.likes}
+          views={item.views}
+          likes={item.likes}
           pastDate={pastDays}
           imageUrl={item.imageUrl}
           repCountry={repCountry}
@@ -51,7 +48,7 @@ const PostSection: React.FC<PostSectionProps> = (props) => {
   );
 };
 
-export default PostSection;
+export default React.memo(PostSection);
 
 const PostSectionBox = styled.div`
   display: flex;

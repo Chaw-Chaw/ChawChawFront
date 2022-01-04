@@ -1,6 +1,7 @@
 import styled from "styled-components";
+import React from "react";
 
-const EmptyAlarm: React.FC<{ title: string }> = (props) => {
+const MEmptyAlarm: React.FC<{ title: string }> = (props) => {
   return (
     <EmptyNewMessageMark>
       <span>{props.title}</span>
@@ -8,6 +9,7 @@ const EmptyAlarm: React.FC<{ title: string }> = (props) => {
   );
 };
 
+const EmptyAlarm = React.memo(MEmptyAlarm);
 export { EmptyAlarm };
 
 const EmptyNewMessageMark = styled.div`

@@ -1,5 +1,12 @@
 import ReactFullpage from "@fullpage/react-fullpage";
-import { useContext, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styled, { ThemeContext } from "styled-components";
 import { USEAGE_INFO } from "../../constants";
 import { Layout } from "../common";
@@ -13,9 +20,9 @@ const IndexFullPage: React.FC = () => {
   const [sectionColor, setSectionColor] = useState("white");
   const fullpageApiRef = useRef<any>({});
 
-  const moveTop = () => {
+  const moveTop = useCallback(() => {
     fullpageApiRef.current.moveTo(1, 0);
-  };
+  }, []);
 
   useEffect(() => {
     if (id === "light") {
@@ -24,6 +31,11 @@ const IndexFullPage: React.FC = () => {
       setSectionColor("#4b4b4b");
     }
   }, [id]);
+
+  const sectionsColor = useMemo(
+    () => [sectionColor, "orange", "#ffaf40"],
+    [sectionColor]
+  );
 
   const slideSection = USEAGE_INFO.map((item) => {
     return (
@@ -42,7 +54,7 @@ const IndexFullPage: React.FC = () => {
       <IntroduceHeader moveTop={moveTop} />
       <ReactFullpage
         scrollOverflow={true}
-        sectionsColor={[sectionColor, "orange", "#ffaf40"]}
+        sectionsColor={sectionsColor}
         render={({ fullpageApi }: { fullpageApi: any }) => {
           fullpageApiRef.current = fullpageApi;
           return (

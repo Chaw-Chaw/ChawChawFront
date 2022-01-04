@@ -3,18 +3,19 @@ import React, { useContext, useEffect, useState } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { Logo, ThemeToggle } from "..";
 import { POST_PAGE_URL } from "../../../constants/pageUrls";
-import { AuthContext } from "../../../store/AuthContext";
+import { useAppSelector } from "../../../hooks/redux";
 import HeaderCondition from "./HeaderCondition";
 import { MobileHeader } from "./MobileHeader";
 
 const Header: React.FC = () => {
-  const { user } = useContext(AuthContext);
+  const user = useAppSelector((state) => state.auth.user);
   const router = useRouter();
   const [viewSchool, setViewSchool] = useState(false);
   useEffect(() => {
     if (router.pathname === POST_PAGE_URL && user.school) setViewSchool(true);
     else setViewSchool(false);
-  }, [router.pathname]);
+  }, [router.pathname, user.school]);
+
   return (
     <>
       <HeaderWrapper>
@@ -34,7 +35,7 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+export default React.memo(Header);
 
 const ThemeToggleBox = styled.div`
   margin: 1rem;

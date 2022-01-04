@@ -3,12 +3,16 @@ import { getSecureLocalStorage, saveSecureLocalStorage } from ".";
 import {
   GrantRefreshResponseType,
   RefreshResponseBody,
-} from "../../types/account";
+} from "../types/account";
 import {
+  CONFIRM_INIT_LOGOUT,
+  ERROR_ALERT,
   ERROR_CODES,
   GRANTREFRESH_API_URL,
   LOGIN_PAGE_URL,
 } from "../constants";
+import store from "../store";
+import { alertActions } from "../store/alertSlice";
 
 export const request = axios.create({
   withCredentials: true,
@@ -43,9 +47,13 @@ const grantRefresh = async () => {
         status === "T405" ||
         status === "G403"
       ) {
-        alert(ERROR_CODES[status].message);
-        window.localStorage.clear();
-        window.location.href = LOGIN_PAGE_URL;
+        store.dispatch(
+          alertActions.updateAlert({
+            name: ERROR_ALERT,
+            message: ERROR_CODES[status].message,
+            confirmFuncName: CONFIRM_INIT_LOGOUT,
+          })
+        );
         return;
       }
       return;

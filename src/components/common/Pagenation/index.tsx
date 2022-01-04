@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import styled from "styled-components";
-import { PagenationInfoType } from "../../../../types/manage";
+import { PagenationInfoType } from "../../../types/manage";
 
 import { PageButton } from "./PageButton";
 

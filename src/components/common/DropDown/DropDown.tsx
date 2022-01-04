@@ -1,6 +1,16 @@
-import React, { MouseEventHandler, SetStateAction, useState } from "react";
+import React, {
+  MouseEventHandler,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useState,
+} from "react";
 
 import styled from "styled-components";
+import { INFO_ALERT, INFO_ALREADY_SAMEVALUE_MSG } from "../../../constants";
+import { SEARCH } from "../../../constants/post";
+import { useAppDispatch } from "../../../hooks/redux";
+import { alertActions } from "../../../store/alertSlice";
 import { DropDownBox, InitialBoxProps } from "./DropDownBox";
 import { Option } from "./Option";
 
@@ -10,35 +20,49 @@ interface DropDownProps extends InitialBoxProps {
   index: number;
   type: "SEARCH" | "NORMAL";
   setValues: React.Dispatch<SetStateAction<string[]>>;
+  children?: ReactNode;
 }
 
-const DropDown: React.FC<DropDownProps> = (props) => {
+const MDropDown: React.FC<DropDownProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
-  const index = props?.index;
+  const dispatch = useAppDispatch();
+  const { index, setValues } = props;
 
-  const saveInfo = (item: string) => {
-    if (props.setValues && index !== undefined) {
-      props.setValues((preState) => {
-        const result = preState;
-        if (result.includes(item)) {
-          // message.info("이미 같은 값을 선택하셨습니다.");
-          return result;
-        }
-        result[index] = item;
-        return [...result];
-      });
-    }
-  };
+  const saveInfo = useCallback(
+    (item: string) => {
+      if (setValues && index !== undefined) {
+        setValues((preState) => {
+          const result = preState;
+          if (result.includes(item)) {
+            dispatch(
+              alertActions.updateAlert({
+                name: INFO_ALERT,
+                message: INFO_ALREADY_SAMEVALUE_MSG,
+              })
+            );
+            return result;
+          }
+          result[index] = item;
+          return [...result];
+        });
+      }
+    },
+    [dispatch, index, setValues]
+  );
 
-  const handleClickDropDown: MouseEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault();
-    setIsActive((isActive) => !isActive);
-  };
+  const handleClickDropDown: MouseEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+      setIsActive((isActive) => !isActive);
+    },
+    []
+  );
 
-  const handleMouseLeaveDropDown: MouseEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault();
-    setIsActive(false);
-  };
+  const handleMouseLeaveDropDown: MouseEventHandler<HTMLDivElement> =
+    useCallback((e) => {
+      e.preventDefault();
+      setIsActive(false);
+    }, []);
 
   const selectOptionList = props.options.map((item, index) => {
     return { value: item, id: index };
@@ -56,12 +80,12 @@ const DropDown: React.FC<DropDownProps> = (props) => {
       height={props.height}
       onClick={handleClickDropDown}
       color={
-        props.type === "SEARCH" && props.initialValue !== props.value
+        props.type === SEARCH && props.initialValue !== props.value
           ? props.backgroundColor
           : props.color
       }
       backgroundColor={
-        props.type === "SEARCH" && props.initialValue !== props.value
+        props.type === SEARCH && props.initialValue !== props.value
           ? props.color
           : props.backgroundColor
       }
@@ -79,6 +103,7 @@ const DropDown: React.FC<DropDownProps> = (props) => {
   );
 };
 
+const DropDown = React.memo(MDropDown);
 export { DropDown };
 export type { DropDownProps };
 

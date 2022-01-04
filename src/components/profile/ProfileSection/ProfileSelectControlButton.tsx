@@ -1,28 +1,39 @@
-import { MouseEventHandler, SetStateAction } from "react";
+import React, { MouseEventHandler, SetStateAction } from "react";
 import styled from "styled-components";
+import {
+  INFO_AFTER_SELECT_MSG,
+  INFO_ALERT,
+  SELECT_TYPE,
+} from "../../../constants";
+import { SELECT } from "../../../constants/profile";
+import { useAppDispatch } from "../../../hooks/redux";
+import { alertActions } from "../../../store/alertSlice";
 import { Button } from "../../common";
 
-const ProfileSelectControlButton: React.FC<{
+const MProfileSelectControlButton: React.FC<{
   values: string[];
   setValues: React.Dispatch<SetStateAction<string[]>>;
   count: number;
 }> = (props) => {
+  const dispatch = useAppDispatch();
   const addItem = () => {
     if (props.setValues && props.values) {
-      if (props.values[props.values.length - 1] !== "Select") {
+      if (props.values[props.values.length - 1] !== SELECT) {
         props.setValues((preState) => {
-          return [...preState, "Select"];
+          return [...preState, SELECT];
         });
         return;
       }
-      // message.info("값을 선택 후 추가 할 수 있습니다.");
+      dispatch(
+        alertActions.updateAlert({
+          name: INFO_ALERT,
+          message: INFO_AFTER_SELECT_MSG,
+        })
+      );
     }
   };
 
   const removeItem = () => {
-    // 왜 두개 이상의 배열에서 갑자기 한개로 줄어들까?
-    // setState 안에서 prestate는 읽기 전용이다. 클로저 변수가 이용되기 때문에 pre값을 직접 수정하는것은 미친짓이다
-    // pre 값은 고정되지 않고 연속해서 setState 가 호출될 경우 계속 해서 바뀌기 때문 따라서 바로 카피해서 고정시킨다음 사용.
     if (props.setValues) {
       props.setValues((preState) => {
         const result = [...preState];
@@ -72,6 +83,7 @@ const ProfileSelectControlButton: React.FC<{
   return <RemoveButton onClick={handleClickRemoveButton}>-</RemoveButton>;
 };
 
+const ProfileSelectControlButton = React.memo(MProfileSelectControlButton);
 export { ProfileSelectControlButton };
 
 const AddButton = styled(Button)`

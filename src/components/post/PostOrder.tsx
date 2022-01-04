@@ -1,5 +1,6 @@
+import React from "react";
 import styled from "styled-components";
-import { PostOrderProps } from "../../../types/post";
+import { PostOrderProps } from "../../types/post";
 import { SelectInfoDropDown } from "../common";
 import { selectItemInfoList } from "../../constants/order";
 
@@ -36,7 +37,7 @@ const PostOrder: React.FC<PostOrderProps> = (props) => {
   );
 };
 
-export default PostOrder;
+export default React.memo(PostOrder);
 export { PostOrderBox, SelectInfoBox };
 
 const ExplainIcons = styled.div`

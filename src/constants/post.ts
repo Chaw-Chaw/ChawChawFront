@@ -1,5 +1,8 @@
 import { DEFAULT_PROFILE_IMAGE } from "./urls";
 
+export const SEARCH = "SEARCH";
+export const BASIC = "BASIC";
+
 export const initialPostInfo = {
   content: "",
   country: [],

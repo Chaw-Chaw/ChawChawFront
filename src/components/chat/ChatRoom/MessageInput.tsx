@@ -1,18 +1,24 @@
 import styled from "styled-components";
 import { TextArea } from "../../common/Input";
 import { AiOutlinePicture, AiOutlineSend } from "react-icons/ai";
-import {
+import React, {
   ChangeEventHandler,
   KeyboardEventHandler,
   MouseEventHandler,
+  useCallback,
   useContext,
 } from "react";
-import axios from "axios";
-import { AuthContext } from "../../../store/AuthContext";
-
 import { ChatContext } from "../../../store/ChatContext";
-import { INITIAL_ROOMID } from "../../../constants";
-import { useSendImage } from "../../../hooks/api/useSendImage";
+import {
+  IMAGE_TYPE,
+  INFO_ALERT,
+  INFO_BLOCKUSER_MSG,
+  INITIAL_ROOMID,
+  KEYTYPE_ENTER,
+} from "../../../constants";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { alertActions, asyncErrorHandle } from "../../../store/alertSlice";
+import { sendImageMessage } from "../../../store/chatSlice";
 
 interface MessageInputProps {
   value: string;
@@ -21,44 +27,69 @@ interface MessageInputProps {
 }
 
 const MessageInput: React.FC<MessageInputProps> = (props) => {
-  const { mainRoom } = useContext(ChatContext);
-  const { user } = useContext(AuthContext);
-
-  const { sendImageMessage } = useSendImage();
+  const { publish } = useContext(ChatContext);
+  const dispatch = useAppDispatch();
+  const mainRoom = useAppSelector((state) => state.chat.mainRoom);
+  const user = useAppSelector((state) => state.auth.user);
   const isNotActive = mainRoom.id === INITIAL_ROOMID ? true : false;
+  const isBlockUser = user.blockIds?.includes(mainRoom.userId);
+  const sendMessage = props.sendMessage;
 
   const handleKeyPress: KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
     if (isNotActive) return;
-    if (e.key === "Enter") {
+    if (e.key === KEYTYPE_ENTER) {
       e.preventDefault();
       if (user.blockIds?.includes(mainRoom.userId)) {
-        // message.error("차단한 사용자 입니다.");
+        dispatch(
+          alertActions.updateAlert({
+            name: INFO_ALERT,
+            message: INFO_BLOCKUSER_MSG,
+          })
+        );
         return;
       }
-      props.sendMessage();
+      sendMessage();
     }
   };
 
-  const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+  const handleChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
     e.preventDefault();
-    if (user.blockIds?.includes(mainRoom.userId)) {
-      // message.error("차단한 사용자 입니다.");
-      return;
+    try {
+      if (user.blockIds?.includes(mainRoom.userId)) {
+        dispatch(
+          alertActions.updateAlert({
+            name: INFO_ALERT,
+            message: INFO_BLOCKUSER_MSG,
+          })
+        );
+        return;
+      }
+      const imageUrl = await dispatch(sendImageMessage(e)).unwrap();
+      publish(imageUrl, IMAGE_TYPE);
+      // 같은 이미지 한번더 보낼수 있도록 이벤트 타겟 값 초기화
+      e.target.value = "";
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
     }
-    sendImageMessage(e);
-    // 같은 이미지 한번더 보낼수 있도록 이벤트 타겟 값 초기화
-    e.target.value = "";
   };
 
-  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault();
-    if (isNotActive) return;
-    if (user.blockIds?.includes(mainRoom.userId)) {
-      // message.error("차단한 사용자 입니다.");
-      return;
-    }
-    props.sendMessage();
-  };
+  const handleClick: MouseEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (isNotActive) return;
+      if (isBlockUser) {
+        dispatch(
+          alertActions.updateAlert({
+            name: INFO_ALERT,
+            message: INFO_BLOCKUSER_MSG,
+          })
+        );
+        return;
+      }
+      sendMessage();
+    },
+    [isNotActive, isBlockUser, dispatch, sendMessage]
+  );
 
   return (
     <InputBox>
@@ -89,22 +120,41 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
   );
 };
 
-export default MessageInput;
+export default React.memo(MessageInput);
 
 const InputBox = styled.div`
-  @media (max-width: 768px) {
-    position: fixed;
-    bottom: 0px;
-    left: 0px;
-    width: 100%;
-    margin: 0px auto;
-  }
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   box-sizing: border-box;
   background-color: ${(props) => props.theme.bodyBackgroundColor};
+  @media (max-width: 1024px) {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: ${(props) => props.theme.bodyBackgroundColor};
+  }
+  @media (max-width: 768px) {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    margin: 0px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    background-color: ${(props) => props.theme.bodyBackgroundColor};
+  }
 `;
 
 const InputBoxInner = styled.div`

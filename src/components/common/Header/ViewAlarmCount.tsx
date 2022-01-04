@@ -1,11 +1,12 @@
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { CHAT_PAGE_URL, LIMIT_NEWALARM_SIZE } from "../../../constants";
+import { useAppSelector } from "../../../hooks/redux";
 import { ChatContext } from "../../../store/ChatContext";
 import { AlarmCount } from "../AlarmCount";
 
-const ViewAlarmCount: React.FC = () => {
-  const { newMessages, newLikes } = useContext(ChatContext);
+const MViewAlarmCount: React.FC = () => {
+  const { newMessages, newLikes } = useAppSelector((state) => state.chat);
   const router = useRouter();
   const newAlarmNumber =
     router.pathname !== CHAT_PAGE_URL
@@ -25,4 +26,5 @@ const ViewAlarmCount: React.FC = () => {
   );
 };
 
+const ViewAlarmCount = React.memo(MViewAlarmCount);
 export { ViewAlarmCount };

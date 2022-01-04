@@ -1,18 +1,17 @@
 import Image from "next/image";
 import styled from "styled-components";
 import { CgBlock, CgUnblock } from "react-icons/cg";
-import {
+import React, {
   Dispatch,
   MouseEventHandler,
   SetStateAction,
-  useContext,
   useEffect,
   useState,
 } from "react";
-
-import { ChatContext } from "../../../store/ChatContext";
-import { AuthContext } from "../../../store/AuthContext";
-import { useBlock } from "../../../hooks/api/useBlock";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { organizeChatMessages } from "../../../store/chatSlice";
+import { blockUser, unBlockUser } from "../../../store/actions/postActions";
+import { asyncErrorHandle } from "../../../store/alertSlice";
 
 interface ChatProfileProps {
   name: string;
@@ -21,32 +20,37 @@ interface ChatProfileProps {
   userId: number;
 }
 
-const ChatProfile: React.FC<ChatProfileProps> = (props) => {
-  const { mainRoom } = useContext(ChatContext);
-  const { user } = useContext(AuthContext);
+const MChatProfile: React.FC<ChatProfileProps> = (props) => {
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
   const [isBlock, setIsBlock] = useState(user.blockIds?.includes(props.userId));
-  const { blockUser, unblockUser } = useBlock();
-  const { organizeChatMessages } = useContext(ChatContext);
+  const isBlockUser = user.blockIds?.includes(props.userId);
 
-  const handleClickBlockBtn: MouseEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault();
-    blockUser(props.userId);
-    setIsBlock(true);
+  const handleClickBlockBtn: MouseEventHandler<HTMLDivElement> = async (e) => {
+    try {
+      e.preventDefault();
+      await dispatch(blockUser(props.userId));
+      setIsBlock(true);
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
   const handleClickUnblockBtn: MouseEventHandler<HTMLDivElement> = async (
     e
   ) => {
-    e.preventDefault();
-    await unblockUser(props.userId);
-    setIsBlock(false);
-    organizeChatMessages(mainRoom.id);
-    // 새로고침
-    // 원래라면 해당방에 해당하는 Messages만 따로 불러와서 setMainMessage를 다시해야합니다.
+    try {
+      e.preventDefault();
+      await dispatch(unBlockUser(props.userId));
+      setIsBlock(false);
+      dispatch(organizeChatMessages());
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   useEffect(() => {
-    setIsBlock(user.blockIds?.includes(props.userId));
-  }, [JSON.stringify(user.blockIds)]);
+    setIsBlock(isBlockUser);
+  }, [isBlockUser]);
 
   const chatBlock = isBlock ? (
     <ChatUnblockButton onClick={handleClickUnblockBtn}>
@@ -59,6 +63,7 @@ const ChatProfile: React.FC<ChatProfileProps> = (props) => {
       <span>차단하기</span>
     </ChatBlockButton>
   );
+
   return (
     <ChatProfileBox>
       <ChatProfileImageSection>
@@ -80,6 +85,7 @@ const ChatProfile: React.FC<ChatProfileProps> = (props) => {
   );
 };
 
+const ChatProfile = React.memo(MChatProfile);
 export { ChatProfile };
 
 const ChatProfileBox = styled.div`
