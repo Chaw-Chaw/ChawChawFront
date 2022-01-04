@@ -9,13 +9,13 @@ const MPostCardInfo: React.FC<PostCardInfoProps> = (props) => {
       <DateViewBox>
         <PastDateBox>{props.pastDate} days ago</PastDateBox>
         <ViewCountBox>
-          {props.viewCount}
+          {props.views}
           <AiFillEye />
         </ViewCountBox>
       </DateViewBox>
       <LikeBox>
         <AiFillHeart />
-        {props.likeCount}
+        {props.likes}
       </LikeBox>
     </PostCardInfoBox>
   );

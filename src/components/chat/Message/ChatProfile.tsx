@@ -11,6 +11,7 @@ import React, {
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { organizeChatMessages } from "../../../store/chatSlice";
 import { blockUser, unBlockUser } from "../../../store/actions/postActions";
+import { asyncErrorHandle } from "../../../store/alertSlice";
 
 interface ChatProfileProps {
   name: string;
@@ -26,18 +27,25 @@ const MChatProfile: React.FC<ChatProfileProps> = (props) => {
   const isBlockUser = user.blockIds?.includes(props.userId);
 
   const handleClickBlockBtn: MouseEventHandler<HTMLDivElement> = async (e) => {
-    e.preventDefault();
-    await dispatch(blockUser(props.userId));
-    setIsBlock(true);
+    try {
+      e.preventDefault();
+      await dispatch(blockUser(props.userId));
+      setIsBlock(true);
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
   const handleClickUnblockBtn: MouseEventHandler<HTMLDivElement> = async (
     e
   ) => {
-    e.preventDefault();
-    await dispatch(unBlockUser(props.userId));
-    setIsBlock(false);
-    dispatch(organizeChatMessages());
-    // 새로고침
+    try {
+      e.preventDefault();
+      await dispatch(unBlockUser(props.userId));
+      setIsBlock(false);
+      dispatch(organizeChatMessages());
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   useEffect(() => {

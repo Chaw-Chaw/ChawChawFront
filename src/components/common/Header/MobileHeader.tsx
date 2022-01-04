@@ -30,7 +30,7 @@ const MobileHeaderContainer = styled.div`
   height: 70px;
   box-sizing: border-box;
   padding: 5px 16px;
-  z-index: 10;
+  z-index: 30;
   -ms-user-select: none;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;

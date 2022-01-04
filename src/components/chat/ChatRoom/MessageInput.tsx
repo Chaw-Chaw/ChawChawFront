@@ -123,19 +123,38 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
 export default React.memo(MessageInput);
 
 const InputBox = styled.div`
-  @media (max-width: 768px) {
-    position: fixed;
-    bottom: 0px;
-    left: 0px;
-    width: 100%;
-    margin: 0px auto;
-  }
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   box-sizing: border-box;
   background-color: ${(props) => props.theme.bodyBackgroundColor};
+  @media (max-width: 1024px) {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: ${(props) => props.theme.bodyBackgroundColor};
+  }
+  @media (max-width: 768px) {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    margin: 0px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    background-color: ${(props) => props.theme.bodyBackgroundColor};
+  }
 `;
 
 const InputBoxInner = styled.div`

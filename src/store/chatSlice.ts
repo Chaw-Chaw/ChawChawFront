@@ -22,12 +22,13 @@ import {
   SEND_IMAGE_MSG_API_URL,
   TRANSLATE_CONTEXT,
 } from "../constants";
-import { RootState } from ".";
+import store, { RootState } from ".";
 import { request } from "../utils/request";
 import { DefaultResponseBody } from "../types/response";
 import Router from "next/router";
 import { ChangeEvent } from "react";
 import axios from "axios";
+import { getSecureLocalStorage } from "../utils";
 
 const initialState: {
   isConnect: boolean;
@@ -57,10 +58,8 @@ const chatSlice = createSlice({
       state.mainChatMessages.push(action.payload);
     },
     stackupNewChatList(state, action: PayloadAction<RoomType>) {
-      const roomIds: number[] = [];
       state.totalMessages.push(action.payload);
-      state.totalMessages.forEach((item) => roomIds.push(item.roomId));
-      state.roomIds = roomIds;
+      state.roomIds.push(action.payload.roomId);
     },
     stackupTotalMessages(state, action: PayloadAction<MessageType>) {
       const result: RoomType[] = [];
@@ -116,9 +115,8 @@ const chatSlice = createSlice({
     },
     filterNewMessages(state) {
       const filteredNewMessages = state.newMessages.filter((item) => {
-        if (item.roomId === undefined || item.roomId !== state.mainRoom.id) {
-          return true;
-        }
+        if (item.roomId === undefined) return true;
+        if (item.roomId !== state.mainRoom.id) return true;
         return false;
       });
       state.newMessages = filteredNewMessages;
@@ -167,10 +165,12 @@ export const getNewAlarms = createAsyncThunk(
     const response = await request.get<DefaultResponseBody<GetAlarmsType>>(
       GET_ALARMS_API_URL
     );
+
     const likeMessages = response.data.data.likes;
     const newMessages = response.data.data.messages.filter(
       (item) => !user.blockIds?.includes(item.senderId)
     );
+    console.log(newMessages, "newMessage");
     thunkAPI.dispatch(chatActions.updateNewLikes(likeMessages));
     thunkAPI.dispatch(chatActions.updateNewMessages(newMessages));
   }
@@ -178,11 +178,10 @@ export const getNewAlarms = createAsyncThunk(
 
 export const noticeMainRoom = createAsyncThunk(
   "chat/noticeMainRoom",
-  async (_, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
-    const roomId = state.chat.mainRoom.id;
+  async (mainRoomId: number) => {
+    console.log("noticeMainRoom", "noticeMainRoom");
     await request.post(NOTICE_MAINROOM_API_URL, {
-      roomId,
+      roomId: mainRoomId,
     });
   }
 );
@@ -204,6 +203,7 @@ export const confirmChatRoom = createAsyncThunk(
     const response = await request.get<
       DefaultResponseBody<ConfirmChatRoomType>
     >(CONFIRM_CHATROOM_API_URL + `/${userId}`);
+
     return response.data.data.roomId;
   }
 );
@@ -214,7 +214,7 @@ export const leaveChat = createAsyncThunk(
     const state = thunkAPI.getState() as RootState;
     const roomId = state.chat.mainRoom.id;
     await request.delete(LEAVE_CHATROOM_API_URL, { data: { roomId } });
-    thunkAPI.dispatch(chatActions.filterTotalMessages);
+    await new Promise(() => thunkAPI.dispatch(chatActions.filterTotalMessages));
     Router.push({
       pathname: CHAT_PAGE_URL,
       query: { userId: INITIAL_ID },

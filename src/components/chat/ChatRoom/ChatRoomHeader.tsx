@@ -83,8 +83,9 @@ export { ChatRoomHeader };
 
 const Header = styled.div`
   align-items: center;
-  position: sticky;
+  position: absolute;
   top: 0px;
+  left: 0px;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -95,10 +96,37 @@ const Header = styled.div`
   background-color: ${(props) => props.theme.bodyBackgroundColor};
   height: 50px;
   z-index: 20;
+  @media (max-width: 1024px) {
+    align-items: center;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: ${(props) =>
+      props.theme.id === "light"
+        ? "1px solid rgb(0, 0, 0, 0.2)"
+        : "1px solid rgb(255, 255, 255, 0.2)"};
+    background-color: ${(props) => props.theme.bodyBackgroundColor};
+    height: 50px;
+    z-index: 20;
+  }
   @media (max-width: 768px) {
     top: 70px;
     position: fixed;
     left: 0px;
+    align-items: center;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: ${(props) =>
+      props.theme.id === "light"
+        ? "1px solid rgb(0, 0, 0, 0.2)"
+        : "1px solid rgb(255, 255, 255, 0.2)"};
+    background-color: ${(props) => props.theme.bodyBackgroundColor};
+    height: 50px;
+    z-index: 20;
   }
 `;
 
@@ -120,6 +148,7 @@ const MessageHeaderButton = styled.button`
 `;
 
 const ChatListViewButtonBox = styled.div`
+  position: relative;
   display: none;
   @media (max-width: 1024px) {
     display: flex;

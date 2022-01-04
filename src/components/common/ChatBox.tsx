@@ -32,7 +32,7 @@ const MChatBox: React.FC<ChatBoxProps> = (props) => {
   const router = useRouter();
   const regDate = props.regDate.split("T").join(" ");
   const isCurrentChat = props.roomId === mainRoom.id;
-  const matchNewMessages = newMessages.filter((item: any) => {
+  const matchNewMessages = newMessages.filter((item) => {
     if (item.roomId === props.roomId) return true;
     return false;
   });

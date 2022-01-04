@@ -15,12 +15,7 @@ import {
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { alertActions, asyncErrorHandle } from "../../store/alertSlice";
-import {
-  chatActions,
-  confirmChatRoom,
-  makeChatRoom,
-  organizeChatMessages,
-} from "../../store/chatSlice";
+import { chatActions } from "../../store/chatSlice";
 
 export default function Chat() {
   const dispatch = useAppDispatch();

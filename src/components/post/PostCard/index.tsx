@@ -4,11 +4,12 @@ import Image from "next/image";
 import PostModal from "../PostModal";
 import { ModalLayout } from "../../common";
 import { initialPostInfo } from "../../../constants/post";
-import { PostCardProps, PostModalInfoProps } from "../../../types/post";
+
 import { PostCardImageInfo } from "./PostCardImageInfo";
 import { PostCardInfo } from "./PostCardInfo";
 import { useAppDispatch } from "../../../hooks/redux";
 import { getPostModalData } from "../../../store/actions/postActions";
+import { PostCardProps, PostModalInfoProps } from "../../../types/post";
 
 const MPostCard: React.FC<PostCardProps> = (props) => {
   const dispatch = useAppDispatch();
@@ -94,8 +95,8 @@ const MPostCard: React.FC<PostCardProps> = (props) => {
           </PostCardContent>
           <PostCardInfo
             pastDate={props.pastDate}
-            viewCount={props.viewCount}
-            likeCount={props.likeCount}
+            views={props.views}
+            likes={props.likes}
           />
         </PostCardBox>
       </PostCardContainer>

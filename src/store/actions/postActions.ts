@@ -7,7 +7,6 @@ import {
   SEARCH_POST_API_URL,
   UNBLOCK_API_URL,
 } from "../../constants";
-import { SEARCH_LANGUAGE } from "../../constants/chart";
 import {
   PostCardProps,
   PostModalInfoProps,
@@ -55,8 +54,9 @@ export const blockUser = createAsyncThunk(
   async (userId: number, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
     const user = state.auth.user;
-    await request.delete(BLOCK_API_URL, { data: { userId } });
-    const newBlockIds = user.blockIds || [];
+    await request.post(BLOCK_API_URL, { userId });
+    const blockIds = user.blockIds || [];
+    const newBlockIds = [...blockIds];
     newBlockIds.push(userId);
     thunkAPI.dispatch(authActions.updateUser({ blockIds: newBlockIds }));
   }

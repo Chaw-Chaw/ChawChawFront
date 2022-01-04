@@ -62,6 +62,7 @@ export default function Post() {
 
     try {
       const data = await dispatch(getPostCardList(searchCondition)).unwrap();
+      console.log(data, "getPostdata");
       if (data.length === 0) {
         setIsEnd(true);
         if (isFirst && searchType.current === SEARCH) {

@@ -2,8 +2,8 @@ import React, { SetStateAction } from "react";
 
 export interface PostCardInfoProps {
   pastDate: number;
-  viewCount: number;
-  likeCount: number;
+  views: number;
+  likes: number;
 }
 
 export interface PostCardImageInfoProps {

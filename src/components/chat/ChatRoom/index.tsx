@@ -146,7 +146,6 @@ const Outline = styled.div`
   /* margin-bottom: 50px; */
   width: 100%;
   max-width: 600px;
-
   @media (max-width: 768px) {
     position: fixed;
     top: 120px;
@@ -161,16 +160,38 @@ const Inner = styled.div`
   overflow: auto;
   box-sizing: border-box;
   height: 100%;
+  position: relative;
+  @media (max-width: 1024px) {
+    overflow: auto;
+    box-sizing: border-box;
+    height: 100%;
+    position: relative;
+  }
 `;
 
 const MessageContainer = styled.div`
+  position: absolute;
+  top: 50px;
   height: calc(100% - 102px);
   width: 100%;
   box-sizing: border-box;
   padding: 10px 20px;
   overflow: auto;
+  @media (max-width: 1024px) {
+    position: absolute;
+    top: 50px;
+    height: calc(100% - 102px);
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    overflow: auto;
+  }
   @media (max-width: 768px) {
     height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    overflow: auto;
   }
 `;
 
@@ -198,8 +219,20 @@ const EmptyChatRoomTitle = styled.h1`
 
 const ChatListWrapper = styled.div`
   display: none;
-
   @media (max-width: 1024px) {
+    position: absolute;
+    top: 50px;
+    width: 100%;
+    height: calc(100% - 102px);
     display: flex;
+    overflow: auto;
+  }
+  @media (max-width: 768px) {
+    display: flex;
+    position: inherit;
+    top: inherit;
+    width: inherit;
+    height: inherit;
+    overflow: auto;
   }
 `;
