@@ -1,18 +1,7 @@
 import styled from "styled-components";
+import { ChatMessageProps } from "../../../types/chat";
 import { MyMessage } from "./MyMessage";
 import { YourMessage } from "./YourMessage";
-
-interface ChatMessageProps {
-  src?: string;
-  userName?: string;
-  regDate: string;
-  context: string;
-  selectLanguage: string[];
-  imageUrl?: string;
-  userId: number;
-  messageType: string;
-  scrollToBottom: () => void;
-}
 
 const ChatMessage: React.FC<ChatMessageProps> = (props) => {
   const regDate = props.regDate.split("T").join(" ");

@@ -9,7 +9,6 @@ import {
   ERROR_ALERT,
   ERROR_CODES,
   GRANTREFRESH_API_URL,
-  LOGIN_PAGE_URL,
 } from "../constants";
 import store from "../store";
 import { alertActions } from "../store/alertSlice";

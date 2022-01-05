@@ -1,4 +1,27 @@
 import { DefaultResponseBody } from "./response";
+export interface ActiveProps {
+  activeType?: string;
+}
+export interface IsActiveProps {
+  isActive?: boolean;
+}
+export interface LabelProps {
+  tag?: string;
+  htmlFor?: string;
+}
+
+export interface PasswordInputProps {
+  name?: string;
+  placeholder?: string;
+  register?: object;
+  id?: string;
+}
+
+export interface AccountContainerProps {
+  title?: string;
+  subtitle?: string;
+  width?: string;
+}
 
 export interface ProfileType {
   id: number;
@@ -97,3 +120,10 @@ export type Inputs = {
   webmail: string;
   verificationNumber: number;
 };
+
+export interface SignupInputs {
+  email: string;
+  username: string;
+  password: string;
+  passwordConfirm: string;
+}

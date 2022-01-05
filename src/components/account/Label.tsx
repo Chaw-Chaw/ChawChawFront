@@ -1,9 +1,5 @@
 import styled from "styled-components";
-
-interface LabelProps {
-  tag?: string;
-  htmlFor?: string;
-}
+import { LabelProps } from "../../types/account";
 
 const Label: React.FC<LabelProps> = (props) => {
   const tag = props.tag ? <Tag>{props.tag}</Tag> : null;

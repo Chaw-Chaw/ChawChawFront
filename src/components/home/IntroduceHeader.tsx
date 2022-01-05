@@ -1,7 +1,7 @@
-import styled, { ThemeContext } from "styled-components";
+import styled from "styled-components";
 import { FaArrowCircleRight } from "react-icons/fa";
 import { ThemeToggle } from "../common";
-import React, { MouseEventHandler, useContext, useRef } from "react";
+import React, { MouseEventHandler } from "react";
 import { useRouter } from "next/router";
 import { LOGIN_PAGE_URL, POST_PAGE_URL } from "../../constants/pageUrls";
 import { useAppSelector } from "../../hooks/redux";

@@ -1,10 +1,4 @@
-import React, {
-  Component,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import styled from "styled-components";
 import {
@@ -14,7 +8,7 @@ import {
   SUBJECT_CONVERT,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { asyncErrorHandle } from "../../store/alertSlice";
+import { asyncErrorHandle } from "../../store/actions/alertActions";
 import { getChartData } from "../../store/chartSlice";
 import { LoadingSpinner, SelectInfoDropDown } from "../common";
 

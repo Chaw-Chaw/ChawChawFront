@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { ManageLayout } from "../../../components/manage/ManageLayout";
 import { UserOrder } from "../../../components/manage/UserOrder";
@@ -7,13 +7,14 @@ import { PostSearch as UserSearch } from "../../../components/post/PostSearch";
 import { LanguageLocale, Pagenation } from "../../../components/common";
 import { orderOptions, sortOptions } from "../../../constants/order";
 import { PagenationInfoType, UserListItemType } from "../../../types/manage";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { useAppDispatch } from "../../../hooks/redux";
 import { takeUserList } from "../../../store/actions/manageActions";
-import { alertActions, asyncErrorHandle } from "../../../store/alertSlice";
+import { alertActions } from "../../../store/alertSlice";
 import { ADMIN_ROLE, INFO_ALERT, INFO_NOTRESULT_MSG } from "../../../constants";
+import { isLogin, userRole } from "../../../utils";
+import { asyncErrorHandle } from "../../../store/actions/alertActions";
 
 export default function ManageUser() {
-  const { user, isLogin } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const [searchInfo, setSearchInfo] = useState<string[]>([
@@ -79,19 +80,18 @@ export default function ManageUser() {
 
   const userSearchHandler = async (inputs: string) => {
     searchName.current = inputs;
-
     await getUsersList();
   };
 
   useEffect(() => {
-    if (!isLogin) {
+    if (!isLogin()) {
       return;
     }
-    if (user.role === ADMIN_ROLE) {
+    if (userRole() === ADMIN_ROLE) {
       getUsersList();
       return;
     }
-  }, [user.role, getUsersList, isLogin]);
+  }, [getUsersList]);
 
   return (
     <ManageLayout>

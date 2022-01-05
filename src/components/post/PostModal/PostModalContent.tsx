@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { FormLabel } from "../../common/FormLabel";
 import { PostModalInfoTitle } from "./PostModalInfoList";
 
 const MPostModalContent: React.FC<{ content: string }> = (props) => {
@@ -7,7 +8,12 @@ const MPostModalContent: React.FC<{ content: string }> = (props) => {
     <PostModalInfoListBox>
       <PostModalInfoTitle>Content</PostModalInfoTitle>
       <PostModalContentBox>
-        <PostModalContentText disabled value={props.content} />
+        <PostModalContentText
+          id="postModalContent"
+          disabled
+          value={props.content}
+        />
+        <FormLabel htmlFor="postModalContent">포스트 모달 내용</FormLabel>
       </PostModalContentBox>
     </PostModalInfoListBox>
   );

@@ -3,8 +3,9 @@ import styled from "styled-components";
 import { Input, Button } from "../common";
 import { IoIosSearch } from "react-icons/io";
 import { KeyboardEventHandler, MouseEventHandler, useRef } from "react";
-import { PostSearchProps } from "../../types/post";
 import { KEYTYPE_ENTER } from "../../constants";
+import { PostSearchProps } from "../../types/post";
+import { FormLabel } from "../common/FormLabel";
 
 const MPostSearch: React.FC<PostSearchProps> = (props) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -35,7 +36,12 @@ const MPostSearch: React.FC<PostSearchProps> = (props) => {
       <SearchIconBox>
         <IoIosSearch />
       </SearchIconBox>
-      <SearchInput onKeyPress={handleKeyPress} ref={searchInputRef} />
+      <SearchInput
+        id="searchInput"
+        onKeyPress={handleKeyPress}
+        ref={searchInputRef}
+      />
+      <FormLabel htmlFor="searchInput">포스트 검색창</FormLabel>
       <SearchButton secondary onClick={handleClick}>
         <span>search</span>
       </SearchButton>

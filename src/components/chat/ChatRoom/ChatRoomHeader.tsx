@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { Dispatch, MouseEventHandler, SetStateAction } from "react";
+import React, { MouseEventHandler } from "react";
 import styled from "styled-components";
 import { LIMIT_NEWALARM_SIZE } from "../../../constants";
 import { RiHome2Line } from "react-icons/ri";
@@ -7,13 +7,10 @@ import { BsBoxArrowRight, BsChatDots } from "react-icons/bs";
 import { AlarmCount, ChangeLanguageDropDown } from "../../common";
 import { POST_PAGE_URL } from "../../../constants/pageUrls";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { chatActions, leaveChat } from "../../../store/chatSlice";
-import { asyncErrorHandle } from "../../../store/alertSlice";
-
-interface ChatRoomHeaderType {
-  selectLanguage: string[];
-  setSelectLanguage: Dispatch<SetStateAction<string[]>>;
-}
+import { chatActions } from "../../../store/chatSlice";
+import { ChatRoomHeaderType } from "../../../types/chat";
+import { leaveChat } from "../../../store/actions/chatActions";
+import { asyncErrorHandle } from "../../../store/actions/alertActions";
 
 const MChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
   const router = useRouter();

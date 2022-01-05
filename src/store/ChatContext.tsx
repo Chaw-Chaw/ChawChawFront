@@ -1,16 +1,7 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import * as StompJs from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import {
-  ADMIN_ROLE,
   BACKEND_URL,
   CHAT_PAGE_URL,
   CONFIRM_INIT_LOGOUT,
@@ -21,22 +12,21 @@ import {
   INITIAL_ID,
   INITIAL_MAINROOMID,
   INITIAL_ROOMID,
-  LOGIN_PAGE_URL,
-  USER_ROLE,
 } from "../constants";
 import { getSecureLocalStorage } from "../utils";
 import { LikeAlarmType, MessageType, RoomType } from "../types/chat";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
+import { chatActions } from "./chatSlice";
+import { alertActions } from "./alertSlice";
+import { useRouter } from "next/router";
 import {
-  chatActions,
+  noticeMainRoom,
   confirmChatRoom,
   getNewAlarms,
   makeChatRoom,
-  noticeMainRoom,
   organizeChatMessages,
-} from "./chatSlice";
-import { alertActions, asyncErrorHandle } from "./alertSlice";
-import { useRouter } from "next/router";
+} from "./actions/chatActions";
+import { asyncErrorHandle } from "./actions/alertActions";
 
 interface ChatContextObj {
   publish: (message: string, messageType: string) => void;
@@ -90,7 +80,7 @@ const ChatContextProvider: React.FC = (props) => {
         // 모든 subscribe는 여기서 구독이 이루어집니다.
         chatClient.current.subscribe(`/queue/chat/${user.id}`, (response) => {
           const message: MessageType = JSON.parse(response.body);
-          console.log(message, "새로운 메세지");
+
           // 블록 리스트에 추가된 메세지는 알람 받지 않음
           if (userBlockIds.current?.includes(message.senderId)) {
             return;
@@ -109,7 +99,6 @@ const ChatContextProvider: React.FC = (props) => {
           // 채팅룸 개설 : 메시지의 룸 넘버가 기존에 없던 룸넘버라면
 
           if (!roomIdsRef.current.includes(message.roomId)) {
-            console.log(roomIdsRef.current, message.roomId, "채팅룸 개설 로직");
             const myImage = user.imageUrl || DEFAULT_PROFILE_IMAGE;
             const myName = user.name || "";
             const myId = user.id || INITIAL_ID;
@@ -125,7 +114,7 @@ const ChatContextProvider: React.FC = (props) => {
           }
 
           // 기존 채팅방에 들어오는 메세지일 경우
-          console.log(message, "새로운 메세지4");
+
           dispatch(chatActions.stackupTotalMessages(message));
         });
 
@@ -146,6 +135,8 @@ const ChatContextProvider: React.FC = (props) => {
             );
           }
         });
+
+        dispatch(chatActions.updateConnect());
       },
       onStompError: (frame) => {
         connect();
@@ -156,7 +147,6 @@ const ChatContextProvider: React.FC = (props) => {
     });
 
     chatClient.current.activate();
-    dispatch(chatActions.updateConnect());
   }, [dispatch, user.id, user.imageUrl, user.name]);
 
   const publish = useCallback(
@@ -183,6 +173,7 @@ const ChatContextProvider: React.FC = (props) => {
   );
 
   useEffect(() => {
+    if (!isConnect) return;
     if (mainRoom.id === INITIAL_MAINROOMID) return;
     mainRoomRef.current.id = mainRoom.id;
     // 메인 룸 변경 api 전송;
@@ -201,16 +192,14 @@ const ChatContextProvider: React.FC = (props) => {
 
     if (mainRoom.id === INITIAL_ROOMID) return;
     dispatch(chatActions.filterNewMessages());
-  }, [mainRoom.id, dispatch, pathname]);
+  }, [mainRoom.id, dispatch, pathname, isConnect]);
 
   useEffect(() => {
     // user.id 가 있으면 연결
-    if (user.role !== USER_ROLE) return;
     (async () => {
       await dispatch(getNewAlarms());
       await new Promise(() => connect());
     })();
-
     const userId = routerQueryUserId || undefined;
     if (
       pathname === CHAT_PAGE_URL &&
@@ -257,7 +246,6 @@ const ChatContextProvider: React.FC = (props) => {
 
     return () => disconnect();
   }, [
-    user.role,
     dispatch,
     connect,
     disconnect,

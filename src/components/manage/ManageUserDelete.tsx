@@ -1,16 +1,15 @@
-import { useRouter } from "next/router";
 import React, { MouseEventHandler } from "react";
 import styled from "styled-components";
 import { Button, ListItem } from "../common";
 import {
   CONFIRM_PUSH_MANAGE_MAINPAGE,
-  MANAGE_MAIN_PAGE_URL,
   SUCCESS_ALERT,
   SUCCESS_DELETE_USER_MSG,
 } from "../../constants";
 import { useAppDispatch } from "../../hooks/redux";
 import { deleteManagerUser } from "../../store/actions/manageActions";
-import { alertActions, asyncErrorHandle } from "../../store/alertSlice";
+import { alertActions } from "../../store/alertSlice";
+import { asyncErrorHandle } from "../../store/actions/alertActions";
 
 const MManageUserDelete: React.FC<{ userId: number }> = (props) => {
   const dispatch = useAppDispatch();

@@ -2,13 +2,14 @@ import styled from "styled-components";
 import { GoPrimitiveDot } from "react-icons/go";
 import { useRouter } from "next/router";
 import React, { MouseEventHandler } from "react";
+import { USER_SEARCH_TYPE } from "../../constants";
 
 const MToggleListItem: React.FC<{ title: string; type: string; link: string }> =
   (props) => {
     const router = useRouter();
     const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
       e.preventDefault();
-      if (props.type === "userSearch") {
+      if (props.type === USER_SEARCH_TYPE) {
         router.push(props.link);
         return;
       }

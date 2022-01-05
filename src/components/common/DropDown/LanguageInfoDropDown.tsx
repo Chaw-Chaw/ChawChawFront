@@ -1,24 +1,8 @@
-import { SetStateAction, useMemo } from "react";
-import {
-  CountryLocale,
-  LanguageLocale,
-  LocaleLanguage,
-} from "../../../constants/LocaleList";
+import { useMemo } from "react";
+import { LanguageLocale } from "../../../constants/LocaleList";
 import { NOMAL_TYPE } from "../../../constants/profile";
+import { LanguageInfoDropDownProps } from "../../../types/common";
 import { DropDown } from "./DropDown";
-import { InitialBoxProps } from "./DropDownBox";
-
-interface LanguageInfoDropDownProps extends InitialBoxProps {
-  index: number;
-  setValues: React.Dispatch<SetStateAction<string[]>>;
-  fontSize: string;
-  width: string;
-  height: string;
-  backgroundColor: string;
-  value: string;
-  color: string;
-  initialValue: string;
-}
 
 const LanguageInfoDropDown: React.FC<LanguageInfoDropDownProps> = (props) => {
   const options = useMemo(

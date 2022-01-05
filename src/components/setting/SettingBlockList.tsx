@@ -5,21 +5,21 @@ import { ADMIN_ROLE, USER_ROLE } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { getBlockList } from "../../store/actions/profileActions";
 import { BlockItem } from "../../types/manage";
+import { userRole } from "../../utils";
 import { ListItem } from "../common";
 import { SettingBlockItem } from "./SettingBlockItem";
 
 const SettingBlockList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.auth.user);
   const [blockList, setBlockList] = useState<BlockItem[]>([]);
 
   useEffect(() => {
-    if (user.role === ADMIN_ROLE) return;
+    if (userRole() === ADMIN_ROLE) return;
     (async () => {
       const data = await dispatch(getBlockList()).unwrap();
       setBlockList(data);
     })();
-  }, [dispatch, user.role]);
+  }, [dispatch]);
 
   const emptyBlockList = (
     <EmptyBlockList>

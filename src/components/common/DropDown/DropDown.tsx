@@ -1,27 +1,13 @@
-import React, {
-  MouseEventHandler,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useState,
-} from "react";
+import React, { MouseEventHandler, useCallback, useState } from "react";
 
 import styled from "styled-components";
 import { INFO_ALERT, INFO_ALREADY_SAMEVALUE_MSG } from "../../../constants";
 import { SEARCH } from "../../../constants/post";
 import { useAppDispatch } from "../../../hooks/redux";
 import { alertActions } from "../../../store/alertSlice";
-import { DropDownBox, InitialBoxProps } from "./DropDownBox";
+import { DropDownProps } from "../../../types/common";
+import { DropDownBox } from "./DropDownBox";
 import { Option } from "./Option";
-
-interface DropDownProps extends InitialBoxProps {
-  options: string[];
-  initialValue: string;
-  index: number;
-  type: "SEARCH" | "NORMAL";
-  setValues: React.Dispatch<SetStateAction<string[]>>;
-  children?: ReactNode;
-}
 
 const MDropDown: React.FC<DropDownProps> = (props) => {
   const [isActive, setIsActive] = useState(false);

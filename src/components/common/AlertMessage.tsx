@@ -1,4 +1,4 @@
-import React, { MouseEvent, MouseEventHandler, useEffect } from "react";
+import React, { MouseEvent } from "react";
 import styled from "styled-components";
 import { Button } from ".";
 import { SELECT_TYPE } from "../../constants/alert";

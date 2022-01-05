@@ -1,10 +1,6 @@
 import React, { MouseEventHandler, SetStateAction } from "react";
 import styled from "styled-components";
-import {
-  INFO_AFTER_SELECT_MSG,
-  INFO_ALERT,
-  SELECT_TYPE,
-} from "../../../constants";
+import { INFO_AFTER_SELECT_MSG, INFO_ALERT } from "../../../constants";
 import { SELECT } from "../../../constants/profile";
 import { useAppDispatch } from "../../../hooks/redux";
 import { alertActions } from "../../../store/alertSlice";

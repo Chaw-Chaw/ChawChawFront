@@ -1,7 +1,6 @@
 import {
   KeyboardEventHandler,
   MouseEventHandler,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -12,7 +11,6 @@ import SignupOrder from "../../../../components/account/SignupOrder";
 import styled from "styled-components";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Router from "next/router";
 import {
   CONFIRM_DISPATCH_SIGNUP,
   CONFIRM_PUSH_POSTPAGE,
@@ -22,6 +20,7 @@ import {
   ERROR_NOTFOUND_WEBMAIL_MSG,
   FACEBOOK_PROVIDER,
   KAKAO_PROVIDER,
+  KEYTYPE_ENTER,
   LOGIN_PAGE_TITLE,
   MAIN_PAGE,
   SUCCESS_ALERT,
@@ -30,16 +29,16 @@ import {
   WARNING_CHECK_WEBMAIL_MSG,
   WARNING_ENTER_VERIFYNUM_MSG,
 } from "../../../../constants";
-import {
-  sendWebmail,
-  signup,
-  webmailVerify,
-  verificationNumber,
-} from "../../../../store/authSlice";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { alertActions } from "../../../../store/alertSlice";
-import { isLogin, newError } from "../../../../utils/index";
+import { isLogin } from "../../../../utils/index";
 import { Inputs } from "../../../../types/account";
+import {
+  sendWebmail,
+  verificationNumber,
+  webmailVerify,
+} from "../../../../store/actions/authActions";
+import { asyncErrorHandle } from "../../../../store/actions/alertActions";
 
 export default function WebMailAuth() {
   const webmailRef = useRef<HTMLInputElement>(null);
@@ -88,9 +87,7 @@ export default function WebMailAuth() {
         return;
       }
     } catch (err) {
-      dispatch(
-        alertActions.updateAlert({ name: err.name, message: err.message })
-      );
+      dispatch(asyncErrorHandle(err));
       return;
     }
   };
@@ -131,7 +128,7 @@ export default function WebMailAuth() {
   };
 
   const handleKeyDown: KeyboardEventHandler<HTMLFormElement> = (e) => {
-    if (e.code === "Enter") e.preventDefault();
+    if (e.code === KEYTYPE_ENTER) e.preventDefault();
   };
 
   useEffect(() => {

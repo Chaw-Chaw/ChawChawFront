@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useContext } from "react";
+import React, { MouseEventHandler } from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import { Button } from "../../common";
@@ -13,8 +13,9 @@ import {
   putImage,
   sendProfileImage,
 } from "../../../store/actions/profileActions";
-import { alertActions, asyncErrorHandle } from "../../../store/alertSlice";
+import { alertActions } from "../../../store/alertSlice";
 import { authActions } from "../../../store/authSlice";
+import { asyncErrorHandle } from "../../../store/actions/alertActions";
 
 const ProfileImage: React.FC = () => {
   const user = useAppSelector((state) => state.auth.user);
@@ -27,7 +28,6 @@ const ProfileImage: React.FC = () => {
     try {
       const image = putImage(e);
       const imageUrl = await dispatch(sendProfileImage(image)).unwrap();
-      console.log(imageUrl, "imageUrl");
       dispatch(authActions.updateUser({ imageUrl }));
       dispatch(
         alertActions.updateAlert({

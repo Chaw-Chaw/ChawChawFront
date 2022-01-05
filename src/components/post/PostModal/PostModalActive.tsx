@@ -2,11 +2,10 @@ import styled from "styled-components";
 import { Button } from "../../common";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { CgBlock, CgUnblock } from "react-icons/cg";
-import Router, { useRouter } from "next/router";
+import Router from "next/router";
 import React, {
   MouseEventHandler,
   useCallback,
-  useContext,
   useEffect,
   useState,
 } from "react";
@@ -16,7 +15,7 @@ import {
   INFO_BLOCKUSER_MSG,
 } from "../../../constants";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { alertActions, asyncErrorHandle } from "../../../store/alertSlice";
+import { alertActions } from "../../../store/alertSlice";
 import {
   blockUser,
   like,
@@ -24,6 +23,7 @@ import {
   unLike,
 } from "../../../store/actions/postActions";
 import { PostModalActiveProps } from "../../../types/post";
+import { asyncErrorHandle } from "../../../store/actions/alertActions";
 
 const MPostModalActive: React.FC<PostModalActiveProps> = (props) => {
   const dispatch = useAppDispatch();

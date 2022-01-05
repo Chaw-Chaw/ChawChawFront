@@ -10,6 +10,7 @@ import { PostCardInfo } from "./PostCardInfo";
 import { useAppDispatch } from "../../../hooks/redux";
 import { getPostModalData } from "../../../store/actions/postActions";
 import { PostCardProps, PostModalInfoProps } from "../../../types/post";
+import { FormLabel } from "../../common/FormLabel";
 
 const MPostCard: React.FC<PostCardProps> = (props) => {
   const dispatch = useAppDispatch();
@@ -91,7 +92,14 @@ const MPostCard: React.FC<PostCardProps> = (props) => {
             />
           </PostImageBox>
           <PostCardContent>
-            <PostCardContentText disabled value={postCardContent} />
+            <PostCardContentText
+              id={`postCardContent+${props.id}`}
+              disabled
+              value={postCardContent}
+            />
+            <FormLabel htmlFor={`postCardContent+${props.id}`}>
+              포스트카드 내용
+            </FormLabel>
           </PostCardContent>
           <PostCardInfo
             pastDate={props.pastDate}

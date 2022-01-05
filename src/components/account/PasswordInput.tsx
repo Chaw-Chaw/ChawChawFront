@@ -3,12 +3,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { AiOutlineEye } from "react-icons/ai";
 import { AiOutlineEyeInvisible } from "react-icons/ai";
-
-interface PasswordInputProps {
-  name?: string;
-  placeholder?: string;
-  register?: object;
-}
+import { PasswordInputProps } from "../../types/account";
 
 const MPasswordInput: React.FC<PasswordInputProps> = (props) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,12 +14,15 @@ const MPasswordInput: React.FC<PasswordInputProps> = (props) => {
   return (
     <>
       <PasswordWrapper>
-        <PasswordInputStyled
-          name={props.name}
-          type={showPassword ? "text" : "password"}
-          placeholder={props.placeholder}
-          {...props.register}
-        />
+        <label>
+          <PasswordInputStyled
+            id={props.id}
+            name={props.name}
+            type={showPassword ? "text" : "password"}
+            placeholder={props.placeholder}
+            {...props.register}
+          />
+        </label>
         <ShowButton onClick={handleClick}>
           {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
         </ShowButton>

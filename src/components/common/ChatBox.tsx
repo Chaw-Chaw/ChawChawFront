@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { MouseEventHandler, useContext, useEffect, useRef } from "react";
+import React, { MouseEventHandler, useEffect, useRef } from "react";
 import styled from "styled-components";
 import {
   LIKEALARM_TYPE,
@@ -10,20 +10,10 @@ import {
 } from "../../constants";
 import { CHAT_PAGE_URL } from "../../constants/pageUrls";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { ChatContext } from "../../store/ChatContext";
 import { chatActions } from "../../store/chatSlice";
+import { ChatBoxProps } from "../../types/chat";
 import { MessageImage } from "../chat/Message/MessageImage";
 import { AlarmCount } from "./AlarmCount";
-
-interface ChatBoxProps {
-  imageUrl: string;
-  regDate: string;
-  sender: string;
-  roomId?: number;
-  context: string;
-  senderId?: number;
-  type: string;
-}
 
 const MChatBox: React.FC<ChatBoxProps> = (props) => {
   const { mainRoom, newMessages } = useAppSelector((state) => state.chat);

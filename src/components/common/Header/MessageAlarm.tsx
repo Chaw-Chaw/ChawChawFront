@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useContext } from "react";
+import React from "react";
 import styled from "styled-components";
 import {
   CHAT_PAGE_URL,
@@ -8,7 +8,6 @@ import {
   CHATALARM_TYPE,
 } from "../../../constants";
 import { useAppSelector } from "../../../hooks/redux";
-import { ChatContext } from "../../../store/ChatContext";
 import { ChatBox } from "../ChatBox";
 import { EmptyAlarm } from "./EmptyAlarm";
 

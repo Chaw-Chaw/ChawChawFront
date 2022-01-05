@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useState } from "react";
+import React, { MouseEventHandler } from "react";
 import styled from "styled-components";
 import {
   CONFIRM_DELETE_USER,

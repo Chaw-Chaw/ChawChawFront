@@ -45,7 +45,7 @@ export default class MyDocument extends Document {
   }
   render(): ReactElement {
     return (
-      <Html>
+      <Html lang="kr">
         <Head>
           <link
             href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;600;700;900&display=swap"

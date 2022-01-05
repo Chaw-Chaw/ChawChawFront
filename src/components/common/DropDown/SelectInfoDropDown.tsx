@@ -1,23 +1,7 @@
-import { SetStateAction } from "react";
-import { CountryLocale, LocaleLanguage } from "../../../constants/LocaleList";
+import { SelectInfoDropDownProps } from "../../../types/common";
 import { DropDown } from "./DropDown";
-import { InitialBoxProps } from "./DropDownBox";
 
-interface SelectInfoDropDown extends InitialBoxProps {
-  initialValue: string;
-  options: string[];
-  type: "SEARCH" | "NORMAL";
-  index: number;
-  setValues: React.Dispatch<SetStateAction<string[]>>;
-  fontSize: string;
-  width: string;
-  height: string;
-  backgroundColor: string;
-  value: string;
-  color: string;
-}
-
-const SelectInfoDropDown: React.FC<SelectInfoDropDown> = (props) => {
+const SelectInfoDropDown: React.FC<SelectInfoDropDownProps> = (props) => {
   const options = [props.initialValue, ...props.options];
   return (
     <DropDown

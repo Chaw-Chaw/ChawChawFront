@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../Button/Button";
 import MyImage from "./MyImage";
 import { DEFAULT_PROFILE_IMAGE } from "../../../constants";

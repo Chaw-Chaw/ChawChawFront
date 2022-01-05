@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ManageLayout } from "../../../../components/manage/ManageLayout";
 import {
   ProfileHeader,
@@ -28,17 +28,15 @@ import {
   LANGUAGE_TYPE,
   SELECT,
 } from "../../../../constants/profile";
-import { arrayRemovedItem, isLogin } from "../../../../utils";
+import { arrayRemovedItem, isLogin, userRole } from "../../../../utils";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import {
   getUserDetailInfo,
   manageUploadUserProfile,
 } from "../../../../store/actions/profileActions";
-import { asyncErrorHandle } from "../../../../store/alertSlice";
+import { asyncErrorHandle } from "../../../../store/actions/alertActions";
 
 function ManageUserDetail() {
-  const user = useAppSelector((state) => state.auth.user);
-  const userRole = user.role;
   const dispatch = useAppDispatch();
   const router = useRouter();
   const routerQueryJSON = JSON.stringify(router.query);
@@ -102,7 +100,7 @@ function ManageUserDetail() {
 
   useEffect(() => {
     try {
-      if (userRole !== ADMIN_ROLE || !isLogin()) {
+      if (userRole() !== ADMIN_ROLE || !isLogin()) {
         return;
       }
       if (routerQueryJSON === JSON.stringify({})) return;
@@ -127,13 +125,7 @@ function ManageUserDetail() {
     } catch (error) {
       dispatch(asyncErrorHandle(error));
     }
-  }, [
-    routerQueryJSON,
-    userRole,
-    dispatch,
-    router.query.school,
-    router.query.userId,
-  ]);
+  }, [routerQueryJSON, dispatch, router.query.school, router.query.userId]);
 
   useEffect(() => {
     setUserContent(userInfo.content);

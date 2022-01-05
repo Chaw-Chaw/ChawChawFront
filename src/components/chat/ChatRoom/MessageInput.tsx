@@ -17,14 +17,11 @@ import {
   KEYTYPE_ENTER,
 } from "../../../constants";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { alertActions, asyncErrorHandle } from "../../../store/alertSlice";
-import { sendImageMessage } from "../../../store/chatSlice";
-
-interface MessageInputProps {
-  value: string;
-  onChange: ChangeEventHandler<HTMLTextAreaElement>;
-  sendMessage: () => void;
-}
+import { alertActions } from "../../../store/alertSlice";
+import { MessageInputProps } from "../../../types/chat";
+import { sendImageMessage } from "../../../store/actions/chatActions";
+import { asyncErrorHandle } from "../../../store/actions/alertActions";
+import { FormLabel } from "../../common/FormLabel";
 
 const MessageInput: React.FC<MessageInputProps> = (props) => {
   const { publish } = useContext(ChatContext);
@@ -95,6 +92,7 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
     <InputBox>
       <InputBoxInner>
         <TextInput
+          id="messageInput"
           disabled={isNotActive}
           value={props.value}
           onChange={props.onChange}
@@ -102,6 +100,7 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
           placeholder="메세지를 입력해주세요."
           autoFocus
         />
+        <FormLabel htmlFor="messageInput">메세지 입력창</FormLabel>
         <PictureIconBox htmlFor="image-file">
           <input
             id="image-file"

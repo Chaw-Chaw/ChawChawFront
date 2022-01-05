@@ -1,9 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { INITIAL_ID } from "../constants";
-import { CountryLocale } from "../constants/LocaleList";
-import { INIT_USERINFO, SELECT } from "../constants/profile";
+import { INIT_USERINFO } from "../constants";
 import { ManageUserInfoType } from "../types/profile";
-import { arrayRemovedItem } from "../utils";
 
 const initialState = {
   userInfo: INIT_USERINFO,

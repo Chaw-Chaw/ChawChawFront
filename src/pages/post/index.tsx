@@ -3,14 +3,7 @@ import styled from "styled-components";
 import { PostSearch } from "../../components/post/PostSearch";
 import PostOrder from "../../components/post/PostOrder";
 import PostSection from "../../components/post/PostSection";
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { orderOptions } from "../../constants/order";
 import { PostCardProps } from "../../types/post";
 import {
@@ -23,12 +16,13 @@ import {
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { BASIC, SEARCH } from "../../constants/post";
-
 import { getPostCardList } from "../../store/actions/postActions";
-import { alertActions, asyncErrorHandle } from "../../store/alertSlice";
+import { alertActions } from "../../store/alertSlice";
+import { isLogin, userRole } from "../../utils";
+import { asyncErrorHandle } from "../../store/actions/alertActions";
 
 export default function Post() {
-  const { user, isLogin } = useAppSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const [postInfo, setPostInfo] = useState<PostCardProps[]>([]);
   const [sortInfo, setSortInfo] = useState<string[]>([
@@ -62,7 +56,6 @@ export default function Post() {
 
     try {
       const data = await dispatch(getPostCardList(searchCondition)).unwrap();
-      console.log(data, "getPostdata");
       if (data.length === 0) {
         setIsEnd(true);
         if (isFirst && searchType.current === SEARCH) {
@@ -142,8 +135,8 @@ export default function Post() {
   );
 
   useEffect(() => {
-    if (user.role === ADMIN_ROLE) return;
-    if (!isLogin) {
+    if (userRole() === ADMIN_ROLE) return;
+    if (!isLogin()) {
       dispatch(
         alertActions.updateAlert({
           name: ERROR_ALERT,
@@ -159,7 +152,7 @@ export default function Post() {
     });
     target.current && observer.observe(target.current);
     return () => observer.disconnect();
-  }, [user.role, dispatch, onIntersect, isLogin]);
+  }, [dispatch, onIntersect]);
 
   return (
     <Layout>

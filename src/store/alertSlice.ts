@@ -1,18 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios, { AxiosError } from "axios";
 import Router from "next/router";
 import store from ".";
-import { SettingUserDelete } from "../components/setting/SettingUserDelete";
 import {
-  ERROR_CODES,
   LOGIN_PAGE_URL,
   MAIN_PAGE,
   MANAGE_MAIN_PAGE_URL,
   POST_PAGE_URL,
   SIGNUP_PAGE_URL,
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
-} from "../constants";
-import {
   CONFIRM_DELETE_USER,
   CONFIRM_DISPATCH_SIGNUP,
   CONFIRM_INIT_LOGOUT,
@@ -23,10 +18,10 @@ import {
   CONFIRM_PUSH_SIGNUP,
   CONFIRM_PUSH_SIGNUP_WEBMAIL,
   CONFIRM_VOID,
-  ERROR_ALERT,
-} from "../constants/alert";
+} from "../constants";
+import { asyncErrorHandle } from "./actions/alertActions";
+import { signup } from "./actions/authActions";
 import { deleteUser } from "./actions/manageActions";
-import { authActions, signup } from "./authSlice";
 
 interface AlertType {
   name: "Error" | "Warning" | "Success" | "Info" | string;
@@ -77,25 +72,6 @@ const alertSlice = createSlice({
 
 export default alertSlice.reducer;
 export const alertActions = alertSlice.actions;
-
-export const asyncErrorHandle = createAsyncThunk(
-  "alert/asyncErrorHandle",
-  (error: Error, thunkAPI) => {
-    if (axios.isAxiosError(error)) {
-      const { status } = error.response?.data;
-      thunkAPI.dispatch(
-        alertActions.updateAlert({
-          name: ERROR_ALERT,
-          message: ERROR_CODES[status].message,
-        })
-      );
-    } else {
-      thunkAPI.dispatch(
-        alertActions.updateAlert({ name: error.name, message: error.message })
-      );
-    }
-  }
-);
 
 export const confirmFunc = createAsyncThunk(
   "alert/confirmFunc",

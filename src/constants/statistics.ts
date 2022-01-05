@@ -69,3 +69,5 @@ export const BASIC_CHART_DATA = {
     },
   ],
 };
+
+export const USER_SEARCH_TYPE = "userSearch";

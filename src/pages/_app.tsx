@@ -4,10 +4,9 @@ import { ThemeProvider, createGlobalStyle } from "styled-components";
 import LightTheme from "../theme/light";
 import DarkTheme from "../theme/dark";
 import { DefaultSeo } from "next-seo";
-import { ChatContextProvider } from "../store/ChatContext";
 import { avoidLocalStorageUndefined } from "../utils";
 import store, { wrapper } from "../store";
-import { Provider, useDispatch } from "react-redux";
+import { Provider } from "react-redux";
 import Errorboundary from "../components/common/Errorboundary";
 
 const GlobalStyles = createGlobalStyle`
@@ -16,6 +15,7 @@ const GlobalStyles = createGlobalStyle`
     src: url('/fonts/BMJUA_ttf.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
   }
 
   body{

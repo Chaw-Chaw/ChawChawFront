@@ -13,7 +13,8 @@ import {
   putImage,
   sendManageProfileImage,
 } from "../../store/actions/profileActions";
-import { alertActions, asyncErrorHandle } from "../../store/alertSlice";
+import { alertActions } from "../../store/alertSlice";
+import { asyncErrorHandle } from "../../store/actions/alertActions";
 
 const MManageProfileImage: React.FC<{ userImage: string; userId: number }> = (
   props

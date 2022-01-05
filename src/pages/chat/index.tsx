@@ -3,7 +3,6 @@ import ChatRoom from "../../components/chat/ChatRoom";
 import ChatList from "../../components/chat/ChatList";
 import styled from "styled-components";
 import { useEffect } from "react";
-import { useRouter } from "next/router";
 import {
   CONFIRM_PUSH_LOGINPAGE,
   ERROR_ALERT,
@@ -13,17 +12,16 @@ import {
   ROLE_ADMIN,
   USER_ROLE,
 } from "../../constants";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { alertActions, asyncErrorHandle } from "../../store/alertSlice";
+import { useAppDispatch } from "../../hooks/redux";
+import { alertActions } from "../../store/alertSlice";
 import { chatActions } from "../../store/chatSlice";
+import { userRole } from "../../utils";
 
 export default function Chat() {
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.auth);
-  const userRole = user.role;
 
   useEffect(() => {
-    if (userRole !== USER_ROLE) {
+    if (userRole() !== USER_ROLE) {
       dispatch(
         alertActions.updateAlert({
           name: ERROR_ALERT,
@@ -39,7 +37,7 @@ export default function Chat() {
         chatActions.updateMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID })
       );
     };
-  }, [dispatch, userRole]);
+  }, [dispatch]);
 
   // 채팅페이지에서 메인룸 변경시 메인채팅창 내용 수정
 

@@ -1,8 +1,8 @@
 import { useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAppDispatch } from "../../../hooks/redux";
-import { authActions, login } from "../../../store/authSlice";
 import { KAKAO_PROVIDER } from "../../../constants";
+import { login } from "../../../store/actions/authActions";
 
 interface OauthProps {
   provider: string;

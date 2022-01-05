@@ -1,13 +1,7 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import styled from "styled-components";
 import { MESSAGE_TYPE_YOURS, MESSAGE_TYPE_MINE } from "../../../constants";
-
-interface MessageContextProps {
-  isActive: boolean;
-  setIsActive: Dispatch<SetStateAction<boolean>>;
-  type: string;
-  onClick: React.MouseEventHandler<HTMLDivElement>;
-}
+import { MessageContextProps } from "../../../types/chat";
 
 const MMessageContext: React.FC<MessageContextProps> = (props) => {
   return (

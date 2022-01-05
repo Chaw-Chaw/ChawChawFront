@@ -2,8 +2,6 @@ import CryptoJS from "crypto-js";
 import React from "react";
 import Router from "next/router";
 import { SECRET_KEY } from "../constants";
-import store, { RootState } from "../store";
-import { alertActions } from "../store/alertSlice";
 
 const arrayRemovedItem = (item: any, array: any[]) => {
   const result = [...array];
@@ -49,6 +47,11 @@ const isLogin = () => {
   return Boolean(loginCurrent);
 };
 
+const userRole = () => {
+  const user = avoidLocalStorageUndefined("user", {});
+  return user.role;
+};
+
 const newError = (errorName: string, errorMessage: string) => {
   const error = new Error(errorMessage);
   error.name = errorName;
@@ -71,4 +74,5 @@ export {
   isLogin,
   newError,
   authRoute,
+  userRole,
 };

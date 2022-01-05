@@ -1,17 +1,11 @@
 import styled from "styled-components";
 import CSS from "csstype";
 import { useRouter } from "next/router";
-import React, {
-  MouseEventHandler,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { MouseEventHandler, useEffect, useState } from "react";
 import { FaFacebookF } from "react-icons/fa";
 import { BiMessageRounded } from "react-icons/bi";
 import { AiOutlineLogin } from "react-icons/ai";
 import { KAKAO_OAUTH_REDIRECT_URL } from "../../constants";
-import FacebookLogin from "@greatsumini/react-facebook-login";
 import { Button } from "../common";
 import Typed from "react-typed";
 import { LOGIN_PAGE_URL, POST_PAGE_URL } from "../../constants/pageUrls";

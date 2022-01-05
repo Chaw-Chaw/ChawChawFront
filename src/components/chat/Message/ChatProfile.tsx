@@ -9,9 +9,9 @@ import React, {
   useState,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { organizeChatMessages } from "../../../store/chatSlice";
 import { blockUser, unBlockUser } from "../../../store/actions/postActions";
-import { asyncErrorHandle } from "../../../store/alertSlice";
+import { asyncErrorHandle } from "../../../store/actions/alertActions";
+import { organizeChatMessages } from "../../../store/actions/chatActions";
 
 interface ChatProfileProps {
   name: string;

@@ -1,12 +1,11 @@
-import React, { useCallback, useContext, useEffect } from "react";
-import Router from "next/router";
+import React, { useEffect } from "react";
+
 import {
   Layout,
   Input,
   PasswordInput,
   Label,
   Button,
-  AlertMessage,
 } from "../../../components/common/";
 import AccountContainer from "../../../components/account/AccountContainer";
 import styled from "styled-components";
@@ -19,19 +18,15 @@ import {
   ERROR_ENTER_LOGINPAGE_MSG,
   LOGIN_PAGE_SUBTITLE,
   LOGIN_PAGE_TITLE,
-  POST_PAGE_URL,
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
   WARNING_FORM_MSG,
 } from "../../../constants";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { login } from "../../../store/authSlice";
+import { useAppDispatch } from "../../../hooks/redux";
+
 import { alertActions } from "../../../store/alertSlice";
-import {
-  CONFIRM_PUSH_MAIN_PAGE,
-  CONFIRM_PUSH_POSTPAGE,
-  WARNING_ALERT,
-} from "../../../constants/alert";
-import { authRoute, isLogin } from "../../../utils";
+import { CONFIRM_PUSH_POSTPAGE, WARNING_ALERT } from "../../../constants/alert";
+import { isLogin } from "../../../utils";
+import { login } from "../../../store/actions/authActions";
 
 interface Inputs {
   email: string;
@@ -71,6 +66,7 @@ export default function Login() {
         이메일
       </Label>
       <Input
+        id="email"
         placeholder="example@address.com"
         {...register("email", {
           pattern:
@@ -87,6 +83,7 @@ export default function Login() {
         비밀번호
       </Label>
       <PasswordInput
+        id="password"
         name="password"
         register={{
           ...register("password", {

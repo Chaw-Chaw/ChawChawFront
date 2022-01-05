@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { CgProfile } from "react-icons/cg";
 import { BsChat } from "react-icons/bs";
 import { AiOutlineLogout, AiOutlineSetting } from "react-icons/ai";
-import React, { MouseEventHandler, useContext, useState } from "react";
+import React, { MouseEventHandler, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import {
@@ -11,7 +11,7 @@ import {
   SETTING_PAGE_URL,
 } from "../../../constants/pageUrls";
 import { useAppDispatch } from "../../../hooks/redux";
-import { logout } from "../../../store/authSlice";
+import { logout } from "../../../store/actions/authActions";
 
 const MyImage: React.FC<{ profileImage: string }> = (props) => {
   const [isActive, setIsActive] = useState(false);

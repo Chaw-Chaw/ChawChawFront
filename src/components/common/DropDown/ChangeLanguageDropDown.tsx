@@ -1,14 +1,10 @@
-import { LanguageLocale, LocaleLanguage } from "../../../constants/LocaleList";
+import { LanguageLocale } from "../../../constants/LocaleList";
 import { DropDown } from "./DropDown";
 import { ImEarth } from "react-icons/im";
-import React, { Dispatch, SetStateAction, useContext, useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { NOMAL_TYPE } from "../../../constants/profile";
-
-interface ChangeLanguageDropDownProps {
-  selectLanguage: string[];
-  setSelectLanguage: Dispatch<SetStateAction<string[]>>;
-}
+import { ChangeLanguageDropDownProps } from "../../../types/common";
 
 const MChangeLanguageDropDown: React.FC<ChangeLanguageDropDownProps> = (
   props

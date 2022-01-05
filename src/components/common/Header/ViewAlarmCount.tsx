@@ -1,8 +1,7 @@
 import { useRouter } from "next/router";
-import React, { useContext } from "react";
+import React from "react";
 import { CHAT_PAGE_URL, LIMIT_NEWALARM_SIZE } from "../../../constants";
 import { useAppSelector } from "../../../hooks/redux";
-import { ChatContext } from "../../../store/ChatContext";
 import { AlarmCount } from "../AlarmCount";
 
 const MViewAlarmCount: React.FC = () => {

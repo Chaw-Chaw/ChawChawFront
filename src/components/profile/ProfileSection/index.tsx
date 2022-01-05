@@ -23,6 +23,7 @@ import { SELECT } from "../../../constants/profile";
 import { authActions } from "../../../store/authSlice";
 import { uploadProfile } from "../../../store/actions/profileActions";
 import { alertActions } from "../../../store/alertSlice";
+import { asyncErrorHandle } from "../../../store/actions/alertActions";
 
 const ProfileSection: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -101,15 +102,18 @@ const ProfileSection: React.FC = () => {
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
-    const userProfile = await onSubmit();
-
-    dispatch(authActions.updateUser(userProfile));
-    dispatch(
-      alertActions.updateAlert({
-        name: SUCCESS_ALERT,
-        message: SUCCESS_UPLOAD_PROFILE_MSG,
-      })
-    );
+    try {
+      const userProfile = await onSubmit();
+      dispatch(authActions.updateUser(userProfile));
+      dispatch(
+        alertActions.updateAlert({
+          name: SUCCESS_ALERT,
+          message: SUCCESS_UPLOAD_PROFILE_MSG,
+        })
+      );
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
+    }
   };
 
   return (

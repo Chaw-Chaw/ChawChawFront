@@ -1,20 +1,6 @@
 import styled from "styled-components";
-import React, { ReactNode } from "react";
-
-interface InitialBoxProps {
-  fontWeight: string;
-  fontSize: string;
-  width: string;
-  height: string;
-  backgroundColor: string;
-  value: string;
-  color: string;
-  children?: ReactNode;
-}
-
-interface DropDownBoxProps extends InitialBoxProps {
-  onClick: React.MouseEventHandler<HTMLDivElement>;
-}
+import React from "react";
+import { DropDownBoxProps, InitialBoxProps } from "../../../types/common";
 
 const MDropDownBox: React.FC<DropDownBoxProps> = (props) => {
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
@@ -42,7 +28,6 @@ const MDropDownBox: React.FC<DropDownBoxProps> = (props) => {
 
 const DropDownBox = React.memo(MDropDownBox);
 export { DropDownBox };
-export type { DropDownBoxProps, InitialBoxProps };
 
 const InitialBox = styled.div<InitialBoxProps>`
   position: relative;

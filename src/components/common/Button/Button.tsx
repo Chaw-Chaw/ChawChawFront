@@ -1,13 +1,5 @@
 import styled from "styled-components";
-
-interface ButtonProps {
-  width?: string;
-  height?: string;
-  primary?: boolean;
-  secondary?: boolean;
-  fontWeight?: string;
-  fontSize?: string;
-}
+import { ButtonProps } from "../../../types/common";
 
 const Button = styled.button<ButtonProps>`
   padding: 0px;

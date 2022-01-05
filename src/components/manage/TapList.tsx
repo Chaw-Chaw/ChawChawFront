@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useContext } from "react";
+import React, { MouseEventHandler } from "react";
 import styled from "styled-components";
 import {
   HOPE_LANGUAGE,
@@ -7,7 +7,7 @@ import {
   SEARCH_LANGUAGE,
 } from "../../constants/chart";
 import { useAppDispatch } from "../../hooks/redux";
-import { logout } from "../../store/authSlice";
+import { logout } from "../../store/actions/authActions";
 import { Button } from "../common";
 import { ToggleItem } from "./ToggleItem";
 import { ToggleListItem } from "./ToggleListItem";

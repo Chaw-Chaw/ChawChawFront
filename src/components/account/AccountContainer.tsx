@@ -1,11 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-
-interface AccountContainerProps {
-  title?: string;
-  subtitle?: string;
-  width?: string;
-}
+import { AccountContainerProps } from "../../types/account";
 
 const AccountContainer: React.FC<AccountContainerProps> = (props) => {
   const title = props.title?.split("`").map((line, index) => {

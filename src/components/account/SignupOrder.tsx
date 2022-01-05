@@ -1,13 +1,7 @@
 import styled from "styled-components";
 import React from "react";
 import { FIRST_STAGE, SECOND_STAGE } from "../../constants";
-
-interface ActiveProps {
-  activeType?: string;
-}
-interface IsActiveProps {
-  isActive?: boolean;
-}
+import { ActiveProps, IsActiveProps } from "../../types/account";
 
 const SignupOrder: React.FC<ActiveProps> = (props) => {
   return (

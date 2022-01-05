@@ -1,7 +1,10 @@
 import Image from "next/image";
 import styled from "styled-components";
+import React from "react";
 
-const MessageImage: React.FC<{ src: string }> = (props) => {
+const MMessageImage: React.FC<{ src: string; children?: React.ReactNode }> = (
+  props
+) => {
   return (
     <ImageBox>
       <Image
@@ -16,6 +19,7 @@ const MessageImage: React.FC<{ src: string }> = (props) => {
     </ImageBox>
   );
 };
+const MessageImage = React.memo(MMessageImage);
 
 export { MessageImage };
 

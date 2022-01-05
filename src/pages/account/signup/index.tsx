@@ -1,9 +1,4 @@
-import React, {
-  MouseEventHandler,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { MouseEventHandler, useEffect, useState } from "react";
 import {
   Layout,
   Input,
@@ -23,8 +18,6 @@ import {
   CONFIRM_PUSH_SIGNUP_WEBMAIL,
   ERROR_AFTERLOGOUT_SIGNUP_MSG,
   ERROR_ALERT,
-  LOGIN_PAGE_URL,
-  POST_PAGE_URL,
   SIGNUP_WEBMAIL_AUTH_PAGE_URL,
   WARNING_ALERT,
   WARNING_WEBMAIL_VERIFY_MSG,
@@ -35,19 +28,14 @@ import {
 } from "../../../constants";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { alertActions } from "../../../store/alertSlice";
+import { authActions } from "../../../store/authSlice";
+import { isLogin } from "../../../utils";
+import { SignupInputs } from "../../../types/account";
 import {
-  authActions,
-  signup,
   emailDuplicationCheck,
-} from "../../../store/authSlice";
-import { isLogin, newError } from "../../../utils";
-
-interface Inputs {
-  email: string;
-  username: string;
-  password: string;
-  passwordConfirm: string;
-}
+  signup,
+} from "../../../store/actions/authActions";
+import { asyncErrorHandle } from "../../../store/actions/alertActions";
 
 export default function SignUp() {
   const [isEmailDupCheck, setIsEmailDupCheck] = useState(false);
@@ -61,9 +49,9 @@ export default function SignUp() {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<Inputs>();
+  } = useForm<SignupInputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<SignupInputs> = async (data) => {
     if (
       data.email === "" ||
       data.username === "" ||
@@ -105,26 +93,30 @@ export default function SignUp() {
       })
     );
 
-    if (user.web_email && user.school) {
-      dispatch(
-        signup({
-          email: data.email,
-          password: data.password,
-          name: data.username,
-          web_email: user.web_email,
-          school: user.school,
-          imageUrl: "",
-          provider: BASIC_PROVIDER,
-        })
-      );
-    } else {
-      dispatch(
-        alertActions.updateAlert({
-          name: ERROR_ALERT,
-          message: ERROR_EMPTY_USERDATA_MSG,
-        })
-      );
-      return;
+    try {
+      if (user.web_email && user.school) {
+        await dispatch(
+          signup({
+            email: data.email,
+            password: data.password,
+            name: data.username,
+            web_email: user.web_email,
+            school: user.school,
+            imageUrl: "",
+            provider: BASIC_PROVIDER,
+          })
+        );
+      } else {
+        dispatch(
+          alertActions.updateAlert({
+            name: ERROR_ALERT,
+            message: ERROR_EMPTY_USERDATA_MSG,
+          })
+        );
+        return;
+      }
+    } catch (error) {
+      dispatch(asyncErrorHandle(error));
     }
   };
 
@@ -136,6 +128,7 @@ export default function SignUp() {
         setIsEmailDupCheck(true);
       } catch (err) {
         setIsEmailDupCheck(false);
+        dispatch(asyncErrorHandle(err));
       }
 
       // 중복된 이메일이 있으면 사용자가 회원가입이 불가능
@@ -150,9 +143,11 @@ export default function SignUp() {
     }
   };
 
-  const handleClickEmailChkBtn: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleClickEmailChkBtn: MouseEventHandler<HTMLButtonElement> = async (
+    e
+  ) => {
     e.preventDefault();
-    emailDupCheck();
+    await emailDupCheck();
   };
 
   useEffect(() => {

@@ -10,9 +10,9 @@ import Image from "next/image";
 import { ChatProfile } from "./ChatProfile";
 import { YourMessageProps } from "../../../types/chat";
 import { useAppDispatch } from "../../../hooks/redux";
-import { translateContext } from "../../../store/chatSlice";
-import { asyncErrorHandle } from "../../../store/alertSlice";
 import { IMAGE_TYPE, MESSAGE_TYPE_YOURS } from "../../../constants";
+import { translateContext } from "../../../store/actions/chatActions";
+import { asyncErrorHandle } from "../../../store/actions/alertActions";
 
 const MYourMessage: React.FC<YourMessageProps> = (props) => {
   const [open, setOpen] = useState(false);

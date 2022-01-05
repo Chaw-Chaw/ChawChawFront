@@ -3,8 +3,6 @@ import React, {
   useRef,
   useCallback,
   useEffect,
-  Dispatch,
-  SetStateAction,
   MouseEventHandler,
 } from "react";
 import styled from "styled-components";

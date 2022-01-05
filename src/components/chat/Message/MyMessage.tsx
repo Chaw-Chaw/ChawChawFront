@@ -3,11 +3,11 @@ import React, { MouseEventHandler, useEffect, useState } from "react";
 import styled from "styled-components";
 import { MyMessageProps } from "../../../types/chat";
 import { useAppDispatch } from "../../../hooks/redux";
-import { asyncErrorHandle } from "../../../store/alertSlice";
-import { translateContext } from "../../../store/chatSlice";
 import { LanguageLocale } from "../../common";
 import { MessageContext } from "./MessageContext";
 import { IMAGE_TYPE, MESSAGE_TYPE_MINE } from "../../../constants";
+import { translateContext } from "../../../store/actions/chatActions";
+import { asyncErrorHandle } from "../../../store/actions/alertActions";
 
 const MMyMessage: React.FC<MyMessageProps> = (props) => {
   const [isActive, setIsActive] = useState(false);

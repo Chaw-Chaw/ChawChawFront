@@ -7,8 +7,8 @@ import {
 } from "../../constants";
 import CSS from "csstype";
 import { useAppDispatch } from "../../hooks/redux";
-import { login } from "../../store/authSlice";
 import { alertActions } from "../../store/alertSlice";
+import { login } from "../../store/actions/authActions";
 
 const MFacebookLoginWrap: React.FC<{ children: React.ReactNode }> = (props) => {
   const dispatch = useAppDispatch();

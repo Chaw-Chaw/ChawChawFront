@@ -23,7 +23,6 @@ import {
   RankVisitedLanguageType,
 } from "../types/statistics";
 import { request } from "../utils/request";
-import { asyncErrorHandle } from "./alertSlice";
 
 const initialState: { subtitle: string } = { subtitle: "" };
 

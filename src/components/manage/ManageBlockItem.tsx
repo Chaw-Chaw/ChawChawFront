@@ -3,8 +3,8 @@ import React, { MouseEventHandler, useState } from "react";
 import styled from "styled-components";
 import { DEFAULT_PROFILE_IMAGE } from "../../constants";
 import { useAppDispatch } from "../../hooks/redux";
+import { asyncErrorHandle } from "../../store/actions/alertActions";
 import { manageUnBlockUser } from "../../store/actions/manageActions";
-import { asyncErrorHandle } from "../../store/alertSlice";
 import { BlockItem } from "../../types/manage";
 import { Button } from "../common";
 
