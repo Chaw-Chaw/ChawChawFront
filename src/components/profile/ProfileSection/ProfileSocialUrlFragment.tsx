@@ -15,6 +15,7 @@ import styled from "styled-components";
 import { Input, UpdateButton } from "../../common";
 import { ProfileSocialUrlFragmentProps } from "../../../types/profile";
 import { TYPE_FACEBOOK } from "../../../constants/profile";
+import { FormLabel } from "../../common/FormLabel";
 
 const ProfileSocialUrlFragment: React.FC<ProfileSocialUrlFragmentProps> = (
   props
@@ -40,11 +41,13 @@ const ProfileSocialUrlFragment: React.FC<ProfileSocialUrlFragmentProps> = (
     <ProfileSocialUrlBox key={props.url} type={props.type}>
       {props.type === TYPE_FACEBOOK ? <FaFacebook /> : <AiFillInstagram />}
       <ProfileSocialUrlInput
+        id={props.type + "Url"}
         isActive={isActive}
         disabled={!isActive}
         ref={urlRef}
         defaultValue={props.url || defaultUrl}
       />
+      <FormLabel id={props.type + "Url"}></FormLabel>
       <UrlUpdateButton onClick={handleClick}>
         {isActive ? "업데이트" : "수정"}
       </UrlUpdateButton>

@@ -32,11 +32,6 @@ export default function Chat() {
     }
 
     // 채팅 페이지에서 나가면 메인 룸 넘버는 -1
-    return () => {
-      dispatch(
-        chatActions.updateMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID })
-      );
-    };
   }, [dispatch]);
 
   // 채팅페이지에서 메인룸 변경시 메인채팅창 내용 수정

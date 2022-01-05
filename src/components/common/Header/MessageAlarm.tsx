@@ -15,10 +15,10 @@ const MMessageAlarm: React.FC = () => {
   const router = useRouter();
   const newMessages = useAppSelector((state) => state.chat.newMessages);
 
-  const alarmMessages = newMessages.map((item) => {
+  const alarmMessages = newMessages.map((item, index) => {
     const context = item.messageType === IMAGE_TYPE ? IMAGE_MSG : item.message;
     return (
-      <AlarmChatBox key={item.regDate}>
+      <AlarmChatBox key={item.regDate + index}>
         <ChatBox
           imageUrl={item.imageUrl}
           regDate={item.regDate.split("T").join(" ")}

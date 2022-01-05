@@ -61,8 +61,7 @@ const ChatContextProvider: React.FC = (props) => {
   const disconnect = useCallback(() => {
     if (!chatClient.current.connected) return;
     chatClient.current.deactivate();
-    dispatch(chatActions.updateDisConnect());
-  }, [dispatch]);
+  }, []);
 
   const connect = useCallback(async () => {
     chatClient.current = new StompJs.Client({
@@ -141,6 +140,15 @@ const ChatContextProvider: React.FC = (props) => {
       onStompError: (frame) => {
         connect();
       },
+      onDisconnect: () => {
+        dispatch(chatActions.updateDisConnect());
+        dispatch(
+          chatActions.updateMainRoom({
+            id: INITIAL_MAINROOMID,
+            userId: INITIAL_ID,
+          })
+        );
+      },
       connectHeaders: {
         Authorization: getSecureLocalStorage("accessToken"),
       },
@@ -177,17 +185,20 @@ const ChatContextProvider: React.FC = (props) => {
     if (mainRoom.id === INITIAL_MAINROOMID) return;
     mainRoomRef.current.id = mainRoom.id;
     // 메인 룸 변경 api 전송;
-
-    try {
-      (async () => {
-        await dispatch(noticeMainRoom(mainRoom.id));
-      })();
-      // 채팅 페이지면 메인 채팅룸 데이터 조직
-      if (pathname === CHAT_PAGE_URL) {
-        dispatch(chatActions.organizeMainChat());
+    (async () => {
+      try {
+        if (pathname !== CHAT_PAGE_URL) {
+          mainRoomRef.current.id = INITIAL_ROOMID;
+        }
+        await dispatch(noticeMainRoom(mainRoomRef.current.id)).unwrap();
+      } catch (error) {
+        dispatch(asyncErrorHandle(error));
       }
-    } catch (error) {
-      dispatch(asyncErrorHandle(error));
+    })();
+
+    // 채팅 페이지면 메인 채팅룸 데이터 조직
+    if (pathname === CHAT_PAGE_URL) {
+      dispatch(chatActions.organizeMainChat());
     }
 
     if (mainRoom.id === INITIAL_ROOMID) return;
@@ -197,8 +208,12 @@ const ChatContextProvider: React.FC = (props) => {
   useEffect(() => {
     // user.id 가 있으면 연결
     (async () => {
-      await dispatch(getNewAlarms());
-      await new Promise(() => connect());
+      try {
+        await dispatch(getNewAlarms());
+        await new Promise(() => connect());
+      } catch (error) {
+        dispatch(asyncErrorHandle(error));
+      }
     })();
     const userId = routerQueryUserId || undefined;
     if (
@@ -218,29 +233,39 @@ const ChatContextProvider: React.FC = (props) => {
       } else if (userId !== INITIAL_ID) {
         // 채팅방에 입장 한경우
         (async () => {
-          let mainRoomId = INITIAL_ROOMID;
-          const roomId = await dispatch(confirmChatRoom(userId)).unwrap();
-          // 채팅방이 없다면 채팅방 만들기
-          if (roomId === INITIAL_ROOMID) {
-            mainRoomId = await dispatch(makeChatRoom(userId)).unwrap();
-          } else {
-            mainRoomId = roomId;
-          }
-          // 채팅방을 만들고 전체 메세지들을 받기
-          dispatch(
-            chatActions.updateMainRoom({ id: mainRoomId, userId: userId })
-          );
+          try {
+            let mainRoomId = INITIAL_ROOMID;
+            const roomId = await dispatch(confirmChatRoom(userId)).unwrap();
+            // 채팅방이 없다면 채팅방 만들기
+            if (roomId === INITIAL_ROOMID) {
+              mainRoomId = await dispatch(makeChatRoom(userId)).unwrap();
+            } else {
+              mainRoomId = roomId;
+            }
+            // 채팅방을 만들고 전체 메세지들을 받기
+            dispatch(
+              chatActions.updateMainRoom({ id: mainRoomId, userId: userId })
+            );
 
-          await dispatch(organizeChatMessages());
-          // 메인룸에 해당하는 알림 메시지 거르기
-          dispatch(chatActions.filterNewMessages());
+            await dispatch(organizeChatMessages());
+            // 메인룸에 해당하는 알림 메시지 거르기
+            dispatch(chatActions.filterNewMessages());
+          } catch (error) {
+            dispatch(asyncErrorHandle(error));
+          }
         })();
       } else {
         // 채팅 페이지만 입장한 경우
         dispatch(
           chatActions.updateMainRoom({ id: INITIAL_ROOMID, userId: INITIAL_ID })
         );
-        dispatch(organizeChatMessages());
+        (async () => {
+          try {
+            await dispatch(organizeChatMessages());
+          } catch (error) {
+            dispatch(asyncErrorHandle(error));
+          }
+        })();
       }
     }
 
