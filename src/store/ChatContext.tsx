@@ -13,7 +13,7 @@ import {
   INITIAL_MAINROOMID,
   INITIAL_ROOMID,
 } from "../constants";
-import { getSecureLocalStorage } from "../utils";
+import { getSecureLocalStorage, isLogin } from "../utils";
 import { LikeAlarmType, MessageType, RoomType } from "../types/chat";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { chatActions } from "./chatSlice";
@@ -206,6 +206,7 @@ const ChatContextProvider: React.FC = (props) => {
   }, [mainRoom.id, dispatch, pathname, isConnect]);
 
   useEffect(() => {
+    if (!isLogin()) return;
     // user.id 가 있으면 연결
     (async () => {
       try {
