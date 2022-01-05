@@ -47,7 +47,7 @@ const ProfileSocialUrlFragment: React.FC<ProfileSocialUrlFragmentProps> = (
         ref={urlRef}
         defaultValue={props.url || defaultUrl}
       />
-      <FormLabel id={props.type + "Url"}></FormLabel>
+      <FormLabel htmlFor={props.type + "Url"}></FormLabel>
       <UrlUpdateButton onClick={handleClick}>
         {isActive ? "업데이트" : "수정"}
       </UrlUpdateButton>

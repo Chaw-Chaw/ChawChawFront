@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useAppSelector } from "../../hooks/redux";
 import { Input, ListItem } from "../common";
+import { FormLabel } from "../common/FormLabel";
 
 const MSettingUserUniversity: React.FC = () => {
   const user = useAppSelector((state) => state.auth.user);
@@ -10,7 +11,8 @@ const MSettingUserUniversity: React.FC = () => {
       title="소속대학"
       description="해당 대학 웹메일로 인증한 대학소속입니다."
     >
-      <UserUniversity disabled value={user.school} />
+      <UserUniversity id="university" disabled value={user.school} />
+      <FormLabel htmlFor="university">대학 이름</FormLabel>
     </ListItem>
   );
 };

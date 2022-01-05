@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Input, ListItem } from "../common";
+import { FormLabel } from "../common/FormLabel";
 
 const MManageUserUniversity: React.FC<{ userSchool: string }> = (props) => {
   return (
@@ -8,7 +9,8 @@ const MManageUserUniversity: React.FC<{ userSchool: string }> = (props) => {
       title="소속대학"
       description="해당 대학 웹메일로 인증한 대학소속입니다."
     >
-      <UserUniversity disabled value={props.userSchool} />
+      <UserUniversity id="university" disabled value={props.userSchool} />
+      <FormLabel htmlFor="university">대학이름</FormLabel>
     </ListItem>
   );
 };
