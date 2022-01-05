@@ -196,7 +196,7 @@ export default function SignUp() {
   const nameSection = (
     <InputSection>
       <Label htmlFor="username">이름</Label>
-      <Input {...register("username")} />
+      <Input id="username" {...register("username")} />
     </InputSection>
   );
 
@@ -204,6 +204,7 @@ export default function SignUp() {
     <InputSection>
       <Label htmlFor="password">비밀번호</Label>
       <PasswordInput
+        id="password"
         name="password"
         register={{
           ...register("password", {
@@ -226,6 +227,7 @@ export default function SignUp() {
         비밀번호
       </Label>
       <PasswordInput
+        id="passwordConfirm"
         name="passwordConfirm"
         register={{
           ...register("passwordConfirm", {
@@ -275,7 +277,7 @@ export default function SignUp() {
             <Label htmlFor="university" tag="필수">
               소속학교
             </Label>
-            <Input name="university" disabled defaultValue={userUniversity} />
+            <Input id="university" disabled defaultValue={userUniversity} />
           </InputSection>
           {movePageButtonSection}
         </Form>

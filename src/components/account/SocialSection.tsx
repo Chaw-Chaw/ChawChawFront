@@ -1,7 +1,6 @@
 import React, { MouseEventHandler } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import CSS from "csstype";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import { FaFacebookF } from "react-icons/fa";
 import {
@@ -108,8 +107,3 @@ const KakaoLogin = styled.div`
     color: #3c1d1e;
   }
 `;
-
-const styleFacebookLogin: CSS.Properties = {
-  border: "none",
-  background: "none",
-};

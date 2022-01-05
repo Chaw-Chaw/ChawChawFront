@@ -14,7 +14,6 @@ import {
 } from "../../constants";
 import { useAppDispatch } from "../../hooks/redux";
 import { alertActions } from "../../store/alertSlice";
-import { chatActions } from "../../store/chatSlice";
 import { userRole } from "../../utils";
 
 export default function Chat() {

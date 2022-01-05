@@ -1,27 +1,19 @@
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Logo, ThemeToggle } from "..";
-import { POST_PAGE_URL } from "../../../constants/pageUrls";
 import { useAppSelector } from "../../../hooks/redux";
 import HeaderCondition from "./HeaderCondition";
 import { MobileHeader } from "./MobileHeader";
 
 const Header: React.FC = () => {
   const user = useAppSelector((state) => state.auth.user);
-  const router = useRouter();
-  const [viewSchool, setViewSchool] = useState(false);
-  useEffect(() => {
-    if (router.pathname === POST_PAGE_URL && user.school) setViewSchool(true);
-    else setViewSchool(false);
-  }, [router.pathname, user.school]);
 
   return (
     <>
       <HeaderWrapper>
         <LogoFragment>
           <Logo />
-          {viewSchool && <SchoolHead>{user.school}</SchoolHead>}
+          <SchoolHead>{user.school}</SchoolHead>
         </LogoFragment>
         <HeaderComponentsBox>
           <ThemeToggleBox>

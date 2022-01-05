@@ -175,6 +175,7 @@ export default function WebMailAuth() {
         인증번호
       </Label>
       <Input
+        id="verificationNumber"
         disabled={activeVerificationNumber}
         {...register("verificationNumber", {
           pattern: /[0-9]/g,

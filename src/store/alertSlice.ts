@@ -18,6 +18,7 @@ import {
   CONFIRM_PUSH_SIGNUP,
   CONFIRM_PUSH_SIGNUP_WEBMAIL,
   CONFIRM_VOID,
+  CONFIRM_TYPE,
 } from "../constants";
 import { asyncErrorHandle } from "./actions/alertActions";
 import { signup } from "./actions/authActions";
@@ -51,7 +52,7 @@ const alertSlice = createSlice({
         name: action.payload.name,
         message: action.payload.message,
         id: state.alertList.length,
-        type: action.payload.type || "confirm",
+        type: action.payload.type || CONFIRM_TYPE,
         confirmFuncName: action.payload.confirmFuncName || "",
       };
       state.alertList.push(newAlert);
@@ -130,7 +131,7 @@ export const confirmFunc = createAsyncThunk(
         window.localStorage.removeItem("accessToken");
         window.localStorage.removeItem("expireAtAccessToken");
         window.localStorage.removeItem("user");
-        window.localStorage.href = LOGIN_PAGE_URL;
+        window.location.href = LOGIN_PAGE_URL;
         break;
       default:
         break;

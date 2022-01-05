@@ -53,14 +53,23 @@ const MChatRoomHeader: React.FC<ChatRoomHeaderType> = (props) => {
   return (
     <Header>
       <MessagesHeaderIcons>
-        <BackHomeButton onClick={handleClickBackHomeBtn}>
+        <BackHomeButton
+          aria-label="backhomeBtn"
+          onClick={handleClickBackHomeBtn}
+        >
           <RiHome2Line />
         </BackHomeButton>
-        <LeaveChatButton onClick={handleClickLeaveChatBtn}>
+        <LeaveChatButton
+          aria-label="leaveChatBtn"
+          onClick={handleClickLeaveChatBtn}
+        >
           <BsBoxArrowRight />
         </LeaveChatButton>
         <ChatListViewButtonBox>
-          <ViewChatListButton onClick={handleClickViewChatListBtn}>
+          <ViewChatListButton
+            aria-label="viewChatListBtn"
+            onClick={handleClickViewChatListBtn}
+          >
             <BsChatDots />
             {newMessageNumber}
           </ViewChatListButton>

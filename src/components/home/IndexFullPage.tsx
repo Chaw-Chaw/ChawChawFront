@@ -39,13 +39,13 @@ const IndexFullPage: React.FC = () => {
 
   const slideSection = USEAGE_INFO.map((item) => {
     return (
-      <ul key={item.title} className="slide">
+      <div key={item.title} className="slide">
         <UsageSlide
           title={item.title}
           subtitle={item.subtitle}
           src={item.src}
         />
-      </ul>
+      </div>
     );
   });
 

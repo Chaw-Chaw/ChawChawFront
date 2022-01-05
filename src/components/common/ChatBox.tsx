@@ -18,7 +18,7 @@ import { AlarmCount } from "./AlarmCount";
 const MChatBox: React.FC<ChatBoxProps> = (props) => {
   const { mainRoom, newMessages } = useAppSelector((state) => state.chat);
   const dispatch = useAppDispatch();
-  const mainChatList = useRef<HTMLLIElement>(null);
+  const mainChatList = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const regDate = props.regDate.split("T").join(" ");
   const isCurrentChat = props.roomId === mainRoom.id;
@@ -27,7 +27,7 @@ const MChatBox: React.FC<ChatBoxProps> = (props) => {
     return false;
   });
 
-  const handleClick: MouseEventHandler<HTMLLIElement> = (e) => {
+  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     if (props.type === CHATROOM_TYPE) {
       if (isCurrentChat) return;
@@ -108,7 +108,7 @@ const MChatBox: React.FC<ChatBoxProps> = (props) => {
 const ChatBox = React.memo(MChatBox);
 export { ChatBox };
 
-const ChatContainer = styled.li<{ isCurrentChat: boolean }>`
+const ChatContainer = styled.div<{ isCurrentChat: boolean }>`
   cursor: pointer;
   display: flex;
   justify-content: space-between;

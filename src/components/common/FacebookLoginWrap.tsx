@@ -9,6 +9,7 @@ import CSS from "csstype";
 import { useAppDispatch } from "../../hooks/redux";
 import { alertActions } from "../../store/alertSlice";
 import { login } from "../../store/actions/authActions";
+import styled from "styled-components";
 
 const MFacebookLoginWrap: React.FC<{ children: React.ReactNode }> = (props) => {
   const dispatch = useAppDispatch();
@@ -44,7 +45,9 @@ const MFacebookLoginWrap: React.FC<{ children: React.ReactNode }> = (props) => {
       appId={FACEBOOK_APP_ID}
       onSuccess={onSuccess}
       onFail={onFail}
+      aria-label="facebookLoginBtn"
     >
+      <HiddenBox>.</HiddenBox>
       {props.children}
     </FacebookLogin>
   );
@@ -57,3 +60,10 @@ const styleFacebookLogin: CSS.Properties = {
   border: "none",
   background: "none",
 };
+
+const HiddenBox = styled.div`
+  position: fixed;
+  top: 0px;
+  background-color: transparent;
+  color: transparent;
+`;
