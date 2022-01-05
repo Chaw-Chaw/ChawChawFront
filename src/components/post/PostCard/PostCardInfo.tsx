@@ -1,9 +1,8 @@
-import React from "react";
 import styled from "styled-components";
 import { AiFillEye, AiFillHeart } from "react-icons/ai";
 import { PostCardInfoProps } from "../../../types/post";
 
-const MPostCardInfo: React.FC<PostCardInfoProps> = (props) => {
+const PostCardInfo: React.FC<PostCardInfoProps> = (props) => {
   return (
     <PostCardInfoBox>
       <DateViewBox>
@@ -21,7 +20,6 @@ const MPostCardInfo: React.FC<PostCardInfoProps> = (props) => {
   );
 };
 
-const PostCardInfo = React.memo(MPostCardInfo);
 export { PostCardInfo };
 
 const PostCardInfoBox = styled.div`

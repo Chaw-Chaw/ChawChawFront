@@ -1,15 +1,14 @@
-import { unwrapResult } from "@reduxjs/toolkit";
-import { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { ADMIN_ROLE, USER_ROLE } from "../../constants";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { ADMIN_ROLE } from "../../constants";
+import { useAppDispatch } from "../../hooks/redux";
 import { getBlockList } from "../../store/actions/profileActions";
 import { BlockItem } from "../../types/manage";
 import { userRole } from "../../utils";
 import { ListItem } from "../common";
 import { SettingBlockItem } from "./SettingBlockItem";
 
-const SettingBlockList: React.FC = () => {
+const MSettingBlockList: React.FC = () => {
   const dispatch = useAppDispatch();
   const [blockList, setBlockList] = useState<BlockItem[]>([]);
 
@@ -47,6 +46,7 @@ const SettingBlockList: React.FC = () => {
   );
 };
 
+const SettingBlockList = React.memo(MSettingBlockList);
 export { SettingBlockList };
 
 const SettingBlockBox = styled.div`

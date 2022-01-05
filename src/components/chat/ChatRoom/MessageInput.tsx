@@ -119,7 +119,7 @@ const MessageInput: React.FC<MessageInputProps> = (props) => {
   );
 };
 
-export default React.memo(MessageInput);
+export default MessageInput;
 
 const InputBox = styled.div`
   position: absolute;

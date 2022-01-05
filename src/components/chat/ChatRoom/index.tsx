@@ -60,18 +60,18 @@ const ChatRoom: React.FC = () => {
     setMessage("");
   }, [message, publish]);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     if (!chatMessageBox.current) return;
     chatMessageBox.current.scrollIntoView({
       behavior: "auto",
       block: "end",
       inline: "nearest",
     });
-  };
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
-  }, [mainChatMessages.length]);
+  }, [mainChatMessages.length, scrollToBottom]);
 
   const emptyChatRoom = (
     <EmptyChatRoom>

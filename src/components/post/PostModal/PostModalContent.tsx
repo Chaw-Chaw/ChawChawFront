@@ -1,9 +1,8 @@
-import React from "react";
 import styled from "styled-components";
 import { FormLabel } from "../../common/FormLabel";
 import { PostModalInfoTitle } from "./PostModalInfoList";
 
-const MPostModalContent: React.FC<{ content: string }> = (props) => {
+const PostModalContent: React.FC<{ content: string }> = (props) => {
   return (
     <PostModalInfoListBox>
       <PostModalInfoTitle>Content</PostModalInfoTitle>
@@ -19,7 +18,6 @@ const MPostModalContent: React.FC<{ content: string }> = (props) => {
   );
 };
 
-const PostModalContent = React.memo(MPostModalContent);
 export { PostModalContent };
 
 const PostModalInfoListBox = styled.div`

@@ -4,7 +4,7 @@ import { SELECT_COLORS } from "../../../constants";
 import { divideMain } from "../../../utils";
 import { DropDownBox } from "../../common";
 
-const MPostModalInfoList: React.FC<{
+const PostModalInfoList: React.FC<{
   title: string;
   values: string[];
   mainValue: string;
@@ -53,7 +53,6 @@ const MPostModalInfoList: React.FC<{
   );
 };
 
-const PostModalInfoList = React.memo(MPostModalInfoList);
 export { PostModalInfoListBox, PostModalInfoList, PostModalInfoTitle };
 
 const PostModalInfoTitle = styled.h2`

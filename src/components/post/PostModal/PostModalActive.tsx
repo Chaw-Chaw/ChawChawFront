@@ -25,7 +25,7 @@ import {
 import { PostModalActiveProps } from "../../../types/post";
 import { asyncErrorHandle } from "../../../store/actions/alertActions";
 
-const MPostModalActive: React.FC<PostModalActiveProps> = (props) => {
+const PostModalActive: React.FC<PostModalActiveProps> = (props) => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
   const [isActiveLike, setIsActiveLike] = useState(props.isLike);
@@ -137,7 +137,6 @@ const MPostModalActive: React.FC<PostModalActiveProps> = (props) => {
   );
 };
 
-const PostModalActive = React.memo(MPostModalActive);
 export { PostModalActive };
 
 const PostChatButton = styled(Button)`
