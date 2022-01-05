@@ -19,7 +19,7 @@
     "countries-list": "^2.6.1",
     "crypto-js": "^4.1.1",
     "lodash": "^4.17.21",
-    "next": "11.0.0",
+    "next": "^12.0.7",
     "next-redux-wrapper": "^7.0.5",
     "next-seo": "^4.26.0",
     "react": "17.0.2",
