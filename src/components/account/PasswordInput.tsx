@@ -14,15 +14,13 @@ const MPasswordInput: React.FC<PasswordInputProps> = (props) => {
   return (
     <>
       <PasswordWrapper>
-        <label>
-          <PasswordInputStyled
-            id={props.id}
-            name={props.name}
-            type={showPassword ? "text" : "password"}
-            placeholder={props.placeholder}
-            {...props.register}
-          />
-        </label>
+        <PasswordInputStyled
+          id={props.id}
+          name={props.name}
+          type={showPassword ? "text" : "password"}
+          placeholder={props.placeholder}
+          {...props.register}
+        />
         <ShowButton onClick={handleClick}>
           {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
         </ShowButton>
