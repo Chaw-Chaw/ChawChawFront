@@ -63,10 +63,7 @@ export const getNewAlarms = createAsyncThunk(
 
 export const noticeMainRoom = createAsyncThunk(
   "chat/noticeMainRoom",
-  async (mainRoomId: number, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
-    const isConnect = state.chat.isConnect;
-    console.log(mainRoomId, isConnect, "noticeMainRoom");
+  async (mainRoomId: number) => {
     await request.post(NOTICE_MAINROOM_API_URL, {
       roomId: mainRoomId,
     });
