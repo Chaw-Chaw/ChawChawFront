@@ -51,11 +51,14 @@ const Container = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
+  max-height: calc(100vh - 150px);
 `;
 
 const ChatListWrapper = styled.div`
   display: flex;
   width: 400px;
+  margin-top: 20px;
+  height: 100%;
   @media (max-width: 1024px) {
     display: none;
   }

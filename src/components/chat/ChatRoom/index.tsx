@@ -142,7 +142,7 @@ export default React.memo(ChatRoom);
 const Outline = styled.div`
   border: none;
   box-sizing: border-box;
-  min-height: calc(100vh - 150px);
+  height: calc(100vh - 150px);
   /* margin-bottom: 50px; */
   width: 100%;
   max-width: 600px;
@@ -161,11 +161,16 @@ const Inner = styled.div`
   box-sizing: border-box;
   height: 100%;
   position: relative;
+  margin-top: 20px;
   @media (max-width: 1024px) {
     overflow: auto;
     box-sizing: border-box;
     height: 100%;
     position: relative;
+    margin-top: 20px;
+  }
+  @media (max-width: 768px) {
+    margin-top: inherit;
   }
 `;
 
